@@ -1,0 +1,65 @@
+{
+    "name": "PMD Coupling Rules",
+    "version": "5.1.2",
+    "children": [
+        {
+	    "name": "Coupling Between Objects",
+	    "mnemo": "CouplingBetweenObjects",
+            "priority": "3",
+	    "cat": "REU",
+	    "desc": [
+	        "This rule counts the number of unique attributes, local variables, and return types within an object. A number higher than the specified threshold can indicate a high degree of coupling. The default value is set to 20.",
+	        "CouplingBetweenObjects attempts to capture all unique Class attributes, local variables, and return types to determine how many objects a class is coupled to. This is only a gauge and isn't a hard and fast rule. The threshold value is configurable and should be determined accordingly.",
+	        "This rule impacts reusability, since many classes need to be available for this class to work."
+	    ]
+	},
+        {
+	    "name": "Excessive Imports",
+	    "mnemo": "ExcessiveImports",
+        "priority": "3",
+	    "cat": "REU",
+	    "desc": [
+	        "A high number of imports can indicate a high degree of coupling within an object. This rule counts the number of unique imports and reports a violation if the count is above the user-specified threshold. The default value is set to 30.",
+	        "ExcessiveImports attempts to count all unique imports a class contains. This rule will count a <code>import com.something.*;</code> as a single import.",
+	        "This rule impacts reusability, since many classes need to be available for this class to work."
+	    ]
+	},
+        {
+	    "name": "Loose Coupling",
+	    "mnemo": "LooseCoupling",
+        "priority": "3",
+	    "cat": "REU",
+	    "desc": [
+	        "The use of implementation types as object references limits your ability to use alternate implementations in the future as requirements change. Whenever available, referencing objects by their interface types provides much more flexibility.",
+	        "This rule impacts reusability, since many classes need to be available for this class to work."
+	    ]
+	},
+        {
+	    "name": "Loose Package Coupling",
+	    "mnemo": "LoosePackageCoupling",
+        "priority": "3",
+	    "cat": "REU",
+	    "desc": [
+	        "Avoid using classes from the configured package hierarchy outside of the package hierarchy, except when using one of the configured allowed classes.",
+	        "The loose package coupling Rule can be used to ensure coupling outside of a package hierarchy is minimized to all but an allowed set of classes from within the package hierarchy. For example, supposed you have the following package hierarchy: org.sample, org.sample.impl, org.sample.util, and the allowed class org.sample.SampleInterface. This rule can be used to ensure that all classes within the org.sample package and its sub-packages are not used outside of the org.sample package hierarchy. Further, the only allowed usage outside of a class in the org.sample hierarchy would be via org.sample.SampleInterface.",
+	        "TODO: doesn't work without configuring the allowed classes.",
+	        "This rule impacts reusability, since many packages need to be available for this class to work."
+	    ]
+	},
+        {
+	    "name": "LawOfDemeter",
+	    "mnemo": "LawOfDemeter",
+            "priority": "3",
+            "cat": "REU",
+	    "refs": [
+                "http://pmd.sourceforge.net/snapshot/rules/java/coupling.html#LawOfDemeter",
+                "http://stackoverflow.com/questions/468615/how-to-solve-the-violations-of-the-law-of-demeter"
+            ],
+	    "desc": [
+	        "The Law of Demeter is a simple rule, that says 'only talk to friends'. It helps to reduce coupling between classes or objects. See also the references: Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer. From Journeyman to Master. Addison-Wesley Longman, Amsterdam, October 1999.; K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented programs. Software, IEEE, 6(5):38–48, 1989.; http://www.ccs.neu.edu/home/lieber/LoD.html; http://en.wikipedia.org/wiki/Law_of_Demeter .",
+	        "This rule can detect possible violations of the Law of Demeter. The Law of Demeter is a simple rule, that says 'only talk to friends'. It helps to reduce coupling between classes or objects.",
+	        "This rule impacts reusability, since many classes need to be available for this class to work."
+	    ]
+        }
+    ]
+}

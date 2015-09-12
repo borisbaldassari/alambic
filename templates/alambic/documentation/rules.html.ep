@@ -1,0 +1,37 @@
+% layout 'polarsys';
+% title 'Documentation: Rules';
+
+            <h2>Definition of Metrics</h2>
+            <p>Rules are mapped to good and bad practices, as defined by the open-source community. They are computed by open-source rule-checking tools like PMD or FindBugs. They are classified by category associated to some quality characteristics.</p><br />
+
+% my $vol = scalar keys %{$rules};
+% my $if_main_active = ( $source =~ m!^$! ) ? ' class="active"' : '';
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"<%== $if_main_active %>><a href="rules.html">All&nbsp;<span class="badge"><%= $vol %></span></a>
+                </li>
+% foreach my $tmp_src (sort keys %{$sources}) {
+%     my $source_vol = $sources->{$tmp_src};
+%     my $if_active = lc($source) eq lc($tmp_src) ? ' class="active"' : '';
+                <li role="presentation"<%== $if_active %>>
+                  <a href="rules_<%= lc($tmp_src) %>.html"><%= $tmp_src %>&nbsp;<span class="badge"><%= $source_vol %></span></a>
+                </li>
+% }
+              </ul>
+            </div>
+            <br />
+
+            <ul class="list-group">
+% foreach my $item (sort keys %{$rules}) {
+%     # if a source is provided, just display rules for this source.
+%     if ($source =~ m!(\S.+)! && lc($rules->{$item}->{'src'}) ne lc($1)) { 
+%       next; 
+%     } 
+              <li class="list-group-item"><p id="<%= $rules->{$item}->{'mnemo'} %>"><strong><%= $rules->{$item}->{'name'} %></strong> ( <%= $rules->{$item}->{'mnemo'} %> ) provided by <%= $rules->{$item}->{'src'} %></p>
+                <p class="desc"><b></b></p>
+%     foreach my $desc (@{$rules->{$item}->{'desc'}}) {
+                <p class="desc"><%== $desc %></p>
+%     }
+              </li>
+% }
+            </ul>

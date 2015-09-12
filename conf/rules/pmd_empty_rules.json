@@ -1,0 +1,116 @@
+{
+  "name": "PMD Empty Rules",
+  "version": "5.1.2",
+  "children": [
+    {
+	    "name": "Empty Catch Block",
+	    "mnemo": "EmptyCatchBlock",
+        "priority": "2",
+	    "cat": "REL",
+	    "desc": [
+	      "Empty Catch Block finds instances where an exception is caught, but nothing is done. In most circumstances, this swallows an exception which should either be acted on or reported.",
+	      "This rule impacts reliability, since nothing is done about the exception and unpredictable behaviour may occur."
+	    ]
+	  },
+    {
+	    "name": "Empty If Stmt",
+	    "mnemo": "EmptyIfStmt",
+        "priority": "3",
+        "cat": "ANA EFF",
+	    "desc": [
+		    "Empty If Statement finds instances where a condition is checked but nothing is done about it.",
+		    "This rule impacts analysability, since it introduces unnecessary code. It also impacts resources, since it takes unnecessary space and cpu."
+	    ]
+    },
+    {
+	    "name": "Empty While Stmt",
+	    "mnemo": "EmptyWhileStmt",
+        "priority": "3",
+        "cat": "ANA EFF",
+	    "desc": [
+		    "Empty While Statement finds all instances where a while statement does nothing. If it is a timing loop, then you should use Thread.sleep() for it; if it is a while loop that does a lot in the exit expression, rewrite it to make it clearer.",
+		    "This rule impacts analysability, since it introduces unnecessary code. It also impacts resources, since it takes unnecessary space and cpu."
+	    ]
+    },
+    {
+	    "name": "Empty Try Block",
+	    "mnemo": "EmptyTryBlock",
+        "priority": "3",
+        "cat": "ANA",
+	    "desc": [
+		    "Avoid empty try blocks - there do nothing and just clutter the code.",
+		    "This rule impacts analysability, since it introduces unnecessary code."
+	    ]
+    },
+    {
+	    "name": "Empty Finally Block",
+	    "mnemo": "EmptyFinallyBlock",
+        "priority": "3",
+        "cat": "ANA",
+	    "desc": [
+		    "Empty finally blocks serve no purpose and should be removed.",
+		    "This rule impacts analysability, since it implies unnecessary code."
+	    ]
+    },
+    {
+	    "name": "Empty Switch Statements",
+	    "mnemo": "EmptySwitchStatements",
+        "priority": "3",
+        "cat": "ANA",
+	    "desc": [
+		    "Empty switch statements serve no purpose and should be removed.",
+		    "This rule impacts analysability, since it implies unnecessary code."
+	    ]
+    },
+    {
+	    "name": "Empty Synchronized Block",
+	    "mnemo": "EmptySynchronizedBlock",
+        "priority": "3",
+        "cat": "ANA",
+	    "desc": [
+		    "Empty synchronized blocks serve no purpose and should be removed.",
+		    "This rule impacts analysability, since it implies unnecessary code."
+	    ]
+    },
+    {
+	    "name": "Empty Statement Not In Loop",
+	    "mnemo": "EmptyStatementNotInLoop",
+        "priority": "3",
+        "cat": "ANA",
+	    "desc": [
+		    "An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for' or 'while' loop is probably a bug. It could also be a double semicolon, which has no purpose and should be removed.",
+		    "This rule impacts analysability, since it implies unnecessary code."
+	    ]
+    },
+    {
+	    "name": "Empty Initializer",
+	    "mnemo": "EmptyInitializer",
+        "priority": "3",
+        "cat": "ANA",
+	    "desc": [
+		    "Empty block statements serve no purpose and should be removed.",
+		    "This rule impacts analysability, since it implies unnecessary code."
+	    ]
+    },
+    {
+	    "name": "Empty Statement Block",
+	    "mnemo": "EmptyStatementBlock",
+        "priority": "3",
+        "cat": "ANA",
+	    "desc": [
+		    "Empty finally blocks serve no purpose and should be removed.",
+		    "This rule impacts analysability, since it implies unnecessary code."
+	    ]
+    },
+    {
+	    "name": "Empty Static Initializer",
+	    "mnemo": "EmptyStaticInitializer",
+        "priority": "3",
+        "cat": "ANA",
+	    "desc": [
+		    "An empty static initializer serve no purpose and should be removed.",
+		    "This rule impacts analysability, since it implies unnecessary code."
+	    ]
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+{
+    "name": "PMD Basic Rules",
+    "version": "5.1.2",
+    "children": [
+        {
+	    "name": "Jumbled Incrementer",
+	    "mnemo": "JumbledIncrementer",
+        "priority": "2",
+	    "cat": "CHA REL",
+	    "desc": [
+		"Avoid jumbled loop incrementers - it is usually a mistake, and is confusing even if intentional.",
+		"It impacts changeability, since modifying the loop will probably have some side-effects. It also impacts reliability by increasing the complexity of code, thus inducing more opportunities for bugs."
+	    ]
+	},
+        {
+	    "name": "For Loop Should Be While Loop",
+	    "mnemo": "ForLoopShouldBeWhileLoop",
+            "priority": "3",
+	    "cat": "ANA",
+	    "desc": [
+		"Some for loops can be simplified to while loops, this makes them more concise.",
+		"A maintainer will wonder why a for loop is used without condition. While loops are also more concise."
+	    ]
+	},
+        {
+	    "name": "Override Both Equals And Hash code",
+	    "mnemo": "OverrideBothEqualsAndHashcode",
+        "priority": "2",
+	    "cat": "CHA REU",
+	    "desc": [
+		"Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither. Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass. ",
+		"Even if at some time only one of these methods is indeed used, a maintainer will assume that the code is consistent, i.e. the hashCode and equals functions are both overriden to fit the new behaviour."
+	    ]
+	},
+        {
+	    "name": "Double Checked Locking",
+	    "mnemo": "DoubleCheckedLocking",
+            "priority": "1",
+	    "cat": "REL",
+	    "desc": [
+		"Partially created objects can be returned by the Double Checked Locking pattern when used in Java. An optimizing JRE may assign a reference to the baz variable before it creates the object the reference is intended to point to. For more details refer to: http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html",
+		"The double check pattern impacts reliability, since the code may produce a crash or unpredictable behaviour when the half-defined class is used."
+	    ]
+	},
+        {
+	    "name": "Return From Finally Block",
+	    "mnemo": "ReturnFromFinallyBlock",
+            "priority": "2",
+	    "cat": "REL",
+	    "desc": [
+		"Avoid returning from a finally block, this can discard exceptions.",
+		"It impacts reliability because the caught exception may hide another unseen exception."
+	    ]
+	},
+        {
+	    "name": "Unconditional If Statement",
+	    "mnemo": "UnconditionalIfStatement",
+            "priority": "2",
+	    "cat": "ANA",
+	    "desc": [
+		"Do not use <code>if</code> statements that are always true or always false.",
+		"A maintainer will have trouble understanding why an unconditional if has been used. It further clutters the code."
+	    ]
+	},
+        {
+	    "name": "Boolean Instantiation",
+	    "mnemo": "BooleanInstantiation",
+            "priority": "2",
+	    "cat": "ANA",
+	    "desc": [
+		"Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.",
+		"Boolean instantiation adds unnecessary complexity and clutters the code."
+	    ]
+	},
+        {
+	    "name": "Collapsible If Statements",
+	    "mnemo": "CollapsibleIfStatements",
+            "priority": "3",
+	    "cat": "REL",
+	    "desc": [
+		"Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.",
+		"Collapsible if statements add unnecessary code and complexity."
+	    ]
+	},
+        {
+	    "name": "ClassCastException With toArray",
+	    "mnemo": "ClassCastExceptionWithToArray",
+            "priority": "3",
+	    "cat": "REL",
+	    "desc": [
+		"When deriving an array of a specific class from your Collection, one should provide an array of the same class as the parameter of the toArray() method. Doing otherwise would result in a ClassCastException.",
+		"This pattern impacts the reliability, since an exception may be thrown."
+	    ]
+	},
+        {
+	    "name": "Avoid Decimal Literals In BigDecimal Constructor",
+	    "mnemo": "AvoidDecimalLiteralsInBigDecimalConstructor",
+            "priority": "2",
+	    "cat": "REL CHA",
+	    "desc": [
+		"One might assume that the result of 'new BigDecimal(0.1)' is exactly equal to 0.1, but it is actually equal to .1000000000000000055511151231257827021181583404541015625. This is because 0.1 cannot be represented exactly as a double (or as a binary fraction of any finite length). Thus, the long value that is being passed in to the constructor is not exactly equal to 0.1, appearances notwithstanding. The (String) constructor, on the other hand, is perfectly predictable: 'new BigDecimal('0.1')' is exactly equal to 0.1, as one would expect. Therefore, it is generally recommended that the (String) constructor be used in preference to this one.",
+		"This rule impacts product reliability, since the actual number is not the one intended and precision errors may arise."
+	    ]
+	},
+        {
+	    "name": "Misplaced Null Check",
+	    "mnemo": "MisplacedNullCheck",
+            "priority": "1",
+	    "cat": "REL ANA",
+	    "desc": [
+		"The null check here is misplaced. If the variable is null a NullPointerException will be thrown. Either the check is useless (the variable will never be 'null') or it is incorrect.",
+		"This pattern impacts the reliability, since an exception may be thrown. It also impacts analysability, since the maintainer will take unnecessary time to understand that the null is misplaced."
+	    ]
+	},
+        {
+	    "name": "Avoid ThreadGroup",
+	    "mnemo": "AvoidThreadGroup",
+            "priority": "3",
+	    "cat": "REL",
+	    "desc": [
+		"Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment it contains methods that are not thread-safe.",
+		"This pattern impacts the reliability, since a non-thread-safe method may be invoked in a threaded environment."
+	    ]
+	},
+        {
+	    "name": "Broken NullCheck",
+	    "mnemo": "BrokenNullCheck",
+            "priority": "1",
+	    "cat": "REL",
+	    "desc": [
+		"The null check is broken since it will throw a NullPointerException itself. It is likely that you used || instead of && or vice versa.",
+		"This pattern impacts the reliability, since an exception may be thrown."
+	    ]
+	},
+        {
+	    "name": "BigInteger Instantiation",
+	    "mnemo": "BigIntegerInstantiation",
+            "priority": "3",
+	    "cat": "",
+	    "desc": [
+		"Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN).",
+		""
+	    ]
+	},
+        {
+	    "name": "Avoid Using Octal Values",
+	    "mnemo": "AvoidUsingOctalValues",
+            "priority": "3",
+	    "cat": "REL ANA",
+	    "desc": [
+		"Integer literals should not start with zero since this denotes that the rest of literal will be interpreted as an octal value.",
+		"This rule impacts reliability, since the number specified may not be the one intended. It also impacts analysability, since the maintainer will have trouble deciding if the value is a decimal or octal value."
+	    ]
+	},
+        {
+	    "name": "Avoid Using Hard Coded IP",
+	    "mnemo": "AvoidUsingHardCodedIP",
+            "priority": "2",
+	    "cat": "CHA REU POR",
+	    "desc": [
+		"Application with hard-coded IP addresses can become impossible to deploy in some cases. Externalizing IP adresses is preferable.",
+		"This pattern impacts changeability, since it is easier to change the IP in an externalised configuration file. It also impacts reusability, since the hard coded IP address may not be adapted to a different usage. It also impacts portability since the hard coded IP address may not be adapted to a different environment (network"
+	    ]
+	},
+        {
+	    "name": "Check ResultSet",
+	    "mnemo": "CheckResultSet",
+            "priority": "3",
+	    "cat": "REL",
+	    "desc": [
+		"Always check the return values of navigation methods (next, previous, first, last) of a ResultSet. If the value return is 'false', it should be handled properly.",
+		"This pattern impacts the reliability, since the intended action may not have been performed correctly without the caller to know it."
+	    ]
+	},
+        {
+	    "name": "Avoid Multiple Unary Operators",
+	    "mnemo": "AvoidMultipleUnaryOperators",
+            "priority": "2",
+	    "cat": "ANA REL",
+	    "desc": [
+		"The use of multiple unary operators may be problematic, and/or confusing. Ensure that the intended usage is not a bug, or consider simplifying the expression.",
+		"This rule impacts the reliability, since the pattern has a good probability to be a bug. It also impacts analysability, since such unary operators are unnecessarily complex to understand."
+	    ]
+	},
+        {
+	    "name": "Extends Object",
+	    "mnemo": "ExtendsObject",
+            "priority": "4",
+	    "cat": "ANA",
+	    "desc": [
+		"No need to explicitely extend Object, since all objects implicitely inherit from Object.",
+		"This pattern implies unnecessary code and impacts analysability."
+	    ]
+	},
+        {
+	    "name": "Check SkipResult",
+	    "mnemo": "CheckSkipResult",
+            "priority": "3",
+	    "cat": "REL",
+	    "desc": [
+		"The <code>skip()</code> method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.",
+		"This rule impacts reliability, since the call may not have produced the intended result."
+	    ]
+	},
+        {
+	    "name": "Avoid Branching Statement As Last In Loop",
+	    "mnemo": "AvoidBranchingStatementAsLastInLoop",
+            "priority": "2",
+	    "cat": "ANA",
+	    "desc": [
+		"Using a branching statement as the last part of a loop may be a bug, and/or is confusing. Ensure that the usage is not a bug, or consider using another approach.",
+		"This pattern impacts analysability, since the maintainer will have trouble understanding the intended behaviour."
+	    ]
+	},
+        {
+	    "name": "Dont Call ThreadRun",
+	    "mnemo": "DontCallThreadRun",
+            "priority": "4",
+	    "cat": "ANA",
+	    "desc": [
+		"Explicitly calling Thread.run() method will execute in the caller's thread of control. Instead, call Thread.start() for the intended behavior.",
+		"This rule impacts analysability, since a maintainer will have trouble understanding the intended behaviour."
+	    ]
+	},
+        {
+	    "name": "Dont Use Float Type For Loop Indices",
+	    "mnemo": "DontUseFloatTypeForLoopIndices",
+            "priority": "2",
+	    "cat": "REL",
+	    "desc": [
+		"Don't use floating point for loop indices: the termination test may misbehave due to floating point granularity. If you must use floating point, use double unless you're certain that float provides enough precision and you have a compelling performance need (space or time).",
+		"This rule impacts reliability, since the loop may terminate at an unexpected time."
+	    ]
+	}
+	
+    ]
+}

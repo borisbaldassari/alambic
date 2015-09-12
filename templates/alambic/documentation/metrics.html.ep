@@ -1,0 +1,45 @@
+% layout 'polarsys';
+% title 'Documentation: Metrics';
+
+            <h2>Definition of Metrics</h2>
+            <p>All metrics used in the maturity assessment process are described thereafter, with useful information and references. They are classified according to their source. Grimoire includes all data related to configuration management, mailing lists, forums, and issues.</p><br />
+
+% my $vol = scalar keys %{$metrics};
+% my $if_main_active = $repo =~ m!^$! ? ' class="active"' : '';
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"<%== $if_main_active %>><a href="metrics.html">All&nbsp;<span class="badge"><%= $vol %></span></a>
+                </li>
+% foreach my $tmp_repo (sort keys %{$repos}) {
+%     my $repo_vol = $repos->{$tmp_repo};
+%     my $if_active = lc($repo) eq lc($tmp_repo) ? ' class="active"' : '';
+                <li role="presentation"<%== $if_active %>>
+                  <a href="metrics_<%= lc($tmp_repo) %>.html"><%= $tmp_repo %>&nbsp;<span class="badge"><%= $repo_vol %></span></a>
+                </li>
+% }
+              </ul>
+            </div>
+            <br />
+
+            <ul class="list-group">
+% foreach my $item (sort keys %{$metrics}) {
+%     # if a repo is provided, just display metrics for this repo.
+%     if ($repo =~ m!(\S+)! && lc($metrics->{$item}->{'ds'}) ne $1) { 
+%       next; 
+%     } 
+%     # build the used_by attribute.
+%     my @used_by;
+%     foreach my $parent (sort keys %{$metrics->{$item}->{"parents"}}) {
+%       push(@used_by, "<a href=\"questions.html#$parent\">" . $parent . "</a>\n");
+%     }
+%     my $used_by_str = join(', ', @used_by);
+              <li class="list-group-item"><p id="<%= $metrics->{$item}->{'mnemo'} %>"><strong><%= $metrics->{$item}->{'name'} %></strong> ( <%= $metrics->{$item}->{'mnemo'} %> )</p>
+                <p class="desc"><b>Active:</b> <%= $metrics->{$item}->{'active'} %></p>
+                <p class="desc"><b>Used by:</b> <%== $used_by_str %></p>
+                <p class="desc"><b></b></p>
+%     foreach my $desc (@{$metrics->{$item}->{'desc'}}) {
+                <p class="desc"><%== $desc %></p>
+%     }
+              </li>
+% }
+            </ul>

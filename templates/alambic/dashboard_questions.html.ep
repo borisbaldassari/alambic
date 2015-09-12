@@ -1,0 +1,50 @@
+% layout 'polarsys';
+% title 'Dashboard';
+
+            <h2>Project <%= $project_id %></h2>
+            <br />
+
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"><a href="<%= $project_id %>.html">Summary</a></li>
+                <li role="presentation"><a href="<%= $project_id %>_qm.html">QM</a></li>
+                <li role="presentation"><a href="<%= $project_id %>_attrs.html">Attributes</a></li>
+                <li role="presentation" class="active"><a href="<%= $project_id %>_questions.html">Questions</a></li>
+                <li role="presentation"><a href="<%= $project_id %>_metrics.html">Metrics</a></li>
+                <li role="presentation"><a href="<%= $project_id %>_practices.html">Practices</a></li>
+                <li role="presentation" class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Download <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li role="presentation"><a href="/data/<%= $project_id %>_attributes.json">Attributes JSON</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_attributes.csv">Attributes CSV</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_questions.json">Questions JSON</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_questions.csv">Questions CSV</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_metrics.json">Metrics JSON</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_metrics.csv">Metrics CSV</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_pmd.zip">PMD results XML</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_findbugs.zip">FindBugs results XML</a></li>
+                  </ul>
+                </li>
+                <li role="presentation"><a href="<%= $project_id %>_log.html">Errors</a></li>            
+              </ul>
+            </div>
+
+            <br />
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="40%">Name</th>
+                <th width="20%">Mnemo</th>
+                <th width="20%">Indicator</th>
+                <th width="20%">Confidence</th>
+              </tr>
+% foreach my $item (sort keys %{$project_questions}) {
+              <tr>
+                <td><a href="/documentation/questions.html#<%= $item %>"><%= $questions->{$item}->{'name'} %></a></td>
+                <td><a href="/documentation/questions.html#<%= $item %>"><%= $item %></a></td>
+                <td><span class="label label-scale" style="background-color: <%= &comp_c($project_questions->{$item}) %>"><%= $project_questions->{$item} %></span></td>
+                <td><%= $project_questions_conf->{$item} %> metrics</td>
+              </tr>
+% }
+            </table>
+

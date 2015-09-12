@@ -1,0 +1,95 @@
+{
+    "name": "Project violations",
+    "children": [
+
+        {
+            "name": "AvoidReassigningParameters",
+            "cat": "CHA",
+            "value": "203"
+        }, 
+        {
+            "name": "ClassWithOnlyPrivateConstructorsShouldBeFinal",
+            "cat": "ANA",
+            "value": "418"
+        }, 
+        {
+            "name": "BooleanInstantiation",
+            "cat": "ANA",
+            "value": "5"
+        }, 
+        {
+            "name": "ConstructorCallsOverridableMethod",
+            "cat": "REL",
+            "value": "48"
+        }, 
+        {
+            "name": "ConfusingTernary",
+            "cat": "ANA",
+            "value": "1068"
+        }, 
+        {
+            "name": "ReturnFromFinallyBlock",
+            "cat": "REL",
+            "value": "2"
+        }, 
+        {
+            "name": "PositionLiteralsFirstInComparisons",
+            "cat": "REL",
+            "value": "109"
+        }, 
+        {
+            "name": "MissingBreakInSwitch",
+            "cat": "REL",
+            "value": "33"
+        }, 
+        {
+            "name": "PreserveStackTrace",
+            "cat": "ANA",
+            "value": "21"
+        }, 
+        {
+            "name": "GodClass",
+            "cat": "ANA",
+            "value": "627"
+        }, 
+        {
+            "name": "PositionLiteralsFirstInCaseInsensitiveComparisons",
+            "cat": "REL",
+            "value": "13"
+        }, 
+        {
+            "name": "AvoidDeeplyNestedIfStmts",
+            "cat": "ANA",
+            "value": "1797"
+        }, 
+        {
+            "name": "NonThreadSafeSingleton",
+            "cat": "REL",
+            "value": "286"
+        }, 
+        {
+            "name": "SE_BAD_FIELD_STORE",
+            "cat": "REL",
+            "value": "3"
+        }, 
+        {
+            "name": "OverrideBothEqualsAndHashcode",
+            "cat": "CHA",
+            "value": "8"
+        }, 
+        {
+            "name": "UnconditionalIfStatement",
+            "cat": "ANA",
+            "value": "3"
+        }, 
+        {
+            "name": "AvoidBranchingStatementAsLastInLoop",
+            "cat": "ANA",
+            "value": "28"
+        }, 
+        {
+            "name": "SwitchStmtsShouldHaveDefault",
+            "cat": "REL",
+            "value": "1729"
+        }    ]
+}

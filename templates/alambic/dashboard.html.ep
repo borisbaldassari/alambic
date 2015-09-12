@@ -1,0 +1,216 @@
+% layout 'polarsys';
+% title 'Dashboard';
+
+% sub comp_p($) {
+%   my $value = shift || 0;
+%   return $value * 20;
+% }
+            <h2>Project <%= $project_id %></h2>
+            <br />
+
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="<%= $project_id %>.html">Summary</a></li>
+                <li role="presentation"><a href="<%= $project_id %>_qm.html">QM</a></li>
+                <li role="presentation"><a href="<%= $project_id %>_attrs.html">Attributes</a></li>
+                <li role="presentation"><a href="<%= $project_id %>_questions.html">Questions</a></li>
+                <li role="presentation"><a href="<%= $project_id %>_metrics.html">Metrics</a></li>
+                <li role="presentation"><a href="<%= $project_id %>_practices.html">Practices</a></li>
+                <li role="presentation" class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Download <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li role="presentation"><a href="/data/<%= $project_id %>_attributes.json">Attributes JSON</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_attributes.csv">Attributes CSV</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_questions.json">Questions JSON</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_questions.csv">Questions CSV</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_metrics.json">Metrics JSON</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_metrics.csv">Metrics CSV</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_pmd.zip">PMD results XML</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_findbugs.zip">FindBugs results XML</a></li>
+                  </ul>
+                </li>
+                <li role="presentation"><a href="<%= $project_id %>_log.html">Errors</a></li>            
+              </ul>
+            </div>
+
+            <br />
+
+            <div class="row">
+              <div class="col-sm-6">
+                <dl class="dl-vertical">
+                  <dt>Description</dt>
+                  <dd></dd>
+                </dl>
+              </div>
+              <div class="col-sm-6">
+                <p class="text-right" style="font-weight: bold">Completeness: <span style="color: #DA7A08; font-size: 200%"><%= $project_attrs_conf->{'QM_QUALITY'} %></span></p><br />
+              </div>
+            </div>
+    
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="panel panel-primary"><div class="panel-heading">Rating for main quality attributes</div>
+                  <div class="panel-body">
+                    <dl>
+                      <dt>Completeness of metrics</dt>
+                      <dd>
+                        <div class="progress">
+% my ($conf_v, $conf_m) = split( ' / ', $project_attrs_conf->{'QM_QUALITY'} );
+% $conf_m = 1 if ($conf_m == 0);
+% my $conf_percent = int( $conf_v * 100 / $conf_m );
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $conf_v %>" aria-valuemin="0" aria-valuemax="<%= $conf_m %>"  style="background-color: <%= &comp_c( $conf_percent / 20 ) %>;width: <%= $conf_percent %>%;"><%= $project_attrs_conf->{'QM_QUALITY'} %></div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_ECOSYSTEM">Ecosystem</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_ECOSYSTEM'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_ECOSYSTEM'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_ECOSYSTEM'} ) %>; width: <%= &comp_p( $project_attrs->{'QM_ECOSYSTEM'} ) %>%;"><%= $project_attrs->{'QM_ECOSYSTEM'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_PROCESS">Process</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_PROCESS'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_PROCESS'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_PROCESS'} ) %>; width: <%= &comp_p( $project_attrs->{'QM_PROCESS'} ) %>%;"><%= $project_attrs->{'QM_PROCESS'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_PRODUCT">Product</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_PRODUCT'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="2.9" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_PRODUCT'} ) %>; width: <%= &comp_p( $project_attrs->{'QM_PRODUCT'} ) %>%;"><%= $project_attrs->{'QM_PRODUCT'} %> / 5</div>
+                        </div>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="panel panel-primary"><div class="panel-heading">PMI Summary</div>
+                  <ul class="list-group">
+                    <li class="list-group-item"><span class="fa fa-dashboard"></span> &nbsp; Eclipse Dashboard <a href="">Not defined</a></li>
+                    <li class="list-group-item"><span class="fa fa-globe"></span> &nbsp; Web <a href="<%= $project_pmi->{'website_url'}->[0]->{'url'} %>"><%= $project_pmi->{'website_url'}->[0]->{'url'} || "Not Defined" %></a></li>
+                    <li class="list-group-item"><span class="fa fa-globe"></span> &nbsp; Wiki <a href="<%= $project_pmi->{'wiki_url'}->[0]->{'url'} %>"><%= $project_pmi->{'wiki_url'}->[0]->{'url'} %></a></li>
+                    <li class="list-group-item"><span class="fa fa-download"></span> &nbsp; Downloads <a href="<%= $project_pmi->{'download_url'}->[0]->{'url'} %>"><%= $project_pmi->{'download_url'}->[0]->{'url'} %></a></li>
+                    <li class="list-group-item"><span class="fa fa-question-circle"></span> &nbsp; Documentation <a href="<%= $project_pmi->{'documentation_url'}->[0]->{'url'} %>"><%= $project_pmi->{'documentation_url'}->[0]->{'url'} %></a></li>
+                    <li class="list-group-item"><span class="fa fa-envelope"></span> &nbsp; Mailing lists [ <a href="<%= $project_pmi->{'dev_list'}->{'url'} %>">Developer ML</a> ] &nbsp; [ <a href="<%= $project_pmi->{'mailing_lists'}->[0]->{'url'} %>">User Forums</a> ]</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="panel panel-primary"><div class="panel-heading">Comments</div>
+                  <ul class="list-group">
+% foreach my $comment ( @{$project_comments->{'comments'}} ) {
+                    <li class="list-group-item">
+                      <div class="pull-right">
+	                <a href="/comments/e/<%= $project_comments->{'name'} %>/<%= $comment->{'id'} %>"><i class="fa fa-pencil"></i></a> &nbsp;
+                        <a href="/comments/d/<%= $project_comments->{'name'} %>/<%= $comment->{'id'} %>"><i class="fa fa-trash-o"></i></a>
+	              </div>
+                      <strong><%= $comment->{'author'} %></strong> on <strong><%= $comment->{'mnemo'} %></strong> (<%= $comment->{'date'} %>)<br /><%= $comment->{'text'} %></li>
+% }
+                    <li class="list-group-item">
+                      <a href="/comments/w/polarsys.capella">
+                        <div class="pull-right"><span class="fa fa-plus"></span></div>
+                        Add a comment? (Authentication required)</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="panel panel-primary"><div class="panel-heading">Ecosystem</div>
+                  <div class="panel-body">
+                    <dl>
+                      <dt><a href="/documentation/attributes.html#QM_ACTIVITY">Activity </a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_ACTIVITY'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_ACTIVITY'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_ACTIVITY'} ) %>;width: <%= &comp_p( $project_attrs->{'QM_ACTIVITY'} ) %>%;"><%= $project_attrs->{'QM_ACTIVITY'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_DIVERSITY">Diversity </a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_DIVERSITY'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="2.3" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_DIVERSITY'} ) %>; width: <%= &comp_p( $project_attrs->{'QM_DIVERSITY'} ) %>%;"><%= $project_attrs->{'QM_DIVERSITY'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_RESPONSIVENESS">Responsiveness</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_RESPONSIVENESS'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="5.0" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_RESPONSIVENESS'} ) %>;width: <%= &comp_p( $project_attrs->{'QM_RESPONSIVENESS'} ) %>%;"><%= $project_attrs->{'QM_RESPONSIVENESS'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_SUPPORT">Support</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_SUPPORT'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_SUPPORT'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_SUPPORT'} ) %>; width: <%= &comp_p( $project_attrs->{'QM_SUPPORT'} ) %>%;"><%= $project_attrs->{'QM_SUPPORT'} %> / 5</div>
+                        </div>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="panel panel-primary"><div class="panel-heading">Process</div>
+                  <div class="panel-body">
+                    <dl>
+                      <dt><a href="/documentation/attributes.html#QM_SCM">Configuration Management</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_SCM'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_SCM'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_SCM'} ) %>; width: <%= &comp_p( $project_attrs->{'QM_SCM'} ) %>%;"><%= $project_attrs->{'QM_SCM'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_ITS">Change Management</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_ITS'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="4.5" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_ITS'} ) %>; width: <%= &comp_p( $project_attrs->{'QM_ITS'} ) %>%;"><%= $project_attrs->{'QM_ITS'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_PLAN">Planning Management</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_PLAN'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_PLAN'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_PLAN'} ) %>; width: <%= &comp_p( $project_attrs->{'QM_PLAN'} ) %>%;"><%= $project_attrs->{'QM_PLAN'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_TST">Test Management</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_TST'} || 0 %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_TST'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_TST'} ) %>; width: <%= &comp_p( $project_attrs->{'QM_TST'} ) %>%;"><%= $project_attrs->{'QM_TST'} || 0 %> / 5</div>
+                        </div>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="panel panel-primary"><div class="panel-heading">Product</div>
+                  <div class="panel-body">
+                    <dl>
+                      <dt><a href="/documentation/attributes.html#QM_ANALYSABILITY">Analysability</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_ANA'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_ANA'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_ANA'} ) %>; width: <%= &comp_p( $project_attrs->{'QM_ANA'} ) %>%;"><%= $project_attrs->{'QM_ANA'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_CHANGEABILITY">Changeability</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_CHA'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_CHA'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_CHA'} ) %>;width: <%= &comp_p( $project_attrs->{'QM_CHA'} ) %>%;"><%= $project_attrs->{'QM_CHA'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_RELIABILITY">Reliability</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_REL'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_REL'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_REL'} ) %>;width: <%= &comp_p( $project_attrs->{'QM_REL'} ) %>%;"><%= $project_attrs->{'QM_REL'} %> / 5</div>
+                        </div>
+                      </dd>
+                      <dt><a href="/documentation/attributes.html#QM_REUSABILITY">Reusability</a> <span class="pull-right">( <%= $project_attrs_conf->{'QM_REU'} %> metrics )</span></dt>
+                      <dd>
+                        <div class="progress">
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{'QM_REU'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{'QM_REU'} ) %>;width: <%= &comp_p( $project_attrs->{'QM_REU'} ) %>%;"><%= $project_attrs->{'QM_REU'} %> / 5</div>
+                        </div>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
