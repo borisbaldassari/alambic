@@ -1,60 +1,67 @@
 % layout 'polarsys';
 % title 'Administration';
-<h1>Administration</h1>
-<br />
+            <h2>Administration</h2>
+            <br />
 
-<div class="row">
-  <div class="col-md-6">
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="/admin/summary">Summary</a></li>
+                <li role="presentation"><a href="/admin/comments">Comments</a></li>
+                <li role="presentation"><a href="/admin/projects">Projects</a></li>
+                <li role="presentation"><a href="/admin/users">Users</a></li>
+                <li role="presentation"><a href="/admin/log.html">Log</a></li>            
+              </ul>
+            </div>
 
-    <h2>Configuration</h2>
+            <div class="row">
+              <div class="col-md-6">
 
-    <p>Instance: <code><%= $conf->{title} %></code><br />
-      Description: <code><%= $conf->{desc} %></code></p>
+                <h2>Configuration</h2>
+                
+% my $conf = app->config;
+                <p>Instance: <code><%= $conf->{'instance_title'} %></code><br />
+                  Description: <br />
+                  <code><%== $conf->{'instance_desc'} %></code></p>
+                
+                <p>Folders: <br />
+                  Dir conf: <code><%= $conf->{'dir_conf'} %></code><br />
+                  Dir data: <code><%= $conf->{'dir_data'} %></code><br />
+                  Dir projects: <code><%= $conf->{'dir_projects'} %></code></p>
+                
+                <h2>Models</h2>
+                
+                <p><a href="/admin/read_files/models"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</p>
+% my %model = app->models->get_model_info;
+% my %attrs = app->models->get_attributes_info;
+% my %metrics = app->models->get_metrics_info;
+% my %questions = app->models->get_questions_info;
+                <p>Quality model: <code><%= $model{'name'} %></code><br />
+                  Version: <code><%= $model{'version'} %></code></p>
+                
+                <p>Attributes: <code><%= $attrs{'name'} %></code><br />
+                  Version: <code><%= $attrs{'version'} %></code></p>
+                
+                <p>Metrics: <code><%= $metrics{'name'} %></code><br />
+                  Version: <code><%= $metrics{'version'} %></code></p>
+                
+                <p>Questions: <code><%= $questions{'name'} %></code><br />
+                  Version: <code><%= $questions{'version'} %></code></p>
+                
+              </div>
+              <div class="col-md-6">
+            </ul>
 
-    <p>Folders: <br />
-      Dir conf: <code><%= $conf->{'dir_conf'} %></code><br />
-      Dir data: <code><%= $conf->{'dir_data'} %></code><br />
-      Dir projects: <code><%= $conf->{'dir_projects'} %></code></p>
+                <h2>Projects</h2>
 
-    <h2>Models</h2>
-
-    <p>Quality model: <code><%= $models->{'model'}->{'name'} %></code><br />
-      Version: <code><%= $models->{'model'}->{'version'} %></code></p>
-
-    <p>Attributes: <code><%= $models->{'attrs'}->{'name'} %></code><br />
-      Version: <code><%= $models->{'attrs'}->{'version'} %></code></p>
-
-    <p>Metrics: <code><%= $models->{'metrics'}->{'name'} %></code><br />
-      Version: <code><%= $models->{'metrics'}->{'version'} %></code></p>
-
-    <p>Questions: <code><%= $models->{'questions'}->{'name'} %></code><br />
-      Version: <code><%= $models->{'questions'}->{'version'} %></code></p>
-
-  </div>
-  <div class="col-md-6">
-
-    <h2>Projects</h2>
-% foreach my $project (sort keys %{$projects}) {
-    <h3><%= $project %></h3>
-    <p>
-  % if (exists($projects->{$project}->{'metrics'})) {
-      <code><%= $project %>_metrics.json</code> has <code><%= scalar keys %{$projects->{$project}->{'metrics'}} %></code> metrics defined.<br />
-  % }
-  % if (exists($projects->{$project}->{'attrs'})) {
-      <code><%= $project %>_attributes.json</code> has <code><%= scalar keys %{$projects->{$project}->{'attrs'}} %></code> attributes defined.<br />
-  % }
-  % if (exists($projects->{$project}->{'attrs_conf'})) {
-      <code><%= $project %>_attributes_confidence.json</code> has <code><%= scalar keys %{$projects->{$project}{'attrs_conf'}} %></code> attributes defined.<br />
-  % }
-  % if (exists($projects->{$project}->{'pmi'})) {
-      <code><%= $project %>_pmi.json</code> has <code><%= scalar keys %{$projects->{$project}->{'pmi'}} %></code> attributes defined.<br />
-  % }
-  % if (exists($projects->{$project}->{'comments'})) {
-      <code><%= $project %>_comments.json</code> has <code><%= scalar @{$projects->{$project}->{'comments'}->{'comments'}} %></code> comments defined.
-  % }
-    </p>
+                <p><a href="/admin/read_files/projects"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</p>
+% my %projects = app->projects->get_all_projects;
+                <ul class="list-group">
+% foreach my $project (sort keys %projects) {
+%     my $name = defined( $self->projects->get_project_name_by_id($project) ) ? 
+%       $self->projects->get_project_name_by_id($project) : $project;
+                  <li class="list-group-item"><a href="/admin/project/s/<%= $project %>"><%= $name %></a></li>
 % }
-
-  </div>
-</div>
+                  </div>
+              </div>
+            </div>
 

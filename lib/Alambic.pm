@@ -13,15 +13,16 @@ sub startup {
 
     $app->secrets(['Secrets of Alambic']);
 
-    $app->log->level('info');
+    $app->log->level('debug');
 
     # Documentation browser under "/perldoc"
     $app->plugin('PODRenderer');
     
     # Use Config plugin for basic configuration
     my $config = $app->plugin('Config');
+
     # And make it available as a helper.
-    $app->helper( config => sub { $config } );
+#    $app->helper( config => sub { $config } );
     
     # Use application logger
     $app->app->log->info('Comments application started.');
@@ -69,7 +70,21 @@ sub startup {
     $r->get('/contact.html')->to( template => 'alambic/contact');
     
     # Admin
-    $r->get('/admin/:id')->to('admin#welcome');
+    $r->get('/admin/summary')->to( 'admin#welcome' );
+    $r->get('/admin/projects')->to( 'admin#projects_main' );
+#    $r->get('/admin/project/#id')->to( 'admin#projects_id' );
+
+    # Admin - Utilities
+    $r->get('/admin/read_files/:files')->to( 'admin#read_files' );
+
+    # Admin - Comments
+    $r->get('/admin/comments')->to( 'comments#welcome' );
+    $r->get('/admin/comments/#project')->to( 'comments#welcome' );
+    $r->get('/admin/comments/#project/a')->to( 'comments#welcome', act => 'a' );
+    $r->get('/admin/comments/#project/:act/:com')->to( 'comments#welcome' );
+    $r->post('/admin/comments/#project/a')->to( 'comments#add_post' );
+    $r->post('/admin/comments/#project/e/:com')->to( 'comments#edit_post' );
+    $r->post('/admin/comments/#project/d/:com')->to( 'comments#delete_post' );
     
     # Data (quality_model.json, etc.).
     $r->get('/data/#id')->to('data#download');

@@ -1,6 +1,24 @@
 package Alambic::Model::Projects;
 use Scalar::Util 'weaken';
 
+require Exporter;
+our @ISA = qw(Exporter);
+our @EXPORT_OK = qw( read_all_files
+                     get_all_projects
+                     get_project_info
+                     get_project_name_by_id
+                     get_project_metrics
+                     get_project_indicators
+                     get_project_all_values
+                     get_project_attrs
+                     get_project_attrs_conf
+                     get_project_questions
+                     get_project_questions_conf
+                     get_project_violations
+                     get_project_pmi
+                     get_project_comments
+                     add_project_comment );  
+
 use Mojo::Base -base;
 
 use Mojo::JSON qw(decode_json encode_json);
@@ -10,7 +28,9 @@ use strict;
 use Data::Dumper;
 
 my %projects;
+
 my %projects_names;
+my %projects_info;
 
 my %attributes;
 my %questions;
@@ -40,6 +60,16 @@ sub read_all_files() {
     %attributes = $models->get_attributes();
     %questions = $models->get_questions();
     %metrics = $models->get_metrics();
+
+    # Read info for projects
+    $self->{app}->log->info( "[Model::Projects] Reading all projects info from [$dir_data]." );
+    my @projects_info = <$dir_data/*/*_info.json>;
+    foreach my $project (@projects_info) {
+        $project =~ m!.*[\/](.*?)_info.json!;
+        my $id = $1;
+        my $json_project = &read_project_data($project);
+        $projects_info{$id} = $json_project;
+    }
 
     # Read metrics for projects
     $self->{app}->log->info( "[Model::Projects] Reading all projects metrics from [$dir_data]." );
@@ -131,9 +161,10 @@ sub read_all_files() {
         $project =~ m!.*[\/](.*?)_comments.json!;
         my $id = $1;
         my $json_project = &read_project_data($project);
-        $projects{$id}{'comments'} = $json_project;
+        foreach my $comment (@{$json_project->{'comments'}}) {
+            $projects{$id}{'comments'}{$comment->{'id'}} = $comment;
+        }
     }
-
 }
 
 sub read_project_data($) {
@@ -151,43 +182,20 @@ sub read_project_data($) {
     return $metrics;
 }
 
+sub write_project_data($$) {
+    my $file = shift;
+    my $content = shift;
 
-# Recursive function to populate the quality model with information from 
-# external files (metrics/questions/attributes definition). 
-# Params:
-#   $qm a ref to an array of children
-#   $attrs a ref to hash of values for attributes
-#   $questions a ref to hash of values for questions
-#   $metrics a ref to hash of values for metrics
-#   $inds a ref to hash of indicators for metrics
-sub populate_qm($$$$$) {
-    my $qm = shift;
-    my $l_attrs = shift;
-    my $l_questions = shift;
-    my $l_metrics = shift;
-    my $l_inds = shift;
+    my $json_content = encode_json($content);
 
-    foreach my $child (@{$qm}) {
-        my $mnemo = $child->{"mnemo"};
-        
-        if ($child->{"type"} =~ m!attribute!) {
-            $child->{"name"} = $attributes{$mnemo}{"name"};
-            $child->{"ind"} = $l_attrs->{$mnemo};
-        } elsif ($child->{"type"} =~ m!concept!) {
-            $child->{"name"} = $questions{$mnemo}{"name"};
-            $child->{"ind"} = $l_questions->{$mnemo};
-        } elsif ($child->{"type"} =~ m!metric!) {
-            $child->{"name"} = $metrics{$mnemo}{"name"};
-            $child->{"value"} = eval sprintf("%.1f", $l_metrics->{$mnemo} || 0);
-            $child->{"ind"} = $l_inds->{$mnemo};
-        } else { 
-            print( "[Model::Projects] WARN: cannot recognize type " . $child->{"type"} . "." ); 
-        }
-        
-        if ( exists($child->{"children"}) ) {
-            &populate_qm($child->{"children"}, $l_attrs, $l_questions, $l_metrics, $l_inds);
-        }
-    }
+    do { 
+        local $/;
+        open my $fh, '>', $file or die "Could not open data file [$file].\n";
+        print $fh $json_content;
+        close $fh;
+    };
+
+    return 1;
 }
 
 
@@ -198,6 +206,13 @@ sub list_projects() {
 
 sub get_all_projects() {
     return %projects;
+}
+
+sub get_project_info($) {
+    my $self = shift;
+    my $project_id = shift;
+
+    return $projects_info{$project_id};
 }
 
 sub get_project_name_by_id($) {
@@ -279,8 +294,119 @@ sub get_project_comments($) {
     my $self = shift;
     my $project_id = shift;
 
-    return $projects{$project_id}{'comments'};
+    my @comments;
+    push( @comments, $projects{$project_id}{'comments'}{$_} ) for sort keys %{$projects{$project_id}{'comments'}};
+
+    return \@comments;
 }
 
+sub add_project_comment($$) {
+    my $self = shift;
+    my $project_id = shift;    
+    my $comment = shift;    
+
+    my $comment_id = $comment->{'id'};
+    $projects{$project_id}{'comments'}{ $comment_id } = $comment;
+    my @comments = map { $projects{$project_id}{'comments'}{$_} } keys $projects{$project_id}{'comments'};
+
+    # Create headers for json file
+    my $raw = {
+        "name" => "$project_id",
+        "version" => "Last updated on " . localtime(),
+        "comments" => \@comments,
+    };
+
+    # Write updated comment file.
+    my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_comments.json';
+    write_project_data( $file_to, $raw);
+
+    return 1;
+}
+
+sub edit_project_comment($$) {
+    my $self = shift;
+    my $project_id = shift;    
+    my $comment = shift;    
+
+    my $comment_id = $comment->{'id'};
+    $projects{$project_id}{'comments'}{ $comment_id } = $comment;
+    my @comments = map { $projects{$project_id}{'comments'}{$_} } keys $projects{$project_id}{'comments'};
+
+
+    # Create headers for json file
+    my $raw = {
+        "name" => "$project_id",
+        "version" => "Last updated on " . localtime(),
+        "comments" => \@comments,
+    };
+
+    # Write updated comment file.
+    my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_comments.json';
+    write_project_data( $file_to, $raw);
+
+    return 1;
+}
+
+sub delete_project_comment($$) {
+    my $self = shift;
+    my $project_id = shift;    
+    my $comment_id = shift;    
+    
+    delete $projects{$project_id}{'comments'}{$comment_id};
+    my @comments = map { $projects{$project_id}{'comments'}{$_} } keys $projects{$project_id}{'comments'};
+
+    # Create headers for json file
+    my $raw = {
+        "name" => "$project_id",
+        "version" => "Last updated on " . localtime(),
+        "comments" => \@comments,
+    };
+
+    # Write updated comment file.
+    my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_comments.json';
+    write_project_data( $file_to, $raw);
+
+    return 1;
+}
+
+
+
+# Recursive function to populate the quality model with information from 
+# external files (metrics/questions/attributes definition). 
+# Params:
+#   $qm a ref to an array of children
+#   $attrs a ref to hash of values for attributes
+#   $questions a ref to hash of values for questions
+#   $metrics a ref to hash of values for metrics
+#   $inds a ref to hash of indicators for metrics
+sub populate_qm($$$$$) {
+    my $qm = shift;
+    my $l_attrs = shift;
+    my $l_questions = shift;
+    my $l_metrics = shift;
+    my $l_inds = shift;
+
+    foreach my $child (@{$qm}) {
+        my $mnemo = $child->{"mnemo"};
+        
+        if ($child->{"type"} =~ m!attribute!) {
+            $child->{"name"} = $attributes{$mnemo}{"name"};
+            $child->{"ind"} = $l_attrs->{$mnemo};
+        } elsif ($child->{"type"} =~ m!concept!) {
+            $child->{"name"} = $questions{$mnemo}{"name"};
+            $child->{"ind"} = $l_questions->{$mnemo};
+        } elsif ($child->{"type"} =~ m!metric!) {
+            $child->{"name"} = $metrics{$mnemo}{"name"};
+            $child->{"value"} = eval sprintf("%.1f", $l_metrics->{$mnemo} || 0);
+            $child->{"ind"} = $l_inds->{$mnemo};
+        } else { 
+            print( "[Model::Projects] WARN: cannot recognize type " . $child->{"type"} . "." ); 
+        }
+        
+        if ( exists($child->{"children"}) ) {
+            &populate_qm($child->{"children"}, $l_attrs, $l_questions, $l_metrics, $l_inds);
+        }
+    }
+}
 
 1;

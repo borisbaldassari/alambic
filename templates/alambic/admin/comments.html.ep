@@ -1,0 +1,121 @@
+% layout 'polarsys';
+% title 'Administration: Comments';
+
+            <h2>Comments summary</h2>
+            <br />
+            
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"><a href="/admin/summary">Summary</a></li>
+                <li role="presentation" class="active"><a href="/admin/comments">Comments</a></li>
+                <li role="presentation"><a href="/admin/projects">Projects</a></li>
+                <li role="presentation"><a href="/admin/users">Users</a></li>
+                <li role="presentation"><a href="/admin/log.html">Log</a></li>            
+              </ul>
+            </div>
+            <br />
+
+            <p>These pages allow teams to add custom comments to the projects, in order for users to better understand how the project is organised. Please note that you must be <a href="/comments/login">logged in</a> to write comments.</p>
+            
+            <p>&nbsp;</p>
+
+            <div class="row">
+              <div class="col-lg-4">
+                <table class="table table-striped">
+                  <tr>
+                    <th>Project</th>
+                    <th colspan="3">Actions</th>
+                  </tr>
+% foreach my $project (sort keys %{$comments}) {
+                  <tr>
+                    <td><%= $project %></td>
+                    <td width="1cm"><a href="/admin/comments/<%= $project %>"><i class="fa fa-eye"></i></a></td>
+                    <td width="1cm"><span class="badge"><%= scalar @{$comments->{$project}} %></span></td>
+%#   if ( scalar( grep(/^${project}$/, @reg_projects) ) != 0 ) {
+                    <td width="1cm"><a href="/admin/comments/<%= $project %>/a/"><i class="fa fa-plus"></i></a></td>
+%#   }
+                  </tr>
+% }
+                </table>
+              </div>
+              <div class="col-lg-1">
+              </div>
+              <div class="col-lg-6">
+% ## Displaying all comments for project
+% if ($project_id =~ m!^\S+$! && $action =~ m!^s$!) {
+                <table class="table table-striped">
+                  <tr>
+                    <th>Comments for project <%= $project_id %></th>
+                    <th colspan="2">Actions</th>
+                  </tr>
+%   foreach my $comment (@{$comments->{$project_id}}) {
+                  <tr>
+                    <td>Comment by <code><%= $comment->{'author'} %></code> on <code><%= $comment->{'mnemo'} %></code> (<small><%= $comment->{'date'} %></small>)<br />
+                      <%= $comment->{'text'} %></td>
+                    <td width="1cm"><a href="/admin/comments/<%= $project_id %>/e/<%= $comment->{'id'} %>"><i class="fa fa-pencil"></i></a></td>
+	            <td width="1cm"><a href="/admin/comments/<%= $project_id %>/d/<%= $comment->{'id'} %>"><i class="fa fa-trash-o"></i></a></td>
+                  </tr>
+%   }
+                </table>
+% ## Adding comment form
+% } elsif ($project_id =~ m!^\S+$! && $action =~ m!^a$!) {
+%   # Get node list
+%   my @nodes = app->models->get_model_nodes();
+                <p><b>Adding comment on <%= $project_id %>.</b></p><br />
+                <form action="/admin/comments/<%= $project_id %>/a/<%= $action_comment->{'id'} %>" method="POST">
+                  <p>Author: (<span style="color: red">*</span>) &nbsp; <input name="author" type="text"></input></p>
+                  <p>
+                    <strong>Node mnemo</strong>: (<span style="color: red">*</span>) &nbsp; 
+                    <select name="mnemo">
+%   my $default_node = "QM_QUALITY";
+%   foreach my $node (@nodes) {
+%     my $is_selected = ($node =~ m!${default_node}!) ? " selected=\"selected\"" : "";
+                      <option<%= $is_selected %>><%= $node %></option>
+%   }
+                    </select>
+                  </p>
+                  <p>Text: (<span style="color: red">*</span>)</p>
+                  <p><textarea name="text" cols="40" rows="6"></textarea></p>
+                  <br />
+                  <input type="submit" value="Add comment"></input>
+                  <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
+                </form>
+% ## Displaying edit form
+% } elsif ($project_id =~ m!^\S+$! && $action =~ m!^e$!) {
+%   # Get node list
+%   my @nodes = app->models->get_model_nodes();
+                <p><b>Editing comment <%= $action_comment->{'id'} %> on <%= $project_id %>.</b></p><br />
+                <form action="/admin/comments/<%= $project_id %>/e/<%= $action_comment->{'id'} %>" method="POST">
+                  <p><strong>Author</strong>: (<span style="color: red">*</span>) &nbsp; <input name="author" type="text" value="<%= $action_comment->{'author'} %>"></input></p>
+                  <p><strong>Node mnemo</strong>: (<span style="color: red">*</span>) &nbsp; 
+                    <select name="mnemo">
+%   my $default_node = $action_comment->{'mnemo'};
+%   foreach my $node (@nodes) {
+%     my $is_selected = ($node =~ m!${default_node}!) ? " selected=\"selected\"" : "";
+                      <option<%= $is_selected %>><%= $node %></option>
+%   }
+                    </select></p>
+                  <p><strong>Text</strong>: simple text, no HTML allowed (<span style="color: red">*</span>)</p>
+                  <p><textarea name="text" cols="40" rows="6"><%= $action_comment->{'text'} %></textarea></p>
+                  <br />
+                  <input type="submit" value="Edit comment"></input>
+                  <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
+                </form>
+% ## Displaying delete confirmation
+% } elsif ($project_id =~ m!^\S+$! && $action =~ m!^d$!) {
+                <p><b>Deleting comment <%= $action_comment->{'id'} %> on <%= $project_id %>.</b></p><br />
+                <form action="/admin/comments/<%= $project_id %>/d/<%= $action_comment->{'id'} %>" method="POST">
+                  <p>Author: (<span style="color: red">*</span>) &nbsp; <input name="author" type="text" value="<%= $action_comment->{'author'} %>" disabled></input></p>
+                  <p><strong>Node mnemo</strong>: (<span style="color: red">*</span>) &nbsp; <input name="mnemo" type="text" value="<%= $action_comment->{'mnemo'} %>" disabled></input></p>
+                  <p>Text: (<span style="color: red">*</span>)</p>
+                  <p><textarea name="text" cols="40" rows="6" disabled><%= $action_comment->{'text'} %></textarea></p>
+                  <br />
+                  <input type="submit" value="Delete comment"></input>
+                  <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
+                </form>
+% }
+              </div>
+              <div class="col-lg-1">
+              </div>
+            </div>
+

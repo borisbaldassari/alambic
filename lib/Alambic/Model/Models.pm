@@ -1,11 +1,20 @@
 package Alambic::Model::Models;
+
+use warnings;
+use strict;
+
 use Scalar::Util 'weaken';
+use List::MoreUtils qw(uniq);
+use Mojo::JSON qw( decode_json encode_json );
+use Data::Dumper;
+
 
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( read_all_files
                  get_model 
                  get_model_info
+                 get_model_nodes 
                  get_attributes 
                  get_attributes_info 
                  get_attributes_full
@@ -19,11 +28,6 @@ our @EXPORT_OK = qw( read_all_files
                  get_rules 
                  get_rules_sources );  
 
-use Mojo::JSON qw(decode_json encode_json);
-
-use warnings;
-use strict;
-use Data::Dumper;
 
 my %metrics;
 my %metrics_ds;
@@ -265,6 +269,29 @@ sub get_model() {
 
 sub get_model_info() {
     return %model_info;
+}
+
+sub get_model_nodes() {
+    my @nodes = &find_nodes($model{'children'});
+    return sort @nodes;
+}
+
+
+# Utility to find all node mnemos in the qm tree
+sub find_nodes($) {
+    my $nodes = shift;
+
+    my @nodes_ret;
+    foreach my $node (@{$nodes}) {
+	my $mnemo = $node->{'mnemo'};
+	push(@nodes_ret, $mnemo);
+	if (exists($node->{'children'})) {
+	    my @nodes_new = &find_nodes($node->{'children'});
+	    push(@nodes_ret, @{nodes_new});
+	}
+    }
+    
+    return uniq(@nodes_ret);
 }
 
 sub get_metrics() {

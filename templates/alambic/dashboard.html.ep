@@ -98,11 +98,11 @@
               <div class="col-sm-4">
                 <div class="panel panel-primary"><div class="panel-heading">Comments</div>
                   <ul class="list-group">
-% foreach my $comment ( @{$project_comments->{'comments'}} ) {
+% foreach my $comment ( @{$project_comments} ) {
                     <li class="list-group-item">
                       <div class="pull-right">
-	                <a href="/comments/e/<%= $project_comments->{'name'} %>/<%= $comment->{'id'} %>"><i class="fa fa-pencil"></i></a> &nbsp;
-                        <a href="/comments/d/<%= $project_comments->{'name'} %>/<%= $comment->{'id'} %>"><i class="fa fa-trash-o"></i></a>
+	                <a href="/admin/comments/<%= $project_id %>/e/<%= $comment->{'id'} %>"><i class="fa fa-pencil"></i></a> &nbsp;
+                        <a href="/admin/comments/<%= $project_id %>/d/<%= $comment->{'id'} %>"><i class="fa fa-trash-o"></i></a>
 	              </div>
                       <strong><%= $comment->{'author'} %></strong> on <strong><%= $comment->{'mnemo'} %></strong> (<%= $comment->{'date'} %>)<br /><%= $comment->{'text'} %></li>
 % }
