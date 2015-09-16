@@ -4,6 +4,9 @@ use Mojo::Base 'Mojolicious';
 
 use Alambic::Model::Models;
 use Alambic::Model::Projects;
+use Alambic::Model::Users;
+
+use Mojolicious::Plugin::Authentication;
 
 use Data::Dumper;
 
@@ -17,23 +20,19 @@ sub startup {
 
     # Documentation browser under "/perldoc"
     $app->plugin('PODRenderer');
-    
+
     # Use Config plugin for basic configuration
     my $config = $app->plugin('Config');
-
-    # And make it available as a helper.
-#    $app->helper( config => sub { $config } );
     
     # Use application logger
     $app->app->log->info('Comments application started.');
-        
+
     # Helpers definition
-    $app->helper( 
-        comp_c => sub { 
-            my $app = shift;
-            my $value = shift || 0;
-            return $config->{"colours"}->[int($value)];
-        });
+
+    # Users holds information about the users and authentication mecanism.
+    $app->helper( users => sub { state $projects = Alambic::Model::Users->new($app) } );
+    # Initialise the mode (read files).
+    $app->users->read_all_files();
 
     # Models holds information about the model: attributes, metrics, model hierarchy, etc.
     $app->helper( models => sub { state $models = Alambic::Model::Models->new($app) } );
@@ -45,6 +44,15 @@ sub startup {
     # Initialise the mode (read files).
     $app->projects->read_all_files();
 
+    # Used to get the right colour on scales.
+    $app->helper( 
+        comp_c => sub { 
+            my $app = shift;
+            my $value = shift || 0;
+            return $config->{"colours"}->[int($value)];
+        });
+
+    # Used to get project name from id
     $app->helper( 
         get_project_name_by_id => sub { 
             my $app = shift;
@@ -68,10 +76,28 @@ sub startup {
     # Simple pages
     $r->get('/about.html')->to( template => 'alambic/about');
     $r->get('/contact.html')->to( template => 'alambic/contact');
+
+    # Data (quality_model.json, etc.).
+    $r->get('/data/#id')->to('data#download');
     
-    # Admin
+    # Documentation
+    $r->get('/documentation/#id')->to('documentation#welcome');
+    
+    # Comments
+    $r->get('/comments/')->to('comments#welcome');
+    
+    # Dashboards
+    $r->get('/projects/#id')->to('projects#display');
+    
+    # Login form
+    $r->get('/login')->to('alambic#login');
+    $r->post('/login')->to('alambic#login_post');
+    $r->get('/logout')->to('alambic#logout');
+
     $r->get('/admin/summary')->to( 'admin#welcome' );
+
     $r->get('/admin/projects')->to( 'admin#projects_main' );
+    $r->get('/admin/users')->to( 'admin#users_main' );
 #    $r->get('/admin/project/#id')->to( 'admin#projects_id' );
 
     # Admin - Utilities
@@ -85,19 +111,7 @@ sub startup {
     $r->post('/admin/comments/#project/a')->to( 'comments#add_post' );
     $r->post('/admin/comments/#project/e/:com')->to( 'comments#edit_post' );
     $r->post('/admin/comments/#project/d/:com')->to( 'comments#delete_post' );
-    
-    # Data (quality_model.json, etc.).
-    $r->get('/data/#id')->to('data#download');
-    
-    # Documentation
-    $r->get('/documentation/#id')->to('documentation#welcome');
-    
-    # Comments
-    $r->get('/comments/')->to('alambic#welcome');
-    
-    # Dashboards
-    $r->get('/projects/#id')->to('projects#display');
-    
+        
 }
 
 1;

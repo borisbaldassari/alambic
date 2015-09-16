@@ -42,17 +42,26 @@
         <div class="navbar-header">
           <!-- div class="navbar-inner" -->
           <!-- div class="container" -->
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="index.html">PolarSys Dashboard &mdash; v1.3 <span style="font-weight: bold">&beta;</span></a>
-          </div>
-          <!-- /div -->
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">PolarSys Dashboard &mdash; v1.3 <span style="font-weight: bold">&beta;</span></a>
         </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+% my $user = session('session_user');
+% if (defined($user)) { 
+          <li><%= $user %> &nbsp; <i class="fa fa-user fa-fw fa-lg"></i></li>
+<li><a href="/logout"><i class="fa fa-sign-out fa-fw fa-lg"></i></a></li>
+% } else {
+          <li><a href="/login"><i class="fa fa-user fa-fw fa-lg"></i></a></li>
+% }
+        </ul>
+      
+
         <!-- /.navbar-header -->
         <div class="navbar-default sidebar" role="navigation">
           <div class="sidebar-nav navbar-collapse">
@@ -78,8 +87,11 @@
                   <li><a href="/projects/<%= $project %>.html"><%= $name %></a></li>
 % }
               </ul></li>
-              <li class="active"><a href="/contact.html"><i class="fa fa-comment-o fa-fw"></i> Contact</a></li></ul>
-        </div></div>
+              <li class="active"><a href="/admin/summary"><i class="fa fa-wrench fa-fw"></i> Admin panel</a></li>
+              <li class="active"><a href="/contact.html"><i class="fa fa-comment-o fa-fw"></i> Contact</a></li>
+            </ul>
+          </div>
+        </div>
       </nav>
       
       <div id="page-wrapper">

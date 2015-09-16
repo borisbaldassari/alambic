@@ -10,9 +10,9 @@ require "$FindBin::Bin/../script/alambic";
 my $t = Test::Mojo->new('Alambic');
 
 # Check that we have the right home page for comments
-$t->get_ok('/admin/comments')
+$t->get_ok('/admin/comments', "Get admin comment.")
         ->status_is(200)
-        ->content_like(qr!These pages allow teams to add custom comments to the projects!i)
+        ->content_like(qr!These pages allow teams to add custom comments to the projects!i, "Get the first paragraph.")
         ->content_like(qr!<li><a href="/projects/polarsys.capella.html">Capella</a></li>!i);
 
 # Check that the comments are correctly displayed for a single project

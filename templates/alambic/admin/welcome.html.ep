@@ -1,8 +1,20 @@
 % layout 'polarsys';
 % title 'Administration';
+
             <h2>Administration</h2>
             <br />
 
+% my $msg = stash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%= $msg %>
+                </div>
+              </div>
+            </div>
+% }
             <div class="tabbable">
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="/admin/summary">Summary</a></li>
@@ -35,6 +47,7 @@
 % my %attrs = app->models->get_attributes_info;
 % my %metrics = app->models->get_metrics_info;
 % my %questions = app->models->get_questions_info;
+
                 <p>Quality model: <code><%= $model{'name'} %></code><br />
                   Version: <code><%= $model{'version'} %></code></p>
                 

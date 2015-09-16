@@ -9,6 +9,7 @@ sub welcome {
     
     # 'project' is the specific project we want the comments for.
     my $project_id = $self->param( 'project' ) || '';
+
     # 'action' is either a (add), s (show), e (edit) or d (delete).
     my $project_action = $self->param( 'act' ) || 's';
     my $action_id = $self->param( 'com' ) || 0;
@@ -70,6 +71,16 @@ sub edit_post($) {
     my $self = shift;
 
     my $project_id = $self->param( 'project' );
+
+    print "[Controller::Comments] edit_post user $self->session->{session_user} project $project_id.\n";
+
+    # Check that the current user has the access rights for this
+    $self->redirect_to( '/login' ) unless (
+        exists( $self->session->{session_user} ) &&
+        $self->users->is_user_authenticated($self->session->{session_user}, '/admin/comments/' ) &&
+        $self->users->has_user_project($self->session->{session_user}, $project_id) 
+        );
+    
     my $date = localtime();
 
     my $comment = {
