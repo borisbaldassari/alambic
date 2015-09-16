@@ -1,0 +1,10 @@
+{
+    "id": "polarsys.capella",
+    "name": "Capella",
+    "sources": {
+        "git": "",
+        "pmi": "",
+        "mls_usr": "",
+        "mls_dev": ""
+    }
+}

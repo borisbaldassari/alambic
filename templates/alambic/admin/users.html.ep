@@ -1,0 +1,41 @@
+% layout 'polarsys';
+% title 'Administration: Users';
+
+            <h2>Administration: Users</h2>
+            <br />
+
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"><a href="/admin/summary">Summary</a></li>
+                <li role="presentation"><a href="/admin/comments">Comments</a></li>
+                <li role="presentation"><a href="/admin/projects">Projects</a></li>
+                <li role="presentation" class="active"><a href="/admin/users">Users</a></li>
+                <li role="presentation"><a href="/admin/log">Log</a></li>            
+              </ul>
+            </div>
+            <br />
+
+            <p>Users defined on the system:</p>
+
+            <div class="row">
+              <div class="col-md-6">
+% my $users = app->users->get_all_users();
+% foreach my $user (sort keys %{$users}) {
+                <b><%= $users->{$user}{'name'}  %></b> ( <%= $user %> )<br />
+                <b>Rights</b> <br />
+                <ul>
+                  <li>Alambic rights: <%= $users->{$user}{'alambic'} || 'none' %></li>
+%     foreach my $project (keys %{$users->{$user}{'projects'}}) { 
+                  <li>Project <%= $project %>: <%= $users->{$user}{'projects'}{$project} %></li>
+%     }
+                  </ul>
+                </p>
+% }
+              </div>
+              <div class="col-md-6">
+                <p>Users are associated to a (full) name, a password, and one or more realm permissions. There are two types of access rights: for the Alambic dashboard itself (access to the admin section) and for the projects (comments, analysis, etc.).</p>
+                <p>The alambic setting in the user configuration file .</p>
+              </div>
+            </div>
+
+

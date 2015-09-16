@@ -1,0 +1,27 @@
+{
+  "name": "Alambic users definition",
+  "version": "1.0.1",
+  "children": {
+      "boris.baldassari": {
+          "name": "Boris Baldassari",
+          "passwd": "boris123",
+          "alambic": [
+              "/admin",
+              "/admin/read_files",
+              "/admin/projects",
+              "/admin/users"
+          ],
+          "projects": {
+              "polarsys.capella": "admin",
+              "tools.cdt": "admin"
+          }
+      },
+      "user.1": {
+          "name": "Anonymous",
+          "projects": {
+              "polarsys.capella": "admin",
+              "tools.cdt": "admin"
+          }
+      }
+  }
+}
