@@ -18,6 +18,7 @@
             <div class="tabbable">
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="/admin/summary">Summary</a></li>
+                <li role="presentation"><a href="/admin/ds">Data Sources</a></li>
                 <li role="presentation"><a href="/admin/repo">Repo</a></li>
                 <li role="presentation"><a href="/admin/comments">Comments</a></li>
                 <li role="presentation"><a href="/admin/projects">Projects</a></li>

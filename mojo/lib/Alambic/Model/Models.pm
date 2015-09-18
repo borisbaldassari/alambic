@@ -60,7 +60,6 @@ sub new {
 sub read_all_files() { 
     my $self = shift;
 
-    $self->{app}->log->debug("[Model::Models] TEST.");
     my $config = $self->{app}->config;
 
     # Read quality model definition

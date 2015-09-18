@@ -10,7 +10,8 @@
               "/admin/read_files",
               "/admin/projects",
               "/admin/users",
-              "/admin/repo"
+              "/admin/repo",
+              "/admin/ds"
           ],
           "projects": {
               "polarsys.capella": "admin",

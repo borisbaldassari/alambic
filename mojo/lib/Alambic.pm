@@ -6,6 +6,7 @@ use Alambic::Model::Models;
 use Alambic::Model::Projects;
 use Alambic::Model::Users;
 use Alambic::Model::Repo;
+use Alambic::Model::DataSources;
 
 use Data::Dumper;
 
@@ -32,6 +33,11 @@ sub startup {
     $app->helper( repo => sub { state $repo = Alambic::Model::Repo->new($app) } );
     # Initialise repository object.
     $app->repo->read_status();
+
+    # ds holds information about the Data Sources 
+    $app->helper( ds => sub { state $ds = Alambic::Model::DataSources->new($app) } );
+    # Initialise the data sources (read files).
+    $app->ds->read_all_files();
 
     # Users holds information about the users and authentication mecanism.
     $app->helper( users => sub { state $projects = Alambic::Model::Users->new($app) } );
@@ -105,13 +111,15 @@ sub startup {
     $r->get('/logout')->to('alambic#logout');
 
     $r->get('/admin/summary')->to( 'admin#welcome' );
-
     $r->get('/admin/projects')->to( 'admin#projects_main' );
     $r->get('/admin/users')->to( 'admin#users_main' );
 #    $r->get('/admin/project/#id')->to( 'admin#projects_id' );
 
     # Admin - Utilities
     $r->get('/admin/read_files/:files')->to( 'admin#read_files' );
+
+    # Admin - Data sources
+    $r->get('/admin/ds')->to( 'data_sources#welcome' );
 
     # Admin - Comments
     $r->get('/admin/comments')->to( 'comments#welcome' );

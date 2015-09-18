@@ -1,0 +1,14 @@
+{
+    "name": "Data Sources empty file",
+    "version": "1.0.1",
+    "children": {
+        "copy_metrics": {
+            "name": "Example plugin",
+            "desc": "Creates a long desc.",
+            "module" : "Alambic::Plugins::DataSources::CopyMetrics.pm",
+            "input": {
+                "git_repo": "Git repository"
+            }
+        }
+    }
+}

@@ -434,4 +434,14 @@ sub populate_qm($$$$$) {
     }
 }
 
+
+sub analyse_project() {
+    
+}
+
+sub retrieve_project_data() {
+    
+}
+
+
 1;
