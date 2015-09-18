@@ -23,8 +23,8 @@ sub display {
             project_id => $project_id,
             );    
         
-        # Render template "alambic/dashboard_qm.html.ep"
-        $self->render(template => 'alambic/dashboard_qm');   
+        # Render template "alambic/dashboard/qm.html.ep"
+        $self->render(template => 'alambic/dashboard/qm');   
 
     } elsif ($page_id =~ m!^attrs$!) {
         
@@ -38,8 +38,8 @@ sub display {
             project_attrs_conf => $self->projects->get_project_attrs_conf($project_id),
             );    
         
-        # Render template "alambic/dashboard_qm.html.ep"
-        $self->render(template => 'alambic/dashboard_attrs');
+        # Render template "alambic/dashboard/attributes.html.ep"
+        $self->render(template => 'alambic/dashboard/attributes');
         
     } elsif ($page_id =~ m!^questions$!) {
         
@@ -53,8 +53,8 @@ sub display {
             project_questions_conf => $self->projects->get_project_questions_conf($project_id),
             );    
         
-        # Render template "alambic/dashboard_questions.html.ep"
-        $self->render(template => 'alambic/dashboard_questions');
+        # Render template "alambic/dashboard/questions.html.ep"
+        $self->render(template => 'alambic/dashboard/questions');
         
     } elsif ($page_id =~ m!^metrics$!) {
         
@@ -68,8 +68,8 @@ sub display {
             project_inds => $self->projects->get_project_indicators($project_id),
             );    
         
-        # Render template "alambic/dashboard_metrics.html.ep"
-        $self->render(template => 'alambic/dashboard_metrics');
+        # Render template "alambic/dashboard/metrics.html.ep"
+        $self->render(template => 'alambic/dashboard/metrics');
         
     } elsif ($page_id =~ m!^practices$!) {
         
@@ -82,8 +82,8 @@ sub display {
             project_violations => $self->projects->get_project_violations($project_id),
             );    
         
-        # Render template "alambic/dashboard_practices.html.ep"
-        $self->render(template => 'alambic/dashboard_practices');
+        # Render template "alambic/dashboard/practices.html.ep"
+        $self->render(template => 'alambic/dashboard/practices');
         
     } else {
 
@@ -97,7 +97,7 @@ sub display {
             );    
         
         # Render template "alambic/dashboard.html.ep"
-        $self->render(template => 'alambic/dashboard');
+        $self->render(template => 'alambic/dashboard/dashboard');
 
     }
 

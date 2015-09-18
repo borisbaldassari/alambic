@@ -1,13 +1,17 @@
 % layout 'polarsys';
 % title 'Login';
 
-<p>This page allows users to login to their project's account to add comments.</p>
+            <h2>Login</h2>
+            <br />
 
-<form action="login" method="POST">
-  <p>Project: (<span style="color: red">*</span>)</p>
-  <p><input name="username" type="text" /></p>
-  <p>Password: (<span style="color: red">*</span>)</p>
-  <p><input name="password" type="password" /></p>
-  <br /><br />
-  <input type="submit" value="Login"></input>
-</form>
+            <p>Some parts of this site are protected. Please login to access them.</p>
+            <br />
+
+            <form action="login" method="POST">
+              <p><b>User id</b> (<span style="color: red">*</span>)</p>
+              <p><input name="username" type="text" /></p>
+              <p><b>Password</b> (<span style="color: red">*</span>)</p>
+              <p><input name="password" type="password" /></p>
+              <br /><br />
+              <input type="submit" value="Login"></input>
+            </form>

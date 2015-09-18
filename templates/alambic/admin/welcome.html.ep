@@ -42,7 +42,9 @@
                 
                 <h2>Models</h2>
                 
+%     if ( defined( session->{'session_user'} ) && users->is_user_authenticated(session->{session_user}, '/admin') ) {
                 <p><a href="/admin/read_files/models"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</p>
+% }
 % my %model = app->models->get_model_info;
 % my %attrs = app->models->get_attributes_info;
 % my %metrics = app->models->get_metrics_info;
@@ -66,7 +68,9 @@
 
                 <h2>Projects</h2>
 
+%     if ( defined( session->{'session_user'} ) && users->is_user_authenticated(session->{session_user}, '/admin') ) {
                 <p><a href="/admin/read_files/projects"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</p>
+% }
 % my %projects = app->projects->get_all_projects;
                 <ul class="list-group">
 % foreach my $project (sort keys %projects) {
