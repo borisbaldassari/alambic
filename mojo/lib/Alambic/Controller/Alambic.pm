@@ -23,9 +23,8 @@ sub login_post() {
 
     $self->users->validate_user($username, $password);
     $self->session( 'session_user' => $username );
-    my $user = $self->current_user();
 
-    $self->render( 'alambic/admin/welcome', msg => "You have been successfully authenticatedas user $user.");
+    $self->render( 'alambic/admin/welcome', msg => "You have been successfully authenticated as user $username.");
 }
 
 sub logout() {

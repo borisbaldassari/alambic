@@ -5,16 +5,26 @@ use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 
 
-sub welcome {
+sub install {
     my $self = shift;
+
+    # Check that the connected user has the access rights for this
+    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
+        $self->redirect_to( '/login' );
+    }
 
     # Render template "alambic/repo/install.html.ep"
     $self->render(template => 'alambic/repo/install');   
 
 }
 
-sub welcome_post {
+sub install_post {
     my $self = shift;
+
+    # Check that the connected user has the access rights for this
+    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
+        $self->redirect_to( '/login' );
+    }
 
     my $git_repo = $self->param( 'git_repo' );
 
@@ -29,8 +39,27 @@ sub welcome_post {
 sub manage() {
     my $self = shift;
 
+    # Check that the connected user has the access rights for this
+    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
+        $self->redirect_to( '/login' );
+    }
+
     # Render template "alambic/repo/manage.html.ep"
     $self->render( template => 'alambic/repo/manage' );
+}
+
+sub push() {
+    my $self = shift;
+
+    # Check that the connected user has the access rights for this
+    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
+        $self->redirect_to( '/login' );
+    }
+
+    $self->repo->push();
+
+    # Render template "alambic/repo/manage.html.ep"
+    $self->redirect_to( '/admin/repo' );
 }
 
 1;

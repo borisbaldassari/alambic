@@ -30,6 +30,8 @@ sub startup {
 
     # Repo holds information about the git repository used for this instance.
     $app->helper( repo => sub { state $repo = Alambic::Model::Repo->new($app) } );
+    # Initialise repository object.
+    $app->repo->read_status();
 
     # Users holds information about the users and authentication mecanism.
     $app->helper( users => sub { state $projects = Alambic::Model::Users->new($app) } );
@@ -76,8 +78,10 @@ sub startup {
     $r->get('/')->to('alambic#welcome');
     
     # Install route (SCM)
-    $r->get('/install')->to('repo#welcome');
-    $r->post('/install')->to('repo#welcome_post');
+    $r->get('/admin/repo/manage')->to('repo#manage');
+    $r->get('/admin/repo/install')->to('repo#install');
+    $r->post('/admin/repo/install')->to('repo#install_post');
+    $r->get('/admin/repo/push')->to('repo#push');
     
     # Simple pages
     $r->get('/about.html')->to( template => 'alambic/about');

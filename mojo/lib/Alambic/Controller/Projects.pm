@@ -87,13 +87,17 @@ sub display {
         
     } else {
 
+        my %attributes = $self->models->get_attributes();
+
         # Prepare data for template.
         $self->stash(
+            attributes => \%attributes,
             project_id => $project_id,
             project_attrs => $self->projects->get_project_attrs($project_id),
             project_attrs_conf => $self->projects->get_project_attrs_conf($project_id),
             project_pmi => $self->projects->get_project_pmi($project_id),
             project_comments => $self->projects->get_project_comments($project_id),
+            project_attrs_last => $self->projects->get_project_attrs_last($project_id),
             );    
         
         # Render template "alambic/dashboard.html.ep"

@@ -1,12 +1,13 @@
 % layout 'polarsys';
 % title 'Administration: Comments';
 
-            <h2>Comments summary</h2>
+            <h2>Administration: Comments</h2>
             <br />
             
             <div class="tabbable">
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation"><a href="/admin/summary">Summary</a></li>
+                <li role="presentation"><a href="/admin/repo">Repo</a></li>
                 <li role="presentation" class="active"><a href="/admin/comments">Comments</a></li>
                 <li role="presentation"><a href="/admin/projects">Projects</a></li>
                 <li role="presentation"><a href="/admin/users">Users</a></li>

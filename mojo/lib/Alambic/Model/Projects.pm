@@ -8,6 +8,7 @@ our @EXPORT_OK = qw( read_all_files
                      get_project_info
                      get_project_name_by_id
                      get_project_metrics
+                     get_project_metrics_last
                      get_project_indicators
                      get_project_all_values
                      get_project_attrs
@@ -229,6 +230,17 @@ sub get_project_metrics($) {
     return $projects{$project_id}{'metrics'};
 }
 
+sub get_project_metrics_last($) {
+    my $self = shift;
+    my $project_id = shift;
+
+    my $metrics_last = $self->{app}->repo->get_file_last( 
+        'data/' . $project_id . '/' . $project_id . '_metrics.json' 
+        );
+
+    return $metrics_last->{'children'};
+}
+
 sub get_project_indicators($) {
     my $self = shift;
     my $project_id = shift;
@@ -253,6 +265,19 @@ sub get_project_attrs($) {
     my $project_id = shift;
 
     return $projects{$project_id}{'attrs'};
+}
+
+sub get_project_attrs_last($) {
+    my $self = shift;
+    my $project_id = shift;
+
+    print "[Model::Projects] get_project_attrs_last.\n";
+
+    my $attrs_last = $self->{app}->repo->get_file_last( 
+        'data/' . $project_id . '/' . $project_id . '_attributes.json' 
+        );
+
+    return $attrs_last->{'children'};
 }
 
 sub get_project_attrs_conf($) {

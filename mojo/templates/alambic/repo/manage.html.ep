@@ -1,10 +1,62 @@
 % layout 'polarsys';
 % title 'SCM - Manage';
 
-            <h2>Manage</h2>
+            <h2>Administration: Alambic repository</h2>
             <br />
 
-            <p>This lists info about the repo used for this isntance.</p>
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"><a href="/admin/summary">Summary</a></li>
+                <li role="presentation" class="active"><a href="/admin/repo">Repo</a></li>
+                <li role="presentation"><a href="/admin/comments">Comments</a></li>
+                <li role="presentation"><a href="/admin/projects">Projects</a></li>
+                <li role="presentation"><a href="/admin/users">Users</a></li>
+                <li role="presentation"><a href="/admin/log">Log</a></li>            
+              </ul>
+            </div>
             <br />
 
-            <p>Repo url is <code><%= repo->get_repo_url %></code></p>
+            <p>All data, configuration and executable files in Alambic are stored under a configuration management system (git). This page lists info about the git repository used for this instance.</p>
+            <br />
+
+% if (not defined(repo->get_repo_url_push)) {
+            <p>Repo url is not defined. Do you want to <a href="/admin/repo/install">install one</a> now?</p>
+% } else {
+%     my $updates = app->repo->get_updates();
+            <div class="row">
+              <div class="col-md-4">
+
+                <h3>Repository information</h3>
+                <br />
+
+                <p>Fetch url is <code><%= repo->get_repo_url_fetch %></code><br />
+                  Push url is <code><%= repo->get_repo_url_push %></code></p>
+                <p>There have been <code><%= scalar @{$updates} %></code> updates on the repository so far.</p>
+                <br />
+
+                <h3>Actions</h3>
+                <br />
+
+                <div class="btn-group" role="group">
+                  <button type="button" class="btn btn-default"><a href="/admin/repo/install">Initialise new repository</a></button>
+                  <button type="button" class="btn btn-default"><a href="/admin/repo/push">Take snapshot</a></button>
+                </div>
+
+              </div>
+              <div class="col-md-1">
+              </div>
+              <div class="col-md-7">
+
+                <h3>Recent updates</h3>
+                <br />
+                
+                <table class="table table-striped">
+                  <tr><th>Message</th><th>id</th><th>Date</th></tr>
+%     foreach my $update (@{$updates}) {
+                  <tr><td><%= $update->{'message'} %></td><td><%= $update->{'id'} %></td><td><%= $update->{'attr'}->{'date'} %></td></tr>
+%     }
+                </table>
+              </div>
+            </div>
+% }
+            
