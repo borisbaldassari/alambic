@@ -1,0 +1,10 @@
+% layout 'polarsys';
+% title 'SCM - Manage';
+
+            <h2>Manage</h2>
+            <br />
+
+            <p>This lists info about the repo used for this isntance.</p>
+            <br />
+
+            <p>Repo url is <code><%= repo->get_repo_url %></code></p>

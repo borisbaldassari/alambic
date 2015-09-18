@@ -5,8 +5,7 @@ use Mojo::Base 'Mojolicious';
 use Alambic::Model::Models;
 use Alambic::Model::Projects;
 use Alambic::Model::Users;
-
-use Mojolicious::Plugin::Authentication;
+use Alambic::Model::Repo;
 
 use Data::Dumper;
 
@@ -28,6 +27,9 @@ sub startup {
     $app->app->log->info('Comments application started.');
 
     # Helpers definition
+
+    # Repo holds information about the git repository used for this instance.
+    $app->helper( repo => sub { state $repo = Alambic::Model::Repo->new($app) } );
 
     # Users holds information about the users and authentication mecanism.
     $app->helper( users => sub { state $projects = Alambic::Model::Users->new($app) } );
@@ -73,6 +75,10 @@ sub startup {
     # Normal route to controller
     $r->get('/')->to('alambic#welcome');
     
+    # Install route (SCM)
+    $r->get('/install')->to('repo#welcome');
+    $r->post('/install')->to('repo#welcome_post');
+    
     # Simple pages
     $r->get('/about.html')->to( template => 'alambic/about');
     $r->get('/contact.html')->to( template => 'alambic/contact');
@@ -111,7 +117,9 @@ sub startup {
     $r->post('/admin/comments/#project/a')->to( 'comments#add_post' );
     $r->post('/admin/comments/#project/e/:com')->to( 'comments#edit_post' );
     $r->post('/admin/comments/#project/d/:com')->to( 'comments#delete_post' );
-        
+
+    # Admin - Repo
+    $r->get('/admin/repo')->to( 'repo#manage' );
 }
 
 1;
