@@ -1,0 +1,115 @@
+% layout 'polarsys';
+% title 'Administration: Projects';
+% use File::Basename qw( fileparse );
+% my $project = stash( 'project_id' );
+% my $projects = stash( 'projects' );
+            <h2>Administration: Projects</h2>
+            <br />
+
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"><a href="/admin/summary">Summary</a></li>
+                <li role="presentation"><a href="/admin/plugins">Plugins</a></li>
+                <li role="presentation"><a href="/admin/repo">Repo</a></li>
+                <li role="presentation"><a href="/admin/comments">Comments</a></li>
+                <li role="presentation" class="active"><a href="/admin/projects">Projects</a></li>
+                <li role="presentation"><a href="/admin/users">Users</a></li>
+                <li role="presentation"><a href="/admin/log">Log</a></li>            
+              </ul>
+            </div>
+
+            <h2>Project <%= $project %></h2>
+
+
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-default"><a href="/admin/project/<%= $project %>/retrieve">Retrieve all data</a></button>
+              <button type="button" class="btn btn-default"><a href="/admin/project/<%= $project %>/analyse">Analyse all data</a></button>
+            </div>
+            
+            <p><a href="/admin/project/<%= $project %>/retrieve">Retrieve all data</a> - <a href="/admin/project/<%= $project %>/analyse">Analyse all data</a></p>
+
+            <h3>Information</h3>
+
+            <div class="row">
+              <div class="col-md-6">
+% my $info = projects->get_project_info($project);
+                <p><b>ID</b> <%= $info->{'id'} %><br />
+                <b>Name</b> <%= $info->{'name'} %><br />
+                <b>Sources</b> <br />
+% foreach my $src (keys %{$info->{'sources'}}) { 
+                <%= $src %>: <%= $info->{'sources'}->{$src} %><br />
+% }
+                </p>
+              </div>
+              <div class="col-md-6">
+                <p>
+% if (exists($projects->{$project}->{'metrics'})) {
+                  <code><%= $project %>_metrics.json</code> has <code><%= scalar keys %{$projects->{$project}->{'metrics'}} %></code> metrics defined.<br />
+% }
+% if (exists($projects->{$project}->{'attrs'})) {
+                  <code><%= $project %>_attributes.json</code> has <code><%= scalar keys %{$projects->{$project}->{'attrs'}} %></code> attributes defined.<br />
+% }
+% if (exists($projects->{$project}->{'attrs_conf'})) {
+                  <code><%= $project %>_attributes_confidence.json</code> has <code><%= scalar keys %{$projects->{$project}{'attrs_conf'}} %></code> attributes defined.<br />
+% }
+% if (exists($projects->{$project}->{'pmi'})) {
+                  <code><%= $project %>_pmi.json</code> has <code><%= scalar keys %{$projects->{$project}->{'pmi'}} %></code> attributes defined.<br />
+% }
+% if (exists($projects->{$project}->{'comments'})) {
+                  <code><%= $project %>_comments.json</code> has <code><%= scalar keys %{$projects->{$project}->{'comments'}} %></code> comments defined.
+% }
+                </p>                
+              </div>
+            </div>
+
+            <h3>Data sources</h3>
+
+            <table class="table table-striped">
+              <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="3">Actions</th></tr>
+% foreach my $ds ( sort keys %{ $info->{'ds'} } ) {
+%   my $plugin_name = 'Unknown';
+%   if (defined(al_plugins->get_plugin($ds))) {
+%     $plugin_name = al_plugins->get_plugin($ds)->get_conf()->{'name'};
+%   }
+              <tr>
+                <td><%= $plugin_name %></td><td><%= $ds %></td><td></td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/retrieve"><i class="fa fa-download"></i></a></td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/compute"><i class="fa fa-cogs"></i></a></td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/del"><i class="fa fa-ban"></i></a></td></tr>
+% }            
+            </table>
+            <p>You can add a data source from 
+% my $list = al_plugins->get_list_all();
+% use Data::Dumper;
+% print Dumper($list);
+% foreach my $ds (@{$list}) {
+              <a href="/admin/project/<%= $project %>/ds/<%= $ds %>/new"><%= $ds %></a>
+% }
+              .</p>
+
+            <div class="row">
+              <div class="col-md-6">
+
+                <h3>Input files</h3>
+                
+                <ul class="list-group">
+% foreach my $file (@{stash( 'files_input' )}) {
+%   my $file_short = fileparse($file);
+                <li class="list-group-item"><%= $file_short %></li>
+% }
+                </ul>
+
+              </div>
+              <div class="col-md-6">
+
+                <h3>Project files</h3>
+                
+                <ul class="list-group">
+% foreach my $file (@{stash( 'files_data' )}) {
+%   my $file_short = fileparse($file);
+                  <li class="list-group-item"><%= $file_short %></li>
+% }
+                </ul>
+
+              </div>
+            </div>

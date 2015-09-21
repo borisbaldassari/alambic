@@ -6,7 +6,7 @@ use Alambic::Model::Models;
 use Alambic::Model::Projects;
 use Alambic::Model::Users;
 use Alambic::Model::Repo;
-use Alambic::Model::DataSources;
+use Alambic::Model::Plugins;
 
 use Data::Dumper;
 
@@ -17,9 +17,6 @@ sub startup {
     $app->secrets(['Secrets of Alambic']);
 
     $app->log->level('debug');
-
-    # Documentation browser under "/perldoc"
-    $app->plugin('PODRenderer');
 
     # Use Config plugin for basic configuration
     my $config = $app->plugin('Config');
@@ -34,10 +31,10 @@ sub startup {
     # Initialise repository object.
     $app->repo->read_status();
 
-    # ds holds information about the Data Sources 
-    $app->helper( ds => sub { state $ds = Alambic::Model::DataSources->new($app) } );
-    # Initialise the data sources (read files).
-    $app->ds->read_all_files();
+    # Load plugins for data plugins.
+    $app->helper( al_plugins => sub { state $plugins = Alambic::Model::Plugins->new($app) } );
+    # Initialise the plugins (read files).
+    $app->al_plugins->read_all_files();
 
     # Users holds information about the users and authentication mecanism.
     $app->helper( users => sub { state $projects = Alambic::Model::Users->new($app) } );
@@ -111,15 +108,32 @@ sub startup {
     $r->get('/logout')->to('alambic#logout');
 
     $r->get('/admin/summary')->to( 'admin#welcome' );
+
     $r->get('/admin/projects')->to( 'admin#projects_main' );
+    $r->get('/admin/projects/new')->to( 'admin#project_add' );
+    $r->post('/admin/projects/new')->to( 'admin#project_add_post' );
+    $r->get('/admin/project/#id')->to( 'admin#projects_id' );
+    $r->get('/admin/project/#id/retrieve')->to( 'admin#project_retrieve_data' );
+    $r->get('/admin/project/#id/analyse')->to( 'admin#project_analyse' );
+    $r->get('/admin/project/#id/del')->to( 'admin#project_del' );
+
+    $r->get('/admin/project/#id/ds/#ds/new')->to( 'plugins#add_project' );
+    $r->post('/admin/project/#id/ds/#ds/new')->to( 'plugins#add_project_post' );
+
+    $r->get('/admin/project/#id/ds/#ds/retrieve')->to( 'plugins#project_retrieve_data' );
+    $r->get('/admin/project/#id/ds/#ds/compute')->to( 'plugins#project_compute_data' );
+#    $r->get('/admin/project/#id/ds/#ds/edit')->to( 'plugins#add_project' );
+
+    $r->get('/admin/project/#id/ds/#ds/del')->to( 'plugins#del_project' );
+
+    # Admin - Users management
     $r->get('/admin/users')->to( 'admin#users_main' );
-#    $r->get('/admin/project/#id')->to( 'admin#projects_id' );
 
     # Admin - Utilities
     $r->get('/admin/read_files/:files')->to( 'admin#read_files' );
 
     # Admin - Data sources
-    $r->get('/admin/ds')->to( 'data_sources#welcome' );
+    $r->get('/admin/plugins')->to( 'plugins#welcome' );
 
     # Admin - Comments
     $r->get('/admin/comments')->to( 'comments#welcome' );

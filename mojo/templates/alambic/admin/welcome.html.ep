@@ -18,7 +18,7 @@
             <div class="tabbable">
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="/admin/summary">Summary</a></li>
-                <li role="presentation"><a href="/admin/ds">Data Sources</a></li>
+                <li role="presentation"><a href="/admin/plugins">Plugins</a></li>
                 <li role="presentation"><a href="/admin/repo">Repo</a></li>
                 <li role="presentation"><a href="/admin/comments">Comments</a></li>
                 <li role="presentation"><a href="/admin/projects">Projects</a></li>
@@ -73,12 +73,12 @@
 %     if ( defined( session->{'session_user'} ) && users->is_user_authenticated(session->{session_user}, '/admin') ) {
                 <p><a href="/admin/read_files/projects"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</p>
 % }
-% my %projects = app->projects->get_all_projects;
+% my @projects = app->projects->list_projects;
                 <ul class="list-group">
-% foreach my $project (sort keys %projects) {
+% foreach my $project (sort @projects) {
 %     my $name = defined( $self->projects->get_project_name_by_id($project) ) ? 
 %       $self->projects->get_project_name_by_id($project) : $project;
-                  <li class="list-group-item"><a href="/admin/project/s/<%= $project %>"><%= $name %></a></li>
+                  <li class="list-group-item"><a href="/admin/project/<%= $project %>"><%= $name %></a></li>
 % }
                   </div>
               </div>

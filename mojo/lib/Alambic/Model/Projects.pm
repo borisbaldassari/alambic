@@ -1,5 +1,12 @@
 package Alambic::Model::Projects;
+
+use Mojo::Base -base;
+
+use Alambic::Model::Analysis;
+
 use Scalar::Util 'weaken';
+use Mojo::JSON qw( decode_json encode_json );
+use File::Path qw( remove_tree );
 
 require Exporter;
 our @ISA = qw(Exporter);
@@ -20,9 +27,6 @@ our @EXPORT_OK = qw( read_all_files
                      get_project_comments
                      add_project_comment );  
 
-use Mojo::Base -base;
-
-use Mojo::JSON qw(decode_json encode_json);
 
 use warnings;
 use strict;
@@ -70,6 +74,7 @@ sub read_all_files() {
         my $id = $1;
         my $json_project = &read_project_data($project);
         $projects_info{$id} = $json_project;
+        print "[Model::Projects] Found project $id.\n";        
     }
 
     # Read metrics for projects
@@ -166,6 +171,9 @@ sub read_all_files() {
             $projects{$id}{'comments'}{$comment->{'id'}} = $comment;
         }
     }
+
+    my $vol = scalar keys %projects_info;
+    print "[Model::Projects] Found $vol projects.\n";
 }
 
 sub read_project_data($) {
@@ -201,7 +209,7 @@ sub write_project_data($$) {
 
 
 sub list_projects() {
-    my @projects = keys %projects ;
+    my @projects = keys %projects_info ;
     return @projects;
 }
 
@@ -435,13 +443,124 @@ sub populate_qm($$$$$) {
 }
 
 
-sub analyse_project() {
-    
-}
-
+#
+# Retrieves all data for a project, and generate the metrics for the set of data sources
+#
 sub retrieve_project_data() {
+    my $self = shift;
+    my $project_id = shift;
+    my $ds = shift || 'all';
+
+    print "[Model::Projects] retrieve_project_data.\n";
+    my $ds_list = $self->{app}->al_plugins->get_list_all();
+#    foreach my $project (keys %projects_info) {}
+    foreach my $ds ( keys %{$projects_info{$project_id}{'ds'}} ) {
+        print "[Model::Projects.pm] retrieve_project_data Recognised ds [$ds].\n"; 
+        if ( grep( $ds, @{$ds_list} ) ) {
+            $self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id);
+            $self->{app}->al_plugins->get_plugin($ds)->compute_data($project_id);
+        } else {
+            print "[Model::Projects.pm] retrieve_project_data Cannot recognise ds [$ds].\n"; 
+        }
+    }
     
 }
 
+
+#
+# Retrieves metrics from the various data providers and consolidates them in 
+# a single file, then computes the aggregation of metrics up to top attributes 
+# for the project.
+#
+sub analyse_project() {
+    my $self = shift;
+    my $project_id = shift;
+
+    print "[Model::Projects.pm] analyse_project.\n"; 
+
+    my $analysis = Alambic::Model::Analysis->new($self->{app});
+    my $ds_list = $self->{app}->al_plugins->get_list_all();
+    foreach my $ds (keys %{$projects_info{$project_id}{'ds'}}) {
+        if ( grep( $ds, $ds_list ) ) {
+            $analysis->analyse_project($project_id);
+        } else {
+            print "[Model::Projects.pm] analyse_project Cannot recognise ds [$ds].\n"; 
+        }
+    }    
+}
+
+sub add_project() {
+    my $self = shift;
+    my $project_id = shift;
+    my $project_name = shift;
+
+    print "Adding project [$project_id] with name [$project_name].\n";
+    # Create directories for project in conf_data, conf_input
+    mkdir( $self->{app}->config->{'dir_data'} . "/" . $project_id );
+    mkdir( $self->{app}->config->{'dir_input'} . "/" . $project_id );
+
+    my $info = {
+        "id" => $project_id,
+        "name" => $project_name,
+    };
+
+    my $file_info = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
+    &write_project_data( $file_info, $info );
+
+    # Add values to the 
+    $projects_names{$project_id} = $project_name;
+    $projects_info{$project_id} = $info;
+    $projects{$project_id} = {};
+
+    return 1;
+}
+
+sub del_project() {
+    my $self = shift;
+    my $project_id = shift;
+
+    print "[Model::Projects] Deleting project [$project_id].\n";
+    # Create directories for project in conf_data, conf_input
+    remove_tree( $self->{app}->config->{'dir_data'} . "/" . $project_id );
+    remove_tree( $self->{app}->config->{'dir_input'} . "/" . $project_id );
+
+    # Add values to the 
+    delete $projects_names{$project_id};
+    delete $projects_info{$project_id};
+    delete $projects{$project_id};
+
+    return 1;
+}
+
+sub add_project_ds() {
+    my $self = shift;
+    my $project_id = shift;
+    my $ds_id = shift;
+    my $params = shift;
+
+    print "[Model::Projects] add_project_ds [$project_id] [$ds_id].\n";
+
+    print Dumper($projects_info{$project_id});
+    
+    foreach my $param (keys %{$projects_info{$project_id}{'ds'}{$ds_id}}) {
+        $projects_info{$project_id}{'ds'}{$ds_id}{$param} = $params->{$param};
+    }
+
+    # Write updated info file.
+    my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
+    write_project_data( $file_to, $projects_info{$project_id});    
+}
+
+sub delete_project_ds() {
+    my $self = shift;
+    my $project_id = shift;
+    my $ds_id = shift;
+
+    delete $projects{$project_id}{'info'}{'ds'}{$ds_id};
+    
+    # Write updated info file.
+    my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
+    write_project_data( $file_to, $projects{$project_id}{'info'});    
+}
 
 1;

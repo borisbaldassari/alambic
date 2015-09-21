@@ -1,0 +1,37 @@
+% layout 'polarsys';
+% title 'Administration: Add plugins to project';
+
+% my $conf = stash( 'conf' );
+% my $project = stash( 'project' );
+
+            <h2>Administration: Data sources</h2>
+            <br />
+
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"><a href="/admin/summary">Summary</a></li>
+                <li role="presentation" class="active"><a href="/admin/plugins">Plugins</a></li>
+                <li role="presentation"><a href="/admin/repo">Repo</a></li>
+                <li role="presentation"><a href="/admin/comments">Comments</a></li>
+                <li role="presentation"><a href="/admin/projects">Projects</a></li>
+                <li role="presentation"><a href="/admin/users">Users</a></li>
+                <li role="presentation"><a href="/admin/log">Log</a></li>            
+              </ul>
+            </div>
+            <br />
+
+            <h3>Add a data source to project</h3>
+
+            <p>This action will add the <%= $conf->{'id'} %> data source plugin to project <%= $project %>.</p>
+            <br />
+
+            <form action="/admin/project/<%= $project %>/ds/<%= $conf->{'id'} %>/new" method="POST">
+% foreach my $arg (keys %{$conf->{'requires'}}) {
+%   if ($arg eq 'project_id') { $conf->{'requires'}->{$arg} = $project; }
+              <p><b><%= $arg %></b> (<span style="color: red">*</span>)</p>
+              <p><input name="<%= $arg %>" type="text" value="<%= $conf->{'requires'}->{$arg} %>"/></p>
+% }
+              <br /><br />
+              <input type="submit" value="Add data source"></input>
+              <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
+            </form>

@@ -7,6 +7,7 @@
             <div class="tabbable">
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation"><a href="/admin/summary">Summary</a></li>
+                <li role="presentation"><a href="/admin/plugins">Plugins</a></li>
                 <li role="presentation"><a href="/admin/repo">Repo</a></li>
                 <li role="presentation"><a href="/admin/comments">Comments</a></li>
                 <li role="presentation" class="active"><a href="/admin/projects">Projects</a></li>
@@ -16,40 +17,23 @@
             </div>
 
             <h2>Projects</h2>
+            <br />
 
-% foreach my $project (sort keys %{$projects}) {
-            <h3><%= $project %></h3>
-            <div class="row">
-              <div class="col-md-6">
-%     my $info = $self->projects->get_project_info($project);
-                <p><b>ID</b> <%= $info->{'id'} %><br />
-                <b>Name</b> <%= $info->{'name'} %><br />
-                <b>Sources</b> <br />
-%     foreach my $src (keys %{$info->{'sources'}}) { 
-                <%= $src %>: <%= $info->{'sources'}->{$src} %><br />
-%     }
-                </p>
-              </div>
-              <div class="col-md-6">
-                <p>
-%     if (exists($projects->{$project}->{'metrics'})) {
-                  <code><%= $project %>_metrics.json</code> has <code><%= scalar keys %{$projects->{$project}->{'metrics'}} %></code> metrics defined.<br />
-%     }
-%     if (exists($projects->{$project}->{'attrs'})) {
-                  <code><%= $project %>_attributes.json</code> has <code><%= scalar keys %{$projects->{$project}->{'attrs'}} %></code> attributes defined.<br />
-%     }
-%     if (exists($projects->{$project}->{'attrs_conf'})) {
-                  <code><%= $project %>_attributes_confidence.json</code> has <code><%= scalar keys %{$projects->{$project}{'attrs_conf'}} %></code> attributes defined.<br />
-%     }
-%     if (exists($projects->{$project}->{'pmi'})) {
-                  <code><%= $project %>_pmi.json</code> has <code><%= scalar keys %{$projects->{$project}->{'pmi'}} %></code> attributes defined.<br />
-%     }
-%     if (exists($projects->{$project}->{'comments'})) {
-                  <code><%= $project %>_comments.json</code> has <code><%= scalar keys %{$projects->{$project}->{'comments'}} %></code> comments defined.
-%     }
-                </p>                
-              </div>
-            </div>
+            <p>Do you want to <a href="/admin/projects/new">add a project</a>?</p>
+
+            <table class="table table-striped">
+              <tr>
+                <th>Project</th>
+                <th colspan="4">Actions</th>
+              </tr>
+% foreach my $project (sort @{$list_projects}) {
+              <tr>
+                <td><%= $project %></td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>"><i class="fa fa-eye"></i></a></td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/retrieve"><i class="fa fa-download"></i></a></td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/analyse"><i class="fa fa-cogs"></i></a></td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/del"><i class="fa fa-ban"></i></a></td>
+              </tr>
 % }
-
+              </table>
 
