@@ -7,6 +7,7 @@ use Scalar::Util 'weaken';
 
 use Mojo::JSON qw( decode_json encode_json );
 use Git::Wrapper;
+use Try::Tiny;
 use File::Copy qw( move );
 use File::Path qw( remove_tree );
 
@@ -29,7 +30,7 @@ my @files_push = (
     'public/',
     'script/',
     't/',
-    'templates',
+    'templates/',
     'alambic.conf',
     );
 
@@ -82,7 +83,7 @@ sub init {
         move($home . '/.git', $home . '/.git_old');
     }
 
-    
+    # Init the repository and set its origin url.
     $self->{app}->log->info("[Model::Repo] About to re-init.");
     $git->init();
     $git->RUN( 'remote', 'add', 'origin', $url);
@@ -117,10 +118,11 @@ sub push {
 sub get_updates {
     my $self = shift;
     
-    # Commit all added files.
+    # Get past commits from the repo.
     my @logs = $git->log();
     my @commits = map { $_->{'message'} } @logs;
 
+    # TODO check @commits.
     return \@logs;
 }
 
@@ -128,10 +130,13 @@ sub get_file_last($) {
     my $self = shift;
     my $file = shift;
     
-    # Commit all added files.
-    my @content_json = $git->show( "HEAD~1:$file" );
-    my $content_json = join(' ', @content_json);
-    my $content = decode_json( $content_json );
+    # Retrieve the last version of the file.
+    my $content;
+    try {
+        my $content = decode_json( join(' ', $git->show( "HEAD~1:$file" )) );
+    } catch {
+        return undef;
+    };
 
     return $content;
 }

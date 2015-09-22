@@ -50,27 +50,6 @@ sub read_all_files() {
         my $conf = $al_plugin->get_conf();
         $plugins{ $conf->{'id'} } = $al_plugin;
     }
-
-
-    # Read data sources definition if it exists
-    # my $file_ds = $config->{'dir_conf'} . "/alambic_ds.json";
-    # if (-e $file_ds) {
-    #     $self->{app}->log->info( "[Model::DataSources] Reading data sources definition from [$file_ds]." );
-
-    #     my $json;
-    #     do { 
-    #         local $/;
-    #         open my $fh, '<', $file_ds or die "Could not open data file [$file_ds].\n";
-    #         $json = <$fh>;
-    #         close $fh;
-    #     };
-    #     my $ds_ref = decode_json($json);
-    #     %ds = %{$ds_ref->{'children'}};
-    # } else {
-    #     %ds = (
-    #         );
-    # }
-
 }
 
 sub get_list_all() {

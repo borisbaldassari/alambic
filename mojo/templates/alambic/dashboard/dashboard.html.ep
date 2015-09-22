@@ -75,7 +75,8 @@
                       <dt>Completeness of metrics</dt>
                       <dd>
                         <div class="progress">
-% my ($conf_v, $conf_m) = split( ' / ', $project_attrs_conf->{'QM_QUALITY'} );
+% my $main_attr = $project_attrs_conf->{'QM_QUALITY'} || "0 / 0";
+% my ($conf_v, $conf_m) = split( ' / ', $main_attr );
 % $conf_m = 1 if ($conf_m == 0);
 % my $conf_percent = int( $conf_v * 100 / $conf_m );
                           <div class="progress-bar" role="progressbar" aria-valuenow="<%= $conf_v %>" aria-valuemin="0" aria-valuemax="<%= $conf_m %>"  style="background-color: <%= &comp_c( $conf_percent / 20 ) %>;width: <%= $conf_percent %>%;"><%= $project_attrs_conf->{'QM_QUALITY'} %></div>

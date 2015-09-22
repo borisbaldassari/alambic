@@ -243,6 +243,10 @@ sub get_project_metrics_last($) {
     my $metrics_last = $self->{app}->repo->get_file_last( 
         'data/' . $project_id . '/' . $project_id . '_metrics.json' 
         );
+    
+    if (not defined($metrics_last)) {
+        return undef;
+    }
 
     return $metrics_last->{'children'};
 }
@@ -280,6 +284,10 @@ sub get_project_attrs_last($) {
     my $attrs_last = $self->{app}->repo->get_file_last( 
         'data/' . $project_id . '/' . $project_id . '_attributes.json' 
         );
+
+    if (not defined($attrs_last)) {
+        return undef;
+    }
 
     return $attrs_last->{'children'};
 }
