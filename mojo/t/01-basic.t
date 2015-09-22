@@ -21,8 +21,8 @@ $t->get_ok('/admin/summary')
         'Admin summary page contains instance')
         ->content_like(qr!<li><a href="/projects/polarsys.capella.html">Capella</a></li>!i, 
         'Admin summary page contains Cappela')
-        ->content_like(qr!<li><a href="/projects/tools.cdt.html">tools.cdt</a></li>!i,
-        'Admin summary page contains tools.cdt')
+        ->content_like(qr!<li><a href="/projects/modeling.gendoc.html">modeling.gendoc</a></li>!i,
+        'Admin summary page contains modeling.gendoc')
         ->content_like(qr!<p>Quality model: <code>PolarSys Quality Model</code><br />!i,
         'Admin summary page contains quality model information')
         ->content_like(qr!<p>Attributes: <code>PolarSys Attributes</code><br />!i,

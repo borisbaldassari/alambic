@@ -4,7 +4,7 @@
             <h2>Administration</h2>
             <br />
 
-% my $msg = stash( 'msg' );
+% my $msg = flash( 'msg' );
 % if ( defined($msg) ) {
             <div class="row">
               <div class="col-md-6">

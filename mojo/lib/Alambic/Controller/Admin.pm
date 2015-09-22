@@ -16,12 +16,13 @@ sub welcome {
 
 sub read_files() {
     my $self = shift;
-
+    
     # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/read_files' ) ) {
+    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/read_files' ) ) {
+        $self->flash( msg => 'You must be authentified to read configuration files.' );
         $self->redirect_to( '/login' );
     }
-    
+
     my $files = $self->param( 'files' );
     my $msg;
 
@@ -43,7 +44,8 @@ sub projects_main {
     my $self = shift;
     
     # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/projects' ) ) {
+    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must be authentified to access project management.' );
         $self->redirect_to( '/login' );
     }
              
@@ -64,9 +66,10 @@ sub project_add {
     my $self = shift;
     
     my $from = $self->param( 'from' );
-
+    
     # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/projects' ) ) {
+    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must be authentified to add a project.' );
         $self->redirect_to( '/login' );
     }
 
@@ -84,9 +87,10 @@ sub project_add_post {
     my $project_id = $self->param( 'id' );
     my $project_name = $self->param( 'name' );
     my $from = $self->param( 'from' );
-
+    
     # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/projects' ) ) {
+    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must be authentified to add a project.' );
         $self->redirect_to( '/login' );
     }
 
@@ -103,9 +107,10 @@ sub project_del {
     my $self = shift;
 
     my $project_id = $self->param( 'id' );
-
+    
     # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/projects' ) ) {
+    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must be authentified to delete a project.' );
         $self->redirect_to( '/login' );
     }
 
@@ -120,10 +125,12 @@ sub projects_id($) {
     my $project_id = $self->param( 'id' );
     
     # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/projects' ) ) {
+    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must be authentified to access project management.' );
         $self->redirect_to( '/login' );
     }
-
+    
+    # Get list of files in input and data directories.
     my $dir_projects = $self->config->{'dir_data'};
     my @files_data = <${dir_projects}/${project_id}/*.json>;
     my $dir_input = $self->config->{'dir_input'};
@@ -144,12 +151,12 @@ sub projects_id($) {
 
 sub users_main {
     my $self = shift;
-
+    
     # Check that the connected user has the access rights for this
-    $self->redirect_to( '/login' ) unless (
-        exists( $self->session->{session_user} ) &&
-        $self->users->is_user_authenticated($self->session->{session_user}, '/admin/users' ) 
-        );
+    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/users' ) ) {
+        $self->flash( msg => 'You must be authentified to access users management.' );
+        $self->redirect_to( '/login' );
+    }
     
     $self->render( template => 'alambic/admin/users' );
 }
@@ -158,18 +165,35 @@ sub project_retrieve_data {
     my $self = shift;
 
     my $project_id = $self->param( 'id' );
+    
+    # Check authentified user.
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->redirect_to( '/login' );
+    }
 
     $self->app->projects->retrieve_project_data($project_id);
+    $self->flash( msg => "Data for project $project_id has been retrieved." );
 
     $self->redirect_to( "/admin/project/$project_id" );
+
 }
 
 sub project_analyse {
     my $self = shift;
 
     my $project_id = $self->param( 'id' );
+    
+    # Check authentified user.
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => "You must have rights on project $project_id to access this area." );
+        $self->redirect_to( '/login' );
+    }
 
     $self->app->projects->analyse_project($project_id);
+    $self->flash( msg => "Data for project $project_id has been analysed." );
 
     $self->redirect_to( "/admin/project/$project_id" );
 }

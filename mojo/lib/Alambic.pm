@@ -112,10 +112,10 @@ sub startup {
     $r->get('/admin/projects')->to( 'admin#projects_main' );
     $r->get('/admin/projects/new')->to( 'admin#project_add' );
     $r->post('/admin/projects/new')->to( 'admin#project_add_post' );
-    $r->get('/admin/project/#id')->to( 'admin#projects_id' );
     $r->get('/admin/project/#id/retrieve')->to( 'admin#project_retrieve_data' );
     $r->get('/admin/project/#id/analyse')->to( 'admin#project_analyse' );
     $r->get('/admin/project/#id/del')->to( 'admin#project_del' );
+    $r->get('/admin/project/#id')->to( 'admin#projects_id' );
 
     $r->get('/admin/project/#id/ds/#ds/new')->to( 'plugins#add_project' );
     $r->post('/admin/project/#id/ds/#ds/new')->to( 'plugins#add_project_post' );

@@ -20,7 +20,7 @@ $t->get_ok('/admin/comments', "Get admin comment.")
 $t->get_ok('/admin/comments/polarsys.capella')
         ->status_is(200)
         ->content_like(qr!<td width="1cm"><a href="/admin/comments/polarsys.capella"><i class="fa fa-eye"></i></a></td>!i, 'Check Capella is displayed.')
-        ->content_like(qr!<td width="1cm"><a href="/admin/comments/tools.cdt"><i class="fa fa-eye"></i></a></td>!i, 'Check tools.cdt is displayed.')
+        ->content_like(qr!<td width="1cm"><a href="/admin/comments/modeling.gendoc"><i class="fa fa-eye"></i></a></td>!i, 'Check modeling.gendoc is displayed.')
         ->content_like(qr!<th>Comments for project polarsys.capella</th>!i, 'Check header for capella comments table.');
 
 # Check that the edit page is ok without auth.

@@ -43,11 +43,14 @@ sub read_all_files() {
 }
 
 sub validate_user($$$) {
-    my ($self, $uid, $passwd, $realm) = @_;
-
+    my $self = shift;
+    my $uid = shift || "";
+    my $passwd = shift || "";
+    my $realm = shift;
+    
     $self->{app}->log->info( "[Model::Users] validate_user trying uid [$uid] pass [$passwd]." );
 
-    return $uid if ($passwd eq $users{$uid}{'passwd'});
+    return $uid if ( exists $users{$uid}{'passwd'} && $users{$uid}{'passwd'} eq $passwd );
     return undef;
 }
 
@@ -66,7 +69,9 @@ sub is_user_authenticated {
 }
 
 sub has_user_project {
-  my ($self, $user, $project) = @_;
+  my $self = shift;
+  my $user = shift || '';
+  my $project = shift || '';
 
   # Return the role of the user for the project, if ok.
   if ( exists( $users{$user}{'projects'}{$project} ) ) {

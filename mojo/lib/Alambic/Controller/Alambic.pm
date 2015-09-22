@@ -21,11 +21,13 @@ sub login_post() {
     my $username = $self->param( 'username' );
     my $password = $self->param( 'password' );
 
-    # TODO check return value for login.
-    $self->users->validate_user($username, $password);
-    $self->session( 'session_user' => $username );
-
-    $self->render( 'alambic/admin/summary', msg => "You have been successfully authenticated as user $username.");
+    # Check return value for login.
+    if ( $self->users->validate_user($username, $password) ) {
+        $self->session( 'session_user' => $username );
+        $self->render( 'alambic/admin/summary', msg => "You have been successfully authenticated as user $username.");
+    } else {
+        $self->redirect_to( '/login?msg=Login failed.' );
+    }
 }
 
 sub logout() {

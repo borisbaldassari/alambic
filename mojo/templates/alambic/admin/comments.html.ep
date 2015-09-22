@@ -33,7 +33,9 @@
                     <td width="1cm"><a href="/admin/comments/<%= $project %>"><i class="fa fa-eye"></i></a></td>
                     <td width="1cm"><span class="badge"><%= scalar @{$comments->{$project}} %></span></td>
                     <td width="1cm">
-%   if ( defined( session->{'session_user'} ) && users->has_user_project(session->{session_user}, $project_id) ) {
+%   if ( defined( session->{'session_user'} ) && 
+%        ( users->is_user_authenticated(session->{session_user}, '/admin/projects') ||
+%          users->has_user_project(session->{session_user}, $project) ) ) {
                       <a href="/admin/comments/<%= $project %>/a/"><i class="fa fa-plus"></i></a></td>
 %   }
                   </tr>
@@ -56,7 +58,9 @@
                   <tr>
                     <td>Comment by <code><%= $comment->{'author'} %></code> on <code><%= $comment->{'mnemo'} %></code> (<small><%= $comment->{'date'} %></small>)<br />
                       <%= $comment->{'text'} %></td>
-%     if ( defined( session->{'session_user'} ) && users->has_user_project(session->{session_user}, $project_id) ) {
+%     if ( defined( session->{'session_user'} ) && 
+%          ( users->is_user_authenticated(session->{session_user}, '/admin/projects') ||
+%            users->has_user_project(session->{session_user}, $project_id) ) ) {
                     <td width="1cm"><a href="/admin/comments/<%= $project_id %>/e/<%= $comment->{'id'} %>"><i class="fa fa-pencil"></i></a></td>
 	            <td width="1cm"><a href="/admin/comments/<%= $project_id %>/d/<%= $comment->{'id'} %>"><i class="fa fa-trash-o"></i></a></td>
 %     } else {
@@ -70,7 +74,8 @@
 % 
 % } elsif ( $project_id =~ m!^\S+$! && $action =~ m!^a$! &&
 %           defined( session->{'session_user'} ) && 
-%           users->has_user_project(session->{session_user}, $project_id) ) {
+%           ( users->is_user_authenticated(session->{session_user}, '/admin/projects') ||
+%             users->has_user_project(session->{session_user}, $project_id) ) ) {
 %   # Get node list
 %   my @nodes = app->models->get_model_nodes();
                 <p><b>Adding comment on <%= $project_id %>.</b></p><br />
@@ -95,9 +100,10 @@
 
 % ## Displaying edit form
 %
-% } elsif ($project_id =~ m!^\S+$! && $action =~ m!^e$! &&
-%           defined( session->{'session_user'} ) && 
-%           users->has_user_project(session->{session_user}, $project_id) ) {
+% } elsif ( $project_id =~ m!^\S+$! && $action =~ m!^e$! &&
+%            defined( session->{'session_user'} ) && 
+%            ( users->is_user_authenticated(session->{session_user}, '/admin/projects') ||
+%              users->has_user_project(session->{session_user}, $project_id) ) ) {
 %   # Get node list
 %   my @nodes = app->models->get_model_nodes();
                 <p><b>Editing comment <%= $action_comment->{'id'} %> on <%= $project_id %>.</b></p><br />
@@ -121,8 +127,9 @@
 % ## Displaying delete confirmation
 %
 % } elsif ($project_id =~ m!^\S+$! && $action =~ m!^d$! &&
-%           defined( session->{'session_user'} ) && 
-%           users->has_user_project(session->{session_user}, $project_id) ) {
+%            defined( session->{'session_user'} ) && 
+%            ( users->is_user_authenticated(session->{session_user}, '/admin/projects') ||
+%              users->has_user_project(session->{session_user}, $project_id) ) ) {
                 <p><b>Deleting comment <%= $action_comment->{'id'} %> on <%= $project_id %>.</b></p><br />
                 <form action="/admin/comments/<%= $project_id %>/d/<%= $action_comment->{'id'} %>" method="POST">
                   <p>Author: (<span style="color: red">*</span>) &nbsp; <input name="author" type="text" value="<%= $action_comment->{'author'} %>" disabled></input></p>
