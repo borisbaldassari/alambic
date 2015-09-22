@@ -10,7 +10,7 @@ sub welcome {
     my $self = shift;
     
     # Render template for main admin section
-    $self->render( template => 'alambic/admin/welcome' );
+    $self->render( template => 'alambic/admin/summary' );
 }
 
 
@@ -35,7 +35,7 @@ sub read_files() {
         $msg = "Could not understand command. Files not read.";
     }
 
-    $self->render( template => 'alambic/admin/welcome', msg => $msg );
+    $self->render( template => 'alambic/admin/summary', msg => $msg );
 }
 
 
@@ -159,7 +159,6 @@ sub project_retrieve_data {
 
     my $project_id = $self->param( 'id' );
 
-    print "[Controller::Admin.pm] retrieve [$project_id].\n"; 
     $self->app->projects->retrieve_project_data($project_id);
 
     $self->redirect_to( "/admin/project/$project_id" );
@@ -170,7 +169,6 @@ sub project_analyse {
 
     my $project_id = $self->param( 'id' );
 
-    print "[Controller::Admin.pm] analyse $project_id.\n"; 
     $self->app->projects->analyse_project($project_id);
 
     $self->redirect_to( "/admin/project/$project_id" );

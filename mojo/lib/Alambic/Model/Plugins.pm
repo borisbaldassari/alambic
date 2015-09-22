@@ -42,8 +42,6 @@ sub read_all_files() {
 
     # Read plugins directory.
     my @plugins = <'lib/Alambic/Plugins'/*.pm>;
-    print "# DBG List of plugins detected:\n";
-    print Dumper(@plugins);
     foreach my $plugin (@plugins) {
         $plugin =~ m!.+/([^/\\]+).pm!;
         my $plugin_name = $1;
@@ -82,7 +80,6 @@ sub get_list_all() {
 
 sub get_list_metrics() {
     my @list = map { return $plugins{'id'} if grep('metrics', $_{'ability'}) } keys %plugins;
-    print "# DBG " . Dumper (@list);
     return \@list;
 }
 

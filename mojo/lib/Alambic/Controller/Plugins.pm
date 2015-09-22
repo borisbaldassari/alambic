@@ -13,22 +13,20 @@ sub welcome {
         $self->redirect_to( '/login' );
     }
 
-    print "[Controller::Plugins] welcome.\n";
-
     # Render template 
     $self->render( template => 'alambic/plugins/manage' );   
 
 }
 
+
+#
+# Add a plugin to a project -- GET.
+#
 sub add_project {
     my $self = shift;
 
     my $project = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
-
-    #$self->{app}->al_plugins->get_plugin($ds);
-    # Add ds to Projects.pm
-    # Write file to projects->project_conf.json
 
     my $plugin = $self->al_plugins->get_plugin($ds);
     my $conf = $plugin->get_conf();
@@ -43,13 +41,15 @@ sub add_project {
     $self->render( template => 'alambic/plugins/add_project' );   
 }
 
+
+#
+# Add a plugin to a project -- POST.
+#
 sub add_project_post {
     my $self = shift;
 
     my $project = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
-
-    print "[Controller::Plugins] add_project_post $project $ds.\n";
 
     my $plugin = $self->al_plugins->get_plugin($ds);
     my $conf = $plugin->get_conf();
@@ -65,13 +65,15 @@ sub add_project_post {
     $self->redirect_to( "/admin/project/$project" );   
 }
 
+
+#
+# Remove a plugin from a project.
+#
 sub del_project {
     my $self = shift;
 
     my $project = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
-
-    print "[Controller::Plugins] del_project_post $project $ds.\n";
 
     $self->projects->delete_project_ds($project, $ds);
     
@@ -80,6 +82,9 @@ sub del_project {
 }
 
 
+#
+# Retrieve data for a specific plugin and project.
+#
 sub project_retrieve_data {
     my $self = shift;
 
@@ -92,6 +97,10 @@ sub project_retrieve_data {
     $self->redirect_to( "/admin/project/$project_id" );   
 }
 
+
+#
+# Compute metrics and files for a specific plugin and project.
+#
 sub project_compute_data {
     my $self = shift;
 

@@ -74,7 +74,6 @@ sub read_all_files() {
         my $id = $1;
         my $json_project = &read_project_data($project);
         $projects_info{$id} = $json_project;
-        print "[Model::Projects] Found project $id.\n";        
     }
 
     # Read metrics for projects
@@ -173,7 +172,6 @@ sub read_all_files() {
     }
 
     my $vol = scalar keys %projects_info;
-    print "[Model::Projects] Found $vol projects.\n";
 }
 
 sub read_project_data($) {
@@ -278,8 +276,6 @@ sub get_project_attrs($) {
 sub get_project_attrs_last($) {
     my $self = shift;
     my $project_id = shift;
-
-    print "[Model::Projects] get_project_attrs_last.\n";
 
     my $attrs_last = $self->{app}->repo->get_file_last( 
         'data/' . $project_id . '/' . $project_id . '_attributes.json' 
@@ -451,16 +447,13 @@ sub retrieve_project_data() {
     my $project_id = shift;
     my $ds = shift || 'all';
 
-    print "[Model::Projects] retrieve_project_data.\n";
     my $ds_list = $self->{app}->al_plugins->get_list_all();
-#    foreach my $project (keys %projects_info) {}
     foreach my $ds ( keys %{$projects_info{$project_id}{'ds'}} ) {
-        print "[Model::Projects.pm] retrieve_project_data Recognised ds [$ds].\n"; 
         if ( grep( $ds, @{$ds_list} ) ) {
             $self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id);
             $self->{app}->al_plugins->get_plugin($ds)->compute_data($project_id);
         } else {
-            print "[Model::Projects.pm] retrieve_project_data Cannot recognise ds [$ds].\n"; 
+            $self->{app}->log->warn("[Model::Projects.pm] retrieve_project_data Cannot recognise ds [$ds]."); 
         }
     }
     
@@ -476,15 +469,13 @@ sub analyse_project() {
     my $self = shift;
     my $project_id = shift;
 
-    print "[Model::Projects.pm] analyse_project.\n"; 
-
     my $analysis = Alambic::Model::Analysis->new($self->{app});
     my $ds_list = $self->{app}->al_plugins->get_list_all();
     foreach my $ds (keys %{$projects_info{$project_id}{'ds'}}) {
         if ( grep( $ds, $ds_list ) ) {
             $analysis->analyse_project($project_id);
         } else {
-            print "[Model::Projects.pm] analyse_project Cannot recognise ds [$ds].\n"; 
+            $self->{app}->log->warn("[Model::Projects.pm] analyse_project Cannot recognise ds [$ds]."); 
         }
     }    
 }
@@ -494,7 +485,6 @@ sub add_project() {
     my $project_id = shift;
     my $project_name = shift;
 
-    print "Adding project [$project_id] with name [$project_name].\n";
     # Create directories for project in conf_data, conf_input
     mkdir( $self->{app}->config->{'dir_data'} . "/" . $project_id );
     mkdir( $self->{app}->config->{'dir_input'} . "/" . $project_id );
@@ -519,7 +509,6 @@ sub del_project() {
     my $self = shift;
     my $project_id = shift;
 
-    print "[Model::Projects] Deleting project [$project_id].\n";
     # Create directories for project in conf_data, conf_input
     remove_tree( $self->{app}->config->{'dir_data'} . "/" . $project_id );
     remove_tree( $self->{app}->config->{'dir_input'} . "/" . $project_id );
@@ -538,10 +527,6 @@ sub add_project_ds() {
     my $ds_id = shift;
     my $params = shift;
 
-    print "[Model::Projects] add_project_ds [$project_id] [$ds_id].\n";
-
-    print Dumper($projects_info{$project_id});
-    
     foreach my $param (keys %{$projects_info{$project_id}{'ds'}{$ds_id}}) {
         $projects_info{$project_id}{'ds'}{$ds_id}{$param} = $params->{$param};
     }

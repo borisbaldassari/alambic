@@ -2,9 +2,9 @@
   "name": "Alambic users definition",
   "version": "1.0.1",
   "children": {
-      "boris.baldassari": {
-          "name": "Boris Baldassari",
-          "passwd": "boris123",
+      "admin": {
+          "name": "Administrator",
+          "passwd": "admin",
           "alambic": [
               "/admin",
               "/admin/read_files",
