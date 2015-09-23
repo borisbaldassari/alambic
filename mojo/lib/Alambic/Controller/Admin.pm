@@ -62,6 +62,40 @@ sub projects_main {
     $self->render( template => 'alambic/admin/projects' );
 }
 
+
+#
+# Displays a list of plugins detected with information about them.
+#
+sub plugins {
+    my $self = shift;
+
+    # Check that the connected user has the access rights for this
+    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/ds' ) ) {
+        $self->redirect_to( '/login' );
+    }
+
+    # Render template 
+    $self->render( template => 'alambic/admin/plugins' );   
+
+}
+
+
+#
+# Manage information about the Alambic git repository.
+#
+sub repo {
+    my $self = shift;
+
+    # Check that the connected user has the access rights for this
+    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
+        $self->redirect_to( '/login' );
+    }
+
+    # Render template "alambic/admin/repo.html.ep"
+    $self->render( template => 'alambic/admin/repo' );
+}
+
+
 sub project_add {
     my $self = shift;
     
@@ -165,7 +199,7 @@ sub project_retrieve_data {
     my $self = shift;
 
     my $project_id = $self->param( 'id' );
-    print "[Controller::Admin] project_retrieve_data $project_id.\n";
+    $self->log->info("[Controller::Admin] project_retrieve_data $project_id.");
     
     # Check authentified user.
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 

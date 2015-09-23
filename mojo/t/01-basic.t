@@ -19,17 +19,17 @@ $t->get_ok('/admin/summary')
         ->status_is(200)
         ->content_like(qr!<p>Instance: <code>PolarSys Maturity Assessment</code><br />!i, 
         'Admin summary page contains instance')
-        ->content_like(qr!<li><a href="/projects/polarsys.capella.html">Capella</a></li>!i, 
+        ->content_like(qr!<td><a href="/admin/project/polarsys.capella">Capella</a></td>!i, 
         'Admin summary page contains Cappela')
-        ->content_like(qr!<li><a href="/projects/modeling.gendoc.html">modeling.gendoc</a></li>!i,
+        ->content_like(qr!<td><a href="/admin/project/modeling.gendoc">modeling.gendoc</a></td>!i,
         'Admin summary page contains modeling.gendoc')
-        ->content_like(qr!<p>Quality model: <code>PolarSys Quality Model</code><br />!i,
+        ->content_like(qr!<td>Quality model</td><td>PolarSys Quality Model</td>!i,
         'Admin summary page contains quality model information')
-        ->content_like(qr!<p>Attributes: <code>PolarSys Attributes</code><br />!i,
+        ->content_like(qr!<td>Attributes</td><td>PolarSys Attributes</td>!i,
         'Admin summary page contains attributes information')
-        ->content_like(qr!<p>Metrics: <code>PolarSys Metrics</code><br />!i,
+        ->content_like(qr!<td>Metrics</td><td>PolarSys Metrics</td>!i,
         'Admin summary page contains metrics information')
-        ->content_like(qr!<p>Questions: <code>PolarSys Questions</code><br />!i,
+        ->content_like(qr!<td>Questions</td><td>PolarSys Questions</td>!i,
         'Admin summary page contains questions information');
 
 # Check that we have the right project page for capella (contains header).

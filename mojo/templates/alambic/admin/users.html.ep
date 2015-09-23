@@ -4,17 +4,7 @@
             <h2>Administration: Users</h2>
             <br />
 
-            <div class="tabbable">
-              <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation"><a href="/admin/summary">Summary</a></li>
-                <li role="presentation"><a href="/admin/repo">Repo</a></li>
-                <li role="presentation"><a href="/admin/comments">Comments</a></li>
-                <li role="presentation"><a href="/admin/projects">Projects</a></li>
-                <li role="presentation" class="active"><a href="/admin/users">Users</a></li>
-                <li role="presentation"><a href="/admin/log">Log</a></li>            
-              </ul>
-            </div>
-            <br />
+%= include 'alambic/admin/admin_menu', current => '/admin/users'
 
             <p>Users defined on the system:</p>
 

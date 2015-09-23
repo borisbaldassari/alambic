@@ -16,6 +16,9 @@ sub startup {
 
     $app->secrets(['Secrets of Alambic']);
 
+    # Set the default layout for pages.
+    $app->defaults(layout => 'polarsys');
+
     $app->log->level('debug');
 
     # Use Config plugin for basic configuration
@@ -107,7 +110,14 @@ sub startup {
     $r->post('/login')->to('alambic#login_post');
     $r->get('/logout')->to('alambic#logout');
 
+    # Admin
     $r->get('/admin/summary')->to( 'admin#welcome' );
+
+    # Admin - Repository
+    $r->get('/admin/repo')->to( 'admin#repo' );
+
+    # Admin - Data sources
+    $r->get('/admin/plugins')->to( 'admin#plugins' );
 
     $r->get('/admin/projects')->to( 'admin#projects_main' );
     $r->get('/admin/projects/new')->to( 'admin#project_add' );
@@ -132,9 +142,6 @@ sub startup {
     # Admin - Utilities
     $r->get('/admin/read_files/:files')->to( 'admin#read_files' );
 
-    # Admin - Data sources
-    $r->get('/admin/plugins')->to( 'plugins#welcome' );
-
     # Admin - Comments
     $r->get('/admin/comments')->to( 'comments#welcome' );
     $r->get('/admin/comments/#project')->to( 'comments#welcome' );
@@ -144,8 +151,6 @@ sub startup {
     $r->post('/admin/comments/#project/e/:com')->to( 'comments#edit_post' );
     $r->post('/admin/comments/#project/d/:com')->to( 'comments#delete_post' );
 
-    # Admin - Repo
-    $r->get('/admin/repo')->to( 'repo#manage' );
 }
 
 1;

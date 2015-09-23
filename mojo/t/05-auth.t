@@ -10,6 +10,9 @@ require "$FindBin::Bin/../script/alambic";
 
 my $t = Test::Mojo->new('Alambic');
 
+# Enable redirects for logout.
+$t->ua->max_redirects(10);
+
 # Check login form page.
 $t->get_ok('/login')
         ->status_is(200)
@@ -24,7 +27,8 @@ $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'admin'})
 # Check protected pages in admin: Repository
 $t->get_ok('/admin/repo')
         ->status_is(200)
-        ->content_like(qr'<p>Repo url is not defined. Do you want to <a href="/admin/repo/install">install one</a> now\?</p>'i, 'Check first paragraph: no repo defined.');
+        ->content_like(qr'<h3>Repository information</h3>'i, 'Check first paragraph: repo is defined.')
+        ->content_like(qr'Fetch url is <code>git@bitbucket.org:BorisBaldassari/test.git</code>'i, 'Check repo is ok.');
 
 
 # Check protected pages in admin: Plugins
@@ -68,9 +72,6 @@ $t->get_ok('/admin/users')
         ->content_like(qr!<p>Users defined on the system:</p>!i, 'Check first paragraph of users page.')
         ->content_like(qr'<b>Administrator</b> \( admin \)<br />'i, 'Check admin user is in list.')
         ->content_like(qr'<b>Anonymous</b> \( user.1 \)<br />'i, 'Check anonymous user is in list.');
-
-# Enable redirects for logout.
-$t->ua->max_redirects(10);
 
 
 # Now logout.
@@ -129,12 +130,25 @@ $t->get_ok('/admin/project/polarsys.capella/analyse')
         ->status_is(200)
         ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when analysing project.');
 
+# Check login form page.
+$t->get_ok('/login')
+        ->status_is(200)
+        ->content_like(qr!<form action="login" method="POST">!i, 'Get the form tag.')
+        ->content_like(qr!<p><input name="username" type="text" /></p>!i, 'Get username input tag.');
+
+$t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'bad'})
+        ->status_is(200)
+        ->content_like(qr!Some parts of this site are protected!i, 'Bad password should get back to login.')
+        ->content_unlike(qr!You have been successfully authenticated!i, 'Should not be authenticated.');
+
+$t->post_ok('/login' => form => {'username' => 'bad', 'password' => 'admin'})
+        ->status_is(200)
+        ->content_like(qr!Some parts of this site are protected!i, 'Bas login should get back to login.')
+        ->content_unlike(qr!You have been successfully authenticated!i, 'Should not be authenticated.');
+
 #$t->get_ok('/admin/project/polarsys.capella/del')
 #        ->status_is(200)
 #        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when deleting project.');
 
 
-
-
-
-done_testing(71);
+done_testing(84);

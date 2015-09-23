@@ -5,35 +5,28 @@ use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 
 
-sub welcome {
-    my $self = shift;
-
-    # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/ds' ) ) {
-        $self->redirect_to( '/login' );
-    }
-
-    # Render template 
-    $self->render( template => 'alambic/plugins/manage' );   
-
-}
-
-
 #
 # Add a plugin to a project -- GET.
 #
 sub add_project {
     my $self = shift;
 
-    my $project = $self->param( 'id' );
+    my $project_id = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
+
+    # Check that the connected user has the access rights for this
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->redirect_to( '/login' );
+    }
 
     my $plugin = $self->al_plugins->get_plugin($ds);
     my $conf = $plugin->get_conf();
 
     # Prepare data for template.
     $self->stash(
-        project => $project,
+        project => $project_id,
         conf => $conf,
         );    
     
@@ -48,8 +41,15 @@ sub add_project {
 sub add_project_post {
     my $self = shift;
 
-    my $project = $self->param( 'id' );
+    my $project_id = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
+
+    # Check that the connected user has the access rights for this
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->redirect_to( '/login' );
+    }
 
     my $plugin = $self->al_plugins->get_plugin($ds);
     my $conf = $plugin->get_conf();
@@ -59,10 +59,10 @@ sub add_project_post {
         $args{$param} = $self->param( $param );
     }
 
-    $self->projects->add_project_ds($project, $ds, %args);
+    $self->projects->add_project_ds($project_id, $ds, %args);
     
     # Render template 
-    $self->redirect_to( "/admin/project/$project" );   
+    $self->redirect_to( "/admin/project/$project_id" );   
 }
 
 
@@ -72,13 +72,20 @@ sub add_project_post {
 sub del_project {
     my $self = shift;
 
-    my $project = $self->param( 'id' );
+    my $project_id = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
 
-    $self->projects->delete_project_ds($project, $ds);
+    # Check that the connected user has the access rights for this
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->redirect_to( '/login' );
+    }
+
+    $self->projects->delete_project_ds($project_id, $ds);
     
     # Render template 
-    $self->redirect_to( "/admin/project/$project" );   
+    $self->redirect_to( "/admin/project/$project_id" );   
 }
 
 
@@ -90,6 +97,13 @@ sub project_retrieve_data {
 
     my $project_id = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
+
+    # Check that the connected user has the access rights for this
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->redirect_to( '/login' );
+    }
 
     $self->al_plugins->get_plugin($ds)->retrieve_data($project_id);
     
@@ -106,6 +120,13 @@ sub project_compute_data {
 
     my $project_id = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
+
+    # Check that the connected user has the access rights for this
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->redirect_to( '/login' );
+    }
 
     $self->al_plugins->get_plugin($ds)->compute_data($project_id);
     
