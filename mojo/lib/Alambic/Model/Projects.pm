@@ -344,7 +344,7 @@ sub add_project_comment($$) {
 
     my $comment_id = $comment->{'id'};
     $projects{$project_id}{'comments'}{ $comment_id } = $comment;
-    my @comments = map { $projects{$project_id}{'comments'}{$_} } keys $projects{$project_id}{'comments'};
+    my @comments = map { $projects{$project_id}{'comments'}{$_} } keys %{$projects{$project_id}{'comments'}};
 
     # Create headers for json file
     my $raw = {
@@ -367,7 +367,7 @@ sub edit_project_comment($$) {
 
     my $comment_id = $comment->{'id'};
     $projects{$project_id}{'comments'}{ $comment_id } = $comment;
-    my @comments = map { $projects{$project_id}{'comments'}{$_} } keys $projects{$project_id}{'comments'};
+    my @comments = map { $projects{$project_id}{'comments'}{$_} } keys %{$projects{$project_id}{'comments'}};
 
 
     # Create headers for json file
@@ -390,7 +390,7 @@ sub delete_project_comment($$) {
     my $comment_id = shift;    
     
     delete $projects{$project_id}{'comments'}{$comment_id};
-    my @comments = map { $projects{$project_id}{'comments'}{$_} } keys $projects{$project_id}{'comments'};
+    my @comments = map { $projects{$project_id}{'comments'}{$_} } keys %{$projects{$project_id}{'comments'}};
 
     # Create headers for json file
     my $raw = {
