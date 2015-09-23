@@ -1,5 +1,5 @@
 % layout 'polarsys';
-% title 'Administration: Plugins';
+% title 'Administration: Add project';
 
 % $from = stash( 'from' );
 
@@ -9,10 +9,10 @@
             <div class="tabbable">
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation"><a href="/admin/summary">Summary</a></li>
-                <li role="presentation" class="active"><a href="/admin/plugins">Plugins</a></li>
+                <li role="presentation"><a href="/admin/plugins">Plugins</a></li>
                 <li role="presentation"><a href="/admin/repo">Repo</a></li>
                 <li role="presentation"><a href="/admin/comments">Comments</a></li>
-                <li role="presentation"><a href="/admin/projects">Projects</a></li>
+                <li role="presentation" class="active"><a href="/admin/projects">Projects</a></li>
                 <li role="presentation"><a href="/admin/users">Users</a></li>
                 <li role="presentation"><a href="/admin/log">Log</a></li>            
               </ul>
@@ -30,22 +30,22 @@
               <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
             </form>
 
-% } elsif ( defined($from) && $from =~ m!^github$! ) {
-
-            <form action="/admin/projects/new" method="POST">
-              <p>Name: (<span style="color: red">*</span>) &nbsp; <input name="name" type="text"></input></p>
-              <p>ID: (<span style="color: red">*</span>) &nbsp; <input name="id" type="text"></input></p>
-              <br />
-              <input type="submit" value="Add project"></input>
-              <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
-            </form>
-            
 % } else {
 
             <form action="/admin/projects/new" method="POST">
               <p>Name: (<span style="color: red">*</span>) &nbsp; <input name="name" type="text"></input></p>
               <p>ID: (<span style="color: red">*</span>) &nbsp; <input name="id" type="text"></input></p>
               <br />
+
+%   my $plugins_list = app->al_plugins->get_list_all();
+%   foreach my $plugin (@{$plugins_list}) {
+%     my $plugin_conf = app->al_plugins->get_plugin($plugin)->get_conf();
+              <p><b><%= $plugin_conf->{'name'} %></b><br />
+%     foreach my $arg (keys %{$plugin_conf->{'requires'}}) {
+                <%= $arg %>: (<span style="color: red">*</span>) &nbsp; <input name="<%= join('.', ($plugin, $arg)) %>" type="text" value="<%= $plugin_conf->{'requires'}->{$arg} %>"></input><br />
+%     }
+              </p>
+%   }
               <input type="submit" value="Add project"></input>
               <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
             </form>

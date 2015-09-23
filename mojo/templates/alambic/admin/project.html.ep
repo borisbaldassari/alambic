@@ -31,13 +31,10 @@
 
             <h2>Project <%= $project %></h2>
 
+            <p>Get back to <a href="/admin/projects">projects</a>.</p>
 
-            <div class="btn-group" role="group">
-              <button type="button" class="btn btn-default"><a href="/admin/project/<%= $project %>/retrieve">Retrieve all data</a></button>
-              <button type="button" class="btn btn-default"><a href="/admin/project/<%= $project %>/analyse">Analyse all data</a></button>
-            </div>
-            
-            <p><a href="/admin/project/<%= $project %>/retrieve">Retrieve all data</a> - <a href="/admin/project/<%= $project %>/analyse">Analyse all data</a></p>
+            <a class="btn btn-default" href="/admin/project/<%= $project %>/retrieve" role="button">Retrieve all data</a> 
+            <a class="btn btn-default" href="/admin/project/<%= $project %>/analyse" role="button">Analyse all data</a>
 
             <h3>Information</h3>
 
@@ -91,8 +88,6 @@
             </table>
             <p>You can add a data source from 
 % my $list = al_plugins->get_list_all();
-% use Data::Dumper;
-% print Dumper($list);
 % foreach my $ds (@{$list}) {
               <a href="/admin/project/<%= $project %>/ds/<%= $ds %>/new"><%= $ds %></a>
 % }

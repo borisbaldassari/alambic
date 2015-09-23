@@ -12,7 +12,7 @@ my %conf = (
     ],
     "requires" => {
         "so_url" => "",
-        "so_id" => "",
+        "project_id" => "",
     },
     "provides_metrics" => [
         "SO_PLAN_3M"

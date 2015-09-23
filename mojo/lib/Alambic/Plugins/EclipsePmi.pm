@@ -71,7 +71,7 @@ sub retrieve_data($) {
 
     my $file_json_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_pmi.json";
 
-    print "[Plugins::EclipsePMI] Writing PMI json file to [$file_json_out].\n";
+    $app->log->debug("[Plugins::EclipsePMI] Writing PMI json file to [$file_json_out].");
     open my $fh, ">", $file_json_out;
     print $fh $content;
     close $fh;
@@ -118,14 +118,12 @@ sub compute_data($) {
         if ($pmi{"bugzilla_create_url"} =~ m!\S+!) { $pub_its_info++ };
         if (head($pmi{"bugzilla_create_url"})) {
             $pub_its_info++; 
-            print "  Got create url [" . $pmi{"bugzilla_create_url"} . "]!\n"; 
         }
 
         $pmi{"bugzilla_query_url"} = $raw_project->{"bugzilla"}->[0]->{"query_url"};
         if ($pmi{"bugzilla_query_url"} =~ m!\S+!) { $pub_its_info++; }
         if (head($pmi{"bugzilla_query_url"})) {
             $pub_its_info++;
-            print "  Got query url [" . $pmi{"bugzilla_query_url"} . "]!\n"; 
         }
     }	
     $metrics{"PUB_ITS_INFO_PMI"} = $pub_its_info;
@@ -135,7 +133,7 @@ sub compute_data($) {
     my $json_metrics = encode_json(\%metrics);
 
     my $file_json_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_metrics_pmi.json";
-    print "[Plugins::EclipsePMI] Writing PMI metrics json file to [$file_json_out].\n";
+    $app->log->debug("[Plugins::EclipsePMI] Writing PMI metrics json file to [$file_json_out].");
     open my $fh, ">", $file_json_out;
     print $fh $json_metrics;
     close $fh;

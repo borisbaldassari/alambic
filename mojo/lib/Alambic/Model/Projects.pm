@@ -549,11 +549,12 @@ sub delete_project_ds() {
     my $project_id = shift;
     my $ds_id = shift;
 
-    delete $projects{$project_id}{'info'}{'ds'}{$ds_id};
+    # Remove key to the deleted ds in info hash.
+    delete $projects_info{$project_id}{'ds'}{$ds_id};
     
     # Write updated info file.
     my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
-    write_project_data( $file_to, $projects{$project_id}{'info'});    
+    write_project_data( $file_to, $projects_info{$project_id});    
 }
 
 1;

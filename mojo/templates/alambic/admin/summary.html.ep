@@ -27,60 +27,69 @@
               </ul>
             </div>
 
+            <h2>Configuration</h2>
+                
+% my $conf = app->config;
+            <p>Instance: <code><%= $conf->{'instance_title'} %></code><br />
+              Description: <br />
+              <code><%== $conf->{'instance_desc'} %></code></p>
+
+            <br />
+                
             <div class="row">
               <div class="col-md-6">
 
-                <h2>Configuration</h2>
+                <div class="panel panel-default">
+                  <div class="panel-heading">Configuration</div>
+                  <table class="table table-striped">
+                    <tr><th>File</th><th>Path</th></tr>
+                    <tr><td>Dir conf</td><td><code><%= $conf->{'dir_conf'} %></code></td></tr>
+                    <tr><td>Dir input</td><td><code><%= $conf->{'dir_input'} %></code></td></tr>
+                    <tr><td>Dir data</td><td><code><%= $conf->{'dir_data'} %></code></td></tr>
+                    <tr><td>Dir rules</td><td><code><%= $conf->{'dir_rules'} %></code></td></tr>
+                  </table>
+                </div>
                 
-% my $conf = app->config;
-                <p>Instance: <code><%= $conf->{'instance_title'} %></code><br />
-                  Description: <br />
-                  <code><%== $conf->{'instance_desc'} %></code></p>
-                
-                <p>Folders: <br />
-                  Dir conf: <code><%= $conf->{'dir_conf'} %></code><br />
-                  Dir data: <code><%= $conf->{'dir_data'} %></code><br />
-                  Dir projects: <code><%= $conf->{'dir_projects'} %></code></p>
-                
-                <h2>Models</h2>
-                
+                <div class="panel panel-default">
+                  <div class="panel-heading">Models
 %     if ( defined( session->{'session_user'} ) && users->is_user_authenticated(session->{session_user}, '/admin') ) {
-                <p><a href="/admin/read_files/models"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</p>
+                    <span class="pull-right"><a href="/admin/read_files/models"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</span>
 % }
+                  </div>
 % my %model = app->models->get_model_info;
 % my %attrs = app->models->get_attributes_info;
 % my %metrics = app->models->get_metrics_info;
 % my %questions = app->models->get_questions_info;
 
-                <p>Quality model: <code><%= $model{'name'} %></code><br />
-                  Version: <code><%= $model{'version'} %></code></p>
-                
-                <p>Attributes: <code><%= $attrs{'name'} %></code><br />
-                  Version: <code><%= $attrs{'version'} %></code></p>
-                
-                <p>Metrics: <code><%= $metrics{'name'} %></code><br />
-                  Version: <code><%= $metrics{'version'} %></code></p>
-                
-                <p>Questions: <code><%= $questions{'name'} %></code><br />
-                  Version: <code><%= $questions{'version'} %></code></p>
-                
+                  <table class="table table-striped">
+                    <tr><th>Type</th><th>Name</th><th>Version</th></tr>
+                    <tr><td>Quality model</td><td><%= $model{'name'} %></td><td><%= $model{'version'} %></td></tr>
+                    <tr><td>Attributes</td><td><%= $attrs{'name'} %></td><td><%= $attrs{'version'} %></td></tr>
+                    <tr><td>Metrics</td><td><%= $metrics{'name'} %></td><td><%= $metrics{'version'} %></td></tr>
+                    <tr><td>Questions</td><td><%= $questions{'name'} %></td><td><%= $questions{'version'} %></td></tr>
+                  </table>
+                </div>
+
               </div>
               <div class="col-md-6">
-            </ul>
-
-                <h2>Projects</h2>
-
+                
+                <div class="panel panel-default">
+                  <div class="panel-heading">Projects
 %     if ( defined( session->{'session_user'} ) && users->is_user_authenticated(session->{session_user}, '/admin') ) {
-                <p><a href="/admin/read_files/projects"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</p>
+                    <span class="pull-right"><a href="/admin/read_files/projects"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</span>
 % }
+                  </div>
 % my @projects = app->projects->list_projects;
-                <ul class="list-group">
+                  
+                  <table class="table table-striped">
+                    <tr><th>Name</th></tr>
 % foreach my $project (sort @projects) {
 %     my $name = defined( $self->projects->get_project_name_by_id($project) ) ? 
 %       $self->projects->get_project_name_by_id($project) : $project;
-                  <li class="list-group-item"><a href="/admin/project/<%= $project %>"><%= $name %></a></li>
+                    <tr><td><a href="/admin/project/<%= $project %>"><%= $name %></a></td></tr>
 % }
-                  </div>
+                  </table>
+                </div>
               </div>
             </div>
 

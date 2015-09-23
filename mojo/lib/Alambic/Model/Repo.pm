@@ -79,7 +79,7 @@ sub init {
             $self->{app}->log->info("[Model::Repo] Delete .git_old.");
             remove_tree($home . '/.git_old');
         } 
-        $self->{app}->log->info("[Model::Repo] rename .git to .git_old.");
+        $self->{app}->log->info("[Model::Repo] Rename .git to .git_old.");
         move($home . '/.git', $home . '/.git_old');
     }
 
@@ -96,6 +96,8 @@ sub init {
     # Commit all added files.
     $git->commit( { 'message' => "[Alambic] Initial push." });
     $git->RUN( 'push', 'origin', 'master', { 'set-upstream' => 1, 'force' => 1 } );
+
+    &read_status($self);
 
     return 1;
 }

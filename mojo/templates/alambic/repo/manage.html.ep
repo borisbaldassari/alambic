@@ -7,6 +7,7 @@
             <div class="tabbable">
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation"><a href="/admin/summary">Summary</a></li>
+                <li role="presentation"><a href="/admin/plugins">Plugins</a></li>
                 <li role="presentation" class="active"><a href="/admin/repo">Repo</a></li>
                 <li role="presentation"><a href="/admin/comments">Comments</a></li>
                 <li role="presentation"><a href="/admin/projects">Projects</a></li>
@@ -37,10 +38,8 @@
                 <h3>Actions</h3>
                 <br />
 
-                <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-default"><a href="/admin/repo/install">Initialise new repository</a></button>
-                  <button type="button" class="btn btn-default"><a href="/admin/repo/push">Take snapshot</a></button>
-                </div>
+                <a class="btn btn-default" href="/admin/repo/install" role="button">Initialise new repository</a>
+                <a class="btn btn-default" href="/admin/repo/push" role="button">Take snapshot</a>
 
               </div>
               <div class="col-md-1">

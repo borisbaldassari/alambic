@@ -75,7 +75,7 @@ sub project_add {
 
     # Prepare data for template.
     $self->stash(
-        from => $from
+        from => $from,
         );    
 
     $self->render( template => 'alambic/admin/project_add' );
@@ -165,6 +165,7 @@ sub project_retrieve_data {
     my $self = shift;
 
     my $project_id = $self->param( 'id' );
+    print "[Controller::Admin] project_retrieve_data $project_id.\n";
     
     # Check authentified user.
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
@@ -174,8 +175,8 @@ sub project_retrieve_data {
     }
 
     $self->app->projects->retrieve_project_data($project_id);
-    $self->flash( msg => "Data for project $project_id has been retrieved." );
 
+    $self->flash( msg => "Data for project $project_id has been retrieved." );
     $self->redirect_to( "/admin/project/$project_id" );
 
 }
