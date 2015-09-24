@@ -17,7 +17,7 @@ $t->get_ok('/')
 # Check that we have the right admin page (contains text from admin page > projects > polarsys.capella).
 $t->get_ok('/admin/summary')
         ->status_is(200)
-        ->content_like(qr!<p>Instance: <code>PolarSys Maturity Assessment</code><br />!i, 
+        ->content_like(qr!<p>Instance: <br />\s+<code>PolarSys Maturity Assessment</code><br />!i, 
         'Admin summary page contains instance')
         ->content_like(qr!<td><a href="/admin/project/polarsys.capella">Capella</a></td>!i, 
         'Admin summary page contains Cappela')

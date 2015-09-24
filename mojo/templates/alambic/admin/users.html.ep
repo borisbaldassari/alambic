@@ -6,26 +6,25 @@
 
 %= include 'alambic/admin/admin_menu', current => '/admin/users'
 
-            <p>Users defined on the system:</p>
+            <p>Users are associated to a (full) name, a password, and one or more realm permissions. There are two types of access rights: for the Alambic dashboard itself (access to the admin section) and for the projects (comments, analysis, etc.). The users and their associated rights are defined in the user configuration file located at <code><%= $config->{'file_users'} %></code>. </p>
+            <p>Users defined on the system as for now are:</p>
+            <br />
 
-            <div class="row">
-              <div class="col-md-6">
+            <table class="table table-striped">
+              <tr><th>Id</th><th>Name</th><th>Alambic rights</th><th>Projects</th></tr>
 % my $users = app->users->get_all_users();
 % foreach my $user (sort keys %{$users}) {
-                <b><%= $users->{$user}{'name'}  %></b> ( <%= $user %> )<br />
-                <b>Rights</b> <br />
-                <ul>
-                  <li>Alambic rights: <%= $users->{$user}{'alambic'} || 'none' %></li>
+%   my $al_rights = $users->{$user}{'alambic'} || [];
+                <tr>
+                  <td><%= $user %></td><td><b><%= $users->{$user}{'name'}  %></b></td>
+                  <td><%== join( '<br />', @{$al_rights} ) %></td>
+                  <td>
 %     foreach my $project (keys %{$users->{$user}{'projects'}}) { 
-                  <li>Project <%= $project %>: <%= $users->{$user}{'projects'}{$project} %></li>
+                  <b><%= $project %></b> (<%= $users->{$user}{'projects'}{$project} %>)<br />
 %     }
-                  </ul>
+                  </td>
+                </tr>
 % }
-              </div>
-              <div class="col-md-6">
-                <p>Users are associated to a (full) name, a password, and one or more realm permissions. There are two types of access rights: for the Alambic dashboard itself (access to the admin section) and for the projects (comments, analysis, etc.).</p>
-                <p>The alambic setting in the user configuration file .</p>
-              </div>
-            </div>
-
+            </table>
+            
 

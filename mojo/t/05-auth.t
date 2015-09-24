@@ -69,9 +69,10 @@ $t->get_ok('/admin/projects')
 # Check protected pages in admin: Users
 $t->get_ok('/admin/users')
         ->status_is(200)
-        ->content_like(qr!<p>Users defined on the system:</p>!i, 'Check first paragraph of users page.')
-        ->content_like(qr'<b>Administrator</b> \( admin \)<br />'i, 'Check admin user is in list.')
-        ->content_like(qr'<b>Anonymous</b> \( user.1 \)<br />'i, 'Check anonymous user is in list.');
+        ->content_like(qr!<p>Users defined on the system as for now are:</p>!i, 'Check first paragraph of users page.')
+        ->content_like(qr'<td>admin</td><td><b>Administrator</b></td>'i, 'Check admin user is in list.')
+        ->content_like(qr'<td>/admin<br />/admin/read_files<br />/admin/projects<br />/admin/users<br />/admin/repo<br />/admin/ds</td>'i, 'Check admin rights in list.')
+        ->content_like(qr'<td>user.1</td><td><b>Anonymous</b></td>\s+<td></td>'i, 'Check anonymous user is in list.');
 
 
 # Now logout.
@@ -151,4 +152,4 @@ $t->post_ok('/login' => form => {'username' => 'bad', 'password' => 'admin'})
 #        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when deleting project.');
 
 
-done_testing(84);
+done_testing(85);

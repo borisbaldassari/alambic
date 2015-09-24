@@ -157,9 +157,10 @@ sub projects_id($) {
     my $self = shift;
 
     my $project_id = $self->param( 'id' );
-    
+
     # Check that the connected user has the access rights for this
-    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authentified to access project management.' );
         $self->redirect_to( '/login' );
     }
@@ -199,7 +200,7 @@ sub project_retrieve_data {
     my $self = shift;
 
     my $project_id = $self->param( 'id' );
-    $self->log->info("[Controller::Admin] project_retrieve_data $project_id.");
+    $self->app->log->info("[Controller::Admin] project_retrieve_data $project_id.");
     
     # Check authentified user.
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
@@ -219,6 +220,7 @@ sub project_analyse {
     my $self = shift;
 
     my $project_id = $self->param( 'id' );
+    $self->app->log->info("[Controller::Admin] project_analyse $project_id.");
     
     # Check authentified user.
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
