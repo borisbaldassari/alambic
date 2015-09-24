@@ -6,9 +6,6 @@
 
 %= include 'alambic/admin/admin_menu', current => '/admin/projects'
 
-            <h2>Projects</h2>
-            <br />
-
             <p>Do you want to <a href="/admin/projects/new">add a project</a>?</p>
 
             <table class="table table-striped">

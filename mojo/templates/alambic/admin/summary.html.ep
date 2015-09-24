@@ -17,11 +17,10 @@
 % }
 
 %= include '/alambic/admin/admin_menu', current => '/admin/summary'
-
-            <h2>Configuration</h2>
                 
 % my $conf = app->config;
-            <p>Instance: <code><%= $conf->{'instance_title'} %></code><br />
+            <p>Instance: <br />
+              <code><%= $conf->{'instance_title'} %></code><br />
               Description: <br />
               <code><%== $conf->{'instance_desc'} %></code></p>
 
