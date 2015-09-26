@@ -1,12 +1,12 @@
 % layout 'polarsys';
-% title 'Administration: Add project';
+% title 'Administration: Add a project';
 
 % $from = stash( 'from' );
 
-            <h2>Administration: Plugins</h2>
+            <h2>Administration: add a project</h2>
             <br />
 
-%= include 'admin_menu', current => '/admin/projects'
+%= include 'alambic/admin/admin_menu', current => '/admin/projects'
 
 % if ( defined($from) && $from =~ m!^pmi$! ) {
 

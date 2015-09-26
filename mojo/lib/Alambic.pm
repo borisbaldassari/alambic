@@ -46,7 +46,7 @@ sub startup {
     $app->al_plugins->read_all_files();
 
     # Users holds information about the users and authentication mecanism.
-    $app->helper( users => sub { state $projects = Alambic::Model::Users->new($app) } );
+    $app->helper( users => sub { state $users = Alambic::Model::Users->new($app) } );
     # Initialise the mode (read files).
     $app->users->read_all_files();
 

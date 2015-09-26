@@ -18,8 +18,7 @@ sub read_files() {
     my $self = shift;
     
     # Check that the connected user has the access rights for this
-    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
-             $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
 
         $self->flash( msg => 'You must be authentified to read configuration files.' );
         $self->redirect_to( '/login' );

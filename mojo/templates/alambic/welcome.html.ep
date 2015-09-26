@@ -43,7 +43,7 @@
                 <div class="panel panel-default">
                   <div class="panel-heading"><i class="fa fa-dashboard fa-fw"></i> Projects</div>
                   <div class="list-group">
-% my @projects = $self->projects->list_projects();
+% my @projects = $self->app->projects->list_projects();
 % foreach my $project (sort @projects) {
                     <a href="projects/<%= $project %>.html" class="list-group-item">
                       <i class="fa fa-file-o"></i>&nbsp; <%= $project %></a>
