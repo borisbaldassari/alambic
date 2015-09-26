@@ -13,7 +13,8 @@ my $t = Test::Mojo->new('Alambic');
 
 # Enable redirects for logout.
 $t->ua->max_redirects(10);
-
+$t->ua->connect_timeout(10);
+$t->ua->inactivity_timeout(15);
 
 # Connect using POST.
 $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'admin'})

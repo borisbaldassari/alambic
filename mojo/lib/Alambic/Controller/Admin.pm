@@ -130,9 +130,9 @@ sub project_add_post {
     }
 
     if ( defined($from) && $from =~ m!^pmi$! ) {
-        $self->projects->add_project_from_pmi($project_id);
+        $self->app->projects->add_project_from_pmi($project_id);
     } else {
-        $self->projects->add_project($project_id, $project_name);
+        $self->app->projects->add_project($project_id, $project_name);
     }
 
     $self->redirect_to( '/admin/projects' );
@@ -149,7 +149,7 @@ sub project_del {
         $self->redirect_to( '/login' );
     }
 
-    $self->projects->del_project($project_id);
+    $self->app->projects->del_project($project_id);
 
     $self->redirect_to( '/admin/projects' );
 }
@@ -171,8 +171,8 @@ sub projects_id($) {
     my @files_data = <${dir_projects}/${project_id}/*.json>;
     my $dir_input = $self->config->{'dir_input'};
     my @files_input = <${dir_input}/${project_id}/*.json>;
-    my %projects = $self->projects->get_all_projects();
-             
+    my %projects = $self->{app}->projects->get_all_projects();
+
     # Prepare data for template.
     $self->stash(
         project_id => $project_id,
