@@ -59,7 +59,7 @@ sub add_project_post {
         $args{$param} = $self->param( $param );
     }
 
-    $self->projects->add_project_ds($project_id, $ds, %args);
+    $self->app->projects->add_project_ds($project_id, $ds, %args);
     
     # Render template 
     $self->redirect_to( "/admin/project/$project_id" );   
@@ -82,7 +82,7 @@ sub del_project {
         $self->redirect_to( '/login' );
     }
 
-    $self->projects->delete_project_ds($project_id, $ds);
+    $self->app->projects->delete_project_ds($project_id, $ds);
     
     # Render template 
     $self->redirect_to( "/admin/project/$project_id" );   

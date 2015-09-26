@@ -34,7 +34,7 @@ sub download {
 
         # numbers for projects quality model
         my $project_id = $1;
-        my %project_values = $self->projects->get_project_all_values($project_id);
+        my %project_values = $self->app->projects->get_project_all_values($project_id);
         $self->render(json => \%project_values);
 
     } else {

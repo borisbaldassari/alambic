@@ -15,12 +15,12 @@ sub welcome {
     my $action_id = $self->param( 'com' ) || 0;
 
     # For each project, get their comments for the summary.
-    my @projects = $self->projects->list_projects();
+    my @projects = $self->app->projects->list_projects();
     my %projects_comments;
     foreach my $project (@projects) {
         my $comments;
-        if ( defined($self->projects->get_project_comments($project)) ) {
-            $comments = $self->projects->get_project_comments($project);
+        if ( defined($self->app->projects->get_project_comments($project)) ) {
+            $comments = $self->app->projects->get_project_comments($project);
         } else {
             $comments = [];
         }
@@ -62,7 +62,7 @@ sub add_post {
         "mnemo" => $self->param('mnemo'),
         "text" => $self->param('text'),
      };
-    $self->projects->add_project_comment($project_id, $comment);
+    $self->app->projects->add_project_comment($project_id, $comment);
 
     $self->redirect_to( "/admin/comments/$project_id" );
 }
@@ -91,7 +91,7 @@ sub edit_post($) {
         "mnemo" => $self->param('mnemo'),
         "text" => $self->param('text'),
      };
-    $self->projects->edit_project_comment($project_id, $comment);
+    $self->app->projects->edit_project_comment($project_id, $comment);
 
     $self->redirect_to( "/admin/comments/$project_id" );
 }
@@ -101,7 +101,7 @@ sub delete_post {
 
     my $project_id = $self->param( 'project' );
 
-    $self->projects->delete_project_comment($project_id, $self->param('com'));
+    $self->app->projects->delete_project_comment($project_id, $self->param('com'));
 
     $self->redirect_to( "/admin/comments/$project_id" );
 }

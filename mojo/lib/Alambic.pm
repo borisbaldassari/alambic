@@ -10,9 +10,15 @@ use Alambic::Model::Plugins;
 
 use Data::Dumper;
 
+my $app;
+
+has projects => sub { 
+    state $projects = Alambic::Model::Projects->new($app);
+};
+
 # This method will run once at server start
 sub startup {
-    my $app = shift;
+    $app = shift;
 
     $app->secrets(['Secrets of Alambic']);
 
@@ -50,9 +56,9 @@ sub startup {
     $app->models->read_all_files();
 
     # Projects holds information about the analysed projects: values, pmi, comments, etc.
-    $app->helper( projects => sub { state $projects = Alambic::Model::Projects->new($app) } );
+    # $app->helper( projects => sub { state $projects = Alambic::Model::Projects->new($app) } );
     # Initialise the mode (read files).
-    $app->projects->read_all_files();
+    # $app->projects->read_all_files();
 
     # Used to get the right colour on scales.
     $app->helper( 

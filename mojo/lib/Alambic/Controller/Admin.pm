@@ -18,7 +18,9 @@ sub read_files() {
     my $self = shift;
     
     # Check that the connected user has the access rights for this
-    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/read_files' ) ) {
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+
         $self->flash( msg => 'You must be authentified to read configuration files.' );
         $self->redirect_to( '/login' );
     }
@@ -30,7 +32,7 @@ sub read_files() {
         $self->models->read_all_files();
         $msg = "All model files reread.";
     } elsif ($files =~ m!projects!) {
-        $self->projects->read_all_files();
+        $self->app->projects->read_all_files();
         $msg = "All project files reread.";
     } else {
         $msg = "Could not understand command. Files not read.";
@@ -44,13 +46,13 @@ sub projects_main {
     my $self = shift;
     
     # Check that the connected user has the access rights for this
-    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authentified to access project management.' );
         $self->redirect_to( '/login' );
     }
              
-    my @list_projects = $self->projects->list_projects();
-    my %full_projects = $self->projects->get_all_projects();
+    my @list_projects = $self->app->projects->list_projects();
+    my %full_projects = $self->app->projects->get_all_projects();
 
     # Prepare data for template.
     $self->stash(
@@ -102,7 +104,7 @@ sub project_add {
     my $from = $self->param( 'from' );
     
     # Check that the connected user has the access rights for this
-    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authentified to add a project.' );
         $self->redirect_to( '/login' );
     }
@@ -123,7 +125,7 @@ sub project_add_post {
     my $from = $self->param( 'from' );
     
     # Check that the connected user has the access rights for this
-    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authentified to add a project.' );
         $self->redirect_to( '/login' );
     }
@@ -143,7 +145,7 @@ sub project_del {
     my $project_id = $self->param( 'id' );
     
     # Check that the connected user has the access rights for this
-    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authentified to delete a project.' );
         $self->redirect_to( '/login' );
     }
@@ -160,7 +162,7 @@ sub projects_id($) {
 
     # Check that the connected user has the access rights for this
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
-             $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+             $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authentified to access project management.' );
         $self->redirect_to( '/login' );
     }
@@ -188,7 +190,7 @@ sub users_main {
     my $self = shift;
     
     # Check that the connected user has the access rights for this
-    unless ( $self->{app}->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/users' ) ) {
+    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/users' ) ) {
         $self->flash( msg => 'You must be authentified to access users management.' );
         $self->redirect_to( '/login' );
     }

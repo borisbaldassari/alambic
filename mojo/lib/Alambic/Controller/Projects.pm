@@ -34,8 +34,8 @@ sub display {
         $self->stash(
             attributes => \%attributes,
             project_id => $project_id,
-            project_attrs => $self->projects->get_project_attrs($project_id),
-            project_attrs_conf => $self->projects->get_project_attrs_conf($project_id),
+            project_attrs => $self->app->projects->get_project_attrs($project_id),
+            project_attrs_conf => $self->app->projects->get_project_attrs_conf($project_id),
             );    
         
         # Render template "alambic/dashboard/attributes.html.ep"
@@ -49,8 +49,8 @@ sub display {
         $self->stash(
             questions => \%questions,
             project_id => $project_id,
-            project_questions => $self->projects->get_project_questions($project_id),
-            project_questions_conf => $self->projects->get_project_questions_conf($project_id),
+            project_questions => $self->app->projects->get_project_questions($project_id),
+            project_questions_conf => $self->app->projects->get_project_questions_conf($project_id),
             );    
         
         # Render template "alambic/dashboard/questions.html.ep"
@@ -64,8 +64,8 @@ sub display {
         $self->stash(
             metrics => \%metrics,
             project_id => $project_id,
-            project_metrics => $self->projects->get_project_metrics($project_id),
-            project_inds => $self->projects->get_project_indicators($project_id),
+            project_metrics => $self->app->projects->get_project_metrics($project_id),
+            project_inds => $self->app->projects->get_project_indicators($project_id),
             );    
         
         # Render template "alambic/dashboard/metrics.html.ep"
@@ -79,7 +79,7 @@ sub display {
         $self->stash(
             rules => \%rules,
             project_id => $project_id,
-            project_violations => $self->projects->get_project_violations($project_id),
+            project_violations => $self->app->projects->get_project_violations($project_id),
             );    
         
         # Render template "alambic/dashboard/practices.html.ep"
@@ -93,11 +93,11 @@ sub display {
         $self->stash(
             attributes => \%attributes,
             project_id => $project_id,
-            project_attrs => $self->projects->get_project_attrs($project_id),
-            project_attrs_conf => $self->projects->get_project_attrs_conf($project_id),
-            project_pmi => $self->projects->get_project_pmi($project_id),
-            project_comments => $self->projects->get_project_comments($project_id),
-            project_attrs_last => $self->projects->get_project_attrs_last($project_id),
+            project_attrs => $self->app->projects->get_project_attrs($project_id),
+            project_attrs_conf => $self->app->projects->get_project_attrs_conf($project_id),
+            project_pmi => $self->app->projects->get_project_pmi($project_id),
+            project_comments => $self->app->projects->get_project_comments($project_id),
+            project_attrs_last => $self->app->projects->get_project_attrs_last($project_id),
             );    
         
         # Render template "alambic/dashboard.html.ep"
