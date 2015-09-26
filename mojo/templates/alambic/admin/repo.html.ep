@@ -4,15 +4,27 @@
             <h2>Administration: Alambic repository</h2>
             <br />
 
-%= include '/alambic/admin/admin_menu', current => '/admin/repo'
+% my $msg = flash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%= $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+%= include 'alambic/admin/admin_menu', current => '/admin/repo'
 
             <p>All data, configuration and executable files in Alambic are stored under a configuration management system (git). This page lists info about the git repository used for this instance.</p>
             <br />
 
-% if (not defined(repo->get_repo_url_push)) {
+% if (not defined(repo->get_repo_url_push())) {
             <p>Repo url is not defined. Do you want to <a href="/admin/repo/install">install one</a> now?</p>
 % } else {
-%     my $updates = app->repo->get_updates();
+%     my $updates = app->repo->get_updates() || undef;
             <div class="row">
               <div class="col-md-4">
 

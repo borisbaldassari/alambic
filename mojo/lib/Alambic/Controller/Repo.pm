@@ -44,7 +44,11 @@ sub push() {
         $self->redirect_to( '/login' );
     }
 
-    $self->repo->push();
+    my $ret = $self->repo->push();
+    print "REPO CONTROLLER $ret.\n";
+    if ($ret !~ m!1!) {
+        $self->flash( msg => $ret );
+    }
 
     # Render template "alambic/repo/manage.html.ep"
     $self->redirect_to( '/admin/repo' );

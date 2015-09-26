@@ -93,5 +93,7 @@ $t->get_ok('/admin/project/modeling.sirius/analyse')
     ->content_like(qr!Data for project modeling.sirius has been analysed.!i, 'Message states that data has been analysed.')
     ->content_like(qr!<li class="list-group-item">modeling.sirius_metrics.json</li>!i, 'Data files include generated metrics.');
 
+# TODO add test to push new snapshot twice (second should have nothing new to push).
+
 
 done_testing(44);

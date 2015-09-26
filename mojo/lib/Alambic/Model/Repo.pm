@@ -17,6 +17,8 @@ use Data::Dumper;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( read_all_files
+                 get_repo_url_fetch
+                 get_repo_url_push
                  get_list );  
 
 my %repo;
@@ -24,7 +26,7 @@ my $git;
 
 my @files_push = (
     'conf/', 
-    'data/', 
+    'projects/', 
     'lib/',
     'log/.keepme', 
     'public/',
@@ -105,16 +107,25 @@ sub init {
 sub push {
     my $self = shift;
   
+    my $ret = 1;
+
     # Add needed files to commit.
     foreach my $path (@files_push) {
         $git->add($path);
     }
 
     # Commit all added files.
-    $git->commit( { 'message' => "[Alambic] Another push." });
-    $git->push();
+    try {
+        $git->commit( { 'message' => "[Alambic] Another push." });
+        $git->push();
+    } catch {
+        if ($_->status =~ m!1!) {
+            # git status 1 means: nothing new to push.
+            $ret = "Nothing new to push.";
+        }
+    };
 
-    return 1;
+    return $ret;
 }
 
 sub get_updates {
@@ -122,7 +133,7 @@ sub get_updates {
     
     # Get past commits from the repo.
     my @logs = $git->log();
-    my @commits = map { $_->{'message'} } @logs;
+#    my @commits = map { $_->{'message'} } @logs;
 
     # TODO check @commits.
     return \@logs;

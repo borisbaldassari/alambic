@@ -50,118 +50,7 @@ sub new {
   my $config = $app->config;
   my $models = $app->models;
 
-  my $dir_data = $config->{'dir_data'};
-  
-  %attributes = $models->get_attributes();
-  %questions = $models->get_questions();
-  %metrics = $models->get_metrics();
-  
-  # Read info for projects
-  $app->log->info( "[Model::Projects] Reading all projects info from [$dir_data]." );
-  my @projects_info = <$dir_data/*/*_info.json>;
-  foreach my $project (@projects_info) {
-      $project =~ m!.*[\/](.*?)_info.json!;
-      my $id = $1;
-      my $json_project = &read_project_data($project);
-      $projects_info{$id} = $json_project;
-  }
-  
-  # Read metrics for projects
-  $app->log->info( "[Model::Projects] Reading all projects metrics from [$dir_data]." );
-  my @projects_metrics = <$dir_data/*/*_metrics.json>;
-  foreach my $project (@projects_metrics) {
-      $project =~ m!.*[\/](.*?)_metrics.json!;
-      my $id = $1;
-      my $json_project = &read_project_data($project);
-      $projects{$id}{'metrics'} = $json_project->{'children'};
-  }
-  
-  # Read attributes for projects
-  $app->log->info( "[Model::Projects] Reading all projects attributes from [$dir_data]." );
-  my @projects_attrs = <$dir_data/*/*_attributes.json>;
-  foreach my $project (@projects_attrs) {
-      $project =~ m!.*[\/](.*?)_attributes.json!;
-      my $id = $1;
-      my $json_project = &read_project_data($project);
-      $projects{$id}{'attrs'} = $json_project->{'children'};
-  }
-  
-  # Read attributes_confidence for projects
-  $app->log->info( "[Model::Projects] Reading all projects attrs_conf from [$dir_data]." );
-  my @projects_attrs_conf = <$dir_data/*/*_attributes_confidence.json>;
-  foreach my $project (@projects_attrs_conf) {
-      $project =~ m!.*[\/](.*?)_attributes_confidence.json!;
-      my $id = $1;
-      my $json_project = &read_project_data($project);
-      $projects{$id}{'attrs_conf'} = $json_project->{'children'};
-  }
-  
-  # Read questions for projects
-  $app->log->info( "[Model::Projects] Reading all projects questions from [$dir_data]." );
-  my @projects_questions = <$dir_data/*/*_questions.json>;
-  foreach my $project (@projects_questions) {
-      $project =~ m!.*[\/](.*?)_questions.json!;
-      my $id = $1;
-      my $json_project = &read_project_data($project);
-      $projects{$id}{'questions'} = $json_project->{'children'};
-  }
-  
-  # Read questions_confidence for projects
-  $app->log->info( "[Model::Projects] Reading all projects questions confidence from [$dir_data]." );
-  my @projects_questions_conf = <$dir_data/*/*_questions_confidence.json>;
-  foreach my $project (@projects_questions_conf) {
-      $project =~ m!.*[\/](.*?)_questions_confidence.json!;
-      my $id = $1;
-      my $json_project = &read_project_data($project);
-      $projects{$id}{'questions_conf'} = $json_project->{'children'};
-  }
-  
-  # Read indicators for projects
-  $app->log->info( "[Model::Projects] Reading all projects indicators from [$dir_data]." );
-  my @projects_inds = <$dir_data/*/*_indicators.json>;
-  foreach my $project (@projects_inds) {
-      $project =~ m!.*[\/](.*?)_indicators.json!;
-      my $id = $1;
-      my $json_project = &read_project_data($project);
-      $projects{$id}{'indicators'} = $json_project->{'children'};
-  }
-  
-  # Read violations for projects
-  $app->log->info( "[Model::Projects] Reading all projects violations from [$dir_data]." );
-  my @projects_probs = <$dir_data/*/*_violations.json>;
-  foreach my $project (@projects_probs) {
-      $project =~ m!.*[\/](.*?)_violations.json!;
-      my $id = $1;
-      my $json_project = &read_project_data($project);
-      foreach my $rule (@{$json_project->{'children'}}) {
-          $projects{$id}{'violations'}{$rule->{'name'}} = $rule;
-      }
-  }
-  
-  # Read PMI info for projects
-  $app->log->info( "[Model::Projects] Reading all projects PMI data from [$dir_data]." );
-  my @projects_pmi = <$dir_data/*/*_pmi.json>;
-  foreach my $project (@projects_pmi) {
-      $project =~ m!.*[\/](.*?)_pmi.json!;
-      my $id = $1;
-      my $json_project = &read_project_data($project);
-      $projects{$id}{'pmi'} = $json_project->{'projects'}->{$id};
-      $projects_names{$id} = $json_project->{'projects'}->{$id}->{'title'};
-  }
-  
-  # Read comments for projects
-  $app->log->info( "[Model::Projects] Reading all projects comments from [$dir_data]." );
-  my @projects_comments = <$dir_data/*/*_comments.json>;
-  foreach my $project (@projects_comments) {
-      $project =~ m!.*[\/](.*?)_comments.json!;
-      my $id = $1;
-      my $json_project = &read_project_data($project);
-      foreach my $comment (@{$json_project->{'comments'}}) {
-          $projects{$id}{'comments'}{$comment->{'id'}} = $comment;
-      }
-  }
-  
-#  &read_all_files($app);
+  &_read_files($config, $models, $app->log);
 
   my $hash = {app => $app};
   weaken $hash->{app};
@@ -176,14 +65,24 @@ sub read_all_files() {
     my $config = $self->{app}->config;
     my $models = $self->{app}->models;
 
+    &_read_files($config, $models, $self->{app}->log);
+
+}
+
+sub _read_files($$) {
+    my $config = shift;
+    my $models = shift;
+    my $log = shift;
+
     my $dir_data = $config->{'dir_data'};
-    
+   
+
     %attributes = $models->get_attributes();
     %questions = $models->get_questions();
     %metrics = $models->get_metrics();
 
     # Read info for projects
-    $self->{app}->log->info( "[Model::Projects] Reading all projects info from [$dir_data]." );
+    $log->info( "[Model::Projects] Reading all projects info from [$dir_data]." );
     my @projects_info = <$dir_data/*/*_info.json>;
     foreach my $project (@projects_info) {
         $project =~ m!.*[\/](.*?)_info.json!;
@@ -193,7 +92,7 @@ sub read_all_files() {
     }
 
     # Read metrics for projects
-    $self->{app}->log->info( "[Model::Projects] Reading all projects metrics from [$dir_data]." );
+    $log->info( "[Model::Projects] Reading all projects metrics from [$dir_data]." );
     my @projects_metrics = <$dir_data/*/*_metrics.json>;
     foreach my $project (@projects_metrics) {
         $project =~ m!.*[\/](.*?)_metrics.json!;
@@ -203,7 +102,7 @@ sub read_all_files() {
     }
 
     # Read attributes for projects
-    $self->{app}->log->info( "[Model::Projects] Reading all projects attributes from [$dir_data]." );
+    $log->info( "[Model::Projects] Reading all projects attributes from [$dir_data]." );
     my @projects_attrs = <$dir_data/*/*_attributes.json>;
     foreach my $project (@projects_attrs) {
         $project =~ m!.*[\/](.*?)_attributes.json!;
@@ -213,7 +112,7 @@ sub read_all_files() {
     }
 
     # Read attributes_confidence for projects
-    $self->{app}->log->info( "[Model::Projects] Reading all projects attrs_conf from [$dir_data]." );
+    $log->info( "[Model::Projects] Reading all projects attrs_conf from [$dir_data]." );
     my @projects_attrs_conf = <$dir_data/*/*_attributes_confidence.json>;
     foreach my $project (@projects_attrs_conf) {
         $project =~ m!.*[\/](.*?)_attributes_confidence.json!;
@@ -223,7 +122,7 @@ sub read_all_files() {
     }
 
     # Read questions for projects
-    $self->{app}->log->info( "[Model::Projects] Reading all projects questions from [$dir_data]." );
+    $log->info( "[Model::Projects] Reading all projects questions from [$dir_data]." );
     my @projects_questions = <$dir_data/*/*_questions.json>;
     foreach my $project (@projects_questions) {
         $project =~ m!.*[\/](.*?)_questions.json!;
@@ -233,7 +132,7 @@ sub read_all_files() {
     }
 
     # Read questions_confidence for projects
-    $self->{app}->log->info( "[Model::Projects] Reading all projects questions confidence from [$dir_data]." );
+    $log->info( "[Model::Projects] Reading all projects questions confidence from [$dir_data]." );
     my @projects_questions_conf = <$dir_data/*/*_questions_confidence.json>;
     foreach my $project (@projects_questions_conf) {
         $project =~ m!.*[\/](.*?)_questions_confidence.json!;
@@ -243,7 +142,7 @@ sub read_all_files() {
     }
 
     # Read indicators for projects
-    $self->{app}->log->info( "[Model::Projects] Reading all projects indicators from [$dir_data]." );
+    $log->info( "[Model::Projects] Reading all projects indicators from [$dir_data]." );
     my @projects_inds = <$dir_data/*/*_indicators.json>;
     foreach my $project (@projects_inds) {
         $project =~ m!.*[\/](.*?)_indicators.json!;
@@ -253,7 +152,7 @@ sub read_all_files() {
     }
 
     # Read violations for projects
-    $self->{app}->log->info( "[Model::Projects] Reading all projects violations from [$dir_data]." );
+    $log->info( "[Model::Projects] Reading all projects violations from [$dir_data]." );
     my @projects_probs = <$dir_data/*/*_violations.json>;
     foreach my $project (@projects_probs) {
         $project =~ m!.*[\/](.*?)_violations.json!;
@@ -265,7 +164,7 @@ sub read_all_files() {
     }
 
     # Read PMI info for projects
-    $self->{app}->log->info( "[Model::Projects] Reading all projects PMI data from [$dir_data]." );
+    $log->info( "[Model::Projects] Reading all projects PMI data from [$dir_data]." );
     my @projects_pmi = <$dir_data/*/*_pmi.json>;
     foreach my $project (@projects_pmi) {
         $project =~ m!.*[\/](.*?)_pmi.json!;
@@ -276,7 +175,7 @@ sub read_all_files() {
     }
 
     # Read comments for projects
-    $self->{app}->log->info( "[Model::Projects] Reading all projects comments from [$dir_data]." );
+    $log->info( "[Model::Projects] Reading all projects comments from [$dir_data]." );
     my @projects_comments = <$dir_data/*/*_comments.json>;
     foreach my $project (@projects_comments) {
         $project =~ m!.*[\/](.*?)_comments.json!;
@@ -637,7 +536,7 @@ sub del_project() {
     remove_tree( $self->{app}->config->{'dir_data'} . "/" . $project_id );
     remove_tree( $self->{app}->config->{'dir_input'} . "/" . $project_id );
 
-    # Add values to the 
+    # Remove project from local variables.
     delete $projects_names{$project_id};
     delete $projects_info{$project_id};
     delete $projects{$project_id};
