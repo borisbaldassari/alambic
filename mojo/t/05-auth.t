@@ -27,7 +27,7 @@ $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'admin'})
 $t->get_ok('/admin/repo')
         ->status_is(200)
         ->content_like(qr'<h3>Repository information</h3>'i, 'Check first paragraph: repo is defined.')
-        ->content_like(qr'Fetch url is <code>git@bitbucket.org:BorisBaldassari/test.git</code>'i, 'Check repo is ok.');
+        ->content_like(qr'Fetch url is <code>git@bitbucket.org:BorisBaldassari/alambic_test.git</code>'i, 'Check repo is ok.');
 
 
 # Check protected pages in admin: Plugins
