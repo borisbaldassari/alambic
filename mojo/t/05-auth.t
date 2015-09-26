@@ -2,7 +2,6 @@ use Mojo::Base -strict;
 
 use Test::More;
 use Test::Mojo;
-use Test::Mojo::Session;
 
 # Include application
 use FindBin;
