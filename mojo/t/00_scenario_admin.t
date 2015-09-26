@@ -22,7 +22,7 @@ $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'admin'})
 
 
 # Install new repository.
-$t->post_ok('/admin/repo/install' => form => {'git_repo' => 'git@bitbucket.org:BorisBaldassari/test.git'})
+$t->post_ok('/admin/repo/install' => form => {'git_repo' => 'git@bitbucket.org:BorisBaldassari/alambic_test.git'})
     ->status_is(200)
     ->content_like(qr!All data, configuration and executable files in Alambic!i, 'Initialise repository.')
     ->content_like(qr!<p>Fetch url is <code>git\@bitbucket.org:BorisBaldassari/test.git</code><br />!i, 'Fetch URL is well defined.')
