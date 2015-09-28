@@ -18,7 +18,7 @@ sub welcome {
 
     } elsif ($in_doc =~ m!^attributes(.html)?$!) {
 
-        my %attributes = $self->models->get_attributes();
+        my %attributes = %{$self->models->get_attributes()};
 
 	# Render template for attributes
         $self->stash( attributes => \%attributes );
@@ -26,7 +26,7 @@ sub welcome {
 
     } elsif ($in_doc =~ m!^questions(.html)?$!) {
 
-        my %questions = $self->models->get_questions();
+        my %questions = %{$self->models->get_questions()};
 
         # Render template for questions
         $self->stash( questions => \%questions );
@@ -34,7 +34,7 @@ sub welcome {
 
     } elsif ($in_doc =~ m!^metrics(_(\w+))?(.html)?$!) {
 
-        my %metrics = $self->models->get_metrics();
+        my %metrics = %{$self->models->get_metrics()};
         my %repos = $self->models->get_metrics_repos();
         my $repo = $2 || "";
 
@@ -74,8 +74,8 @@ sub welcome {
 
     } elsif ($in_doc =~ m!^rules(_(.+?))?(.html)?$!) {
 
-        my %rules = $self->models->get_rules();
-        my %sources = $self->models->get_rules_sources();
+        my %rules = %{$self->models->get_rules()};
+        my %sources = %{$self->models->get_rules_sources()};
         my $source = $2 || "";
 
 	# Render template for metrics

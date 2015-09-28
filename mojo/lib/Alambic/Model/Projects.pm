@@ -149,7 +149,9 @@ sub _read_files($$) {
         my $id = $1;
         my $json_project = &read_project_data($project);
         $projects{$id}{'indicators'} = $json_project->{'children'};
+        print "DBG $id " . Dumper($projects{$id}{'indicators'});
     }
+
 
     # Read violations for projects
     $log->info( "[Model::Projects] Reading all projects violations from [$dir_data]." );
@@ -192,6 +194,7 @@ sub _read_files($$) {
 sub read_project_data($) {
     my $file = shift;
 
+    print "Reading file $file.\n";
     my $json;
     do { 
         local $/;
@@ -269,6 +272,10 @@ sub get_project_metrics_last($) {
 sub get_project_indicators($) {
     my $self = shift;
     my $project_id = shift;
+
+    print "[Model::Projects] get_project_indicators $project_id.\n";
+    print Dumper($projects{$project_id}{'indicators'});
+    print "[Model::Projects] get_project_indicators.\n";
 
     return $projects{$project_id}{'indicators'};
 }
@@ -370,7 +377,7 @@ sub add_project_comment($$) {
 
     # Write updated comment file.
     my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_comments.json';
-    write_project_data( $file_to, $raw);
+    &write_project_data( $file_to, $raw);
 
     return 1;
 }
@@ -394,7 +401,7 @@ sub edit_project_comment($$) {
 
     # Write updated comment file.
     my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_comments.json';
-    write_project_data( $file_to, $raw);
+    &write_project_data( $file_to, $raw);
 
     return 1;
 }
@@ -416,7 +423,7 @@ sub delete_project_comment($$) {
 
     # Write updated comment file.
     my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_comments.json';
-    write_project_data( $file_to, $raw);
+    &write_project_data( $file_to, $raw);
 
     return 1;
 }
@@ -484,23 +491,31 @@ sub retrieve_project_data() {
 
 
 #
-# Retrieves metrics from the various data providers and consolidates them in 
+# Retrieves metrics from the various data files and consolidates them in 
 # a single file, then computes the aggregation of metrics up to top attributes 
 # for the project.
 #
-sub analyse_project() {
+sub analyse_project($) {
     my $self = shift;
     my $project_id = shift;
 
-    my $analysis = Alambic::Model::Analysis->new($self->{app});
-    my $ds_list = $self->{app}->al_plugins->get_list_all();
-    foreach my $ds (keys %{$projects_info{$project_id}{'ds'}}) {
-        if ( grep( $ds, $ds_list ) ) {
-            $analysis->analyse_project($project_id);
-        } else {
-            $self->{app}->log->warn("[Model::Projects.pm] analyse_project Cannot recognise ds [$ds]."); 
-        }
-    }    
+    # Create an instance of the Analysis module.
+    my $analysis = Alambic::Model::Analysis->new($self->{app}, $project_id);
+
+    # gather all input metrics files, and write a single metrics file 
+    # for the project in $dir_data.
+    print "DBG [Model::Projects] analyse_project before analyse_input.\n";
+    my $metrics = $analysis->analyse_input($project_id);
+
+    print "DBG [Model::Projects] analyse_project before compute_inds.\n";
+    $analysis->compute_inds($project_id);
+
+#    my $ds_list = $self->{app}->al_plugins->get_list_all();
+#            $analysis->analyse_project($project_id);
+#        } else {
+#            $self->{app}->log->warn("[Model::Projects.pm] analyse_project Cannot recognise ds [$ds]."); 
+#        }
+#    }    
 }
 
 sub add_project() {

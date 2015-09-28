@@ -206,7 +206,7 @@ sub project_retrieve_data {
     # Check authentified user.
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->flash( msg => "You must have rights on project $project_id to access this area." );
         $self->redirect_to( '/login' );
     }
 
@@ -229,7 +229,7 @@ sub project_analyse {
         $self->flash( msg => "You must have rights on project $project_id to access this area." );
         $self->redirect_to( '/login' );
     }
-
+#    print "# [Controller::Admin] project_analyse.\n";
     $self->app->projects->analyse_project($project_id);
     $self->flash( msg => "Data for project $project_id has been analysed." );
 

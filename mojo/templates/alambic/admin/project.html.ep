@@ -74,7 +74,7 @@
                 <td>
 %   my $args = app->projects->get_project_ds($project, $ds);
 %   my @args_full = map { "$_: <code>" . $args->{$_} . "</code>"; } keys %{$args};
-%   my $args_str = join( '<br />', @args_full );
+%   my $args_str = join( '<br />', sort @args_full );
                   <%== $args_str %>
                 </td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/check"><i class="fa fa-check"></i></a></td>

@@ -28,7 +28,7 @@ sub display {
 
     } elsif ($page_id =~ m!^attrs$!) {
         
-        my %attributes = $self->models->get_attributes();
+        my %attributes = %{$self->models->get_attributes()};
 
         # Prepare data for template.
         $self->stash(
@@ -43,7 +43,7 @@ sub display {
         
     } elsif ($page_id =~ m!^questions$!) {
         
-        my %questions = $self->models->get_questions();
+        my %questions = %{$self->models->get_questions()};
 
         # Prepare data for template.
         $self->stash(
@@ -58,7 +58,7 @@ sub display {
         
     } elsif ($page_id =~ m!^metrics$!) {
         
-        my %metrics = $self->models->get_metrics();
+        my %metrics = %{$self->models->get_metrics()};
 
         # Prepare data for template.
         $self->stash(
@@ -73,7 +73,7 @@ sub display {
         
     } elsif ($page_id =~ m!^practices$!) {
         
-        my %rules = $self->models->get_rules();
+        my %rules = %{$self->models->get_rules()};
 
         # Prepare data for template.
         $self->stash(

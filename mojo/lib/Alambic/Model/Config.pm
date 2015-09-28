@@ -79,6 +79,10 @@ sub get_desc() {
     return $config{'desc'};
 }
 
+sub get_colours() {
+    return $config{'colours'};
+}
+
 sub set_conf($$$) {
     my $self = shift;
     my $title = shift;

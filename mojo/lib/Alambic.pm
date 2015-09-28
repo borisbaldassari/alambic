@@ -62,12 +62,12 @@ sub startup {
     $app->models->read_all_files();
 
     # Used to get the right colour on scales.
-    $app->helper( 
-        comp_c => sub { 
-            my $app = shift;
-            my $value = shift || 0;
-            return $config->{"colours"}->[int($value)];
-        });
+    # $app->helper( 
+    #     comp_c => sub { 
+    #         my $app = shift;
+    #         my $value = shift || 0;
+    #         return $config->{"colours"}->[int($value)];
+    #     });
 
     # Used to get project name from id
     $app->helper( 
@@ -104,7 +104,7 @@ sub startup {
     $r->get('/comments/')->to('comments#welcome');
     
     # Dashboards
-    $r->get('/projects/#id')->to('projects#display');
+    $r->get('/projects/#id')->to('dashboard#display');
     
     # Login form
     $r->get('/login')->to('alambic#login');

@@ -17,17 +17,17 @@ sub download {
 
     } elsif ($in_doc =~ m!^model_attributes.json$!) {
 
-        my %attributes = $self->models->get_attributes_full();
+        my %attributes = %{$self->models->get_attributes_full()};
         $self->render( json => \%attributes );
 
     } elsif ($in_doc =~ m!^model_metrics.json$!) {
 
-        my %metrics = $self->models->get_metrics_full();
+        my %metrics = %{$self->models->get_metrics_full()};
         $self->render( json => \%metrics);
 
     } elsif ($in_doc =~ m!^model_questions.json$!) {
 
-        my %questions = $self->models->get_questions_full();
+        my %questions = %{$self->models->get_questions_full()};
         $self->render( json => \%questions );
 
     } elsif ($in_doc =~ m!^(\S+)_qm.json$!) {

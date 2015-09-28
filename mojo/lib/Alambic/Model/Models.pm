@@ -263,7 +263,7 @@ sub read_rules($) {
 # }
 
 sub get_model() {
-    return %model;
+    return \%model;
 }
 
 sub get_model_info() {
@@ -271,8 +271,8 @@ sub get_model_info() {
 }
 
 sub get_model_nodes() {
-    my @nodes = &find_nodes($model{'children'});
-    return sort @nodes;
+    my @nodes = sort &find_nodes($model{'children'});
+    return @nodes;
 }
 
 
@@ -294,7 +294,7 @@ sub find_nodes($) {
 }
 
 sub get_metrics() {
-    return %metrics;
+    return \%metrics;
 }
 
 sub get_metrics_info() {
@@ -312,11 +312,11 @@ sub get_metrics_full() {
         'children' => \%metrics,
     );
 
-    return %full;
+    return \%full;
 }
 
 sub get_attributes() {
-    return %attributes;
+    return \%attributes;
 }
 
 sub get_attributes_info() {
@@ -330,11 +330,11 @@ sub get_attributes_full() {
         'children' => \%attributes,
     );
 
-    return %full;
+    return \%full;
 }
 
 sub get_questions() {
-    return %questions;
+    return \%questions;
 }
 
 sub get_questions_info() {
@@ -348,15 +348,15 @@ sub get_questions_full() {
         'children' => \%questions,
     );
 
-    return %full;
+    return \%full;
 }
 
 sub get_rules() {
-    return %rules;
+    return \%rules;
 }
 
 sub get_rules_sources() {
-    return %rules_sources;
+    return \%rules_sources;
 }
 
 sub read_data($) {

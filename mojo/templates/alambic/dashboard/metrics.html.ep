@@ -1,5 +1,10 @@
 % layout 'polarsys';
 % title 'Dashboard';
+<%= dumper(app->al_config->{"colours"}) %>
+% sub comp_c($) {
+%   my $value = shift || 0;
+%   return app->al_config->get_colours->[int($value)];
+% }
 
             <h2>Project <%= $project_id %></h2>
             <br />
