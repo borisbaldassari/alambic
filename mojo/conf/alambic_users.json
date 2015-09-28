@@ -11,7 +11,7 @@
               "/admin/projects",
               "/admin/users",
               "/admin/repo",
-              "/admin/ds"
+              "/admin/plugins"
           ],
           "projects": {
               "polarsys.capella": "admin",

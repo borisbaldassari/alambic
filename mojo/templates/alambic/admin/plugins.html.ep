@@ -6,6 +6,9 @@
 
 %= include 'alambic/admin/admin_menu', current => '/admin/plugins'
 
+            <p>Plugins add new functionalities to Alambic. They most notably provide new data sources for projects, computing and visualisation features, and can be easily customised to fit specific needs.</p>
+            <br />
+
             <table class="table table-striped">
               <tr><th>Name</th><th>ID</th><th>Type</th><th>Requires</th><th>Provides metricsf</th><th>Provides files</th></tr>
 % my $pis_list = al_plugins->get_list_all();

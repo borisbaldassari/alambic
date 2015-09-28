@@ -26,11 +26,15 @@ my %conf = (
     ]
 );
 
-my @pmi_attrs = (
-    "title", "desc", "id",
-    "bugzilla bugzilla_product", "bugzilla bugzilla_component", 
-    "bugzilla bugzilla_create_url", "bugzilla bugzilla_query_url", 
-    );
+
+my $eclipse_url = "http://projects.eclipse.org/json/project/";
+my $polarsys_url = "http://polarsys.org/json/project/";
+
+# my @pmi_attrs = (
+#     "title", "desc", "id",
+#     "bugzilla bugzilla_product", "bugzilla bugzilla_component", 
+#     "bugzilla bugzilla_create_url", "bugzilla bugzilla_query_url", 
+#     );
 
 my $app;
 
@@ -38,8 +42,6 @@ sub register {
     my $self = shift;
     $app = shift;
 
-#    $app->helper(mypluginhelper =>
-#                 sub { return 'I am your helper and I live in a plugin!'; });
     
 }
 
@@ -51,13 +53,38 @@ sub check_plugin() {
 
 }
 
+sub check_project() {
+    my $self = shift;
+    my $project_id = shift;
+
+    my @log;
+
+    push( @log, "Checking [Plugins::EclipsePMI]..." );
+
+    my ($url, $content);
+    if ($project_id =~ m!^polarsys!) {
+        $url = $polarsys_url . $project_id;
+        push( @log, "Using PolarSys PMI infra at $url..." );
+        $content = get($url);
+    } else {
+        $url = $eclipse_url . $project_id;
+        push( @log, "Using Eclipse PMI infra at $url." );
+        $content = get($url);
+    }
+    
+    if (defined $content && $content =~ m!^{"projects":{"${project_id}!) {
+        push( @log, "JSON looks good. ok." );
+    } else {
+        push( @log, "Error: cannot recognise JSON content." );
+    }
+
+    return \@log;
+}
+
 sub retrieve_data($) {
     my $self = shift;
     my $project_id = shift;
     
-    my $eclipse_url = "http://projects.eclipse.org/json/project/";
-    my $polarsys_url = "http://polarsys.org/json/project/";
-
     # Fetch json file from projects.eclipse.org
     my ($url, $content);
     if ($project_id =~ m!^polarsys!) {

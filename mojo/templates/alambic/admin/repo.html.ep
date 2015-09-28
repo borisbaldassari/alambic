@@ -22,7 +22,7 @@
             <br />
 
 % if (not defined(repo->get_repo_url_push())) {
-            <p>Repo url is not defined. Do you want to <a href="/admin/repo/install">install one</a> now?</p>
+            <p>Repo url is not defined. Do you want to <a href="/admin/repo/init">initialise one</a> now?</p>
 % } else {
 %     my $updates = app->repo->get_updates() || undef;
             <div class="row">
@@ -39,7 +39,7 @@
                 <h3>Actions</h3>
                 <br />
 
-                <a class="btn btn-default" href="/admin/repo/install" role="button">Initialise new repository</a>
+                <a class="btn btn-default" href="/admin/repo/init" role="button">Initialise new repository</a>
                 <a class="btn btn-default" href="/admin/repo/push" role="button">Take snapshot</a>
 
               </div>

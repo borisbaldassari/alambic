@@ -1,4 +1,4 @@
-package Alambic::Controller::Projects;
+package Alambic::Controller::Dashboard;
 
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -14,7 +14,7 @@ sub display {
     my $project_id = $1;
     my $page_id = $3 || "";
 
-    $self->app->log->info( "[Controller::Projects] Project [$project_id] [$page_id]." );
+    $self->app->log->info( "[Controller::Dashboards] Project [$project_id] [$page_id]." );
 
     if ($page_id =~ m!^qm$!) {
 

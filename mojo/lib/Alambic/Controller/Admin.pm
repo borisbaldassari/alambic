@@ -71,7 +71,7 @@ sub plugins {
     my $self = shift;
 
     # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/ds' ) ) {
+    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/plugins' ) ) {
         $self->redirect_to( '/login' );
     }
 

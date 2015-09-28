@@ -70,7 +70,7 @@ $t->get_ok('/admin/users')
         ->status_is(200)
         ->content_like(qr!<p>Users defined on the system as for now are:</p>!i, 'Check first paragraph of users page.')
         ->content_like(qr'<td>admin</td><td><b>Administrator</b></td>'i, 'Check admin user is in list.')
-        ->content_like(qr'<td>/admin<br />/admin/read_files<br />/admin/projects<br />/admin/users<br />/admin/repo<br />/admin/ds</td>'i, 'Check admin rights in list.')
+        ->content_like(qr'<td>/admin<br />/admin/read_files<br />/admin/projects<br />/admin/users<br />/admin/repo<br />/admin/plugins</td>'i, 'Check admin rights in list.')
         ->content_like(qr'<td>user.1</td><td><b>Anonymous</b></td>\s+<td></td>'i, 'Check anonymous user is in list.');
 
 

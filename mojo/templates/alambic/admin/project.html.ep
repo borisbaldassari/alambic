@@ -3,7 +3,8 @@
 % use File::Basename qw( fileparse );
 % my $project = stash( 'project_id' );
 % my $projects = stash( 'projects' );
-            <h2>Administration: Projects</h2>
+
+            <h2>Administration: Project <%= $project %></h2>
             <br />
 
 % my $msg = flash( 'msg' );
@@ -12,15 +13,13 @@
               <div class="col-md-6">
                 <div class="alert alert-warning alert-dismissible" role="alert">
                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <%= $msg %>
+                  <%== $msg %>
                 </div>
               </div>
             </div>
 % }
 
 %= include '/alambic/admin/admin_menu', current => '/admin/projects'
-
-            <h2>Project <%= $project %></h2>
 
             <p>Get back to <a href="/admin/projects">projects</a>.</p>
 
@@ -64,14 +63,21 @@
             <h3>Data sources</h3>
 
             <table class="table table-striped">
-              <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="3">Actions</th></tr>
+              <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="4">Actions</th></tr>
 % foreach my $ds ( sort keys %{ $info->{'ds'} } ) {
 %   my $plugin_name = 'Unknown';
 %   if (defined(al_plugins->get_plugin($ds))) {
 %     $plugin_name = al_plugins->get_plugin($ds)->get_conf()->{'name'};
 %   }
               <tr>
-                <td><%= $plugin_name %></td><td><%= $ds %></td><td></td>
+                <td><%= $plugin_name %></td><td><%= $ds %></td>
+                <td>
+%   my $args = app->projects->get_project_ds($project, $ds);
+%   my @args_full = map { "$_: <code>" . $args->{$_} . "</code>"; } keys %{$args};
+%   my $args_str = join( '<br />', @args_full );
+                  <%== $args_str %>
+                </td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/check"><i class="fa fa-check"></i></a></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/retrieve"><i class="fa fa-download"></i></a></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/compute"><i class="fa fa-cogs"></i></a></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/del"><i class="fa fa-ban"></i></a></td></tr>

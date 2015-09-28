@@ -63,7 +63,7 @@ sub read_all_files() {
     my $config = $self->{app}->config;
 
     # Read quality model definition
-    my $file_model = $config->{'dir_conf'} . "/quality_model.json";
+    my $file_model = $config->{'dir_models'} . "/quality_model.json";
     $self->{app}->log->info( "[Model::Models] Reading model definition from [$file_model]." );
 
     my $json_model = &read_data($file_model);
@@ -71,11 +71,11 @@ sub read_all_files() {
     $model_info{'name'} = $model{'name'};
     $model_info{'version'} = $model{'version'};
 
-    &read_metrics( $self->{app}, $config->{'dir_conf'} );
+    &read_metrics( $self->{app}, $config->{'dir_models'} );
 
-    &read_attributes( $self->{app}, $config->{'dir_conf'} );
+    &read_attributes( $self->{app}, $config->{'dir_models'} );
 
-    &read_questions( $self->{app}, $config->{'dir_conf'} );
+    &read_questions( $self->{app}, $config->{'dir_models'} );
 
     &read_rules( $self->{app}, $config->{'dir_rules'} );
 

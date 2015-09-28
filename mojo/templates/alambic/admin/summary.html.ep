@@ -18,25 +18,26 @@
 
 %= include '/alambic/admin/admin_menu', current => '/admin/summary'
                 
-% my $conf = app->config;
             <p>Instance: <br />
-              <code><%= $conf->{'instance_title'} %></code><br />
+              <code><%= app->al_config->get_name() %></code><br />
               Description: <br />
-              <code><%== $conf->{'instance_desc'} %></code></p>
+              <code><%== app->al_config->get_desc() %></code></p>
 
             <br />
                 
             <div class="row">
               <div class="col-md-6">
 
+% my $conf = app->config;
                 <div class="panel panel-default">
                   <div class="panel-heading">Configuration</div>
                   <table class="table table-striped">
                     <tr><th>File</th><th>Path</th></tr>
                     <tr><td>Dir conf</td><td><code><%= $conf->{'dir_conf'} %></code></td></tr>
-                    <tr><td>Dir input</td><td><code><%= $conf->{'dir_input'} %></code></td></tr>
-                    <tr><td>Dir data</td><td><code><%= $conf->{'dir_data'} %></code></td></tr>
+                    <tr><td>Dir models</td><td><code><%= $conf->{'dir_models'} %></code></td></tr>
                     <tr><td>Dir rules</td><td><code><%= $conf->{'dir_rules'} %></code></td></tr>
+                    <tr><td>Dir input</td><td><code><%= $conf->{'dir_input'} %></code></td></tr>
+                    <tr><td>Dir data (projects)</td><td><code><%= $conf->{'dir_data'} %></code></td></tr>
                   </table>
                 </div>
                 

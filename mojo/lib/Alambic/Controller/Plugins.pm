@@ -51,15 +51,15 @@ sub add_project_post {
         $self->redirect_to( '/login' );
     }
 
-    my $plugin = $self->al_plugins->get_plugin($ds);
-    my $conf = $plugin->get_conf();
-
+    my $conf = $self->al_plugins->get_plugin($ds)->get_conf();
     my %args;
     foreach my $param ( keys %{$conf->{'requires'}} ) {
         $args{$param} = $self->param( $param );
     }
 
-    $self->app->projects->add_project_ds($project_id, $ds, %args);
+    print "[Controller::Plugins] add_project_post $project_id $ds.\n";
+
+    $self->app->projects->set_project_ds($project_id, $ds, \%args);
     
     # Render template 
     $self->redirect_to( "/admin/project/$project_id" );   
@@ -83,6 +83,33 @@ sub del_project {
     }
 
     $self->app->projects->delete_project_ds($project_id, $ds);
+    
+    # Render template 
+    $self->redirect_to( "/admin/project/$project_id" );   
+}
+
+
+#
+# Check data for a specific plugin and project.
+#
+sub check_project {
+    my $self = shift;
+
+    print "[Controller::Plugins] in check_project.\n";
+
+    my $project_id = $self->param( 'id' );
+    my $ds = $self->param( 'ds' );
+
+    # Check that the connected user has the access rights for this
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->redirect_to( '/login' );
+    }
+
+    my $ret = $self->al_plugins->get_plugin($ds)->check_project($project_id);
+    my $ret_str = join( '<br />', @{$ret} );
+    $self->flash( msg => $ret_str );
     
     # Render template 
     $self->redirect_to( "/admin/project/$project_id" );   

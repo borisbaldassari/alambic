@@ -2,6 +2,7 @@ package Alambic;
 
 use Mojo::Base 'Mojolicious';
 
+use Alambic::Model::Config;
 use Alambic::Model::Models;
 use Alambic::Model::Projects;
 use Alambic::Model::Users;
@@ -14,6 +15,10 @@ my $app;
 
 has projects => sub { 
     state $projects = Alambic::Model::Projects->new($app);
+};
+
+has al_config => sub { 
+    state $config = Alambic::Model::Config->new($app);
 };
 
 
@@ -56,11 +61,6 @@ sub startup {
     # Initialise the models (read files).
     $app->models->read_all_files();
 
-    # Projects holds information about the analysed projects: values, pmi, comments, etc.
-    # $app->helper( projects => sub { state $projects = Alambic::Model::Projects->new($app) } );
-    # Initialise the mode (read files).
-#    $app->projects->read_all_files();
-
     # Used to get the right colour on scales.
     $app->helper( 
         comp_c => sub { 
@@ -77,24 +77,18 @@ sub startup {
             return $app->projects->get_project_name_by_id($id);
         });
 
-    $app->helper( conf_dir_conf => sub { $config->{dir_conf} } );
-    $app->helper( conf_dir_data => sub { $config->{dir_data} } );
-    $app->helper( conf_dir_projects => sub { $config->{dir_projects} } );
-    $app->helper( conf_dir_rules => sub { $config->{dir_rules} } );
-    $app->helper( conf_title => sub { $config->{instance_title} } );
-    $app->helper( conf_desc => sub { $config->{instance_desc} } );
+    # $app->helper( conf_dir_conf => sub { $config->{dir_conf} } );
+    # $app->helper( conf_dir_data => sub { $config->{dir_data} } );
+    # $app->helper( conf_dir_projects => sub { $config->{dir_projects} } );
+    # $app->helper( conf_dir_rules => sub { $config->{dir_rules} } );
+    # $app->helper( conf_title => sub { $config->{instance_title} } );
+    # $app->helper( conf_desc => sub { $config->{instance_desc} } );
     
     # Router
     my $r = $app->routes;
     
     # Normal route to controller
     $r->get('/')->to('alambic#welcome');
-    
-    # Install route (SCM)
-    $r->get('/admin/repo/manage')->to('repo#manage');
-    $r->get('/admin/repo/install')->to('repo#install');
-    $r->post('/admin/repo/install')->to('repo#install_post');
-    $r->get('/admin/repo/push')->to('repo#push');
     
     # Simple pages
     $r->get('/about.html')->to( template => 'alambic/about');
@@ -120,8 +114,16 @@ sub startup {
     # Admin
     $r->get('/admin/summary')->to( 'admin#welcome' );
 
+    # Install route (SCM)
+    $r->get('/admin/install')->to('alambic#install');
+    $r->post('/admin/install')->to('alambic#install_post');
+    
     # Admin - Repository
     $r->get('/admin/repo')->to( 'admin#repo' );
+    $r->get('/admin/repo/init')->to( 'repo#init' );
+    $r->post('/admin/repo/init')->to( 'repo#init_post' );
+    $r->get('/admin/repo/manage')->to('repo#manage');
+    $r->get('/admin/repo/push')->to('repo#push');
 
     # Admin - Data sources
     $r->get('/admin/plugins')->to( 'admin#plugins' );
@@ -136,7 +138,7 @@ sub startup {
 
     $r->get('/admin/project/#id/ds/#ds/new')->to( 'plugins#add_project' );
     $r->post('/admin/project/#id/ds/#ds/new')->to( 'plugins#add_project_post' );
-
+    $r->get('/admin/project/#id/ds/#ds/check')->to( 'plugins#check_project' );
     $r->get('/admin/project/#id/ds/#ds/retrieve')->to( 'plugins#project_retrieve_data' );
     $r->get('/admin/project/#id/ds/#ds/compute')->to( 'plugins#project_compute_data' );
 #    $r->get('/admin/project/#id/ds/#ds/edit')->to( 'plugins#add_project' );

@@ -58,7 +58,7 @@ sub get_list_all() {
 }
 
 sub get_list_metrics() {
-    my @list = map { return $plugins{'id'} if grep('metrics', $_{'ability'}) } keys %plugins;
+    my @list = map { return $plugins{$_}{'id'} if grep('metrics', $plugins{$_}{'ability'}) } keys %plugins;
     return \@list;
 }
 

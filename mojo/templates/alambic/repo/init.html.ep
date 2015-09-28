@@ -1,0 +1,17 @@
+% layout 'polarsys';
+% title 'SCM - Initialise repository';
+
+            <h2>Initialise a new repository for Alambic</h2>
+            <br />
+
+            <p>This dialog will push the current instance into a new git repository.</p>
+            <div class="alert alert-danger" role="alert">Please note that this action will <i>force</i> the push to the new git repository, definitively deleting everything stored inside.</div>
+            <br />
+
+            <form action="init" method="POST">
+              <p><b>Git repo</b> (<span style="color: red">*</span>)</p>
+              <p><input name="git_repo" type="text" /></p>
+              <br /><br />
+              <input type="submit" value="Initialise"></input>
+              <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
+            </form>

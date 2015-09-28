@@ -544,13 +544,21 @@ sub del_project() {
     return 1;
 }
 
-sub add_project_ds() {
+sub get_project_ds($$) {
+    my $self = shift;
+    my $project_id = shift;
+    my $ds_id = shift;
+
+    return $projects_info{$project_id}{'ds'}{$ds_id};
+}
+
+sub set_project_ds() {
     my $self = shift;
     my $project_id = shift;
     my $ds_id = shift;
     my $params = shift;
 
-    foreach my $param (keys %{$projects_info{$project_id}{'ds'}{$ds_id}}) {
+    foreach my $param (keys %{$params}) {
         $projects_info{$project_id}{'ds'}{$ds_id}{$param} = $params->{$param};
     }
 

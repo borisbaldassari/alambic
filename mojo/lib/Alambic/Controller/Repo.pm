@@ -5,7 +5,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 
 
-sub install {
+sub init {
     my $self = shift;
 
     # Check that the connected user has the access rights for this
@@ -13,12 +13,12 @@ sub install {
         $self->redirect_to( '/login' );
     }
 
-    # Render template "alambic/repo/install.html.ep"
-    $self->render(template => 'alambic/repo/install');   
+    # Render template "alambic/repo/init.html.ep"
+    $self->render(template => 'alambic/repo/init');   
 
 }
 
-sub install_post {
+sub init_post {
     my $self = shift;
 
     # Check that the connected user has the access rights for this
