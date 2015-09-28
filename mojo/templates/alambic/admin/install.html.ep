@@ -1,0 +1,57 @@
+% layout 'polarsys';
+% title 'Install';
+
+            <h2>Install</h2>
+            <br />
+
+% my $msg = flash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%= $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+%#= include '/alambic/admin/admin_menu', current => '/admin/repo'
+                
+            <p>Welcome to the Alambic install wizard. This instance is for now configured with default data used for tests. This dialog helps you setup the instance, connect to the git repository of your choice, and cleanup the list of known projects so you can add you own.</p>
+
+            <form action="/admin/install" method="POST">
+              <p>Title: (<span style="color: red">*</span>) &nbsp; <input name="title" type="text"></input></p>
+              <p>Name: (<span style="color: red">*</span>) &nbsp; <input name="name" type="text"></input></p>
+              <p>Description: (<span style="color: red">*</span>) &nbsp; <input name="desc" type="text"></input></p>
+              <br />
+              <p>Git repository: (<span style="color: red">*</span>) &nbsp; <input name="git_repo" type="text"></input></p>
+              <br />
+              <input type="submit" value="Install"></input>
+              <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
+            </form>
+
+            <br />
+                
+            <div class="row">
+              <div class="col-md-6">
+
+                <div class="panel panel-default">
+                  <div class="panel-heading">Configuration</div>
+% my $conf = app->config;
+                  <table class="table table-striped">
+                    <tr><th>File</th><th>Path</th></tr>
+                    <tr><td>Dir conf</td><td><code><%= $conf->{'dir_conf'} %></code></td></tr>
+                    <tr><td>Dir models</td><td><code><%= $conf->{'dir_models'} %></code></td></tr>
+                    <tr><td>Dir rules</td><td><code><%= $conf->{'dir_rules'} %></code></td></tr>
+                    <tr><td>Dir input</td><td><code><%= $conf->{'dir_input'} %></code></td></tr>
+                    <tr><td>Dir data (projects)</td><td><code><%= $conf->{'dir_data'} %></code></td></tr>
+                  </table>
+                </div>
+
+              </div>
+              <div class="col-md-6">
+
+              </div>
+            </div>
+
