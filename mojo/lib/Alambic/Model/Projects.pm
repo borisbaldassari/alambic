@@ -476,17 +476,21 @@ sub retrieve_project_data() {
     my $self = shift;
     my $project_id = shift;
     my $ds = shift || 'all';
+    
+    my @log;
 
     my $ds_list = $self->{app}->al_plugins->get_list_all();
     foreach my $ds ( keys %{$projects_info{$project_id}{'ds'}} ) {
         if ( grep( $ds, @{$ds_list} ) ) {
-            $self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id);
-            $self->{app}->al_plugins->get_plugin($ds)->compute_data($project_id);
+            push( @log, @{$self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id)} );
+            push( @log, @{$self->{app}->al_plugins->get_plugin($ds)->compute_data($project_id)} );
         } else {
             $self->{app}->log->warn("[Model::Projects.pm] retrieve_project_data Cannot recognise ds [$ds]."); 
+            push( @log, "[Model::Projects.pm] retrieve_project_data Cannot recognise ds [$ds]." );
         }
     }
     
+    return \@log;
 }
 
 

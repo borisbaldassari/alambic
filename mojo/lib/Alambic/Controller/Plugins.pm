@@ -124,6 +124,8 @@ sub project_retrieve_data {
 
     my $project_id = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
+    
+    my @log;
 
     # Check that the connected user has the access rights for this
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
@@ -132,7 +134,11 @@ sub project_retrieve_data {
         $self->redirect_to( '/login' );
     }
 
-    $self->al_plugins->get_plugin($ds)->retrieve_data($project_id);
+    print Dumper("# BEGIN $project_id $ds ##########################\n");
+    my $tmp = $self->al_plugins->get_plugin($ds)->retrieve_data($project_id);
+    print Dumper("# END $project_id $ds ##########################\n", $tmp);
+    push( @log, @{$tmp} );
+    $self->flash( msg => join( '<br />', @log ) );
     
     # Render template 
     $self->redirect_to( "/admin/project/$project_id" );   
