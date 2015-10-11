@@ -95,24 +95,30 @@
 
                 <h3>Input files</h3>
                 
-                <ul class="list-group">
+                <table class="table table-striped">
+                  <tr><th>File</th><th colspan="1">Actions</th></tr>
 % foreach my $file (@{stash( 'files_input' )}) {
 %   my $file_short = fileparse($file);
-                <li class="list-group-item"><%= $file_short %></li>
+                  <tr>
+                    <td><%= $file_short %> &nbsp; <small>[ 2015/10/10 45:65 ]</small></td><td><i class="fa fa-ban"></i></td>
+                  </tr>
 % }
-                </ul>
+                </table>
 
               </div>
               <div class="col-md-6">
 
                 <h3>Project files</h3>
                 
-                <ul class="list-group">
+                <table class="table table-striped">
+                  <tr><th>File</th><th colspan="1">Actions</th></tr>
 % foreach my $file (@{stash( 'files_data' )}) {
 %   my $file_short = fileparse($file);
-                  <li class="list-group-item"><%= $file_short %></li>
+                  <tr>
+                    <td><%= $file_short %> &nbsp; <small>2015/10/10 45:65</small></td><td><i class="fa fa-ban"></i></td>
+                  </tr>
 % }
-                </ul>
+                </table>
 
               </div>
             </div>
