@@ -1,7 +1,6 @@
 % layout 'polarsys';
 % title 'Dashboard';
 
-% sub trend {}
 % sub comp_p($) {
 %   my $value = shift || 0;
 %   return $value * 20;
@@ -20,7 +19,7 @@
                       <dt><a href="/documentation/attributes.html#<%= $attr %>"><%= $attributes->{$attr}->{'name'} %></a> &nbsp; <i class="fa fa-<%= $icon %>"></i> <span class="pull-right">( <%= $project_attrs_conf->{$attr} %> metrics )</span></dt>
                       <dd>
                         <div class="progress">
-                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= &comp_c( $project_attrs->{$attr} ) %>; width: <%= &comp_p( $project_attrs->{$attr} ) %>%;"><%= $project_attrs->{$attr} %> / 5</div>
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= comp_c( $project_attrs->{$attr} ) %>; width: <%= &comp_p( $project_attrs->{$attr} ) %>%;"><%= $project_attrs->{$attr} %> / 5</div>
                         </div>
                       </dd>
 <% end %>
@@ -79,7 +78,7 @@
 % my ($conf_v, $conf_m) = split( ' / ', $main_attr );
 % $conf_m = 1 if ($conf_m == 0);
 % my $conf_percent = int( $conf_v * 100 / $conf_m );
-                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $conf_v %>" aria-valuemin="0" aria-valuemax="<%= $conf_m %>"  style="background-color: <%= &comp_c( $conf_percent / 20 ) %>;width: <%= $conf_percent %>%;"><%= $project_attrs_conf->{'QM_QUALITY'} %></div>
+                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $conf_v %>" aria-valuemin="0" aria-valuemax="<%= $conf_m %>"  style="background-color: <%= app->comp_c( $conf_percent / 20 ) %>;width: <%= $conf_percent %>%;"><%= $project_attrs_conf->{'QM_QUALITY'} %></div>
                         </div>
                       </dd>
                       <%= $attribute->('QM_ECOSYSTEM') %>
