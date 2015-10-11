@@ -23,7 +23,7 @@ $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'admin'})
 
 
 # Install new repository.
-$t->post_ok('/admin/repo/install' => form => {'git_repo' => 'git@bitbucket.org:BorisBaldassari/alambic_test.git'})
+$t->post_ok('/admin/repo/init' => form => {'git_repo' => 'git@bitbucket.org:BorisBaldassari/alambic_test.git'})
     ->status_is(200)
     ->content_like(qr!All data, configuration and executable files in Alambic!i, 'Initialise repository.')
     ->content_like(qr!<p>Fetch url is <code>git\@bitbucket.org:BorisBaldassari/alambic_test.git</code><br />!i, 'Fetch URL is well defined.')
@@ -38,16 +38,18 @@ $t->post_ok( '/admin/projects/new' => form => {'name' => 'Sirius', 'id' => 'mode
 # Check that we have the right project page for the new project.
 $t->get_ok('/admin/project/modeling.sirius')
     ->status_is(200)
-    ->content_like(qr!<h2>Project modeling.sirius</h2>!i, 'Page after new project contains sirius.');
+    ->content_like(qr!<b>ID</b> modeling.sirius!i, 'Page after new project contains sirius.');
 
 # Add a few new data sources: eclipse_grimoire
 $t->post_ok('/admin/project/modeling.sirius/ds/eclipse_grimoire/new' => 
            form => {'project_id' => 'modeling.sirius', 
                     'grimoire_url' => 'http://dashboard.eclipse.org/data/json/'})
     ->status_is(200)
-    ->content_like(qr!<td>Eclipse Grimoire</td><td>eclipse_grimoire</td><td></td>!i, 'Data source has been created on project.')
+    ->content_like(qr!<td>Eclipse Grimoire</td><td>eclipse_grimoire</td>!i, 'Data source has been created on project.')
+    ->content_like(qr!ds/eclipse_grimoire/check"><i class="fa fa-check"></i>!i, 'Data source has check link.')
     ->content_like(qr!ds/eclipse_grimoire/retrieve"><i class="fa fa-download"></i>!i, 'Data source has retrieve link.')
-    ->content_like(qr!ds/eclipse_grimoire/compute"><i class="fa fa-cogs"></i>!i, 'Data source has compute link.');
+    ->content_like(qr!ds/eclipse_grimoire/compute"><i class="fa fa-cogs"></i>!i, 'Data source has compute link.')
+    ->content_like(qr!ds/eclipse_grimoire/del"><i class="fa fa-ban"></i>!i, 'Data source has del link.');
 
 
 # Add a few new data sources: eclipse_pmi
@@ -55,25 +57,17 @@ $t->post_ok('/admin/project/modeling.sirius/ds/eclipse_pmi/new' =>
            form => {'project_id' => 'modeling.sirius', 
                     'pmi_url' => 'http://projects.eclipse.org/project'})
     ->status_is(200)
-    ->content_like(qr!<td>Eclipse PMI</td><td>eclipse_pmi</td><td></td>!i, 'Data source has been created on project.')
+    ->content_like(qr!<td>Eclipse PMI</td><td>eclipse_pmi</td>!i, 'Data source has been created on project.')
+    ->content_like(qr!ds/eclipse_pmi/check"><i class="fa fa-check"></i>!i, 'Data source has check link.')
     ->content_like(qr!ds/eclipse_pmi/retrieve"><i class="fa fa-download"></i>!i, 'Data source has retrieve link.')
-    ->content_like(qr!ds/eclipse_pmi/compute"><i class="fa fa-cogs"></i>!i, 'Data source has compute link.');
-    
-
-# Add a few new data sources: stack_overflow
-$t->post_ok('/admin/project/modeling.sirius/ds/stack_overflow/new' => 
-           form => {'project_id' => 'modeling.sirius', 
-                    'so_url' => 'http://projects.eclipse.org/project'})
-    ->status_is(200)
-    ->content_like(qr!<td>Stack Overflow metrics</td><td>stack_overflow</td><td></td>!i, 'Data source has been created on project.')
-    ->content_like(qr!ds/stack_overflow/retrieve"><i class="fa fa-download"></i>!i, 'Data source has retrieve link.')
-    ->content_like(qr!ds/stack_overflow/compute"><i class="fa fa-cogs"></i>!i, 'Data source has compute link.');
+    ->content_like(qr!ds/eclipse_pmi/compute"><i class="fa fa-cogs"></i>!i, 'Data source has compute link.')
+    ->content_like(qr!ds/eclipse_pmi/del"><i class="fa fa-ban"></i>!i, 'Data source has del link.');
     
 
 # Delete a data source: stack_overflow
 $t->get_ok('/admin/project/modeling.sirius/ds/stack_overflow/del')
     ->status_is(200)
-    ->content_unlike(qr!<td>Stack Overflow metrics</td><td>stack_overflow</td><td></td>!i, 'Data source has been deleted on project.')
+    ->content_unlike(qr!<td>Stack Overflow metrics</td><td>stack_overflow</td>!i, 'Data source has been deleted on project.')
     ->content_unlike(qr!ds/stack_overflow/retrieve"><i class="fa fa-download"></i>!i, 'Data source has not retrieve link.')
     ->content_unlike(qr!ds/stack_overflow/compute"><i class="fa fa-cogs"></i>!i, 'Data source has not compute link.');
     
