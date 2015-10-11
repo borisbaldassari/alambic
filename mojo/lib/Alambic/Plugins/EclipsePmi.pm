@@ -85,16 +85,21 @@ sub retrieve_data($) {
     my $self = shift;
     my $project_id = shift;
     
+    my @log;
+
     # Fetch json file from projects.eclipse.org
     my ($url, $content);
     if ($project_id =~ m!^polarsys!) {
         $url = $polarsys_url . $project_id;
+        push( @log, "Using PolarSys PMI infra at $url..." );
         $content = get($url);
     } else {
         $url = $eclipse_url . $project_id;
+        push( @log, "Using Eclipse PMI infra at $url." );
         $content = get($url);
     }
-    die "Could not get [$url]!" unless defined $content;
+    my $msg_failed = [ "ERROR: Could not get [$url]!" ];
+    return $msg_failed unless defined $content;
 
     my $file_json_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_pmi.json";
 
@@ -103,6 +108,7 @@ sub retrieve_data($) {
     print $fh $content;
     close $fh;
 
+    return \@log;
 }
 
 sub compute_data($) {
@@ -115,9 +121,10 @@ sub compute_data($) {
     # Read data from pmi file in $data_input
     my $json; 
     my $file = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_pmi.json";
+    my $msg_failed = [ "Could not open data file [$file]." ];
     do { 
         local $/;
-        open my $fh, '<', $file or die "Could not open data file [$file].\n";
+        open my $fh, '<', $file or return $msg_failed;
         $json = <$fh>;
         close $fh;
     };
@@ -164,6 +171,8 @@ sub compute_data($) {
     open my $fh, ">", $file_json_out;
     print $fh $json_metrics;
     close $fh;
+
+    return [];
 }
 
 

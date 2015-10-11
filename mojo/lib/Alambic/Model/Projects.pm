@@ -77,9 +77,9 @@ sub _read_files($$) {
     my $dir_data = $config->{'dir_data'};
    
 
-    %attributes = $models->get_attributes();
-    %questions = $models->get_questions();
-    %metrics = $models->get_metrics();
+    %attributes = %{$models->get_attributes()};
+    %questions = %{$models->get_questions()};
+    %metrics = %{$models->get_metrics()};
 
     # Read info for projects
     $log->info( "[Model::Projects] Reading all projects info from [$dir_data]." );
@@ -149,7 +149,7 @@ sub _read_files($$) {
         my $id = $1;
         my $json_project = &read_project_data($project);
         $projects{$id}{'indicators'} = $json_project->{'children'};
-        print "DBG $id " . Dumper($projects{$id}{'indicators'});
+#        print "DBG $id " . Dumper($projects{$id}{'indicators'});
     }
 
 
@@ -480,8 +480,10 @@ sub retrieve_project_data() {
     my @log;
 
     my $ds_list = $self->{app}->al_plugins->get_list_all();
-    foreach my $ds ( keys %{$projects_info{$project_id}{'ds'}} ) {
+    foreach my $ds ( sort keys %{$projects_info{$project_id}{'ds'}} ) {
+        print Dumper($ds);
         if ( grep( $ds, @{$ds_list} ) ) {
+#            print Dumper($self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id));
             push( @log, @{$self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id)} );
             push( @log, @{$self->{app}->al_plugins->get_plugin($ds)->compute_data($project_id)} );
         } else {
@@ -514,12 +516,6 @@ sub analyse_project($) {
     print "DBG [Model::Projects] analyse_project before compute_inds.\n";
     $analysis->compute_inds($project_id);
 
-#    my $ds_list = $self->{app}->al_plugins->get_list_all();
-#            $analysis->analyse_project($project_id);
-#        } else {
-#            $self->{app}->log->warn("[Model::Projects.pm] analyse_project Cannot recognise ds [$ds]."); 
-#        }
-#    }    
 }
 
 sub add_project() {

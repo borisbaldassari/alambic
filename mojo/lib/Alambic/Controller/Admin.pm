@@ -173,6 +173,9 @@ sub projects_id($) {
     my @files_input = <${dir_input}/${project_id}/*.json>;
     my %projects = $self->{app}->projects->get_all_projects();
 
+    # Retrieve info about input files.
+    # TODO
+
     # Prepare data for template.
     $self->stash(
         project_id => $project_id,
@@ -215,8 +218,7 @@ sub project_retrieve_data {
     push( @log, @{$self->app->projects->retrieve_project_data($project_id)} );
     push( @log, "Data for project $project_id has been retrieved." );
     my $log_str = join( '<br />', @log );
-    print "###################################\n";
-    print Dumper($log_str);
+
     $self->flash( msg => $log_str );
     
     $self->redirect_to( "/admin/project/$project_id" );

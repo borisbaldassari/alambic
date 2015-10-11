@@ -40,6 +40,7 @@ sub startup {
     $app->app->log->info('Comments application started.');
 
     # Helpers definition
+    $app->plugin('Alambic::Model::Helpers');
 
     # Repo holds information about the git repository used for this instance.
     $app->helper( repo => sub { state $repo = Alambic::Model::Repo->new($app) } );
@@ -61,14 +62,6 @@ sub startup {
     # Initialise the models (read files).
     $app->models->read_all_files();
 
-    # Used to get the right colour on scales.
-    # $app->helper( 
-    #     comp_c => sub { 
-    #         my $app = shift;
-    #         my $value = shift || 0;
-    #         return $config->{"colours"}->[int($value)];
-    #     });
-
     # Used to get project name from id
     $app->helper( 
         get_project_name_by_id => sub { 
@@ -76,13 +69,6 @@ sub startup {
             my $id = shift || 0;
             return $app->projects->get_project_name_by_id($id);
         });
-
-    # $app->helper( conf_dir_conf => sub { $config->{dir_conf} } );
-    # $app->helper( conf_dir_data => sub { $config->{dir_data} } );
-    # $app->helper( conf_dir_projects => sub { $config->{dir_projects} } );
-    # $app->helper( conf_dir_rules => sub { $config->{dir_rules} } );
-    # $app->helper( conf_title => sub { $config->{instance_title} } );
-    # $app->helper( conf_desc => sub { $config->{instance_desc} } );
     
     # Router
     my $r = $app->routes;

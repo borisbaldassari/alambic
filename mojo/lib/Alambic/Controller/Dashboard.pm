@@ -87,11 +87,9 @@ sub display {
         
     } else {
 
-        my %attributes = $self->models->get_attributes();
-
         # Prepare data for template.
         $self->stash(
-            attributes => \%attributes,
+            attributes => $self->models->get_attributes(),
             project_id => $project_id,
             project_attrs => $self->app->projects->get_project_attrs($project_id),
             project_attrs_conf => $self->app->projects->get_project_attrs_conf($project_id),
