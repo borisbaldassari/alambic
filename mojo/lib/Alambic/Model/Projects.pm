@@ -515,10 +515,18 @@ sub analyse_project($) {
     my $metrics = $analysis->analyse_input($project_id);
 
     # Copy files marked as plugin artefacts.
-    my @files = map { $self-{app}->config->{'dir_input'} . '/*_' . $_ . '.json' } @{$conf->{'provides_files'}};
-    foreach my $file (@files) {
-        copy($file, $self-{app}->config->{'dir_data'} . '/');
-    }
+    print Dumper($projects_info{$project_id}{'ds'});
+    my @pis = sort keys %{$projects_info{$project_id}{'ds'}};
+    
+    foreach my $pi (@pis) {
+        my @files = map { 
+            $self->{app}->config->{'dir_input'} . '/' . $project_id . '/' . $project_id . '_' . $_ . '.json'
+        } @{$self->{app}->al_plugins->get_plugin($pi)->get_conf()->{'provides_files'}};
+        foreach my $file (@files) {
+            print "DBG Copying $file to " . $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . "\n";
+            copy($file, $self->{app}->config->{'dir_data'} . '/' . $project_id . '/');
+        }
+        }
     
     print "DBG [Model::Projects] analyse_project before compute_inds.\n";
     $analysis->compute_inds($project_id);
