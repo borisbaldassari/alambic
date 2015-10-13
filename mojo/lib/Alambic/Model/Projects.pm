@@ -7,6 +7,7 @@ use Alambic::Model::Analysis;
 use Scalar::Util 'weaken';
 use Mojo::JSON qw( decode_json encode_json );
 use File::Path qw( remove_tree );
+use File::Copy;
 
 require Exporter;
 our @ISA = qw(Exporter);
@@ -513,6 +514,12 @@ sub analyse_project($) {
     print "DBG [Model::Projects] analyse_project before analyse_input.\n";
     my $metrics = $analysis->analyse_input($project_id);
 
+    # Copy files marked as plugin artefacts.
+    my @files = map { $self-{app}->config->{'dir_input'} . '/*_' . $_ . '.json' } @{$conf->{'provides_files'}};
+    foreach my $file (@files) {
+        copy($file, $self-{app}->config->{'dir_data'} . '/');
+    }
+    
     print "DBG [Model::Projects] analyse_project before compute_inds.\n";
     $analysis->compute_inds($project_id);
 
