@@ -60,8 +60,8 @@ sub new {
 sub read_all_files() { 
     my $self = shift;
 
-    $self->{app}->log->debug("[Model::Projects] Creating new Alambic::Model::Projects.pm class.");
-    print "[Model::Projects] Creating new Alambic::Model::Projects.pm class.\n";
+    $self->{app}->log->debug( "[Model::Projects] Creating new Alambic::Model::Projects.pm class." );
+    $self->{app}->log->debug( "[Model::Projects] Creating new Alambic::Model::Projects.pm class." );
     my $config = $self->{app}->config;
     my $models = $self->{app}->models;
 
@@ -194,7 +194,7 @@ sub _read_files($$) {
 sub read_project_data($) {
     my $file = shift;
 
-    print "Reading file $file.\n";
+#    print "Reading file $file.\n";
     my $json;
     do { 
         local $/;
@@ -284,7 +284,7 @@ sub get_project_all_values($) {
     my $self = shift;
     my $project_id = shift;
 
-    my %model = $self->{app}->models->get_model();
+    my %model = %{$self->{app}->models->get_model()};
 
     # Create a rich version of the quality model with all info on nodes.
     &populate_qm($model{"children"}, $projects{$project_id}{'attrs'}, $projects{$project_id}{'questions'}, $projects{$project_id}{'metrics'}, $projects{$project_id}{'indicators'});
@@ -508,7 +508,7 @@ sub analyse_project($) {
     # Create an instance of the Analysis module.
     my $analysis = Alambic::Model::Analysis->new($self->{app}, $project_id);
 
-    # gather all input metrics files, and write a single metrics file 
+    # Gather all input metrics files, and write a single metrics file 
     # for the project in $dir_data.
     print "DBG [Model::Projects] analyse_project before analyse_input.\n";
     my $metrics = $analysis->analyse_input($project_id);
@@ -579,7 +579,7 @@ sub set_project_ds() {
 
     # Write updated info file.
     my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
-    write_project_data( $file_to, $projects_info{$project_id});    
+    &write_project_data( $file_to, $projects_info{$project_id});    
 }
 
 sub delete_project_ds() {
@@ -592,7 +592,7 @@ sub delete_project_ds() {
     
     # Write updated info file.
     my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
-    write_project_data( $file_to, $projects_info{$project_id});    
+    &write_project_data( $file_to, $projects_info{$project_id});    
 }
 
 1;

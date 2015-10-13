@@ -96,7 +96,7 @@
                     <li class="list-group-item"><span class="fa fa-globe"></span> &nbsp; Wiki <a href="<%= $project_pmi->{'wiki_url'}->[0]->{'url'} %>"><%= $project_pmi->{'wiki_url'}->[0]->{'url'} %></a></li>
                     <li class="list-group-item"><span class="fa fa-download"></span> &nbsp; Downloads <a href="<%= $project_pmi->{'download_url'}->[0]->{'url'} %>"><%= $project_pmi->{'download_url'}->[0]->{'url'} %></a></li>
                     <li class="list-group-item"><span class="fa fa-question-circle"></span> &nbsp; Documentation <a href="<%= $project_pmi->{'documentation_url'}->[0]->{'url'} %>"><%= $project_pmi->{'documentation_url'}->[0]->{'url'} %></a></li>
-                    <li class="list-group-item"><span class="fa fa-envelope"></span> &nbsp; Mailing lists [ <a href="<%= $project_pmi->{'dev_list'}->{'url'} %>">Developer ML</a> ] &nbsp; [ <a href="<%= $project_pmi->{'mailing_lists'}->[0]->{'url'} %>">User Forums</a> ]</li>
+                    <li class="list-group-item"><span class="fa fa-envelope"></span> &nbsp; Mailing lists [ <a href="<%= eval { $project_pmi->{'dev_list'}->{'url'} } || '/' %>"><%= eval { $project_pmi->{'dev_list'}->{'url'} } ? 'Developer ML' : '' %></a> ] &nbsp; [ <a href="<%= eval { $project_pmi->{'mailing_lists'}->[0]->{'url'} } || '/' %>"><%= eval { $project_pmi->{'mailing_lists'}->[0]->{'url'} } ? 'User Forums' : '' %></a> ]</li>
                   </ul>
                 </div>
               </div>

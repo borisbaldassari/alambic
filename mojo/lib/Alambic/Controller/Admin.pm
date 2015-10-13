@@ -3,7 +3,8 @@ package Alambic::Controller::Admin;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
-
+use File::stat;
+use Time::localtime;
 
 # This action will render a template
 sub welcome {
@@ -172,9 +173,12 @@ sub projects_id($) {
     my $dir_input = $self->config->{'dir_input'};
     my @files_input = <${dir_input}/${project_id}/*.json>;
     my %projects = $self->{app}->projects->get_all_projects();
+    my %files_time;
 
-    # Retrieve info about input files.
-    # TODO
+    # Retrieve last modification time on input files.
+    foreach my $file (@files_input, @files_data) { 
+        $files_time{$file} = ctime( stat($file)->mtime );
+    }
 
     # Prepare data for template.
     $self->stash(
@@ -182,6 +186,7 @@ sub projects_id($) {
         projects => \%projects,
         files_data => \@files_data,
         files_input => \@files_input,
+        files_time =>\%files_time,
         );    
     
     # Render template for projects admin section

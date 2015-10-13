@@ -97,10 +97,11 @@
                 
                 <table class="table table-striped">
                   <tr><th>File</th><th colspan="1">Actions</th></tr>
+% my %timestamps = %{stash( 'files_time' )};
 % foreach my $file (@{stash( 'files_input' )}) {
 %   my $file_short = fileparse($file);
                   <tr>
-                    <td><%= $file_short %> &nbsp; <small>[ 2015/10/10 45:65 ]</small></td><td><i class="fa fa-ban"></i></td>
+                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><i class="fa fa-ban"></i></td>
                   </tr>
 % }
                 </table>
@@ -115,7 +116,7 @@
 % foreach my $file (@{stash( 'files_data' )}) {
 %   my $file_short = fileparse($file);
                   <tr>
-                    <td><%= $file_short %> &nbsp; <small>2015/10/10 45:65</small></td><td><i class="fa fa-ban"></i></td>
+                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><i class="fa fa-ban"></i></td>
                   </tr>
 % }
                 </table>

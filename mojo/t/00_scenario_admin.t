@@ -14,7 +14,7 @@ my $t = Test::Mojo->new('Alambic');
 # Enable redirects for logout.
 $t->ua->max_redirects(10);
 $t->ua->connect_timeout(10);
-$t->ua->inactivity_timeout(15);
+$t->ua->inactivity_timeout(40);
 
 # Connect using POST.
 $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'admin'})
@@ -22,7 +22,7 @@ $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'admin'})
     ->content_like(qr!<h2>Administration</h2>!i, 'Check title of administration page after login.');
 
 
-# Install new repository.
+# Initialise new repository.
 $t->post_ok('/admin/repo/init' => form => {'git_repo' => 'git@bitbucket.org:BorisBaldassari/alambic_test.git'})
     ->status_is(200)
     ->content_like(qr!All data, configuration and executable files in Alambic!i, 'Initialise repository.')
@@ -40,16 +40,18 @@ $t->get_ok('/admin/project/modeling.sirius')
     ->status_is(200)
     ->content_like(qr!<b>ID</b> modeling.sirius!i, 'Page after new project contains sirius.');
 
-# Add a few new data sources: eclipse_grimoire
-$t->post_ok('/admin/project/modeling.sirius/ds/eclipse_grimoire/new' => 
+# Add a few new data sources: polarsys_grimoire
+$t->post_ok('/admin/project/modeling.sirius/ds/polarsys_grimoire/new' => 
            form => {'project_id' => 'modeling.sirius', 
-                    'grimoire_url' => 'http://dashboard.eclipse.org/data/json/'})
+                    'rsync_from_path' => '/home/vsacct/automator/Automator/projects/PolarsysMaturity/json/',
+                    'rsync_from_host' => 'boris@dashboard.eclipse.org'})
     ->status_is(200)
-    ->content_like(qr!<td>Eclipse Grimoire</td><td>eclipse_grimoire</td>!i, 'Data source has been created on project.')
-    ->content_like(qr!ds/eclipse_grimoire/check"><i class="fa fa-check"></i>!i, 'Data source has check link.')
-    ->content_like(qr!ds/eclipse_grimoire/retrieve"><i class="fa fa-download"></i>!i, 'Data source has retrieve link.')
-    ->content_like(qr!ds/eclipse_grimoire/compute"><i class="fa fa-cogs"></i>!i, 'Data source has compute link.')
-    ->content_like(qr!ds/eclipse_grimoire/del"><i class="fa fa-ban"></i>!i, 'Data source has del link.');
+    ->content_like(qr!Plugin \[polarsys_grimoire\] added to project \[modeling.sirius\].!, 'Msg ok is displayed.')
+    ->content_like(qr!<td>Polarsys Grimoire</td><td>polarsys_grimoire</td>!i, 'Data source has been created on project.')
+    ->content_like(qr!ds/polarsys_grimoire/check"><i class="fa fa-check"></i>!i, 'Data source has check link.')
+    ->content_like(qr!ds/polarsys_grimoire/retrieve"><i class="fa fa-download"></i>!i, 'Data source has retrieve link.')
+    ->content_like(qr!ds/polarsys_grimoire/compute"><i class="fa fa-cogs"></i>!i, 'Data source has compute link.')
+    ->content_like(qr!ds/polarsys_grimoire/del"><i class="fa fa-ban"></i>!i, 'Data source has del link.');
 
 
 # Add a few new data sources: eclipse_pmi
@@ -64,7 +66,8 @@ $t->post_ok('/admin/project/modeling.sirius/ds/eclipse_pmi/new' =>
     ->content_like(qr!ds/eclipse_pmi/del"><i class="fa fa-ban"></i>!i, 'Data source has del link.');
     
 
-# Delete a data source: stack_overflow
+# Delete a data source: stack_overflow 
+# xxx useless: ds has not been added before.
 $t->get_ok('/admin/project/modeling.sirius/ds/stack_overflow/del')
     ->status_is(200)
     ->content_unlike(qr!<td>Stack Overflow metrics</td><td>stack_overflow</td>!i, 'Data source has been deleted on project.')
@@ -76,16 +79,16 @@ $t->get_ok('/admin/project/modeling.sirius/ds/stack_overflow/del')
 $t->get_ok('/admin/project/modeling.sirius/retrieve')
     ->status_is(200)
     ->content_like(qr!Data for project modeling.sirius has been retrieved.!i, 'Message states that data has been retrieved.')
-    ->content_like(qr!<li class="list-group-item">modeling.sirius_metrics_grimoire.json</li>!i, 'Input files section has metrics_grimoire.')
-    ->content_like(qr!<li class="list-group-item">modeling.sirius_metrics_pmi.json</li>!i, 'Input files section has metrics_pmi.')
-    ->content_like(qr!<li class="list-group-item">modeling.sirius_pmi.json</li>!i, 'Input files section has pmi file.');
+    ->content_like(qr!<td>modeling.sirius_metrics_grimoire.json!i, 'Input files section has metrics_grimoire.')
+    ->content_like(qr!<td>modeling.sirius_metrics_pmi.json!i, 'Input files section has metrics_pmi.')
+    ->content_like(qr!<td>modeling.sirius_pmi.json!i, 'Input files section has pmi file.');
 
 
 # Analyse all data for project
 $t->get_ok('/admin/project/modeling.sirius/analyse')
     ->status_is(200)
     ->content_like(qr!Data for project modeling.sirius has been analysed.!i, 'Message states that data has been analysed.')
-    ->content_like(qr!<li class="list-group-item">modeling.sirius_metrics.json</li>!i, 'Data files include generated metrics.');
+    ->content_like(qr!<td>modeling.sirius_metrics.json!i, 'Data files include generated metrics.');
 
 # TODO add test to push new snapshot twice (second should have nothing new to push).
 

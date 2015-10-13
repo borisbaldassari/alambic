@@ -57,11 +57,12 @@ sub add_project_post {
         $args{$param} = $self->param( $param );
     }
 
-    print "[Controller::Plugins] add_project_post $project_id $ds.\n";
+    $self->app->log->debug( "[Controller::Plugins] add_project_post [$project_id] [$ds]." );
 
     $self->app->projects->set_project_ds($project_id, $ds, \%args);
     
     # Render template 
+    $self->flash( msg => "Plugin [$ds] added to project [$project_id]." );
     $self->redirect_to( "/admin/project/$project_id" );   
 }
 
