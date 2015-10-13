@@ -480,19 +480,33 @@ sub retrieve_project_data() {
     
     my @log;
 
+    # Create target dir if it does not exist
+    if (not -d $self->{app}->config->{'dir_input'} . '/' . $project_id . '/') { 
+        mkdir( $self->{app}->config->{'dir_input'} . '/' . $project_id . '/');
+    }
+
     my $ds_list = $self->{app}->al_plugins->get_list_all();
     foreach my $ds ( sort keys %{$projects_info{$project_id}{'ds'}} ) {
         print Dumper($ds);
         if ( grep( $ds, @{$ds_list} ) ) {
 #            print Dumper($self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id));
-            push( @log, @{$self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id)} );
-            push( @log, @{$self->{app}->al_plugins->get_plugin($ds)->compute_data($project_id)} );
+#            print "Plugin [$ds]:";
+            push( @log, "Plugin [$ds]:" );
+            my @ret2;
+            foreach my $line ( @{$self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id)} ) {
+                chomp $line;
+                push( @ret2, "&nbsp; &nbsp; $line" );
+            }
+            push( @log, @ret2 );
+            push( @log, map {"  " . $_} @{$self->{app}->al_plugins->get_plugin($ds)->compute_data($project_id)} );
         } else {
             $self->{app}->log->warn("[Model::Projects.pm] retrieve_project_data Cannot recognise ds [$ds]."); 
             push( @log, "[Model::Projects.pm] retrieve_project_data Cannot recognise ds [$ds]." );
         }
     }
-    
+#    print "# aaaahh ######################################\n";
+#    print Dumper(@log);
+
     return \@log;
 }
 
