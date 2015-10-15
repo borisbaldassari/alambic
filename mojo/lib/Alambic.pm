@@ -128,7 +128,6 @@ sub startup {
     $r->get('/admin/project/#id/ds/#ds/retrieve')->to( 'plugins#project_retrieve_data' );
     $r->get('/admin/project/#id/ds/#ds/compute')->to( 'plugins#project_compute_data' );
 #    $r->get('/admin/project/#id/ds/#ds/edit')->to( 'plugins#add_project' );
-
     $r->get('/admin/project/#id/ds/#ds/del')->to( 'plugins#del_project' );
 
     # Admin - Users management
@@ -136,6 +135,8 @@ sub startup {
 
     # Admin - Utilities
     $r->get('/admin/read_files/:files')->to( 'admin#read_files' );
+    $r->get('/admin/del_input_file/#project/#file')->to( 'admin#del_input_file' );
+    $r->get('/admin/del_data_file/#project/#file')->to( 'admin#del_data_file' );
 
     # Admin - Comments
     $r->get('/admin/comments')->to( 'comments#welcome' );

@@ -10,7 +10,7 @@
 % my $msg = flash( 'msg' );
 % if ( defined($msg) ) {
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <div class="alert alert-warning alert-dismissible" role="alert">
                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   <%== $msg %>
@@ -101,7 +101,7 @@
 % foreach my $file (@{stash( 'files_input' )}) {
 %   my $file_short = fileparse($file);
                   <tr>
-                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><i class="fa fa-ban"></i></td>
+                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><a href="/admin/del_input_file/<%= $project . '/' . $file_short %>"><i class="fa fa-ban"></i></a></td>
                   </tr>
 % }
                 </table>
@@ -116,7 +116,7 @@
 % foreach my $file (@{stash( 'files_data' )}) {
 %   my $file_short = fileparse($file);
                   <tr>
-                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><i class="fa fa-ban"></i></td>
+                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><a href="/admin/del_data_file/<%= $project . '/' . $file_short %>"><i class="fa fa-ban"></i></a></td>
                   </tr>
 % }
                 </table>

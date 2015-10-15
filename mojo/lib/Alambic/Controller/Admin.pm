@@ -20,7 +20,6 @@ sub read_files() {
     
     # Check that the connected user has the access rights for this
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-
         $self->flash( msg => 'You must be authentified to read configuration files.' );
         $self->redirect_to( '/login' );
     }
@@ -42,12 +41,64 @@ sub read_files() {
 }
 
 
+sub del_input_file() {
+    my $self = shift;
+    
+    my $project_id = $self->param( 'project' );
+    my $file = $self->param( 'file' );
+
+    # Check that the connected user has the access rights for this
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must be authenticated to access project management.' );
+        $self->redirect_to( '/login' );
+    }
+
+    my $ret = unlink($self->config->{'dir_input'} . '/' . $project_id . '/' . $file);
+    my $msg;
+    if ($ret == 1) {
+        $msg = "Deleted input file [$file].";
+    } else {
+        $msg = "ERROR: could not delete input file.";
+    }
+
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/project/' . $project_id );
+}
+
+
+sub del_data_file() {
+    my $self = shift;
+    
+    my $project_id = $self->param( 'project' );
+    my $file = $self->param( 'file' );
+
+    # Check that the connected user has the access rights for this
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => 'You must be authenticated to access project management.' );
+        $self->redirect_to( '/login' );
+    }
+
+    my $ret = unlink($self->config->{'dir_data'} . '/' . $project_id . '/' . $file);
+    my $msg;
+    if ($ret == 1) {
+        $msg = "Deleted data file [$file].";
+    } else {
+        $msg = "ERROR: could not delete data file.";
+    }
+
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/project/' . $project_id );
+}
+
+
 sub projects_main {
     my $self = shift;
     
     # Check that the connected user has the access rights for this
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authentified to access project management.' );
+        $self->flash( msg => 'You must be authenticated to access project management.' );
         $self->redirect_to( '/login' );
     }
              
@@ -105,7 +156,7 @@ sub project_add {
     
     # Check that the connected user has the access rights for this
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authentified to add a project.' );
+        $self->flash( msg => 'You must be authenticated to add a project.' );
         $self->redirect_to( '/login' );
     }
 
@@ -126,7 +177,7 @@ sub project_add_post {
     
     # Check that the connected user has the access rights for this
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authentified to add a project.' );
+        $self->flash( msg => 'You must be authenticated to add a project.' );
         $self->redirect_to( '/login' );
     }
 
@@ -146,7 +197,7 @@ sub project_del {
     
     # Check that the connected user has the access rights for this
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authentified to delete a project.' );
+        $self->flash( msg => 'You must be authenticated to delete a project.' );
         $self->redirect_to( '/login' );
     }
 
@@ -163,7 +214,7 @@ sub projects_id($) {
     # Check that the connected user has the access rights for this
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authentified to access project management.' );
+        $self->flash( msg => 'You must be authenticated to access project management.' );
         $self->redirect_to( '/login' );
     }
     
@@ -198,7 +249,7 @@ sub users_main {
     
     # Check that the connected user has the access rights for this
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/users' ) ) {
-        $self->flash( msg => 'You must be authentified to access users management.' );
+        $self->flash( msg => 'You must be authenticated to access users management.' );
         $self->redirect_to( '/login' );
     }
     
@@ -213,7 +264,7 @@ sub project_retrieve_data {
     my $project_id = $self->param( 'id' );
     $self->app->log->info("[Controller::Admin] project_retrieve_data $project_id.");
     
-    # Check authentified user.
+    # Check authenticated user.
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => "You must have rights on project $project_id to access this area." );
@@ -236,7 +287,7 @@ sub project_analyse {
     my $project_id = $self->param( 'id' );
     $self->app->log->info("[Controller::Admin] project_analyse $project_id.");
     
-    # Check authentified user.
+    # Check authenticated user.
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => "You must have rights on project $project_id to access this area." );
