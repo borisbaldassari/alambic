@@ -11,11 +11,13 @@ use Alambic::Model::Plugins;
 
 use Data::Dumper;
 
+use File::ChangeNotify;
+
 my $app;
 
-has projects => sub { 
-    state $projects = Alambic::Model::Projects->new($app);
-};
+# has projects => sub { 
+#     state $projects = Alambic::Model::Projects->new($app);
+# };
 
 has al_config => sub { 
     state $config = Alambic::Model::Config->new($app);
@@ -42,6 +44,11 @@ sub startup {
     # Helpers definition
     $app->plugin('Alambic::Model::Helpers');
 
+    my $watcher = File::ChangeNotify->instantiate_watcher
+        ( directories => [ $config->{'dir_data'} ],
+          filter      => qr/\.json$/,
+        );
+
     # Repo holds information about the git repository used for this instance.
     $app->helper( repo => sub { state $repo = Alambic::Model::Repo->new($app) } );
     # Initialise repository object.
@@ -61,6 +68,20 @@ sub startup {
     $app->helper( models => sub { state $models = Alambic::Model::Models->new($app) } );
     # Initialise the models (read files).
     $app->models->read_all_files();
+
+
+    # project holds information about the git repository used for this instance.
+    $app->helper( projects => sub { 
+	state $project = Alambic::Model::Projects->new($app);
+	if ( my @events = $watcher->new_events() ) { 
+	        $app->app->log->info( 'Change detected in files.' );
+		foreach my $event (@events) { $app->app->log->info( "   Event " . $event->type . " [" . $event->path . "]" ); }
+		$project->read_all_files(); 
+	}
+	return $project;
+		  } );
+    # Initialise repository object.
+    $app->projects->read_all_files();
 
     # Used to get project name from id
     $app->helper( 
