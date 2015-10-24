@@ -91,7 +91,7 @@ sub startup {
       if ( my @events = $watcher_conf->new_events() ) { 
         $app->app->log->info( 'Change detected in config files.' );
         foreach my $event (@events) { $app->app->log->info( "   Event " . $event->type . " [" . $event->path . "]" ); }
-        $config->read_all_files(); 
+        $config->read_files(); 
         # Also update users in case of an update of the users conf file.
         $app->users->read_all_files();
       }
