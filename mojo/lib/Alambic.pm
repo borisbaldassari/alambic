@@ -16,12 +16,12 @@ use File::ChangeNotify;
 my $app;
 
 # has projects => sub { 
-#     state $projects = Alambic::Model::Projects->new($app);
+#   state $projects = Alambic::Model::Projects->new($app);
 # };
 
-has al_config => sub { 
-    state $config = Alambic::Model::Config->new($app);
-};
+# has al_config => sub { 
+#   state $config = Alambic::Model::Config->new($app);
+# };
 
 
 # This method will run once at server start
@@ -44,8 +44,13 @@ sub startup {
     # Helpers definition
     $app->plugin('Alambic::Model::Helpers');
 
-    my $watcher = File::ChangeNotify->instantiate_watcher
+    my $watcher_data = File::ChangeNotify->instantiate_watcher
         ( directories => [ $config->{'dir_data'} ],
+          filter      => qr/\.json$/,
+        );
+
+    my $watcher_conf = File::ChangeNotify->instantiate_watcher
+        ( directories => [ $config->{'dir_conf'} ],
           filter      => qr/\.json$/,
         );
 
@@ -69,19 +74,29 @@ sub startup {
     # Initialise the models (read files).
     $app->models->read_all_files();
 
-
-    # project holds information about the git repository used for this instance.
+    # project holds information about the projects.
     $app->helper( projects => sub { 
-	state $project = Alambic::Model::Projects->new($app);
-	if ( my @events = $watcher->new_events() ) { 
-	        $app->app->log->info( 'Change detected in files.' );
-		foreach my $event (@events) { $app->app->log->info( "   Event " . $event->type . " [" . $event->path . "]" ); }
-		$project->read_all_files(); 
-	}
-	return $project;
-		  } );
-    # Initialise repository object.
-    $app->projects->read_all_files();
+      state $project = Alambic::Model::Projects->new($app);
+      if ( my @events = $watcher_data->new_events() ) { 
+        $app->app->log->info( 'Change detected in data files.' );
+        foreach my $event (@events) { $app->app->log->info( "   Event " . $event->type . " [" . $event->path . "]" ); }
+        $project->read_all_files(); 
+      }
+      return $project;
+		} );
+
+    # al_config holds information about this Alambic instance.
+    $app->helper( al_config=> sub { 
+      state $config = Alambic::Model::Config->new($app);
+      if ( my @events = $watcher_conf->new_events() ) { 
+        $app->app->log->info( 'Change detected in config files.' );
+        foreach my $event (@events) { $app->app->log->info( "   Event " . $event->type . " [" . $event->path . "]" ); }
+        $config->read_all_files(); 
+        # Also update users in case of an update of the users conf file.
+        $app->users->read_all_files();
+      }
+      return $config;
+		} );
 
     # Used to get project name from id
     $app->helper( 
