@@ -82,6 +82,11 @@ sub welcome {
         $self->stash( rules => \%rules, sources => \%sources, source => $source );
 	$self->render( template => 'alambic/documentation/rules' );
 
+    } elsif ($in_doc =~ m!^references(.html)?$!) {
+
+	# Render template for references (bib)
+	$self->render( template => 'alambic/documentation/references' );
+
     } else {
 
 	$self->render( template => 'alambic/documentation/main' );        
