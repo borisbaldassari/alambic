@@ -520,31 +520,39 @@ sub analyse_project($) {
     my $self = shift;
     my $project_id = shift;
 
+    my @log;
+
     # Create an instance of the Analysis module.
     my $analysis = Alambic::Model::Analysis->new($self->{app}, $project_id);
 
     # Gather all input metrics files, and write a single metrics file 
     # for the project in $dir_data.
-    print "DBG [Model::Projects] analyse_project before analyse_input.\n";
+    push( @log, "[Model::Projects] Analysing input data.." );
     my $metrics = $analysis->analyse_input($project_id);
 
     # Copy files marked as plugin artefacts.
-    print Dumper($projects_info{$project_id}{'ds'});
+#    print Dumper($projects_info{$project_id}{'ds'});
     my @pis = sort keys %{$projects_info{$project_id}{'ds'}};
     
+    push( @log, "[Model::Projects] Copying files provided by plugins.." );
     foreach my $pi (@pis) {
         my @files = map { 
             $self->{app}->config->{'dir_input'} . '/' . $project_id . '/' . $project_id . '_' . $_ . '.json'
         } @{$self->{app}->al_plugins->get_plugin($pi)->get_conf()->{'provides_files'}};
         foreach my $file (@files) {
-            print "DBG Copying $file to " . $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . "\n";
+#            print "DBG Copying $file to " . $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . "\n";
             copy($file, $self->{app}->config->{'dir_data'} . '/' . $project_id . '/');
         }
-        }
+    }
     
-    print "DBG [Model::Projects] analyse_project before compute_inds.\n";
-    $analysis->compute_inds($project_id);
+#    print "DBG [Model::Projects] analyse_project before compute_inds.\n";
+    push( @log, "[Model::Projects] Computing indicators and attributes.." );
+    foreach my $line ( @{$analysis->compute_inds($project_id)} ) {
+        chomp $line;
+        push( @log, "&nbsp; &nbsp; $line" );
+    }
 
+    return \@log;
 }
 
 sub add_project() {

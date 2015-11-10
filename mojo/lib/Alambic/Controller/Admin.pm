@@ -273,10 +273,10 @@ sub project_retrieve_data {
 
     push( @log, @{$self->app->projects->retrieve_project_data($project_id)} );
     push( @log, "Data for project $project_id has been retrieved." );
+
     my $log_str = join( '<br />', @log );
 
     $self->flash( msg => $log_str );
-    
     $self->redirect_to( "/admin/project/$project_id" );
 
 }
@@ -287,6 +287,8 @@ sub project_analyse {
     my $project_id = $self->param( 'id' );
     $self->app->log->info("[Controller::Admin] project_analyse $project_id.");
     
+    my @log;
+
     # Check authenticated user.
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
@@ -294,9 +296,12 @@ sub project_analyse {
         $self->redirect_to( '/login' );
     }
     print "# [Controller::Admin] project_analyse.\n";
-    $self->app->projects->analyse_project($project_id);
-    $self->flash( msg => "Data for project $project_id has been analysed." );
+    push( @log, @{$self->app->projects->analyse_project($project_id)} );
+    push( @log, "Data for project $project_id has been analysed." );
 
+    my $log_str = join( '<br />', @log );
+
+    $self->flash( msg => $log_str );
     $self->redirect_to( "/admin/project/$project_id" );
 }
 
