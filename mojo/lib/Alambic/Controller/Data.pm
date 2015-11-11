@@ -11,9 +11,12 @@ sub download {
     
     $self->app->log->info( "[Controller::Data] request with [$in_doc]." );
 
-    if ($in_doc =~ m!^quality_model_full?$!) {
+    if ($in_doc =~ m!^quality_model_full.json$!) {
 
-        $self->reply->static( $self->conf_dir_conf . '/quality_model_full.json');
+#        $self->res->headers->content_type('ascii/json');
+#        push @{$static->paths}, $self->config->{'dir_models'};
+        $self->reply->static('../models/quality_model_full.json');
+#        $self->reply->static( $self->config->{'dir_models'} . '/quality_model_full.json');
 
     } elsif ($in_doc =~ m!^model_attributes.json$!) {
 
