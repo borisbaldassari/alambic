@@ -363,7 +363,7 @@ sub compute_inds {
         "children" => \%project_questions_conf,
     };
     my $file_questions_conf = $project_path . '/' . $project_id . '_questions_confidence.json';
-    &write_data($file_questions, $raw_questions_conf);
+    &write_data($file_questions_conf, $raw_questions_conf);
 
     push( @log, "    - Generating project attributes file.." );
 

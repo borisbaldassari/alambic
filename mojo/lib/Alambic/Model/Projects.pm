@@ -545,7 +545,7 @@ sub analyse_project($) {
         }
     }
     
-#    print "DBG [Model::Projects] analyse_project before compute_inds.\n";
+    print "DBG [Model::Projects] analyse_project before compute_inds.\n";
     push( @log, "[Model::Projects] Computing indicators and attributes.." );
     foreach my $line ( @{$analysis->compute_inds($project_id)} ) {
         chomp $line;
