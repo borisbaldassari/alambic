@@ -2,41 +2,40 @@
 % title 'Administration: Add a project';
 
 % $from = stash( 'from' );
+% my $project_id = param( 'id' );
+% my $project_name = param( 'name' );
 
-            <h2>Administration: add a project</h2>
+            <h2>Administration: Edit project information</h2>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/projects'
 
-% if ( defined($from) && $from =~ m!^pmi$! ) {
+            <form action="/admin/projects/new" method="POST" class="form-horizontal" role="form">
 
-            <p>The project will be imported from the Eclipse PMI infrastructure.</p>
-            <form action="/admin/projects/new" method="POST">
-              <input class="hidden" name="from" type="text" value="pmi"></input>
-              <p>ID: (<span style="color: red">*</span>) &nbsp; <input name="id" type="text"></input></p>
-              <br />
-              <input type="submit" value="Add project"></input>
-              <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
-            </form>
-
+              <div class="form-group">
+                <label for="id" class="control-label col-xs-2">Project ID</label>
+                <div class="col-xs-10">
+% if (defined($project_id)) {
+                  <input type="text" class="form-control" name="id" value="<%= $project_id %>" readonly>
 % } else {
-
-            <form action="/admin/projects/new" method="POST">
-              <p>Name: (<span style="color: red">*</span>) &nbsp; <input name="name" type="text"></input></p>
-              <p>ID: (<span style="color: red">*</span>) &nbsp; <input name="id" type="text"></input></p>
-              <br />
-
-%   my $plugins_list = app->al_plugins->get_list_all();
-%   foreach my $plugin (@{$plugins_list}) {
-%     my $plugin_conf = app->al_plugins->get_plugin($plugin)->get_conf();
-              <p><b><%= $plugin_conf->{'name'} %></b><br />
-%     foreach my $arg (keys %{$plugin_conf->{'requires'}}) {
-                <%= $arg %>: (<span style="color: red">*</span>) &nbsp; <input name="<%= join('.', ($plugin, $arg)) %>" type="text" value="<%= $plugin_conf->{'requires'}->{$arg} %>"></input><br />
-%     }
-              </p>
-%   }
-              <input type="submit" value="Add project"></input>
-              <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
-            </form>
-            
+                  <input type="text" class="form-control" name="id">
 % }
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="name" class="control-label col-xs-2">Project Name</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" name="name" id="name" value="<%= $project_name %>">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                  <input class="btn btn-primary" type="submit" value="Save">
+                  <input class="btn btn-default" type="button" value="Cancel" onclick="history.go(-1);" />
+                </div>
+              </div>
+
+            </form>
+

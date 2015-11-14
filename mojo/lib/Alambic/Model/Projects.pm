@@ -12,6 +12,9 @@ use File::Copy;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( read_all_files
+                     read_project_data
+                     write_project_data
+                     list_projects
                      get_all_projects
                      get_project_info
                      get_project_name_by_id
@@ -20,13 +23,23 @@ our @EXPORT_OK = qw( read_all_files
                      get_project_indicators
                      get_project_all_values
                      get_project_attrs
+                     get_project_attrs_last
                      get_project_attrs_conf
                      get_project_questions
                      get_project_questions_conf
                      get_project_violations
                      get_project_pmi
                      get_project_comments
-                     add_project_comment );  
+                     add_project_comment
+                     edit_project_comment
+                     delete_project_comment
+                     retrieve_project_data
+                     analyse_project
+                     add_project
+                     del_project
+                     get_project_ds
+                     set_project_ds
+                     delete_project_ds );  
 
 
 use warnings;
@@ -35,7 +48,6 @@ use Data::Dumper;
 
 my %projects;
 
-my %projects_names;
 my %projects_info;
 
 my %attributes;
@@ -61,7 +73,6 @@ sub new {
 sub read_all_files() { 
     my $self = shift;
 
-    $self->{app}->log->debug( "[Model::Projects] Creating new Alambic::Model::Projects.pm class." );
     $self->{app}->log->debug( "[Model::Projects] Creating new Alambic::Model::Projects.pm class." );
     my $config = $self->{app}->config;
     my $models = $self->{app}->models;
@@ -174,7 +185,6 @@ sub _read_files($$) {
         my $id = $1;
         my $json_project = &read_project_data($project);
         $projects{$id}{'pmi'} = $json_project->{'projects'}->{$id};
-        $projects_names{$id} = $json_project->{'projects'}->{$id}->{'title'};
     }
 
     # Read comments for projects
@@ -245,7 +255,7 @@ sub get_project_name_by_id($) {
     my $self = shift;
     my $project_id = shift;
 
-    return $projects_names{$project_id};
+    return $projects_info{$project_id}{'name'};
 }
 
 sub get_project_metrics($) {
@@ -555,6 +565,13 @@ sub analyse_project($) {
     return \@log;
 }
 
+
+#
+#
+# Add or replace a project basic information: 
+#  * project_id (string)
+#  * project_name (string)
+#
 sub add_project() {
     my $self = shift;
     my $project_id = shift;
@@ -564,18 +581,24 @@ sub add_project() {
     mkdir( $self->{app}->config->{'dir_data'} . "/" . $project_id );
     mkdir( $self->{app}->config->{'dir_input'} . "/" . $project_id );
 
-    my $info = {
-        "id" => $project_id,
-        "name" => $project_name,
-    };
-
     my $file_info = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
+
+    my $info;
+    if (-e $file_info ) {
+        $info = &read_project_data( $file_info );
+        $info->{'name'} = $project_name;
+    } else {
+        $info = {
+            "id" => $project_id,
+            "name" => $project_name,
+        };
+    }
+
     &write_project_data( $file_info, $info );
 
-    # Add values to the 
-    $projects_names{$project_id} = $project_name;
+    # Add values to the current hashes
     $projects_info{$project_id} = $info;
-    $projects{$project_id} = {};
+#    $projects{$project_id} = {};
 
     return 1;
 }
@@ -589,7 +612,6 @@ sub del_project() {
     remove_tree( $self->{app}->config->{'dir_input'} . "/" . $project_id );
 
     # Remove project from local variables.
-    delete $projects_names{$project_id};
     delete $projects_info{$project_id};
     delete $projects{$project_id};
 
