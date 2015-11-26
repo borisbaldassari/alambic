@@ -7,7 +7,6 @@ my %conf = (
     "desc" => "Retrieves data from Stack Overflow.",
     "ability" => [
         "metrics",
-        "info",
         "viz",
     ],
     "requires" => {
