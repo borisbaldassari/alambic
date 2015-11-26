@@ -21,6 +21,7 @@ my @plugins_metrics;
 my @plugins_files;
 my @plugins_viz;
 
+my %customdata;
 
 # Constructor
 sub new {
@@ -37,11 +38,11 @@ sub new {
 sub read_all_files() { 
     my $self = shift;
 
-    $self->{app}->log->debug("[Model::DataSources] read_all_files.");
+    $self->{app}->log->debug("[Model::Plugins] read_all_files.");
     my $config = $self->{app}->config;
 
     # Read plugins directory.
-    my @plugins = <'lib/Alambic/Plugins'/*.pm>;
+    my @plugins = <lib/Alambic/Plugins/*.pm>;
     foreach my $plugin (@plugins) {
         $plugin =~ m!.+/([^/\\]+).pm!;
         my $plugin_name = $1;
@@ -50,10 +51,23 @@ sub read_all_files() {
         my $conf = $al_plugin->get_conf();
         $plugins{ $conf->{'id'} } = $al_plugin;
     }
+
+    my @customdata = <lib/Alambic/ManualData/*.pm>;
+    foreach my $plugin (@customdata) {
+        $plugin =~ m!.+/([^/\\]+).pm!;
+        my $plugin_name = $1;
+        $self->{app}->plugins->register_plugin('Alambic::Plugins::' . $plugin_name, $self->{app});
+        my $al_plugin = $self->{app}->plugins->load_plugin('Alambic::Plugins::' . $plugin_name);
+        my $conf = $al_plugin->get_conf();
+        $customdata{ $conf->{'id'} } = $al_plugin;
+    }
+    
+    
 }
 
 sub get_list_all() {
     my @list = keys %plugins;
+    
     return \@list;
 }
 

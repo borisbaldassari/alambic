@@ -62,6 +62,7 @@
 
             <h3>Data sources</h3>
 
+            <h4>Automatic data sources</h4>
             <table class="table table-striped">
               <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="4">Actions</th></tr>
 % foreach my $ds ( sort keys %{ $info->{'ds'} } ) {
@@ -83,6 +84,30 @@
                 <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/del"><i class="fa fa-ban"></i></a></td></tr>
 % }            
             </table>
+
+            <h4>Manual data sources</h4>
+            <table class="table table-striped">
+              <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="4">Actions</th></tr>
+% foreach my $ds ( sort keys %{ $info->{'cd'} } ) {
+%   my $plugin_name = 'Unknown';
+%   if (defined(al_plugins->get_customdata($ds))) {
+%     $plugin_name = al_plugins->get_customdata($ds)->get_conf()->{'name'};
+%   }
+              <tr>
+                <td><%= $plugin_name %></td><td><%= $ds %></td>
+                <td>
+%   my $args = app->projects->get_project_ds($project, $ds);
+%   my @args_full = map { "$_: <code>" . $args->{$_} . "</code>"; } keys %{$args};
+%   my $args_str = join( '<br />', sort @args_full );
+                  <%== $args_str %>
+                </td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/cd/<%= $ds %>/check"><i class="fa fa-check"></i></a></td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/cd/<%= $ds %>/form"><i class="fa fa-plus"></i></a></td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/cd/<%= $ds %>/compute"><i class="fa fa-cogs"></i></a></td>
+                <td width="1cm"><a href="/admin/project/<%= $project %>/cd/<%= $ds %>/del"><i class="fa fa-ban"></i></a></td></tr>
+% }            
+            </table>
+
             <p>You can add a data source from 
 % my $list = al_plugins->get_list_all();
 % foreach my $ds (@{$list}) {
