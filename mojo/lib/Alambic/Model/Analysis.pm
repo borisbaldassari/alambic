@@ -83,7 +83,7 @@ sub analyse_input() {
 	    foreach my $metric (keys %{$raw_values}) {
 		if ($raw_values->{$metric} =~ m![\d.]+!) {
 		    $project_values{uc($metric)} = $raw_values->{$metric};
-		    print "DBG metric [$metric] has value [" . $raw_values->{$metric} . "].\n";
+#		    print "DBG metric [$metric] has value [" . $raw_values->{$metric} . "].\n";
 		} else {
 		    if ($raw_values->{$metric} =~ m!^nan$!i) {
 			print "DBG nan value for [$metric].\n";
@@ -314,7 +314,9 @@ sub aggregate_inds($$$$$) {
 sub compute_inds {
     my $self = shift;
 
-    print "  * Generating project data for [$project_id].\n";
+    my @log;
+
+    push( @log, "  * Generating project data for [$project_id]." );
 
     my $raw_qm = $self->{app}->models->get_model();
     
@@ -325,14 +327,14 @@ sub compute_inds {
     my %project_attrs;
     my %project_attrs_conf;
 
-    print "    - Aggregating data from leaves up to attributes.\n";
+    push( @log, "    - Aggregating data from leaves up to attributes." );
     &aggregate_inds($raw_qm->{"children"}->[0], \%project_values, 
 		    \%project_indicators, \%project_indicators_conf, 
 		    \%project_questions, \%project_questions_conf, 
 		    \%project_attrs, \%project_attrs_conf, $project_id);
 
     my $project_path = $self->{app}->config->{'dir_data'} . '/' . $project_id;
-    print "    - Generating project indicators..\n";
+    push( @log, "    - Generating project indicators file.." );
 
     # Create headers for json file
     my $raw_indicators = {
@@ -343,7 +345,7 @@ sub compute_inds {
     my $file_indicators = $project_path . '/' . $project_id . '_indicators.json';
     &write_data($file_indicators, $raw_indicators);
 
-    print "    - Generating project questions..\n";
+    push( @log, "    - Generating project questions file.." );
 
     # Create headers for json file
     my $raw_questions = {
@@ -361,9 +363,9 @@ sub compute_inds {
         "children" => \%project_questions_conf,
     };
     my $file_questions_conf = $project_path . '/' . $project_id . '_questions_confidence.json';
-    &write_data($file_questions, $raw_questions_conf);
+    &write_data($file_questions_conf, $raw_questions_conf);
 
-    print "    - Generating project attributes..\n";
+    push( @log, "    - Generating project attributes file.." );
 
     # Create headers for json file
     my $raw_attrs = {
@@ -396,7 +398,7 @@ sub compute_inds {
     # Reread all project files
     $self->{app}->projects->read_all_files();
 
-    return 1;
+    return \@log;
 }
 
 # Utility function to read files

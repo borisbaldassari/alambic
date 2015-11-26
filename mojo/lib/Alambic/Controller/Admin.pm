@@ -168,17 +168,28 @@ sub project_add {
     $self->render( template => 'alambic/admin/project_add' );
 }
 
+
+
 sub project_add_post {
     my $self = shift;
     
     my $project_id = $self->param( 'id' );
     my $project_name = $self->param( 'name' );
     my $from = $self->param( 'from' );
+
+    print "DBG had id [$project_id] and name [$project_name].\n";
     
     # Check that the connected user has the access rights for this
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authenticated to add a project.' );
         $self->redirect_to( '/login' );
+    }
+
+    # If fields are not filled, fail.
+    if (not defined($project_id) or not defined($project_name)
+        or $project_id =~ /^\s$/ or $project_name =~ /^\s$/) {
+        $self->flash( msg => "Failed to add project [$project_id]." );
+        $self->redirect_to( '/admin/projects' );
     }
 
     if ( defined($from) && $from =~ m!^pmi$! ) {
@@ -187,6 +198,7 @@ sub project_add_post {
         $self->app->projects->add_project($project_id, $project_name);
     }
 
+    $self->flash( msg => "Project [$project_id] saved." );
     $self->redirect_to( '/admin/projects' );
 }
 
@@ -273,10 +285,10 @@ sub project_retrieve_data {
 
     push( @log, @{$self->app->projects->retrieve_project_data($project_id)} );
     push( @log, "Data for project $project_id has been retrieved." );
+
     my $log_str = join( '<br />', @log );
 
     $self->flash( msg => $log_str );
-    
     $self->redirect_to( "/admin/project/$project_id" );
 
 }
@@ -287,6 +299,8 @@ sub project_analyse {
     my $project_id = $self->param( 'id' );
     $self->app->log->info("[Controller::Admin] project_analyse $project_id.");
     
+    my @log;
+
     # Check authenticated user.
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
@@ -294,9 +308,12 @@ sub project_analyse {
         $self->redirect_to( '/login' );
     }
     print "# [Controller::Admin] project_analyse.\n";
-    $self->app->projects->analyse_project($project_id);
-    $self->flash( msg => "Data for project $project_id has been analysed." );
+    push( @log, @{$self->app->projects->analyse_project($project_id)} );
+    push( @log, "Data for project $project_id has been analysed." );
 
+    my $log_str = join( '<br />', @log );
+
+    $self->flash( msg => $log_str );
     $self->redirect_to( "/admin/project/$project_id" );
 }
 

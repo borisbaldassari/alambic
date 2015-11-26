@@ -21,42 +21,37 @@
 
 %= include '/alambic/admin/admin_menu', current => '/admin/projects'
 
-            <p>Get back to <a href="/admin/projects">projects</a>.</p>
-
-            <a class="btn btn-default" href="/admin/project/<%= $project %>/retrieve" role="button">Retrieve all data</a> 
-            <a class="btn btn-default" href="/admin/project/<%= $project %>/analyse" role="button">Analyse all data</a>
-
-            <h3>Information</h3>
+            <h3>Informations</h3>
 
             <div class="row">
               <div class="col-md-6">
+
 % my $info = app->projects->get_project_info($project);
                 <p><b>ID</b> <%= $info->{'id'} %><br />
                 <b>Name</b> <%= $info->{'name'} %><br />
-                <b>Sources</b> <br />
-% foreach my $src (keys %{$info->{'sources'}}) { 
-                <%= $src %>: <%= $info->{'sources'}->{$src} %><br />
-% }
                 </p>
               </div>
               <div class="col-md-6">
-                <p>
-% if (exists($projects->{$project}->{'metrics'})) {
-                  <code><%= $project %>_metrics.json</code> has <code><%= scalar keys %{$projects->{$project}->{'metrics'}} %></code> metrics defined.<br />
-% }
-% if (exists($projects->{$project}->{'attrs'})) {
-                  <code><%= $project %>_attributes.json</code> has <code><%= scalar keys %{$projects->{$project}->{'attrs'}} %></code> attributes defined.<br />
-% }
-% if (exists($projects->{$project}->{'attrs_conf'})) {
-                  <code><%= $project %>_attributes_confidence.json</code> has <code><%= scalar keys %{$projects->{$project}{'attrs_conf'}} %></code> attributes defined.<br />
-% }
-% if (exists($projects->{$project}->{'pmi'})) {
-                  <code><%= $project %>_pmi.json</code> has <code><%= scalar keys %{$projects->{$project}->{'pmi'}} %></code> attributes defined.<br />
-% }
-% if (exists($projects->{$project}->{'comments'})) {
-                  <code><%= $project %>_comments.json</code> has <code><%= scalar keys %{$projects->{$project}->{'comments'}} %></code> comments defined.
-% }
-                </p>                
+                <a class="btn btn-default" href="/admin/projects/" role="button">Return to projets</a> <br />
+                <a class="btn btn-default" href="/admin/projects/new?id=<%= $info->{'id'} %>&name=<%= $info->{'name'} %>" role="button">Edit information</a> <br />
+                <a class="btn btn-default" href="/admin/project/<%= $project %>/retrieve" role="button">Retrieve all data</a> <br />
+                <a class="btn btn-default" href="/admin/project/<%= $project %>/analyse" role="button">Analyse all data</a>
+
+<!-- % if (exists($projects->{$project}->{'metrics'})) { -->
+<!--                   <code><%= $project %>_metrics.json</code> has <code><%= scalar keys %{$projects->{$project}->{'metrics'}} %></code> metrics defined.<br /> -->
+<!-- % } -->
+<!-- % if (exists($projects->{$project}->{'attrs'})) { -->
+<!--                   <code><%= $project %>_attributes.json</code> has <code><%= scalar keys %{$projects->{$project}->{'attrs'}} %></code> attributes defined.<br /> -->
+<!-- % } -->
+<!-- % if (exists($projects->{$project}->{'attrs_conf'})) { -->
+<!--                   <code><%= $project %>_attributes_confidence.json</code> has <code><%= scalar keys %{$projects->{$project}{'attrs_conf'}} %></code> attributes defined.<br /> -->
+<!-- % } -->
+<!-- % if (exists($projects->{$project}->{'pmi'})) { -->
+<!--                   <code><%= $project %>_pmi.json</code> has <code><%= scalar keys %{$projects->{$project}->{'pmi'}} %></code> attributes defined.<br /> -->
+<!-- % } -->
+<!-- % if (exists($projects->{$project}->{'comments'})) { -->
+<!--                   <code><%= $project %>_comments.json</code> has <code><%= scalar keys %{$projects->{$project}->{'comments'}} %></code> comments defined. -->
+<!-- % } -->
               </div>
             </div>
 
@@ -110,7 +105,7 @@
 
             <p>You can add a data source from 
 % my $list = al_plugins->get_list_all();
-% foreach my $ds (@{$list}) {
+% foreach my $ds (sort @{$list}) {
               <a href="/admin/project/<%= $project %>/ds/<%= $ds %>/new"><%= $ds %></a>
 % }
               .</p>
