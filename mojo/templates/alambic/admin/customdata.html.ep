@@ -1,0 +1,93 @@
+
+            <h2>Administration: Custom data types</h2>
+            <br />
+            
+%= include 'alambic/admin/admin_menu', current => '/admin/cdata'
+
+            <p>These pages allow teams to add custom data to the projects. Please note that you must be <a href="/comments/login">logged in</a> to write comments.</p>
+            
+            <p>&nbsp;</p>
+
+            <div class="row">
+              <div class="col-lg-4">
+                <table class="table table-striped">
+                  <tr>
+                    <th>Project</th>
+                    <th>Actions</th>
+                  </tr>
+% my @projects = app->projects->list_projects;
+% foreach my $project (sort @projects) {
+%   my $cdata = app->projects->get_project_info($project)->{'cdata'};
+%   my $cdata_vol = 0; #defined( $cdata ) ? scalar @{$cdata} : 0;
+                  <tr>
+                    <td><%= $project %></td>
+                    <td width="1cm">
+%   if ( defined( session->{'session_user'} ) && 
+%        ( users->is_user_authenticated(session->{session_user}, '/admin/projects') ||
+%          users->has_user_project(session->{session_user}, $project) ) ) {
+                    <a href="/admin/cdata/<%= $project %>"><i class="fa fa-eye"></i></a>
+%   }
+                  </td></tr>
+% }
+                </table>
+              </div>
+              <div class="col-lg-1">
+              </div>
+              <div class="col-lg-6">
+
+% ## Displaying all cdata for project if project_id is defined.
+% if ( defined($project_id) && $project_id =~ m!^\S+$! ) {
+                <table class="table table-striped">
+                  <tr>
+                    <th>Custom data for project <%= $project_id %></th>
+                    <th>Actions</th>
+                  </tr>
+%   foreach my $cdata ( sort keys %{app->projects->get_project_info($project_id)->{'cdata'}} ) {
+%     my $cdata_name = al_plugins->get_plugin($cdata)->get_conf()->{'name'} || "Unknown";
+                  <tr>
+                    <td><%= $cdata_name %></td>
+%     if ( defined( session->{'session_user'} ) && 
+%          ( users->is_user_authenticated(session->{session_user}, '/admin/projects') ||
+%            users->has_user_project(session->{session_user}, $project_id) ) ) {
+                    <td width="1cm"><a href="/admin/cdata/<%= $project_id %>/<%= $cdata %>/show"><i class="fa fa-eye"></i></a></td>
+%     } else {
+                    <td width="1cm"></td>
+%     }
+                  </tr>
+%   }
+                </table>
+% }
+              </div>
+              <div class="col-lg-1">
+              </div>
+            </div>
+
+% # Displaying all cdata items for a specific custom data plugin, for
+% # a specific project.
+% if ( defined($project_id) && $project_id =~ m!^\S+$! 
+%      && defined($cdata_id) && $cdata_id =~  m!^\S+$! ) {
+%   my $cdata_name = al_plugins->get_plugin($cdata_id)->get_conf()->{'name'} || "Unknown";
+
+            <h3>Results for <%= $cdata_name %></h3>
+
+            <table class="table table-striped">
+              <tr>
+                <th>Author</th><th>Date</th><th>ID</th><th>Values</th><th colspan="3">Actions</th>
+              </tr>
+%   my $items = app->projects->get_project_cd_content($project_id, $cdata_id) || [];
+%   foreach my $item ( sort @{$items} ) {
+              <tr>
+                <td><%= $item->{'author'} %></td>
+                <td><%= $item->{'date'} %></td>
+                <td><%= $item->{'id'} %></td>
+%     delete $item->{'author'};
+%     my $id = delete $item->{'id'};
+%     delete $item->{'date'};
+                <td><%== join( '<br />', map { "<b>$_</b>: " . $item->{$_} } sort keys %{$item} ) %></td>
+                <td width="1cm"><a href="/admin/cdata/<%= $project_id %>/<%= $cdata_id %>/edit/<%= $id %>"><i class="fa fa-pencil"></i></a></td>
+                <td width="1cm"><a href="/admin/cdata/<%= $project_id %>/<%= $cdata_id %>/compute"><i class="fa fa-cogs"></i></a></td>
+                <td width="1cm"><a href="/admin/cdata/<%= $project_id %>/<%= $cdata_id %>/del/<%= $item->{'id'} %>"><i class="fa fa-ban"></i></a></td>
+              </tr>
+%   }
+            </table>
+% }

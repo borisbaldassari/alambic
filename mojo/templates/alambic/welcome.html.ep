@@ -1,5 +1,4 @@
 % layout 'polarsys';
-% title 'Welcome';
 
             <img src="/images/logo_polarsys.png" class="img-responsive" style="margin: 25px 0px" alt="PolarSys logo" /> 
 

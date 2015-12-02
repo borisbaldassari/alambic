@@ -1,0 +1,47 @@
+% my $conf = stash( 'conf' );
+%# my $project = stash( 'project' );
+% my $values = stash( 'values' ) ;
+
+            <h2>Administration: Custom Data sources</h2>
+            <br />
+
+%= include 'alambic/admin/admin_menu', current => '/admin/cdata'
+
+            <h3>Add/edit a custom data source for project <%= $project_id %></h3>
+
+% if ( defined($values) ) {
+            <p>This action will edit the entry <code><%= $values->{'id'} %></code> posted by <code><%= $values->{'author'} %></code> on <code><%= $values->{'date'} %></code>.</p>
+% } else {
+            <p>This action will add an entry to the <code><%= $conf->{'id'} %></code> custom data plugin on project <code><%= $project_id %></code>.</p>
+% }
+            <br />
+
+            <form action="/admin/cdata/<%= $project_id %>/<%= $conf->{'id'} %>/add" method="POST">
+% foreach my $arg (@{$conf->{'data'}}) {
+%   my $default = $values->{ $arg->{'id'} } || "";
+%   my $qm = quotemeta $default;
+              <p><b><%= $arg->{'name'} %></b> (<span style="color: red">*</span>)</p>
+              <p><%= $arg->{'desc'} %></p>
+%   if ( defined($arg->{'type'}) && $arg->{'type'} =~ m!^select$! && defined($arg->{'choices'}) ) {
+%   # Entry type is select multi-choice
+              <p>
+                <select name="<%= $arg->{'id'} %>">
+%     foreach my $choice (@{$arg->{'choices'}}) {
+                  <option value="<%= $choice %>" <%= ( $choice =~ /^$qm$/ ) ? 'selected="selected"' : '' %>><%= $choice %></option>
+%     }
+                </select>
+              </p>
+%   } elsif ( defined($arg->{'type'}) && $arg->{'type'} =~ m!^number! ) {
+%   # Entry type is number
+              <p><input name="<%= $arg->{'id'} %>" type="number" value="<%= $default %>"/></p>
+%   } else {
+%   # Entry type is something else
+              <p>Something's wrong.....</p>
+              <p><b><%= $arg %></b> (<span style="color: red">*</span>)</p>
+              <p><input name="" type="text" value="<%= $conf->{'requires'}->{$arg} %>"/></p>
+%   }
+% }
+              <br /><br />
+              <input type="submit" value="Save"></input>
+              <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
+            </form>

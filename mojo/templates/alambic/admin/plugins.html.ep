@@ -9,9 +9,11 @@
             <p>Plugins add new functionalities to Alambic. They most notably provide new data sources for projects, computing and visualisation features, and can be easily customised to fit specific needs.</p>
             <br />
 
+            <h3>Automatic data sources</h3>
+
             <table class="table table-striped">
               <tr><th>Name</th><th>ID</th><th>Type</th><th>Requires</th><th>Provides metricsf</th><th>Provides files</th></tr>
-% my $pis_list = al_plugins->get_list_all();
+% my $pis_list = al_plugins->get_list_pis();
 % use Data::Dumper;
 % foreach my $pi (sort @{$pis_list}) {
 %   my $conf = al_plugins->get_plugin($pi)->get_conf();
@@ -25,3 +27,22 @@
             </tr>
 % }
             </table>
+
+            <h3>Custom data sources</h3>
+
+            <table class="table table-striped">
+              <tr><th>Name</th><th>ID</th><th>Type</th><th>Requires</th><th>Provides metricsf</th><th>Provides files</th></tr>
+% my $cds_list = al_plugins->get_list_cds();
+% foreach my $cd (sort @{$cds_list}) {
+%   my $conf = al_plugins->get_plugin($cd)->get_conf();
+            <tr>
+              <td><%= $conf->{'name'} %></td>
+              <td><%= $conf->{'id'} %></td>
+              <td><%= join( ', ', @{$conf->{'ability'}} ) %></td>
+              <td><%= join( ', ', keys %{$conf->{'requires'}} ) %></td>
+              <td><%= join( ', ', @{$conf->{'provides_metrics'}} ) %></td>
+              <td><%= join( ', ', map { '*_' . $_ . '.json' } @{$conf->{'provides_files'}} ) %></td>
+            </tr>
+% }
+            </table>
+

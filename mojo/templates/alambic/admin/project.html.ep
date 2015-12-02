@@ -55,9 +55,7 @@
               </div>
             </div>
 
-            <h3>Data sources</h3>
-
-            <h4>Automatic data sources</h4>
+            <h3>Automatic data sources</h3>
             <table class="table table-striped">
               <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="4">Actions</th></tr>
 % foreach my $ds ( sort keys %{ $info->{'ds'} } ) {
@@ -80,13 +78,20 @@
 % }            
             </table>
 
-            <h4>Manual data sources</h4>
+            <p>You can add a data source from 
+% my $list = al_plugins->get_list_pis();
+% foreach my $ds (sort @{$list}) {
+              <a href="/admin/project/<%= $project %>/ds/<%= $ds %>/new"><%= $ds %></a>
+% }
+              .</p>
+
+            <h3>Custom data sources</h3>
             <table class="table table-striped">
               <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="4">Actions</th></tr>
-% foreach my $ds ( sort keys %{ $info->{'cd'} } ) {
+% foreach my $ds ( sort keys %{ $info->{'cdata'} } ) {
 %   my $plugin_name = 'Unknown';
-%   if (defined(al_plugins->get_customdata($ds))) {
-%     $plugin_name = al_plugins->get_customdata($ds)->get_conf()->{'name'};
+%   if (defined(al_plugins->get_plugin($ds))) {
+%     $plugin_name = al_plugins->get_plugin($ds)->get_conf()->{'name'};
 %   }
               <tr>
                 <td><%= $plugin_name %></td><td><%= $ds %></td>
@@ -96,17 +101,17 @@
 %   my $args_str = join( '<br />', sort @args_full );
                   <%== $args_str %>
                 </td>
-                <td width="1cm"><a href="/admin/project/<%= $project %>/cd/<%= $ds %>/check"><i class="fa fa-check"></i></a></td>
-                <td width="1cm"><a href="/admin/project/<%= $project %>/cd/<%= $ds %>/form"><i class="fa fa-plus"></i></a></td>
-                <td width="1cm"><a href="/admin/project/<%= $project %>/cd/<%= $ds %>/compute"><i class="fa fa-cogs"></i></a></td>
-                <td width="1cm"><a href="/admin/project/<%= $project %>/cd/<%= $ds %>/del"><i class="fa fa-ban"></i></a></td></tr>
+                <td width="1cm"><a href="/admin/cdata/<%= $project %>/<%= $ds %>/show"><i class="fa fa-eye"></i></a></td>
+                <td width="1cm"><a href="/admin/cdata/<%= $project %>/<%= $ds %>/add"><i class="fa fa-plus"></i></a></td>
+                <td width="1cm"><a href="/admin/cdata/<%= $project %>/<%= $ds %>/compute"><i class="fa fa-cogs"></i></a></td>
+                <td width="1cm"><a href="/admin/cdata/<%= $project %>/<%= $ds %>/del"><i class="fa fa-ban"></i></a></td></tr>
 % }            
             </table>
 
             <p>You can add a data source from 
-% my $list = al_plugins->get_list_all();
-% foreach my $ds (sort @{$list}) {
-              <a href="/admin/project/<%= $project %>/ds/<%= $ds %>/new"><%= $ds %></a>
+% my $list_cds = al_plugins->get_list_cds();
+% foreach my $cd (sort @{$list_cds}) {
+              <a href="/admin/cdata/<%= $project %>/<%= $cd %>/new"><%= $cd %></a>
 % }
               .</p>
 

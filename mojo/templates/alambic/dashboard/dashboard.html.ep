@@ -58,7 +58,7 @@
               <div class="col-sm-6">
                 <dl class="dl-vertical">
                   <dt>Description</dt>
-                  <dd></dd>
+                  <dd><%== app->projects->get_project_pmi($project_id)->{'description'}->[0]->{'safe_summary'} %></dd>
                 </dl>
               </div>
               <div class="col-sm-6">
