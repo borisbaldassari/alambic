@@ -135,9 +135,9 @@ sub project_retrieve_data {
         $self->redirect_to( '/login' );
     }
 
-    print Dumper("# BEGIN $project_id $ds ##########################\n");
+#    print Dumper("# BEGIN $project_id $ds ##########################\n");
     my $tmp = $self->al_plugins->get_plugin($ds)->retrieve_data($project_id);
-    print Dumper("# END $project_id $ds ##########################\n", $tmp);
+#    print Dumper("# END $project_id $ds ##########################\n", $tmp);
     push( @log, @{$tmp} );
     $self->flash( msg => join( '<br />', @log ) );
     

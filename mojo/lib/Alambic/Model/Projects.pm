@@ -190,13 +190,31 @@ sub _read_files($$) {
     # Read comments for projects
     $log->info( "[Model::Projects] Reading all projects comments from [$dir_data]." );
     my @projects_comments = <$dir_data/*/*_comments.json>;
-    foreach my $project (@projects_comments) {
-        $project =~ m!.*[\/](.*?)_comments.json!;
+    foreach my $project_file (@projects_comments) {
+        $project_file =~ m!.*[\/](.*?)_comments.json!;
         my $id = $1;
-        my $json_project = &read_project_data($project);
+        my $json_project = &read_project_data($project_file);
         foreach my $comment (@{$json_project->{'comments'}}) {
             $projects{$id}{'comments'}{$comment->{'id'}} = $comment;
         }
+    }
+
+    # Read custom data for projects
+    $log->info( "[Model::Projects] Reading all projects custom data from [$dir_data]." );
+    my @projects_cdata = <$dir_data/*/*_data_*.json>;
+    foreach my $project_file (@projects_cdata) {
+        $project_file =~ m!.*[\/](.*?)_data_.*\.json!;
+        my $id = $1;
+        my $json_project = &read_project_data($project_file);
+#        print "# TEST #############################\n";
+#        print Dumper($json_project);
+#        print "##############################\n";
+        foreach my $cdata (@{$json_project->{'children'}}) {
+            push( @{$projects{$id}{'cdata'}{$json_project->{'cd'}}}, $cdata );
+        }
+#        print "# TEST 2 #############################\n";
+#        print Dumper($projects{$id}{'cdata'});
+#        print "##############################\n";
     }
 
     my $vol = scalar keys %projects_info;
@@ -284,9 +302,9 @@ sub get_project_indicators($) {
     my $self = shift;
     my $project_id = shift;
 
-    print "[Model::Projects] get_project_indicators $project_id.\n";
-    print Dumper($projects{$project_id}{'indicators'});
-    print "[Model::Projects] get_project_indicators.\n";
+    $self->{app}->log->info("[Model::Projects.pm] get_project_indicators $project_id.");
+#    print Dumper($projects{$project_id}{'indicators'});
+#    print "[Model::Projects] get_project_indicators.\n";
 
     return $projects{$project_id}{'indicators'};
 }
@@ -497,7 +515,7 @@ sub retrieve_project_data() {
 
     my $ds_list = $self->{app}->al_plugins->get_list_all();
     foreach my $ds ( sort keys %{$projects_info{$project_id}{'ds'}} ) {
-        print Dumper($ds);
+#        print Dumper($ds);
         if ( grep( $ds, @{$ds_list} ) ) {
 #            print Dumper($self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id));
 #            print "Plugin [$ds]:";
@@ -540,10 +558,11 @@ sub analyse_project($) {
     push( @log, "[Model::Projects] Analysing input data.." );
     my $metrics = $analysis->analyse_input($project_id);
 
-    # Copy files marked as plugin artefacts.
+    # Copy files marked as plugin artefacts, both from plugins and custom data.
 #    print Dumper($projects_info{$project_id}{'ds'});
     my @pis = sort keys %{$projects_info{$project_id}{'ds'}};
-    
+    push( @pis, sort keys %{$projects_info{$project_id}{'cdata'}} );
+
     push( @log, "[Model::Projects] Copying files provided by plugins.." );
     foreach my $pi (@pis) {
         my @files = map { 
@@ -555,7 +574,7 @@ sub analyse_project($) {
         }
     }
     
-    print "DBG [Model::Projects] analyse_project before compute_inds.\n";
+#    print "DBG [Model::Projects] analyse_project before compute_inds.\n";
     push( @log, "[Model::Projects] Computing indicators and attributes.." );
     foreach my $line ( @{$analysis->compute_inds($project_id)} ) {
         chomp $line;
@@ -618,6 +637,8 @@ sub del_project() {
     return 1;
 }
 
+
+# Get the list of plugins defined on the project.
 sub get_project_ds($$) {
     my $self = shift;
     my $project_id = shift;
@@ -626,6 +647,7 @@ sub get_project_ds($$) {
     return $projects_info{$project_id}{'ds'}{$ds_id};
 }
 
+# Add a plugin to the project, and update its info file.
 sub set_project_ds() {
     my $self = shift;
     my $project_id = shift;
@@ -641,6 +663,7 @@ sub set_project_ds() {
     &write_project_data( $file_to, $projects_info{$project_id});    
 }
 
+# Remove a plugin from a project, an update its info file.
 sub delete_project_ds() {
     my $self = shift;
     my $project_id = shift;
@@ -648,6 +671,45 @@ sub delete_project_ds() {
 
     # Remove key to the deleted ds in info hash.
     delete $projects_info{$project_id}{'ds'}{$ds_id};
+    
+    # Write updated info file.
+    my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
+    &write_project_data( $file_to, $projects_info{$project_id});    
+}
+
+# Get the list of entries for the custom data plugins on a project.
+sub get_project_cd_content($$) {
+    my $self = shift;
+    my $project_id = shift;
+    my $cd_id = shift;
+
+    return $projects{$project_id}{'cdata'}{$cd_id};
+}
+
+# Add a custom data plugin to the project, and update its info file.
+sub set_project_cd() {
+    my $self = shift;
+    my $project_id = shift;
+    my $cd_id = shift;
+    my $params = shift;
+
+    foreach my $param (keys %{$params}) {
+        $projects_info{$project_id}{'cdata'}{$cd_id}{$param} = $params->{$param};
+    }
+
+    # Write updated info file.
+    my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
+    &write_project_data( $file_to, $projects_info{$project_id});    
+}
+
+# Remove a custom data plugin from a project, an update its info file.
+sub delete_project_cd() {
+    my $self = shift;
+    my $project_id = shift;
+    my $cd_id = shift;
+
+    # Remove key to the deleted cd in info hash.
+    delete $projects_info{$project_id}{'cdata'}{$cd_id};
     
     # Write updated info file.
     my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';

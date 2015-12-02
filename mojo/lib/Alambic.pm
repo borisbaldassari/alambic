@@ -158,6 +158,7 @@ sub startup {
     $r->get('/admin/project/#id/del')->to( 'admin#project_del' );
     $r->get('/admin/project/#id')->to( 'admin#projects_id' );
 
+    # Admin - manage data source plugins
     $r->get('/admin/project/#id/ds/#ds/new')->to( 'plugins#add_project' );
     $r->post('/admin/project/#id/ds/#ds/new')->to( 'plugins#add_project_post' );
     $r->get('/admin/project/#id/ds/#ds/check')->to( 'plugins#check_project' );
@@ -165,6 +166,19 @@ sub startup {
     $r->get('/admin/project/#id/ds/#ds/compute')->to( 'plugins#project_compute_data' );
 #    $r->get('/admin/project/#id/ds/#ds/edit')->to( 'plugins#add_project' );
     $r->get('/admin/project/#id/ds/#ds/del')->to( 'plugins#del_project' );
+
+    # Admin - manage custom data plugins.
+    # $id is the project
+    # $cd is the custom data plugin
+    $r->get('/admin/cdata')->to( 'custom_data#display' );
+    $r->get('/admin/cdata/#proj')->to( 'custom_data#display' );
+    $r->get('/admin/cdata/#proj/#cd/new')->to( 'custom_data#add_to_project' );
+    $r->get('/admin/cdata/#proj/#cd/show')->to( 'custom_data#show' );
+    $r->get('/admin/cdata/#proj/#cd/add')->to( 'custom_data#add' );
+    $r->post('/admin/cdata/#proj/#cd/add')->to( 'custom_data#add_post' );
+    $r->get('/admin/cdata/#proj/#cd/compute')->to( 'custom_data#compute_data' );
+    $r->get('/admin/cdata/#proj/#cd/edit/:id')->to( 'custom_data#edit' );
+    $r->get('/admin/cdata/#proj/#cd/del/:id')->to( 'custom_data#del' );
 
     # Admin - Users management
     $r->get('/admin/users')->to( 'admin#users_main' );

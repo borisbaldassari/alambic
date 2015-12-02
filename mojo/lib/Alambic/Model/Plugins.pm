@@ -12,6 +12,7 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( read_all_files
                  get_list_all get_list_metrics get_list_info 
+                 get_list_customdata 
                  get_rules_sources );  
 
 
@@ -42,8 +43,8 @@ sub read_all_files() {
     my $config = $self->{app}->config;
 
     # Read plugins directory.
-    my @plugins = <lib/Alambic/Plugins/*.pm>;
-    foreach my $plugin (@plugins) {
+    my @plugins_list = <lib/Alambic/Plugins/*.pm>;
+    foreach my $plugin (@plugins_list) {
         $plugin =~ m!.+/([^/\\]+).pm!;
         my $plugin_name = $1;
         $self->{app}->plugins->register_plugin('Alambic::Plugins::' . $plugin_name, $self->{app});
@@ -52,21 +53,36 @@ sub read_all_files() {
         $plugins{ $conf->{'id'} } = $al_plugin;
     }
 
-    my @customdata = <lib/Alambic/ManualData/*.pm>;
-    foreach my $plugin (@customdata) {
+    my @customdata_list = <lib/Alambic/CustomData/*.pm>;
+    foreach my $plugin (@customdata_list) {
         $plugin =~ m!.+/([^/\\]+).pm!;
         my $plugin_name = $1;
-        $self->{app}->plugins->register_plugin('Alambic::Plugins::' . $plugin_name, $self->{app});
-        my $al_plugin = $self->{app}->plugins->load_plugin('Alambic::Plugins::' . $plugin_name);
+        $self->{app}->plugins->register_plugin('Alambic::CustomData::' . $plugin_name, $self->{app});
+        my $al_plugin = $self->{app}->plugins->load_plugin('Alambic::CustomData::' . $plugin_name);
         my $conf = $al_plugin->get_conf();
         $customdata{ $conf->{'id'} } = $al_plugin;
     }
     
-    
+#    print "# DBG CD #######################\n";
+#    print Dumper(%customdata);
 }
 
 sub get_list_all() {
     my @list = keys %plugins;
+    push @list, keys %customdata;
+    @list = sort @list;
+    
+    return \@list;
+}
+
+sub get_list_pis() {
+    my @list = keys %plugins;
+    
+    return \@list;
+}
+
+sub get_list_cds() {
+    my @list = keys %customdata;
     
     return \@list;
 }
@@ -88,7 +104,14 @@ sub get_plugin($) {
     my $self = shift;
     my $plug_id = shift;
 
-    return $plugins{$plug_id};
+    if ( exists($plugins{$plug_id}) ) {
+        return $plugins{$plug_id};
+    } elsif ( exists($customdata{$plug_id}) ) {
+        return $customdata{$plug_id};
+    } else {
+        $self->{app}->log->error("[Model::Plugins] Could not find Custom data plugin [$plug_id].");        
+        return undef;
+    }
 }
 
 1;
