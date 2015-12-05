@@ -27,7 +27,7 @@ $t->get_ok('/data/model_questions.json')
 $t->get_ok('/data/polarsys.capella_qm.json')
         ->status_is(200)
         ->json_is('/children/0/mnemo', 'QM_QUALITY', 'Check quality mnemo value.')
-        ->json_is('/children/0/ind', 3.1, 'Check quality indicator value.')
+        ->json_is('/children/0/ind', 3.3, 'Check quality indicator value.')
         ->json_is('/children/0/name', 'Project Maturity', 'Check quality name value.')
         ->json_is('/children/0/type', 'attribute', 'Check quality attribute value.')
         ->json_is('/children/0/active', 'true', 'Check quality active value.');
