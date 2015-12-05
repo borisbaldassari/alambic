@@ -1,10 +1,1 @@
-{
-    "id": "polarsys.capella",
-    "name": "Capella",
-    "sources": {
-        "git": "",
-        "pmi": "",
-        "mls_usr": "",
-        "mls_dev": ""
-    }
-}
+{"id":"polarsys.capella","cdata":{"data_openness_rating":{"project_id":null}},"ds":{"polarsys_pmi":{"project_id":"polarsys.capella","pmi_url":"http:\/\/projects.eclipse.org\/project"},"polarsys_grimoire":{"rsync_from_host":"boris@dashboard.eclipse.org","rsync_from_path":"\/home\/vsacct\/automator\/Automator\/projects\/PolarsysMaturity\/json\/","project_id":"polarsys.capella"},"polarsys_sonarqube":{"rsync_from_path":"\/home\/vsacct\/automator\/Automator\/projects\/PolarsysMaturity\/json\/","project_id":"polarsys.capella","rsync_from_host":"boris@dashboard.eclipse.org"}},"sources":{"pmi":"","git":"","mls_dev":"","mls_usr":""},"name":"Capella"}

@@ -12,16 +12,16 @@ my $t = Test::Mojo->new('Alambic');
 # Check that we have the right home page (contains PolarSys).
 $t->get_ok('/')
         ->status_is(200)
-        ->content_like(qr!PolarSys dashboard!i, 'Main page contains PolarSys dashboard.');
+        ->content_like(qr!PolarSys Maturity Assessment Dashboard!i, 'Main page contains PolarSys Maturity Assessment Dashboard text.');
 
 # Check that we have the right admin page (contains text from admin page > projects > polarsys.capella).
 $t->get_ok('/admin/summary')
         ->status_is(200)
-        ->content_like(qr!<p>Instance: <br />\s+<code>PolarSys Maturity Assessment</code><br />!i, 
+        ->content_like(qr!<p>Instance: <br />\s+<code>myName</code><br />!i, 
         'Admin summary page contains instance')
         ->content_like(qr!<td><a href="/admin/project/polarsys.capella">Capella</a></td>!i, 
         'Admin summary page contains Cappela')
-        ->content_like(qr!<td><a href="/admin/project/modeling.gendoc">modeling.gendoc</a></td>!i,
+        ->content_like(qr!<td><a href="/admin/project/modeling.gendoc">Gendoc</a></td>!i,
         'Admin summary page contains modeling.gendoc')
         ->content_like(qr!<td>Quality model</td><td>PolarSys Quality Model</td>!i,
         'Admin summary page contains quality model information')

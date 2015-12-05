@@ -15,8 +15,8 @@ $t->ua->max_redirects(10);
 # Check login form page.
 $t->get_ok('/login')
         ->status_is(200)
-        ->content_like(qr!<form action="login" method="POST">!i, 'Get the form tag.')
-        ->content_like(qr!<p><input name="username" type="text" /></p>!i, 'Get username input tag.');
+        ->content_like(qr!<form action="login" method="POST"!i, 'Get the form tag.')
+        ->content_like(qr!<input type="text" class="form-control" name="username">!i, 'Get username input tag.');
 
 # Connect using POST.
 $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'admin'})
@@ -61,8 +61,8 @@ $t->get_ok('/admin/comments/polarsys.capella')
 # Check protected pages in admin: Projects
 $t->get_ok('/admin/projects')
         ->status_is(200)
-        ->content_like(qr!<td>polarsys.capella</td>!i, 'Check polarsys.capella is in list.')
-        ->content_like(qr!<td>modeling.gendoc</td>!i, 'Check modeling.gendoc is in list.');
+        ->content_like(qr!<td>Capella</td>!i, 'Check polarsys.capella is in list.')
+        ->content_like(qr!<td>Gendoc</td>!i, 'Check modeling.gendoc is in list.');
 
 
 # Check protected pages in admin: Users
@@ -82,20 +82,21 @@ $t->get_ok('/logout')
 # Re-check protected pages in admin..
 $t->get_ok('/admin/read_files/models')
         ->status_is(200)
-        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when trying to read files.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when trying to read files.');
+
 $t->get_ok('/admin/read_files/projects')
         ->status_is(200)
-        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when trying to read files.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when trying to read files.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/plugins')
         ->status_is(200)
-        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when accessing plugins admin.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when accessing plugins admin.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/repo')
         ->status_is(200)
-        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when accessing repo admin.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when accessing repo admin.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/comments')
@@ -110,31 +111,31 @@ $t->get_ok('/admin/comments/polarsys.capella')
 # Re-check protected pages in admin..
 $t->get_ok('/admin/projects')
         ->status_is(200)
-        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when accessing projects admin.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when accessing projects admin.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/users')
         ->status_is(200)
-        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when accessing users admin.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when accessing users admin.');
 
 # Re-check protected pages in admin: project management
 $t->get_ok('/admin/projects/new')
         ->status_is(200)
-        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when creating new project.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when creating new project.');
 
 $t->get_ok('/admin/project/polarsys.capella/retrieve')
         ->status_is(200)
-        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when retrieving project.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when retrieving project.');
 
 $t->get_ok('/admin/project/polarsys.capella/analyse')
         ->status_is(200)
-        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when analysing project.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when analysing project.');
 
 # Check login form page.
 $t->get_ok('/login')
         ->status_is(200)
-        ->content_like(qr!<form action="login" method="POST">!i, 'Get the form tag.')
-        ->content_like(qr!<p><input name="username" type="text" /></p>!i, 'Get username input tag.');
+        ->content_like(qr!<form action="login" method="POST"!i, 'Get the form tag.')
+        ->content_like(qr!<input type="text" class="form-control" name="username">!i, 'Get username input tag.');
 
 $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'bad'})
         ->status_is(200)
@@ -143,7 +144,7 @@ $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'bad'})
 
 $t->post_ok('/login' => form => {'username' => 'bad', 'password' => 'admin'})
         ->status_is(200)
-        ->content_like(qr!Some parts of this site are protected!i, 'Bas login should get back to login.')
+        ->content_like(qr!Some parts of this site are protected!i, 'Bad login should get back to login.')
         ->content_unlike(qr!You have been successfully authenticated!i, 'Should not be authenticated.');
 
 #$t->get_ok('/admin/project/polarsys.capella/del')
