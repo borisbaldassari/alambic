@@ -176,7 +176,7 @@ sub startup {
     $r->get('/admin/cdata/#proj/#cd/show')->to( 'custom_data#show' );
     $r->get('/admin/cdata/#proj/#cd/add')->to( 'custom_data#add' );
     $r->post('/admin/cdata/#proj/#cd/add')->to( 'custom_data#add_post' );
-    $r->get('/admin/cdata/#proj/#cd/compute')->to( 'custom_data#compute_data' );
+#    $r->get('/admin/cdata/#proj/#cd/compute')->to( 'custom_data#compute_data' );
     $r->get('/admin/cdata/#proj/#cd/edit/:id')->to( 'custom_data#edit' );
     $r->get('/admin/cdata/#proj/#cd/del/:id')->to( 'custom_data#del' );
 
