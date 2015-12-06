@@ -13,7 +13,7 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( read_all_files
                  analyse_input
                  compute_inds
-                 get_rules_sources );  
+                 );  
 
 my $project_id;
 my %project_values;
