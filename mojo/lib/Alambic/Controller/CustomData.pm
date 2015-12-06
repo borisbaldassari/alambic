@@ -141,22 +141,6 @@ sub add_post {
     $self->redirect_to( "/admin/project/$project_id" );   
 }
 
-sub compute_data() {
-    my $self = shift;
-  
-    my $project_id = $self->param( 'proj' );
-    my $cd = $self->param( 'cd' );
-    
-    my $plugin = $self->al_plugins->get_plugin($cd);
-    my $conf = $plugin->get_conf();
-
-    my $metrics = $self->al_plugins->get_plugin($cd)->compute_metrics($project_id);
-
-    # Render template 
-    $self->flash( msg => 'Data computed successfully for CD plugin <%= $cd %>.' );
-    $self->redirect_to( "/admin/project/$project_id" );   
-}
-
 
 # Displays the form to add an entry for the specific manual data type.
 sub edit {
