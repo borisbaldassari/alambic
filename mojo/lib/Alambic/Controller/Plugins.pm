@@ -136,10 +136,9 @@ sub project_retrieve_data {
     }
 
 #    print Dumper("# BEGIN $project_id $ds ##########################\n");
-    my $tmp = $self->al_plugins->get_plugin($ds)->retrieve_data($project_id);
+    my $log = $self->al_plugins->get_plugin($ds)->retrieve_data($project_id);
 #    print Dumper("# END $project_id $ds ##########################\n", $tmp);
-    push( @log, @{$tmp} );
-    $self->flash( msg => join( '<br />', @log ) );
+    $self->flash( msg => join( '<br />', @{$log} ) );
     
     # Render template 
     $self->redirect_to( "/admin/project/$project_id" );   
@@ -162,7 +161,10 @@ sub project_compute_data {
         $self->redirect_to( '/login' );
     }
 
-    $self->al_plugins->get_plugin($ds)->compute_data($project_id);
+    my $log_ref = $self->al_plugins->get_plugin($ds)->compute_data($project_id);
+    my @log = @{$log_ref};
+#    print Dumper( "LOG IS ", @log );
+    $self->flash( msg => join( '<br />', @log ) );
     
     # Render template 
     $self->redirect_to( "/admin/project/$project_id" );   

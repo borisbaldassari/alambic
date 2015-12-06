@@ -232,9 +232,9 @@ sub projects_id($) {
     
     # Get list of files in input and data directories.
     my $dir_projects = $self->config->{'dir_data'};
-    my @files_data = <${dir_projects}/${project_id}/*.json>;
+    my @files_data = <${dir_projects}/${project_id}/*.*>;
     my $dir_input = $self->config->{'dir_input'};
-    my @files_input = <${dir_input}/${project_id}/*.json>;
+    my @files_input = <${dir_input}/${project_id}/*.*>;
     my %projects = $self->{app}->projects->get_all_projects();
     my %files_time;
 
