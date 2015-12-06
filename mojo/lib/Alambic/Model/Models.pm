@@ -216,11 +216,14 @@ sub read_rules($) {
     foreach my $file_rules (@files) {
         $app->log->info( "[Model::Models]   * Reading file [$file_rules]." );
         my $json_rules = &read_data($file_rules);
+        my $source = $json_rules->{'name'} . " " . $json_rules->{'version'};
         foreach my $item (@{$json_rules->{'children'}}) {
-            my $source = $json_rules->{'name'} . " " . $json_rules->{'version'};
-            $rules{$item->{'mnemo'}} = $item;
-            $rules{$item->{'mnemo'}}{'src'} = $source;
-            $rules_sources{$source}++;
+            # We want to record only rules with priority set and < 3.
+            if ( defined( $item->{'priority'} ) && $item->{'priority'} < 3 ) {
+                $rules{$item->{'mnemo'}} = $item;
+                $rules{$item->{'mnemo'}}{'src'} = $source;
+                $rules_sources{$source}++;
+            }
         }
     }
 }
