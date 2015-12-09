@@ -13,7 +13,7 @@ my $t = Test::Mojo->new('Alambic');
 $t->get_ok('/projects/polarsys.capella.html')
         ->status_is(200)
         ->content_like(qr!<h2>Project polarsys.capella</h2>!i, 'Project title is ok.')
-        ->content_like(qr!<span style="color: #DA7A08; font-size: 200%">30 / 45</span>!i, 'Colour and numbers of completeness are ok.')
+        ->content_like(qr!<span style="color: #DA7A08; font-size: 200%">31 / 45</span>!i, 'Colour and numbers of completeness are ok.')
         ->content_like(qr!Sample comment for Capella.!i, 'There is a comment for the project');
 
 # Check the quality model
@@ -40,7 +40,7 @@ $t->get_ok('/projects/polarsys.capella_metrics.html')
         ->status_is(200)
         ->content_like(qr!<a href="/documentation/metrics.html#COMMENT_LINES_DENSITY">Comment rate</a>!i, 'Metrics contain Comment rate.')
         ->content_like(qr!<span class="label label-scale" style="background-color: #99E633">3</span>!i, 'Colour and indicator are ok for Comment rate.')
-        ->content_like(qr!<td>15</td>!i, 'Value is ok for Comment rate.');
+        ->content_like(qr!<td>14.8</td>!i, 'Value is ok for Comment rate.');
 
 
 done_testing(23);
