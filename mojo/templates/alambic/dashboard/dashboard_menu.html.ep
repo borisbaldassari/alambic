@@ -11,11 +11,9 @@
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Download <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
                     <li role="presentation"><a href="/data/<%= $project_id %>_attributes.json">Attributes JSON</a></li>
-                    <li role="presentation"><a href="/data/<%= $project_id %>_attributes.csv">Attributes CSV</a></li>
                     <li role="presentation"><a href="/data/<%= $project_id %>_questions.json">Questions JSON</a></li>
-                    <li role="presentation"><a href="/data/<%= $project_id %>_questions.csv">Questions CSV</a></li>
                     <li role="presentation"><a href="/data/<%= $project_id %>_metrics.json">Metrics JSON</a></li>
-                    <li role="presentation"><a href="/data/<%= $project_id %>_metrics.csv">Metrics CSV</a></li>
+                    <li role="presentation"><a href="/data/<%= $project_id %>_violations.json">Violations JSON</a></li>
                     <li role="presentation"><a href="/data/<%= $project_id %>_pmd.zip">PMD results XML</a></li>
                     <li role="presentation"><a href="/data/<%= $project_id %>_findbugs.zip">FindBugs results XML</a></li>
                   </ul>

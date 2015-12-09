@@ -40,6 +40,30 @@ sub download {
         my %project_values = $self->app->projects->get_project_all_values($project_id);
         $self->render(json => \%project_values);
 
+    } elsif ($in_doc =~ m!^(\S+)_attributes.json$!) {
+
+        my $project_id = $1;
+        my %project_values = $self->app->projects->get_project_attrs($project_id);
+        $self->render(json => \%project_values);
+
+    } elsif ($in_doc =~ m!^(\S+)_metrics.json$!) {
+
+        my $project_id = $1;
+        my %project_values = $self->app->projects->get_project_metrics($project_id);
+        $self->render(json => \%project_values);
+
+    } elsif ($in_doc =~ m!^(\S+)_questions.json$!) {
+
+        my $project_id = $1;
+        my %project_values = $self->app->projects->get_project_questions($project_id);
+        $self->render(json => \%project_values);
+
+    } elsif ($in_doc =~ m!^(\S+)_violations.json$!) {
+
+        my $project_id = $1;
+        my %project_values = $self->app->projects->get_project_violations($project_id);
+        $self->render(json => \%project_values);
+
     } else {
 
         $self->app->log->info( "[Controller::Data] [ERR] Data not found! " . $self->tx->req->url . "." );
