@@ -308,7 +308,7 @@ sub get_project_all_values($) {
     # Create a rich version of the quality model with all info on nodes.
     &populate_qm($model{"children"}, $projects{$project_id}{'attrs'}, $projects{$project_id}{'questions'}, $projects{$project_id}{'metrics'}, $projects{$project_id}{'indicators'});
 
-    return %model;
+    return \%model;
 }
 
 sub get_project_attrs($) {
