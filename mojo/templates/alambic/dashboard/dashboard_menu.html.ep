@@ -14,8 +14,6 @@
                     <li role="presentation"><a href="/data/<%= $project_id %>_questions.json">Questions JSON</a></li>
                     <li role="presentation"><a href="/data/<%= $project_id %>_metrics.json">Metrics JSON</a></li>
                     <li role="presentation"><a href="/data/<%= $project_id %>_violations.json">Violations JSON</a></li>
-                    <li role="presentation"><a href="/data/<%= $project_id %>_pmd.zip">PMD results XML</a></li>
-                    <li role="presentation"><a href="/data/<%= $project_id %>_findbugs.zip">FindBugs results XML</a></li>
                   </ul>
                 </li>
                 <li role="presentation"<%== ( $current =~ m!^/projects/errors$! ) ? ' class="active"' : '' %>><a href="<%= $project_id %>_log.html">Errors</a></li>            
