@@ -33,15 +33,15 @@ sub add_to_project {
 }
 
 
-# Displays list of custom data plugins enabled for each project, and 
+#
+# Displays a list of custom data plugins enabled for each project, and 
 # provides links to see the results.
+#
 sub display {
     my $self = shift;
   
     my $project_id = $self->param( 'proj' );
     
-    print Dumper($self->app->projects->get_project_info($project_id));
-
     # Prepare data for template.
     $self->stash(
         project_id => $project_id,
@@ -53,7 +53,9 @@ sub display {
 }
 
 
+#
 # Displays the results recorded for this custom data.
+#
 sub show {
     my $self = shift;
   

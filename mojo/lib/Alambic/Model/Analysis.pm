@@ -59,7 +59,7 @@ sub analyse_input() {
     # We read metrics from all files named "*_metrics*.json"
     my @json_metrics_files = <$dir_input/${project_id}/${project_id}*_metrics_*.json>;
     for my $file (@json_metrics_files) {
-	print "    - Reading metrics values file from [$file]..\n";    
+	$self->{app}->log->info( "    - Reading metrics values file from [$file].." );    
 	
 	my $raw_values = &read_data($file);
 	
