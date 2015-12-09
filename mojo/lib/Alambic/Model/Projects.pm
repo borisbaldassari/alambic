@@ -161,7 +161,6 @@ sub _read_files($$) {
         my $id = $1;
         my $json_project = &read_project_data($project);
         $projects{$id}{'indicators'} = $json_project->{'children'};
-#        print "DBG $id " . Dumper($projects{$id}{'indicators'});
     }
 
 
@@ -206,15 +205,9 @@ sub _read_files($$) {
         $project_file =~ m!.*[\/](.*?)_data_.*\.json!;
         my $id = $1;
         my $json_project = &read_project_data($project_file);
-#        print "# TEST #############################\n";
-#        print Dumper($json_project);
-#        print "##############################\n";
         foreach my $cdata (@{$json_project->{'children'}}) {
             push( @{$projects{$id}{'cdata'}{$json_project->{'cd'}}}, $cdata );
         }
-#        print "# TEST 2 #############################\n";
-#        print Dumper($projects{$id}{'cdata'});
-#        print "##############################\n";
     }
 
     my $vol = scalar keys %projects_info;
@@ -223,7 +216,6 @@ sub _read_files($$) {
 sub read_project_data($) {
     my $file = shift;
 
-#    print "Reading file $file.\n";
     my $json;
     do { 
         local $/;
@@ -303,8 +295,6 @@ sub get_project_indicators($) {
     my $project_id = shift;
 
     $self->{app}->log->info("[Model::Projects.pm] get_project_indicators $project_id.");
-#    print Dumper($projects{$project_id}{'indicators'});
-#    print "[Model::Projects] get_project_indicators.\n";
 
     return $projects{$project_id}{'indicators'};
 }
@@ -513,12 +503,12 @@ sub retrieve_project_data() {
         mkdir( $self->{app}->config->{'dir_input'} . '/' . $project_id . '/');
     }
 
+    # Get list of all plugins.
     my $ds_list = $self->{app}->al_plugins->get_list_all();
+
+    # For each plugin, execute the retrieve_data and compute_data steps.
     foreach my $ds ( sort keys %{$projects_info{$project_id}{'ds'}} ) {
-#        print Dumper($ds);
         if ( grep( $ds, @{$ds_list} ) ) {
-#            print Dumper($self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id));
-#            print "Plugin [$ds]:";
             push( @log, "Plugin [$ds]:" );
             my @ret2;
             foreach my $line ( @{$self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id)} ) {
@@ -532,8 +522,6 @@ sub retrieve_project_data() {
             push( @log, "[Model::Projects.pm] retrieve_project_data Cannot recognise ds [$ds]." );
         }
     }
-#    print "# aaaahh ######################################\n";
-#    print Dumper(@log);
 
     return \@log;
 }
@@ -559,9 +547,10 @@ sub analyse_project($) {
     my $metrics = $analysis->analyse_input($project_id);
 
     # Copy files marked as plugin artefacts, both from plugins and custom data.
-#    print Dumper($projects_info{$project_id}{'ds'});
     my @pis = sort keys %{$projects_info{$project_id}{'ds'}};
     push( @pis, sort keys %{$projects_info{$project_id}{'cdata'}} );
+
+    my $dir_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/';
 
     push( @log, "[Model::Projects] Copying files provided by plugins.." );
     foreach my $pi (@pis) {
@@ -569,12 +558,10 @@ sub analyse_project($) {
             $self->{app}->config->{'dir_input'} . '/' . $project_id . '/' . $project_id . '_' . $_ . '.json'
         } @{$self->{app}->al_plugins->get_plugin($pi)->get_conf()->{'provides_files'}};
         foreach my $file (@files) {
-#            print "DBG Copying $file to " . $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . "\n";
-            copy($file, $self->{app}->config->{'dir_data'} . '/' . $project_id . '/');
+            copy($file, $dir_to) or $self->{app}->log->warn( "ERROR $!" );
         }
     }
     
-#    print "DBG [Model::Projects] analyse_project before compute_inds.\n";
     push( @log, "[Model::Projects] Computing indicators and attributes.." );
     foreach my $line ( @{$analysis->compute_inds($project_id)} ) {
         chomp $line;
