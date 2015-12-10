@@ -27,7 +27,7 @@
             <h2>Project <%= $project_id %></h2>
             <br />
 
-%= include 'alambic/dashboard/dashboard_menu', current => '/projects/summary, project_id => $project_id
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/summary', project_id => "$project_id" 
 
             <br />
 
