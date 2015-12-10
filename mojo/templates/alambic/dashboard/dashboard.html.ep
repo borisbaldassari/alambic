@@ -16,7 +16,7 @@
  % elsif ($diff < 0) { $icon = "arrow-down" }
  % elsif ($diff == 0) { $icon = "arrow-right" }
  % else { $icon = "help" }
-                      <dt><a href="/documentation/attributes.html#<%= $attr %>"><%= $attributes->{$attr}->{'name'} %></a> &nbsp; <i class="fa fa-<%= $icon %>"></i> <span class="pull-right">( <%= $project_attrs_conf->{$attr} %> metrics )</span></dt>
+                      <dt><a href="/documentation/attributes.html#<%= $attr %>"><%= $attributes->{$attr}->{'name'} %></a> &nbsp; <a href="#" data-toggle="tooltip" title="Previous value: <%= $v_before %>"><i class="fa fa-<%= $icon %>"></i> <span class="pull-right">( <%= $project_attrs_conf->{$attr} %> metrics )</span></dt>
                       <dd>
                         <div class="progress">
                           <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= comp_c( $project_attrs->{$attr} ) %>; width: <%= &comp_p( $project_attrs->{$attr} ) %>%;"><%= $project_attrs->{$attr} %> / 5</div>
