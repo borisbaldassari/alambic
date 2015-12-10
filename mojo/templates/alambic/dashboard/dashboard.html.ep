@@ -12,11 +12,11 @@
  % my $v_before = $project_attrs_last->{$attr} || 0;
  % my $diff = $v_now - $v_before;
  % my $icon;
- % if ($diff > 0) { $icon = "arrow-up" }
- % elsif ($diff < 0) { $icon = "arrow-down" }
- % elsif ($diff == 0) { $icon = "arrow-right" }
+ % if ($diff > 0) { $icon = "fa-arrow-up fa-rotate-p45" }
+ % elsif ($diff < 0) { $icon = "fa-arrow-down fa-rotate-m45" }
+ % elsif ($diff == 0) { $icon = "fa-arrow-right" }
  % else { $icon = "help" }
-                      <dt><a href="/documentation/attributes.html#<%= $attr %>"><%= $attributes->{$attr}->{'name'} %></a> &nbsp; <a href="#" data-toggle="tooltip" title="Previous value: <%= $v_before %>"><i class="fa fa-<%= $icon %>"></i></a> <span class="pull-right">( <%= $project_attrs_conf->{$attr} %> metrics )</span></dt>
+                      <dt><a href="/documentation/attributes.html#<%= $attr %>"><%= $attributes->{$attr}->{'name'} %></a> &nbsp; <a href="#" data-toggle="tooltip" title="Previous value: <%= $v_before %>"><i class="fa <%= $icon %>"></i></a> <span class="pull-right">( <%= $project_attrs_conf->{$attr} %> metrics )</span></dt>
                       <dd>
                         <div class="progress">
                           <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= comp_c( $project_attrs->{$attr} ) %>; width: <%= &comp_p( $project_attrs->{$attr} ) %>%;"><%= $project_attrs->{$attr} %> / 5</div>

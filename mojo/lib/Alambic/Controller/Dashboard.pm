@@ -36,6 +36,7 @@ sub display {
             project_id => $project_id,
             project_attrs => $self->app->projects->get_project_attrs($project_id),
             project_attrs_conf => $self->app->projects->get_project_attrs_conf($project_id),
+            project_attrs_last => $self->app->projects->get_project_attrs_last($project_id),
             );    
         
         # Render template "alambic/dashboard/attributes.html.ep"
@@ -65,6 +66,7 @@ sub display {
             metrics => \%metrics,
             project_id => $project_id,
             project_metrics => $self->app->projects->get_project_metrics($project_id),
+            project_metrics_last => $self->app->projects->get_project_metrics_last($project_id),
             project_inds => $self->app->projects->get_project_indicators($project_id),
             );    
         

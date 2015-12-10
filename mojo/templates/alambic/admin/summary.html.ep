@@ -18,10 +18,10 @@
 
 %= include '/alambic/admin/admin_menu', current => '/admin/summary'
                 
-            <p>Instance: <br />
-              <code><%= app->al_config->get_name() %></code><br />
-              Description: <br />
-              <code><%== app->al_config->get_desc() %></code></p>
+            <p><b>Instance</b> <br />
+              <%= app->al_config->get_name() %></p>
+            <p><b>Description</b> <br />
+              <%== app->al_config->get_desc() %></p>
 
             <br />
                 

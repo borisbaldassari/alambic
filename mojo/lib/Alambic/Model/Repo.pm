@@ -146,8 +146,9 @@ sub get_file_last($) {
     # Retrieve the last version of the file.
     my $content;
     try {
-        my $content = decode_json( join(' ', $git->show( "HEAD~1:$file" )) );
+        $content = decode_json( join(' ', $git->show( "HEAD~1:$file" )) );
     } catch {
+        print "ERROR: $_";
         return undef;
     };
 

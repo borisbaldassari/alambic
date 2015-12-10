@@ -280,7 +280,7 @@ sub get_project_metrics_last($) {
     my $project_id = shift;
 
     my $metrics_last = $self->{app}->repo->get_file_last( 
-        'data/' . $project_id . '/' . $project_id . '_metrics.json' 
+        'projects/' . $project_id . '/' . $project_id . '_metrics.json' 
         );
     
     if (not defined($metrics_last)) {
@@ -323,7 +323,7 @@ sub get_project_attrs_last($) {
     my $project_id = shift;
 
     my $attrs_last = $self->{app}->repo->get_file_last( 
-        'data/' . $project_id . '/' . $project_id . '_attributes.json' 
+        'projects/' . $project_id . '/' . $project_id . '_attributes.json' 
         );
 
     if (not defined($attrs_last)) {

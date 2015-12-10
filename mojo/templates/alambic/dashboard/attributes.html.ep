@@ -19,7 +19,7 @@
               <tr>
                 <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attributes->{$attr}->{'name'} %></a></td>
                 <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attr %></a></td>
-                <td><span class="label label-scale" style="background-color: <%= &comp_c($project_attrs->{$attr}) %>"><%= $project_attrs->{$attr} %></span></td>
+                <td><span class="label label-scale" style="background-color: <%= &comp_c($project_attrs->{$attr}) %>"><%= $project_attrs->{$attr} %></span> (was: <%= $project_attrs_last->{$attr} %>)</td>
                 <td><%= $project_attrs_conf->{$attr} %> metrics</td>
               </tr>
 % }
