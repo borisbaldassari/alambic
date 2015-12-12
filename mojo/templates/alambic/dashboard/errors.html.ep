@@ -1,0 +1,29 @@
+% layout 'polarsys';
+% title 'Dashboard';
+
+            <h2>Project <%= $project_id %></h2>
+            <br />
+
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/errors', project_id => $project_id
+
+            <br />
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th>Errors</th>
+              </tr>
+% foreach my $error (@{$project_errors}) {
+%   my $text;
+%   if ( $error =~ m!^ERROR: (.+)$! ) {
+%     $text = '<span class="label label-danger">ERROR</span> ' . $1;
+%   } elsif ( $error =~ m!^WARNING: (.+)$! ) {
+%     $text = '<span class="label label-warning">WARNING</span> ' .$1;
+%   } else {
+%     $text = $error;
+%   }
+              <tr>
+                <td><%== $text %></td>
+              </tr>
+% }
+            </table>
+

@@ -31,6 +31,7 @@ our @EXPORT_OK = qw( read_all_files
 
 my %metrics;
 my %metrics_ds;
+my @metrics_active;
 my %metrics_info;
 
 my %attributes;
@@ -131,6 +132,7 @@ sub read_metrics($) {
 	    $metrics_ds{$metric_ds}++;
 	    $metrics_total++;
 	    $metrics{$metric_mnemo} = $tmp_metric;
+            if ( $tmp_metric->{'active'} =~ m!true! ) { push( @metrics_active, $metric_mnemo ) }
 	} 
     }
 
@@ -298,6 +300,10 @@ sub find_nodes($) {
 
 sub get_metrics() {
     return \%metrics;
+}
+
+sub get_metrics_active() {
+    return \@metrics_active;
 }
 
 sub get_metrics_info() {

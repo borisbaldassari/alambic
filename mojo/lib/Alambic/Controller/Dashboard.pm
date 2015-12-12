@@ -87,6 +87,19 @@ sub display {
         # Render template "alambic/dashboard/practices.html.ep"
         $self->render(template => 'alambic/dashboard/practices');
         
+    } elsif ($page_id =~ m!^errors$!) {
+        
+        print Dumper($self->app->projects->get_project_errors($project_id));
+
+        # Prepare data for template.
+        $self->stash(
+            project_id => $project_id,
+            project_errors => $self->app->projects->get_project_errors($project_id),
+            );    
+        
+        # Render template "alambic/dashboard/errors.html.ep"
+        $self->render(template => 'alambic/dashboard/errors');
+        
     } else {
 
         # Prepare data for template.

@@ -16,6 +16,6 @@
                     <li role="presentation"><a href="/data/<%= $project_id %>_violations.json">Violations JSON</a></li>
                   </ul>
                 </li>
-                <li role="presentation"<%== ( $current =~ m!^/projects/errors$! ) ? ' class="active"' : '' %>><a href="<%= $project_id %>_log.html">Errors</a></li>            
+                <li role="presentation"<%== ( $current =~ m!^/projects/errors$! ) ? ' class="active"' : '' %>><a href="<%= $project_id %>_errors.html">Errors</a></li>            
               </ul>
             </div>

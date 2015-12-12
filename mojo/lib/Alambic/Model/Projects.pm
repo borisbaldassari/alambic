@@ -103,6 +103,16 @@ sub _read_files($$) {
         $projects_info{$id} = $json_project;
     }
 
+    # Read errors for projects
+    $log->info( "[Model::Projects] Reading all projects errors from [$dir_data]." );
+    my @projects_errors = <$dir_data/*/*_errors.json>;
+    foreach my $project (@projects_errors) {
+        $project =~ m!.*[\/](.*?)_errors.json!;
+        my $id = $1;
+        my $json_project = &read_project_data($project);
+        $projects{$id}{'errors'} = $json_project->{'children'};
+    }
+
     # Read metrics for projects
     $log->info( "[Model::Projects] Reading all projects metrics from [$dir_data]." );
     my @projects_metrics = <$dir_data/*/*_metrics.json>;
@@ -259,6 +269,13 @@ sub get_project_info($) {
     my $project_id = shift;
 
     return $projects_info{$project_id};
+}
+
+sub get_project_errors($) {
+    my $self = shift;
+    my $project_id = shift;
+
+    return $projects{$project_id}{'errors'};
 }
 
 sub get_project_name_by_id($) {

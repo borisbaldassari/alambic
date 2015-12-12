@@ -49,12 +49,15 @@ sub read_all_files() {
 #
 # Read all files in data_input following '*_metrics*.json' and 
 # create a single file including all metrics for project.
+# Also create a file with all errors/warnings from analysis.
 #
 sub analyse_input() {
     my $self = shift;
     
     my $dir_input = $self->{app}->config->{'dir_input'};
     my $dir_projects = $self->{app}->config->{'dir_projects'};
+
+    my @project_errors;
 
     # We read metrics from all files named "*_metrics*.json"
     my @json_metrics_files = <$dir_input/${project_id}/${project_id}*_metrics_*.json>;
@@ -72,9 +75,10 @@ sub analyse_input() {
 		    $project_values{uc($metric)} = $raw_values->{"children"}->{$metric};
 		} else {
 		    if ($raw_values->{"children"}->{$metric} =~ m!^nan$!i) {
-			print "DBG nan value for [$metric].\n";
+			push( @project_errors, "WARNING: NAN value for [" . uc($metric) . "]." );
 		    } else {
-			print "DBG null value for [$metric].\n";
+                        push( @project_errors, "WARNING: Null value for [" . uc($metric) . "]: " 
+                              . $raw_values->{"children"}->{$metric} . "." );
 		    }
 		}
 	    }
@@ -83,17 +87,18 @@ sub analyse_input() {
 	    foreach my $metric (keys %{$raw_values}) {
 		if ($raw_values->{$metric} =~ m![\d.]+!) {
 		    $project_values{uc($metric)} = $raw_values->{$metric};
-#		    print "DBG metric [$metric] has value [" . $raw_values->{$metric} . "].\n";
 		} else {
 		    if ($raw_values->{$metric} =~ m!^nan$!i) {
-			print "DBG nan value for [$metric].\n";
+			push( @project_errors, "WARNING: NAN value for [" . uc($metric) . "]." );
 		    } else {
-			print "DBG null value for [$metric].\n";
+                        push( @project_errors, "WARNING: Null value for [" . uc($metric) . "]: " 
+                              . $raw_values->{"children"}->{$metric} . "." );
 		    }
 		}
 	    }        
 	}
     }
+    print Dumper( keys %project_values );
 
     # Create headers for json file
     my $raw = {
@@ -104,6 +109,28 @@ sub analyse_input() {
 
     my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_metrics.json';
     &write_data( $file_to, $raw );    
+
+    #
+    # Create a file to log errors and warnings.
+    # 
+
+    # Check that all metrics are there, if not log the missing ones.
+    foreach my $metric ( @{$self->{app}->models->get_metrics_active()} ) {
+        if ( not grep( /${metric}/, keys %project_values ) ) {
+            unshift( @project_errors, "ERROR: Missing metric [$metric]." );
+        }
+    }
+
+    # Create headers for json file
+    $raw = {
+        "name" => "Error log for $project_id",
+        "version" => "Last updated by Alambic dashboard on " . localtime(),
+        "children" => \@project_errors,
+    };
+
+    $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_errors.json';
+    &write_data( $file_to, $raw );    
+    
     
     return \%project_values;
 }
