@@ -98,7 +98,7 @@ sub analyse_input() {
 	    }        
 	}
     }
-    print Dumper( keys %project_values );
+#    print Dumper( keys %project_values );
 
     # Create headers for json file
     my $raw = {
