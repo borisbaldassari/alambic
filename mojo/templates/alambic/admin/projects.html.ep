@@ -30,7 +30,7 @@
 %     my $name = defined( app->projects->get_project_name_by_id($project) ) ? 
 %       app->projects->get_project_name_by_id($project) : $project;
               <tr>
-                <td><%= $name %></td>
+                <td><a href="/admin/project/<%= $project %>"><%= $name %></a></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>"><i class="fa fa-eye"></i></a></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>/retrieve"><i class="fa fa-download"></i></a></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>/analyse"><i class="fa fa-cogs"></i></a></td>

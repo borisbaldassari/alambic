@@ -21,21 +21,24 @@
 
 %= include '/alambic/admin/admin_menu', current => '/admin/projects'
 
-            <h3>Informations</h3>
-
             <div class="row">
-              <div class="col-md-6">
-
+              <div class="col-sm-6">
 % my $info = app->projects->get_project_info($project);
+
+                <h3>Informations </h3>
+
                 <p><b>ID</b> <%= $info->{'id'} %><br />
                 <b>Name</b> <%= $info->{'name'} %><br />
                 </p>
               </div>
-              <div class="col-md-6">
-                <a class="btn btn-default" href="/admin/projects/" role="button">Return to projets</a> <br />
-                <a class="btn btn-default" href="/admin/projects/new?id=<%= $info->{'id'} %>&name=<%= $info->{'name'} %>" role="button">Edit information</a> <br />
-                <a class="btn btn-default" href="/admin/project/<%= $project %>/retrieve" role="button">Retrieve all data</a> <br />
-                <a class="btn btn-default" href="/admin/project/<%= $project %>/analyse" role="button">Analyse all data</a>
+              <div class="col-sm-6">
+                <br />
+                <div class="list-group">
+                  <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-bars"></i> &nbsp; Return to projets</a>
+                  <a class="list-group-item" href="/admin/projects/new?id=<%= $info->{'id'} %>&name=<%= $info->{'name'} %>" role="button"><i class="fa fa-edit"></i> &nbsp; Edit information</a>
+                  <a class="list-group-item" href="/admin/project/<%= $project %>/retrieve" role="button"><i class="fa fa-download"></i> &nbsp; Retrieve all data</a>
+                  <a class="list-group-item" href="/admin/project/<%= $project %>/analyse" role="button"><i class="fa fa-cogs"></i> &nbsp; Analyse all data</a>
+                </div>
 
 <!-- % if (exists($projects->{$project}->{'metrics'})) { -->
 <!--                   <code><%= $project %>_metrics.json</code> has <code><%= scalar keys %{$projects->{$project}->{'metrics'}} %></code> metrics defined.<br /> -->
