@@ -26,7 +26,8 @@
                 <th>Project</th>
                 <th colspan="4">Actions</th>
               </tr>
-% foreach my $project (sort @{$list_projects}) {
+% my @projects = sort { app->projects->get_project_name_by_id($a) cmp app->projects->get_project_name_by_id($b) } @{$list_projects};
+% foreach my $project ( @projects ) {
 %     my $name = defined( app->projects->get_project_name_by_id($project) ) ? 
 %       app->projects->get_project_name_by_id($project) : $project;
               <tr>
