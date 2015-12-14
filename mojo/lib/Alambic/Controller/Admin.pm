@@ -175,9 +175,9 @@ sub project_add_post {
     
     my $project_id = $self->param( 'id' );
     my $project_name = $self->param( 'name' );
-    my $from = $self->param( 'from' );
+    my $project_active = $self->param( 'is_active' );
 
-    print "DBG had id [$project_id] and name [$project_name].\n";
+    print "DBG had id [$project_id] and name [$project_name] active [$project_active].\n";
     
     # Check that the connected user has the access rights for this
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
@@ -192,14 +192,10 @@ sub project_add_post {
         $self->redirect_to( '/admin/projects' );
     }
 
-    if ( defined($from) && $from =~ m!^pmi$! ) {
-        $self->app->projects->add_project_from_pmi($project_id);
-    } else {
-        $self->app->projects->add_project($project_id, $project_name);
-    }
+    $self->app->projects->add_project($project_id, $project_name, $project_active);
 
     $self->flash( msg => "Project [$project_id] saved." );
-    $self->redirect_to( '/admin/projects' );
+    $self->redirect_to( "/admin/project/$project_id" );
 }
 
 sub project_del {

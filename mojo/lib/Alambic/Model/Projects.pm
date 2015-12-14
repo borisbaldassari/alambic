@@ -15,6 +15,7 @@ our @EXPORT_OK = qw( read_all_files
                      read_project_data
                      write_project_data
                      list_projects
+                     list_active_projects
                      get_all_projects
                      get_project_info
                      get_project_name_by_id
@@ -257,6 +258,17 @@ sub write_project_data($$) {
 
 sub list_projects() {
     my @projects = keys %projects_info ;
+    return @projects;
+}
+
+sub list_active_projects() {
+    my @projects;
+    foreach (keys %projects_info) { 
+        if( $projects_info{$_}->{'is_active'} =~ m!on!) {
+            push( @projects, $_ );
+        }
+    }
+    
     return @projects;
 }
 
@@ -599,6 +611,9 @@ sub add_project() {
     my $self = shift;
     my $project_id = shift;
     my $project_name = shift;
+    my $project_active = shift || "false";
+
+    print "DBG active is $project_active.\n";
 
     # Create directories for project in conf_data, conf_input
     mkdir( $self->{app}->config->{'dir_data'} . "/" . $project_id );
@@ -610,10 +625,12 @@ sub add_project() {
     if (-e $file_info ) {
         $info = &read_project_data( $file_info );
         $info->{'name'} = $project_name;
+        $info->{'is_active'} = $project_active;
     } else {
         $info = {
             "id" => $project_id,
             "name" => $project_name,
+            "is_active" => $project_active,
         };
     }
 

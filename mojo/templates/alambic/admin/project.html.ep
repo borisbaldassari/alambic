@@ -29,13 +29,14 @@
 
                 <p><b>ID</b> <%= $info->{'id'} %><br />
                 <b>Name</b> <%= $info->{'name'} %><br />
+                <b>Name</b> <%= $info->{'is_active'} %><br />
                 </p>
               </div>
               <div class="col-sm-6">
                 <br />
                 <div class="list-group">
                   <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-bars"></i> &nbsp; Return to projets</a>
-                  <a class="list-group-item" href="/admin/projects/new?id=<%= $info->{'id'} %>&name=<%= $info->{'name'} %>" role="button"><i class="fa fa-edit"></i> &nbsp; Edit information</a>
+                  <a class="list-group-item" href="/admin/projects/new?id=<%= $info->{'id'} %>&name=<%= $info->{'name'} %>&is_active=<%= $info->{'is_active'} %>" role="button"><i class="fa fa-edit"></i> &nbsp; Edit information</a>
                   <a class="list-group-item" href="/admin/project/<%= $project %>/retrieve" role="button"><i class="fa fa-download"></i> &nbsp; Retrieve all data</a>
                   <a class="list-group-item" href="/admin/project/<%= $project %>/analyse" role="button"><i class="fa fa-cogs"></i> &nbsp; Analyse all data</a>
                 </div>
