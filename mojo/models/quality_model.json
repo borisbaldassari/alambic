@@ -1,0 +1,111 @@
+  {
+    "name": "Alambic Quality Model",
+    "version": "0.1",
+    "children": [
+      {
+        "mnemo": "QM_QUALITY",
+        "type": "attribute",
+        "active": "true",
+        "children": [
+          {
+            "mnemo": "QM_ECOSYSTEM",
+            "active": "true",
+            "type": "attribute",
+            "children": [
+              {
+                "mnemo": "QM_ACTIVITY",
+                "active": "true",
+                "type": "attribute",
+                "children": [
+                  {
+                    "mnemo": "MLS_DEV_ACTIVITY",
+                    "type": "concept",
+                    "active": "true",
+                    "children": [
+                      {
+                        "mnemo": "MLS_DEV_VOL_3M",
+                        "type": "metric",
+                        "active": "true"
+                      }
+                    ]
+                  },
+                  {
+                    "mnemo": "MLS_USR_ACTIVITY",
+                    "type": "concept",
+                    "active": "true",
+                    "children": [
+                      {
+                        "mnemo": "MLS_USR_VOL_3M",
+                        "type": "metric",
+                        "active": "true"
+                      }
+                    ]
+                  },
+                  {
+                    "mnemo": "SCM_ACTIVITY",
+                    "type": "concept",
+                    "active": "true",
+                    "children": [
+                      {
+                        "mnemo": "SCM_COMMITS_3M",
+                        "type": "metric",
+                        "active": "true"
+                      },
+                      {
+                        "mnemo": "SCM_COMMITTED_FILES_3M",
+                        "type": "metric",
+                        "active": "true"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "mnemo": "QM_DIVERSITY",
+                "type": "attribute",
+                "active": "true",
+                "children": [
+                  {
+                    "mnemo": "MLS_DEV_DIVERSITY",
+                    "type": "concept",
+                    "active": "true",
+                    "children": [
+                      {
+                        "mnemo": "MLS_DEV_AUTH_3M",
+                        "type": "metric",
+                        "active": "true"
+                      }
+                    ]
+                  },
+                  {
+                    "mnemo": "MLS_USR_DIVERSITY",
+                    "type": "concept",
+                    "active": "true",
+                    "children": [
+                      {
+                        "mnemo": "MLS_USR_AUTH_3M",
+                        "type": "metric",
+                        "active": "true"
+                      }
+                    ]
+                  },
+                  {
+                    "mnemo": "SCM_DIVERSITY",
+                    "type": "concept",
+                    "active": "true",
+                    "children": [
+                      {
+                        "mnemo": "SCM_COMMITTERS_3M",
+                        "type": "metric",
+                        "active": "true"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
