@@ -1,8 +1,8 @@
-% layout 'polarsys';
 
-            <img src="/images/logo_polarsys.png" class="img-responsive" style="margin: 25px 0px" alt="PolarSys logo" /> 
+            <h1 class="text-right"><small>Welcome to the</small> AlambicDashboard</h1>
 
-            <h1 class="text-right"><small>Welcome to the</small> PolarSys Maturity Assessment Dashboard</h1>
+            <img src="/images/logo_alambic.jpg" class="img-responsive" style="margin: 0px 0px 25px 0px" alt="Alambic logo" /> 
+
             <br />
             
             <p>You just landed on the <strong>PolarSys Maturity Assessment dashboard</strong>. This is still a beta, you are <a href="contact.html">welcome to participate</a>.</p>
