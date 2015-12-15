@@ -87,10 +87,23 @@
                       <strong><%= $comment->{'author'} %></strong> on <strong><%= $comment->{'mnemo'} %></strong> (<%= $comment->{'date'} %>)<br /><%= $comment->{'text'} %></li>
 % }
                     <li class="list-group-item">
-                      <a href="/comments/w/polarsys.capella">
+                      <a href="/comments/w/<%= $project_id %>">
                         <div class="pull-right"><span class="fa fa-plus"></span></div>
                         Add a comment? (Authentication required)</a>
                     </li>
+                  </ul>
+                </div>
+                <div class="panel panel-primary"><div class="panel-heading">Manual data</div>
+                  <ul class="list-group">
+% foreach my $cd ( keys %{$project_cdata} ) {
+%   my $cdata_name = al_plugins->get_plugin($cd)->get_conf()->{'name'} || "Unknown";
+                    <li class="list-group-item">
+                      <div class="pull-right">
+                        <span class="badge"><%= scalar keys %{$project_cdata->{$cd}} %></span> &nbsp; 
+                        <a href="/admin/cdata/<%= $project_id %>/<%= $cd %>/add"><i class="fa fa-plus"></i></a>
+	              </div>
+                      <a href="/projects/<%= $project_id %>_cdata.html"><%= $cdata_name %></a> (<%= $cd %>)</li>
+% }
                   </ul>
                 </div>
               </div>

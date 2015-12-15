@@ -62,8 +62,6 @@ sub show {
     my $project_id = $self->param( 'proj' );
     my $cd = $self->param( 'cd' );    
 
-    print Dumper($self->app->projects->get_project_info($project_id));
-
     # Prepare data for template.
     $self->stash(
         project_id => $project_id,
@@ -94,6 +92,7 @@ sub add {
     # Prepare data for template.
     $self->stash(
         project_id => $project_id,
+        cdata_id => undef,
         conf => $conf,
         );    
     
@@ -120,14 +119,23 @@ sub add_post {
     my $conf = $plugin->get_conf();
 
     my %args;
-    foreach my $arg (@{$conf->{'data'}}) {
-        print "Adding $arg->{'id'} with value " . $self->param( $arg->{'id'} ) . ".\n";
-        $args{ $arg->{'id'} } = $self->param( $arg->{'id'} );
-    }
+    my $id = $self->param( 'id' );
 
-    # Automatically add author and id to args.
-    $args{'id'} = time();
+    # Automatically add author and date to args.
     $args{'author'} = $self->session->{'session_user'};
+    $args{'date'} = localtime();
+
+    # If not already defined, set id.
+    if ( defined( $id ) && $id =~ m!^\d+$! ) {
+        $args{'id'} = $id;
+        print "DBG Reusing id " . $args{'id'} . ".\n";
+    } else {
+        $args{'id'} = time();
+    }
+        
+    foreach my $arg (@{$conf->{'data'}}) {
+        $args{'params'}{ $arg->{'id'} } = $self->param( $arg->{'id'} );
+    }
 
     my $metrics = $self->al_plugins->get_plugin($cd)->retrieve_data($project_id, \%args);
     if (not defined($metrics)) {
@@ -140,7 +148,7 @@ sub add_post {
 
 
     # Render template 
-    $self->redirect_to( "/admin/project/$project_id" );   
+    $self->redirect_to( "/admin/cdata/$project_id/$cd/show" );   
 }
 
 
@@ -150,7 +158,7 @@ sub edit {
   
     my $project_id = $self->param( 'proj' );
     my $cd = $self->param( 'cd' );    
-    my $id = $self->param( 'id' );    
+    my $id = $self->param( 'id' ); 
   
     # Check that the connected user has the access rights for this
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
@@ -163,15 +171,14 @@ sub edit {
     my $conf = $plugin->get_conf();
     my $values = $self->app->projects->get_project_cd_content($project_id, $cd);
     my $value;
-    foreach my $entry (@{$values}) {
-        print "Comparing $entry->{'id'} with $id.\n";
-        if ( $entry->{'id'} =~ m!^${id}$! ) { $value = $entry; last }
+    foreach my $entry (keys %{$values}) {
+        if ( $entry eq ${id} ) { $value = $values->{$entry}; last }
     }
-    print Dumper($value);
 
     # Prepare data for template.
     $self->stash(
         project_id => $project_id,
+        cdata_id => $id,
         conf => $conf,
         values => $value,
         );    

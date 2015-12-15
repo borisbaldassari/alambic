@@ -105,11 +105,12 @@ sub startup {
     
     # Set the default layout for pages.
     if ( defined( $app->al_config->get_layout() ) ) {
+        $app->app->log->info('Using layout ' . $app->al_config->get_layout() . ' from configuration file.');
         $app->defaults(layout => $app->al_config->get_layout());
     } else {
         $app->defaults(layout => 'default');
     }
-    
+
     # Router
     my $r = $app->routes;
     

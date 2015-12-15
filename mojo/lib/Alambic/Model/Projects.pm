@@ -40,7 +40,12 @@ our @EXPORT_OK = qw( read_all_files
                      del_project
                      get_project_ds
                      set_project_ds
-                     delete_project_ds );  
+                     delete_project_ds
+                     get_project_cd_content
+                     set_project_cd
+                     set_project_cd_item
+                     delete_project_cd
+ );  
 
 
 use warnings;
@@ -211,13 +216,14 @@ sub _read_files($$) {
 
     # Read custom data for projects
     $log->info( "[Model::Projects] Reading all projects custom data from [$dir_data]." );
-    my @projects_cdata = <$dir_data/*/*_data_*.json>;
+    my $dir_input = $config->{'dir_input'};
+    my @projects_cdata = <$dir_input/*/*_data_*.json>;
     foreach my $project_file (@projects_cdata) {
         $project_file =~ m!.*[\/](.*?)_data_.*\.json!;
         my $id = $1;
         my $json_project = &read_project_data($project_file);
-        foreach my $cdata (@{$json_project->{'children'}}) {
-            push( @{$projects{$id}{'cdata'}{$json_project->{'cd'}}}, $cdata );
+        foreach my $cdata_id (keys %{$json_project->{'children'}}) {
+            $projects{$id}{'cdata'}{$json_project->{'cd'}}{$cdata_id} = $json_project->{'children'}{$cdata_id};
         }
     }
 
@@ -613,8 +619,6 @@ sub add_project() {
     my $project_name = shift;
     my $project_active = shift || "false";
 
-    print "DBG active is $project_active.\n";
-
     # Create directories for project in conf_data, conf_input
     mkdir( $self->{app}->config->{'dir_data'} . "/" . $project_id );
     mkdir( $self->{app}->config->{'dir_input'} . "/" . $project_id );
@@ -721,6 +725,17 @@ sub set_project_cd() {
     # Write updated info file.
     my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
     &write_project_data( $file_to, $projects_info{$project_id});    
+}
+
+# Add a custom data plugin to the project, and update its info file.
+sub set_project_cd_item() {
+    my $self = shift;
+    my $project_id = shift;
+    my $cd_id = shift;
+    my $id = shift;
+    my $params = shift;
+
+    $projects{$project_id}{'cdata'}{$cd_id}{$id} = $params;
 }
 
 # Remove a custom data plugin from a project, an update its info file.

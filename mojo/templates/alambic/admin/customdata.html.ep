@@ -74,19 +74,16 @@
               <tr>
                 <th>Author</th><th>Date</th><th>ID</th><th>Values</th><th colspan="3">Actions</th>
               </tr>
-%   my $items = app->projects->get_project_cd_content($project_id, $cdata_id) || [];
-%   foreach my $item ( sort @{$items} ) {
+%   my $items = app->projects->get_project_cd_content($project_id, $cdata_id) || {};
+%   foreach my $item ( sort keys %{$items} ) {
               <tr>
-                <td><%= $item->{'author'} %></td>
-                <td><%= $item->{'date'} %></td>
-                <td><%= $item->{'id'} %></td>
-%     delete $item->{'author'};
-%     my $id = delete $item->{'id'};
-%     delete $item->{'date'};
-                <td><%== join( '<br />', map { "<b>$_</b>: " . $item->{$_} } sort keys %{$item} ) %></td>
-                <td width="1cm"><a href="/admin/cdata/<%= $project_id %>/<%= $cdata_id %>/edit/<%= $id %>"><i class="fa fa-pencil"></i></a></td>
+                <td><%= $items->{$item}{'author'} %></td>
+                <td><%= $items->{$item}{'date'} %></td>
+                <td><%= $item %></td>
+                <td><%== join( '<br />', map { "<b>$_</b>: " . $items->{$item}{'params'}{$_} } sort keys %{$items->{$item}{'params'}} ) %></td>
+                <td width="1cm"><a href="/admin/cdata/<%= $project_id %>/<%= $cdata_id %>/edit/<%= $item %>"><i class="fa fa-pencil"></i></a></td>
                 <td width="1cm"><a href="/admin/cdata/<%= $project_id %>/<%= $cdata_id %>/compute"><i class="fa fa-cogs"></i></a></td>
-                <td width="1cm"><a href="/admin/cdata/<%= $project_id %>/<%= $cdata_id %>/del/<%= $item->{'id'} %>"><i class="fa fa-ban"></i></a></td>
+                <td width="1cm"><a href="/admin/cdata/<%= $project_id %>/<%= $cdata_id %>/del/<%= $item %>"><i class="fa fa-ban"></i></a></td>
               </tr>
 %   }
             </table>

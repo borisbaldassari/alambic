@@ -89,8 +89,6 @@ sub display {
         
     } elsif ($page_id =~ m!^errors$!) {
         
-        print Dumper($self->app->projects->get_project_errors($project_id));
-
         # Prepare data for template.
         $self->stash(
             project_id => $project_id,
@@ -100,7 +98,29 @@ sub display {
         # Render template "alambic/dashboard/errors.html.ep"
         $self->render(template => 'alambic/dashboard/errors');
         
+    } elsif ($page_id =~ m!^cdata$!) {
+        
+        my %cds;
+        foreach my $cd ( keys %{$self->app->projects->get_project_info($project_id)->{'cdata'}} ) {
+            $cds{$cd} = $self->app->projects->get_project_cd_content($project_id, $cd);
+        }
+
+        # Prepare data for template.
+        $self->stash(
+            project_id => $project_id,
+            project_comments => $self->app->projects->get_project_comments($project_id),
+            project_cdata => \%cds,
+            );    
+        
+        # Render template "alambic/dashboard/errors.html.ep"
+        $self->render(template => 'alambic/dashboard/customdata');
+        
     } else {
+        
+        my %cds;
+        foreach my $cd ( keys %{$self->app->projects->get_project_info($project_id)->{'cdata'}} ) {
+            $cds{$cd} = $self->app->projects->get_project_cd_content($project_id, $cd);
+        }
 
         # Prepare data for template.
         $self->stash(
@@ -110,6 +130,7 @@ sub display {
             project_attrs_conf => $self->app->projects->get_project_attrs_conf($project_id),
             project_pmi => $self->app->projects->get_project_pmi($project_id),
             project_comments => $self->app->projects->get_project_comments($project_id),
+            project_cdata => \%cds,
             project_attrs_last => $self->app->projects->get_project_attrs_last($project_id),
             );    
         
