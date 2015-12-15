@@ -1,5 +1,3 @@
-% layout 'polarsys';
-% title 'Administration: Projects';
 % use File::Basename qw( fileparse );
 % my $project = stash( 'project_id' );
 % my $projects = stash( 'projects' );

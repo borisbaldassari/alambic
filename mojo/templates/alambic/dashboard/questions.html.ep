@@ -1,5 +1,3 @@
-% layout 'polarsys';
-% title 'Dashboard';
 
             <h2>Project <%= $project_id %></h2>
             <br />

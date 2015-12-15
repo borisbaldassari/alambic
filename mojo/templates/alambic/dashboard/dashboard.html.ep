@@ -1,5 +1,3 @@
-% layout 'polarsys';
-% title 'Dashboard';
 
 % sub comp_p($) {
 %   my $value = shift || 0;

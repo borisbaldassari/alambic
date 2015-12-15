@@ -1,5 +1,3 @@
-% layout 'polarsys';
-% title 'Administration: Add plugins to project';
 
 % my $conf = stash( 'conf' );
 % my $project = stash( 'project' );

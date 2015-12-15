@@ -1,6 +1,3 @@
-% layout 'polarsys';
-% title 'Administration: Add a project';
-
 % $from = stash( 'from' );
 % my $project_id = param( 'id' );
 % my $project_name = param( 'name' );

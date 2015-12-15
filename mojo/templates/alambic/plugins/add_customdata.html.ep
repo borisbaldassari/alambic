@@ -1,5 +1,4 @@
 % my $conf = stash( 'conf' );
-%# my $project = stash( 'project' );
 % my $values = stash( 'values' ) ;
 
             <h2>Administration: Custom Data sources</h2>

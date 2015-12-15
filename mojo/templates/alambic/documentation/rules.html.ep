@@ -1,5 +1,3 @@
-% layout 'polarsys';
-% title 'Documentation: Rules';
 
             <h2>Definition of Rules</h2>
             <p>Rules are mapped to good and bad practices, as defined by the open-source community. They are computed by open-source rule-checking tools like PMD or FindBugs. They are classified by category associated to some quality characteristics.</p><br />
