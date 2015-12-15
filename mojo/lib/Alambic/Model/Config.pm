@@ -83,6 +83,10 @@ sub get_colours() {
     return $config{'colours'};
 }
 
+sub get_layout() {
+    return $config{'layout'};
+}
+
 sub set_conf($$$) {
     my $self = shift;
     my $title = shift;

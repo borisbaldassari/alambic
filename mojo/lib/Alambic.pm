@@ -30,9 +30,6 @@ sub startup {
 
     $app->secrets(['Secrets of Alambic']);
 
-    # Set the default layout for pages.
-    $app->defaults(layout => 'polarsys');
-
     $app->log->level('debug');
 
     # Use Config plugin for basic configuration
@@ -96,7 +93,7 @@ sub startup {
         $app->users->read_all_files();
       }
       return $config;
-		} );
+    } );
 
     # Used to get project name from id
     $app->helper( 
@@ -105,6 +102,13 @@ sub startup {
             my $id = shift || 0;
             return $app->projects->get_project_name_by_id($id);
         });
+    
+    # Set the default layout for pages.
+    if ( defined( $app->al_config->get_layout() ) ) {
+        $app->defaults(layout => $app->al_config->get_layout());
+    } else {
+        $app->defaults(layout => 'default');
+    }
     
     # Router
     my $r = $app->routes;
