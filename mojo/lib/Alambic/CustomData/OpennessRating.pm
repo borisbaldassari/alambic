@@ -71,7 +71,6 @@ sub retrieve_data($) {
     my $file_json = $app->config->{'dir_input'} . "/" . $project_id . "/" 
         . $project_id . "_data_openness_rating.json";
 
-#    print "# File in $file_json.\n";
     my $result;
 
     if (-e $file_json) {
@@ -98,10 +97,6 @@ sub retrieve_data($) {
                 ]
         };
     }
-
-    # print "########################\n";
-    # print Dumper($result);
-    # print "########################\n";
 
     my $content = encode_json( $result );
 

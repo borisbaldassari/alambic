@@ -96,8 +96,6 @@ sub del_project {
 sub check_project {
     my $self = shift;
 
-    print "[Controller::Plugins] in check_project.\n";
-
     my $project_id = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
 
@@ -135,9 +133,7 @@ sub project_retrieve_data {
         $self->redirect_to( '/login' );
     }
 
-#    print Dumper("# BEGIN $project_id $ds ##########################\n");
     my $log = $self->al_plugins->get_plugin($ds)->retrieve_data($project_id);
-#    print Dumper("# END $project_id $ds ##########################\n", $tmp);
     $self->flash( msg => join( '<br />', @{$log} ) );
     
     # Render template 
@@ -163,7 +159,6 @@ sub project_compute_data {
 
     my $log_ref = $self->al_plugins->get_plugin($ds)->compute_data($project_id);
     my @log = @{$log_ref};
-#    print Dumper( "LOG IS ", @log );
     $self->flash( msg => join( '<br />', @log ) );
     
     # Render template 

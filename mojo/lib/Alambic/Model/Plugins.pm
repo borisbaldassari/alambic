@@ -63,8 +63,6 @@ sub read_all_files() {
         $customdata{ $conf->{'id'} } = $al_plugin;
     }
     
-#    print "# DBG CD #######################\n";
-#    print Dumper(%customdata);
 }
 
 sub get_list_all() {

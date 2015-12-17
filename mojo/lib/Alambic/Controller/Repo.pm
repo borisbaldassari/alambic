@@ -45,7 +45,6 @@ sub push() {
     }
 
     my $ret = $self->repo->push();
-    print "REPO CONTROLLER $ret.\n";
     if ($ret !~ m!1!) {
         $self->flash( msg => $ret );
     }

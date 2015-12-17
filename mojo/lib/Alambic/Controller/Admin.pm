@@ -177,8 +177,6 @@ sub project_add_post {
     my $project_name = $self->param( 'name' );
     my $project_active = $self->param( 'is_active' );
 
-    print "DBG had id [$project_id] and name [$project_name] active [$project_active].\n";
-    
     # Check that the connected user has the access rights for this
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authenticated to add a project.' );

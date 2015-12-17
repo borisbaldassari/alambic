@@ -98,7 +98,6 @@ sub analyse_input() {
 	    }        
 	}
     }
-#    print Dumper( keys %project_values );
 
     # Create headers for json file
     my $raw = {
@@ -333,7 +332,6 @@ sub aggregate_inds($$$$$) {
     }
     
     my $tmp_coef = $coef || "undef";
-#    print "    - Computed [$tmp_coef] [$mnemo].\n";
 
     return $coef;
 }

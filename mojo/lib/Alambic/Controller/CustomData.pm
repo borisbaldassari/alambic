@@ -128,7 +128,6 @@ sub add_post {
     # If not already defined, set id.
     if ( defined( $id ) && $id =~ m!^\d+$! ) {
         $args{'id'} = $id;
-        print "DBG Reusing id " . $args{'id'} . ".\n";
     } else {
         $args{'id'} = time();
     }
