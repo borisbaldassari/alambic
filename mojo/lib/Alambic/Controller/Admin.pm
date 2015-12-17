@@ -301,7 +301,6 @@ sub project_analyse {
         $self->flash( msg => "You must have rights on project $project_id to access this area." );
         $self->redirect_to( '/login' );
     }
-    print "# [Controller::Admin] project_analyse.\n";
     push( @log, @{$self->app->projects->analyse_project($project_id)} );
     push( @log, "Data for project $project_id has been analysed." );
 
