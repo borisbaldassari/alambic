@@ -14,11 +14,12 @@
 }
 
 .navbar {
+    color: #ffffff;
     background-color: #3E3F3A;
 }
 
 body {
-    colour: #3E3F3A;
+    color: #3E3F3A;
 }
 
 .sidebar ul li a {

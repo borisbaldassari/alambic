@@ -12,13 +12,13 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
     <!-- Bootstrap Core CSS -->
-    <link href="/css/bootstrap-default.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
     <link href="/css/plugins/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="/css/sb-admin-2-default.css" rel="stylesheet">
+    <link href="/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
