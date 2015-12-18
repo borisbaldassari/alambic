@@ -63,7 +63,34 @@ sub compute_data($) {
     my $self = shift;
     my $project_id = shift;
 
+    my $metrics_new;
 
+    my $file_in = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_mls.json";
+    my $json;
+    do { 
+        local $/;
+        open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
+        $json = <$fh>;
+        close $fh;
+    };
+    my $metrics_old = decode_json($json);
+
+    foreach my $metric (keys %{$metrics_old}) {
+        if ( exists( $conf{'provides_metrics'}{uc($metric)} ) ) {
+            $metrics_new->{ $conf{'provides_metrics'}{uc($metric)} } = $metrics_old->{$metric};
+        }
+    }
+
+    my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_metrics_mls.json";
+    my $json_content = encode_json($metrics_new);
+    do { 
+        local $/;
+        open my $fh, '>', $file_out or die "Could not open data file [$file_out].\n";
+        print $fh $json_content;
+        close $fh;
+    };
+
+    return ["Done."];
 }
 
 
