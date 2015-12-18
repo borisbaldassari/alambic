@@ -27,7 +27,7 @@
 
                 <p><b>ID</b> <%= $info->{'id'} %><br />
                 <b>Name</b> <%= $info->{'name'} %><br />
-                <b>Name</b> <%= $info->{'is_active'} %><br />
+                <b>Is active</b> <%= $info->{'is_active'} %><br />
                 </p>
               </div>
               <div class="col-sm-6">

@@ -10,7 +10,14 @@
             <h3>Automatic data sources</h3>
 
             <table class="table table-striped">
-              <tr><th>Name</th><th>ID</th><th>Type</th><th>Requires</th><th>Provides metricsf</th><th>Provides files</th></tr>
+              <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Requires</th>
+                <th width="30%">Provides metrics</th>
+                <th>Provides files</th>
+              </tr>
 % my $pis_list = al_plugins->get_list_pis();
 % use Data::Dumper;
 % foreach my $pi (sort @{$pis_list}) {

@@ -271,7 +271,7 @@ sub list_active_projects() {
     my @projects;
     foreach (keys %projects_info) { 
         if( defined($projects_info{$_}->{'is_active'})
-            && $projects_info{$_}->{'is_active'}=~ m!on!) {
+            && $projects_info{$_}->{'is_active'} =~ m!on!) {
             push( @projects, $_ );
         }
     }
