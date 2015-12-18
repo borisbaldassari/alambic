@@ -17,11 +17,11 @@ my %conf = (
         "data_a" => 'default value',
         "project_id" => "default value",
     },
-    "provides_metrics" => [
-        "SOME_METRIC"
-    ],
+    "provides_metrics" => {
+        "SOME_METRIC_IN" => "SOME_METRIC_OUT",
+    },
     "provides_files" => [
-        "_files"
+        "sample"
     ]
 );
 

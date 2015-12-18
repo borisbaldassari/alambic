@@ -18,14 +18,27 @@ my %conf = (
         "grimoire_url" => "http://dashboard.eclipse.org/data/json/",
         "project_id" => "",
     },
-    "provides_metrics" => [
-        "CHANGED", "CHANGERS", "CLOSED", "CLOSED_30", "CLOSED_365", "CLOSED_7",
-        "CLOSERS", "CLOSERS_30", "CLOSERS_365", "TRACKERS", "OPENED", 
-        "OPENERS", "PERCENTAGE_CLOSED", "PERCENTAGE_CLOSED_30", "PERCENTAGE_CLOSED_365",
-        "PERCENTAGE_CLOSED_7", "CLOSERS_7"
-    ],
+    "provides_metrics" => {
+        "CHANGED" => "ITS_CHANGED", 
+        "CHANGERS" => "ITS_CHANGERS", 
+        "CLOSED" => "ITS_CLOSED", 
+        "CLOSED_30" => "ITS_CLOSED_30", 
+        "CLOSED_365" => "ITS_CLOSED_365", 
+        "CLOSED_7" => "ITS_CLOSED_7",
+        "CLOSERS" => "ITS_CLOSERS", 
+        "CLOSERS_30" => "ITS_CLOSERS_30", 
+        "CLOSERS_365" => "ITS_CLOSERS_365", 
+        "CLOSERS_7" => "ITS_CLOSERS_7", 
+        "TRACKERS" => "ITS_TRACKERS", 
+        "OPENED" => "ITS_OPENED", 
+        "OPENERS" => "ITS_OPENERS", 
+        "PERCENTAGE_CLOSED" => "ITS_PERCENTAGE_CLOSED", 
+        "PERCENTAGE_CLOSED_30" => "ITS_PERCENTAGE_CLOSED_30", 
+        "PERCENTAGE_CLOSED_365" => "ITS_PERCENTAGE_CLOSED_365",
+        "PERCENTAGE_CLOSED_7" => "ITS_PERCENTAGE_CLOSED_7", 
+    },
     "provides_files" => [
-    ]
+    ],
 );
 
 my $app;
@@ -73,7 +86,7 @@ sub compute_data($) {
     my $self = shift;
     my $project_id = shift;
 
-    return [];
+    return ["Done."];
 }
 
 

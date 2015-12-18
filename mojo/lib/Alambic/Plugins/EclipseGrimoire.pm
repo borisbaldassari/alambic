@@ -18,16 +18,29 @@ my %conf = (
         "grimoire_url" => "http://dashboard.eclipse.org/data/json/",
         "project_id" => "",
     },
-    "provides_metrics" => [
-        "ITS_AUTH_1M", "ITS_BUGS_DENSITY", "ITS_BUGS_OPEN", "ITS_FIX_MED_1M", 
-        "ITS_UPDATES_1M", "MLS_DEV_AUTH_1M", "MLS_DEV_RESP_RATIO_1M", 
-        "MLS_DEV_RESP_TIME_MED_1M", "MLS_DEV_SUBJ_1M", "MLS_DEV_VOL_1M", 
-        "MLS_USR_AUTH_1M", "MLS_USR_RESP_RATIO_1M", "MLS_USR_RESP_TIME_MED_1M", 
-        "MLS_USR_SUBJ_1M", "MLS_USR_VOL_1M", "SCM_COMMITS_1M", 
-        "SCM_COMMITTED_FILES_1M", "SCM_COMMITTERS_1M", "SCM_STABILITY_1M"
-    ],
+    "provides_metrics" => {
+        "ITS_AUTH_1M" => "ITS_AUTH_1M", 
+        "ITS_BUGS_DENSITY" => "ITS_BUGS_DENSITY", 
+        "ITS_BUGS_OPEN" => "ITS_BUGS_OPEN", 
+        "ITS_FIX_MED_1M" => "ITS_FIX_MED_1M", 
+        "ITS_UPDATES_1M" => "ITS_UPDATES_1M", 
+        "MLS_DEV_AUTH_1M" => "MLS_DEV_AUTH_1M",
+        "MLS_DEV_RESP_RATIO_1M" => "MLS_DEV_RESP_RATIO_1M",
+        "MLS_DEV_RESP_TIME_MED_1M" => "MLS_DEV_RESP_TIME_MED_1M",
+        "MLS_DEV_SUBJ_1M" => "MLS_DEV_SUBJ_1M", 
+        "MLS_DEV_VOL_1M" => "MLS_DEV_VOL_1M", 
+        "MLS_USR_AUTH_1M" => "MLS_USR_AUTH_1M", 
+        "MLS_USR_RESP_RATIO_1M" => "MLS_USR_RESP_RATIO_1M", 
+        "MLS_USR_RESP_TIME_MED_1M" => "MLS_USR_RESP_TIME_MED_1M", 
+        "MLS_USR_SUBJ_1M" => "MLS_USR_SUBJ_1M",
+        "MLS_USR_VOL_1M" => "MLS_USR_VOL_1M",
+        "SCM_COMMITS_1M" => "SCM_COMMITS_1M", 
+        "SCM_COMMITTED_FILES_1M" => "SCM_COMMITTED_FILES_1M",
+        "SCM_COMMITTERS_1M" => "SCM_COMMITTERS_1M", 
+        "SCM_STABILITY_1M" => "SCM_STABILITY_1M"
+    },
     "provides_files" => [
-    ]
+    ],
 );
 
 my $app;

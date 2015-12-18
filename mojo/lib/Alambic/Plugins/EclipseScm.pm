@@ -18,11 +18,19 @@ my %conf = (
         "grimoire_url" => "http://dashboard.eclipse.org/data/json/",
         "project_id" => "",
     },
-    "provides_metrics" => [
-        "AUTHORS", "AUTHORS_30", "AUTHORS_365", "AUTHORS_7", "AVG_COMMITS_AUTHOR", 
-        "AVG_COMMITS_MONTH", "COMMITS", "COMMITS_30", "COMMITS_365", "COMMITS_7", 
-        "COMMITTERS", "FILES", "FIRST_DATE", "LAST_DATE", "REPOSITORIES"
-    ],
+    "provides_metrics" => {
+        "AUTHORS" => "SCM_AUTHORS", 
+        "AUTHORS_30" => "SCM_AUTHORS_30", 
+        "AUTHORS_365" => "SCM_AUTHORS_365", 
+        "AUTHORS_7" => "SCM_AUTHORS_7",
+        "COMMITS" => "SCM_COMMITS", 
+        "COMMITS_30" => "SCM_COMMITS_30",
+        "COMMITS_365" => "SCM_COMMITS_365",
+        "COMMITS_7" => "SCM_COMMITS_7", 
+        "COMMITTERS" => "SCM_COMMITTERS",
+        "FILES" => "SCM_FILES", 
+        "REPOSITORIES" => "SCM_REPOSITORIES",
+    },
     "provides_files" => [
     ]
 );
@@ -72,7 +80,7 @@ sub compute_data($) {
     my $self = shift;
     my $project_id = shift;
 
-    return [];
+    return ["Done."];
 }
 
 

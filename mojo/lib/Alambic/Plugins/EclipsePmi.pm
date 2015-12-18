@@ -15,12 +15,10 @@ my %conf = (
     "desc" => "Retrieves data from the Eclipse PMI infrastructure.",
     "ability" => [ "metrics", "files" ],
     "requires" => {
-        "pmi_url" => "http://projects.eclipse.org/project",
-        "project_id" => "modeling.sirius",
+        "project_id" => "",
     },
-    "provides_metrics" => [
-        "PMI_PLAN_3M"
-    ],
+    "provides_metrics" => {
+    },
     "provides_files" => [
         "pmi", 
     ]
@@ -161,8 +159,6 @@ sub compute_data($) {
         }
     }	
     $metrics{"PUB_ITS_INFO_PMI"} = $pub_its_info;
-    $metrics{"PUB_ITS_TST_1"} = $pub_its_info;
-    $metrics{"PUB_ITS_TST_2"} = $pub_its_info;
 
     my $json_metrics = encode_json(\%metrics);
 
@@ -172,7 +168,7 @@ sub compute_data($) {
     print $fh $json_metrics;
     close $fh;
 
-    return [];
+    return ["Done."];
 }
 
 
