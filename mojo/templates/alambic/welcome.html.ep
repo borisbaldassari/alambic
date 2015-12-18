@@ -33,7 +33,7 @@
                 <br />
 
                 <div class="panel panel-default">
-                  <div class="panel-heading"><i class="fa fa-life-ring fa-fw"></i> &nbsp; Administration tools</div>
+                  <div class="panel-heading"><i class="fa fa-wrench fa-fw"></i> &nbsp; Administration tools</div>
                   <div class="list-group">
                     <a href="analyse_metrics.html" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; List of available metrics per project</a>
                     <a href="comments/" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Comments administration panel</a>
