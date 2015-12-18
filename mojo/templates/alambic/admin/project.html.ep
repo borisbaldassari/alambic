@@ -37,7 +37,7 @@
                   <a class="list-group-item" href="/admin/projects/new?id=<%= $info->{'id'} %>&name=<%= $info->{'name'} %>&is_active=<%= $info->{'is_active'} %>" role="button"><i class="fa fa-edit"></i> &nbsp; Edit information</a>
                   <a class="list-group-item" href="/admin/project/<%= $project %>/retrieve" role="button"><i class="fa fa-download"></i> &nbsp; Retrieve all data</a>
                   <a class="list-group-item" href="/admin/project/<%= $project %>/analyse" role="button"><i class="fa fa-cogs"></i> &nbsp; Analyse all data</a>
-                  <a class="list-group-item" href="/project/<%= $project %>" role="button"><i class="fa fa-dashboard"></i> &nbsp; Project dashboard</a>
+                  <a class="list-group-item" href="/projects/<%= $project %>" role="button"><i class="fa fa-dashboard"></i> &nbsp; Project dashboard</a>
                 </div>
 
 <!-- % if (exists($projects->{$project}->{'metrics'})) { -->
