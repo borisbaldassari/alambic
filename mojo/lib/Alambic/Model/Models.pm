@@ -69,18 +69,18 @@ sub read_all_files() {
     my $file_model = $config->{'dir_models'} . "/quality_model.json";
     $self->{app}->log->info( "[Model::Models] Reading model definition from [$file_model]." );
 
-    my $json_model = &read_data($file_model);
+    my $json_model = &_read_data($file_model);
     %model = %{$json_model};
     $model_info{'name'} = $model{'name'};
     $model_info{'version'} = $model{'version'};
 
-    &read_metrics( $self->{app}, $config->{'dir_models'} );
+    &_read_metrics( $self->{app}, $config->{'dir_models'} );
 
-    &read_attributes( $self->{app}, $config->{'dir_models'} );
+    &_read_attributes( $self->{app}, $config->{'dir_models'} );
 
-    &read_questions( $self->{app}, $config->{'dir_models'} );
+    &_read_questions( $self->{app}, $config->{'dir_models'} );
 
-    &read_rules( $self->{app}, $config->{'dir_rules'} );
+    &_read_rules( $self->{app}, $config->{'dir_rules'} );
 
 }
 
@@ -88,20 +88,19 @@ sub read_all_files() {
 #
 # Read metrics definition and set the global %metrics variable.
 #
-sub read_metrics($) {
+sub _read_metrics($) {
     my $self = shift;
     my $dir_conf = shift;
 
     my $file_metrics = $dir_conf . "/model_metrics.json";
     $self->log->info( "[Model::Models] Reading metrics definition from [$file_metrics]." );
 
-    my $json_metrics = &read_data($file_metrics);
+    my $json_metrics = &_read_data($file_metrics);
 
     # Import metrics and enhance their defition (add is_active)
     my $metrics_total;
     foreach my $tmp_metric (@{$json_metrics->{"children"}}) {
         my $metric_mnemo = $tmp_metric->{"mnemo"};
-        my $metric_ds = $tmp_metric->{"ds"};
 	if (exists $metrics{$metric_mnemo}) {
 	    $self->log->info( "WARN: Metric [$metric_mnemo] already exists!." );
             next;
@@ -129,12 +128,28 @@ sub read_metrics($) {
 
 	# Populate metrics_ds and %metrics only if the metric has been found in the qm.
 	if ( defined($tmp_metric->{"active"}) ) {
-	    $metrics_ds{$metric_ds}++;
 	    $metrics_total++;
 	    $metrics{$metric_mnemo} = $tmp_metric;
             if ( $tmp_metric->{'active'} =~ m!true! ) { push( @metrics_active, $metric_mnemo ) }
 	} 
     }
+
+    # Now build the list of data sources by reading through
+    # plugins and assigning each metric its plugin.
+    my $pis = $self->al_plugins->get_list_pis();
+    foreach my $pi_ref (@{$pis}) {
+        my $pi = $self->al_plugins->get_plugin($pi_ref);
+        my $pi_conf = $pi->get_conf();
+        foreach my $metric (keys %{$pi_conf->{'provides_metrics'}}) {
+            my $metric_map = $pi_conf->{'provides_metrics'}{$metric};
+            if ( exists($metrics{$metric_map}) ) {
+                $metrics_ds{$pi_conf->{'id'}}++;
+                $metrics{$metric_map}{'ds'} = $pi_conf->{'id'};
+            }
+        }
+    }
+
+    #print Dumper(%metrics);
 
     $metrics_info{'name'} = $json_metrics->{'name'};
     $metrics_info{'version'} = $json_metrics->{'version'};
@@ -169,13 +184,13 @@ sub find_qm_node($$$$) {
 #
 # Read attributes definition and set the %attributes global var.
 #
-sub read_attributes($) {
+sub _read_attributes($) {
     my $self = shift;
     my $dir_conf = shift;
 
     my $file_attrs = $dir_conf . "/model_attributes.json";
     $self->log->info( "[Model::Models] Reading attributes definition from [$file_attrs]." );
-    my $json_attrs = &read_data($file_attrs);
+    my $json_attrs = &_read_data($file_attrs);
     foreach my $item (@{$json_attrs->{'children'}}) {
         $attributes{$item->{'mnemo'}} = $item;
     }
@@ -187,13 +202,13 @@ sub read_attributes($) {
 #
 # Read questions definition and set the %questions global var.
 #
-sub read_questions($) {
+sub _read_questions($) {
     my $self = shift;
     my $dir_conf = shift;
 
     my $file_questions = $dir_conf . "/model_questions.json";
     $self->log->info( "[Model::Models] Reading questions definition from [$file_questions]." );
-    my $json_questions = &read_data($file_questions);
+    my $json_questions = &_read_data($file_questions);
     foreach my $item (@{$json_questions->{'children'}}) {
         $questions{$item->{'mnemo'}} = $item;
     }
@@ -205,7 +220,7 @@ sub read_questions($) {
 #
 # Read questions definition and set the %questions global var.
 #
-sub read_rules($) {
+sub _read_rules($) {
     my $self = shift;
     my $dir_rules = shift;
 
@@ -214,7 +229,7 @@ sub read_rules($) {
     my @files = <$dir_rules/*_rules.json>;
     foreach my $file_rules (@files) {
         $self->log->info( "[Model::Models]   * Reading file [$file_rules]." );
-        my $json_rules = &read_data($file_rules);
+        my $json_rules = &_read_data($file_rules);
         my $source = $json_rules->{'name'} . " " . $json_rules->{'version'};
         foreach my $item (@{$json_rules->{'children'}}) {
             # We want to record only rules with priority set and < 3.
@@ -238,7 +253,6 @@ sub get_qm_full() {
     &_populate_qm($qm_full_children, undef, undef, undef, undef);
 
     my %model_info = $self->{app}->models->get_model_info();
-    print Dumper(%model_info);
     my $qm_full = {
         "name" => $model_info{'name'},
         "version" => $model_info{'version'},
@@ -412,7 +426,7 @@ sub get_rules_sources() {
     return \%rules_sources;
 }
 
-sub read_data($) {
+sub _read_data($) {
     my $file = shift;
 
     my $json;

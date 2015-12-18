@@ -59,6 +59,7 @@ sub check_project() {
     return [];
 }
 
+# Download json file from dashboard.eclipse.org
 sub retrieve_data($) {
     my $self = shift;
     my $project_id = shift;
@@ -66,7 +67,7 @@ sub retrieve_data($) {
     my @log;
     my $url = "http://dashboard.eclipse.org/data/json/" 
         . $project_id . "-mls-prj-static.json";
-    my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_metrics__mls.json";
+    my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_mls.json";
     push( @log, "Retrieving [$url] to [$file_out].\n" );
     
     # Fetch json file from the dashboard.eclipse.org
@@ -76,9 +77,39 @@ sub retrieve_data($) {
     return \@log;
 }
 
+
+# Basically read the imported files and make the mapping to the 
+# new metric names.
 sub compute_data($) {
     my $self = shift;
     my $project_id = shift;
+
+    my $metrics_new;
+
+    my $file_in = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_mls.json";
+    my $json;
+    do { 
+        local $/;
+        open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
+        $json = <$fh>;
+        close $fh;
+    };
+    my $metrics_old = decode_json($json);
+
+    foreach my $metric (keys %{$metrics_old}) {
+        if ( exists( $conf{'provides_metrics'}{uc($metric)} ) ) {
+            $metrics_new->{ $conf{'provides_metrics'}{uc($metric)} } = $metrics_old->{$metric};
+        }
+    }
+
+    my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_metrics_mls.json";
+    my $json_content = encode_json($metrics_new);
+    do { 
+        local $/;
+        open my $fh, '>', $file_out or die "Could not open data file [$file_out].\n";
+        print $fh $json_content;
+        close $fh;
+    };
 
     return ["Done."];
 }

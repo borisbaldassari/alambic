@@ -11,9 +11,11 @@ use Data::Dumper;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( read_all_files
-                 get_list_all get_list_metrics get_list_info 
-                 get_list_customdata 
-                 get_rules_sources );  
+                 get_list_all
+                 get_list_pis
+                 get_list_cds 
+                 get_list_metrics get_list_viz
+                 get_plugin );  
 
 
 my %plugins;
@@ -90,12 +92,9 @@ sub get_list_metrics() {
     return \@list;
 }
 
-sub get_list_info() {
-
-}
-
 sub get_list_viz() {
-
+    my @list = map { return $plugins{$_}{'id'} if grep('viz', $plugins{$_}{'ability'}) } keys %plugins;
+    return \@list;
 }
 
 sub get_plugin($) {
