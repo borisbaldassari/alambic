@@ -356,6 +356,16 @@
         "scale": [2,6,22,103]
       },
       {
+        "name": "ML sent responses",
+        "mnemo": "MLS_SENT_RESPONSE",
+        "desc": [
+            "Number of responses (i.e. replies in a thread) dated during the last month in mailing list archives.",
+	    "Threads are identified using 'In-Reply-To' message headers. Developer mailing list is the list or lists considered as 'for developers' in the project documentation. The date used is the mailing list server date, as stamped in the message. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included).",
+            "Note that developer communications are measured through the mailing list, and user communications are measured through the forums."
+        ],
+        "scale": [2,6,22,103]
+      },
+      {
         "name": "ML posts",
         "mnemo": "MLS_SENT_30",
         "desc": [
@@ -412,38 +422,11 @@
         "scale": [3.79487179487,1.4430952381,1.14285714286,1]
       },
       {
-        "name": "Median time to fix bug",
-        "mnemo": "ITS_FIX_MED_3M",
+        "name": "Number of issue closed during last month",
+        "mnemo": "ITS_CLOSED_30",
         "desc": [
-            "Median period from when a ticket is open to when a ticket is closed, for all tickets closed during the last three months, in the issue tracking system. ",
-	        "The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Closed means the state in which no further action is usually performed in the ticket. Time range is measured as three calendar months period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Unit is days."
-        ],
-        "scale": [1001.13,40.2625,11.62,3.82]
-      },
-      {
-        "name": "Number of open bugs",
-        "mnemo": "ITS_BUGS_OPEN",
-        "desc": [
-            "Number of tickets marked as still open at the time of the data retrieval, in the issue tracking system.",
-	    "The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Open means the state in which further actions are usually expected until the ticket is closed."
-        ],
-        "scale": [500,200,100,50]
-      },
-      {
-        "name": "Number of issues opened during last three months",
-        "mnemo": "ITS_ISSUES_OPEN_3M",
-        "desc": [
-            "Number of tickets opened (new) during the last three months, in the issue tracking system out, divided by the number of thousands of lines of code",
-	    "The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Time range is measured as three calendar months period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
-        ],
-        "scale": [1,2,3,4]
-      },
-      {
-        "name": "Number of issue openers during last three months",
-        "mnemo": "ITS_ISSUES_OPENERS_3M",
-        "desc": [
-            "Number of distinct identities opening tickets during the last three months, in the issue tracking system, divided by the number of thousands of lines of code.",
-	    "The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Identities of openers are the character strings found in the corresponding field in the ticket information. Time range is measured as three calendar months period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
+            "Number of distinct identities opening tickets during the last month in the issue tracking system.",
+	    "The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Identities of openers are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
         ],
         "scale": [1,2,3,4]
       },
@@ -457,11 +440,11 @@
         "scale": [4,13,37,596]
       },
       {
-        "name": "ITS authors",
-        "mnemo": "ITS_AUTH_3M",
+        "name": "ITS closers",
+        "mnemo": "ITS_CLOSERS_30",
         "desc": [
-            "Number of distinct identities updating tickets during the last three months, in the issue tracking system.",
-	    "The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Update means an operation on a ticket changing its state, or adding information. Opening and closing a ticket are considered as updates. Identities of updaters are the character strings found in the corresponding field in the ticket information. Time range is measured as three calendar months period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            "Number of distinct identities closing tickets during the last month in the issue tracking system.",
+	    "The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Update means an operation on a ticket changing its state, or adding information. Opening and closing a ticket are considered as updates. Identities of updaters are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
         ],
         "scale": [2,4,9.75,80]
       },

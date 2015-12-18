@@ -169,12 +169,12 @@
                                     "active": "true",
                                     "children": [
                                         {
-                                            "mnemo": "ITS_UPDATES_3M",
+                                            "mnemo": "ITS_CLOSED_30",
                                             "type": "metric",
                                             "active": "true"
                                         },
                                         {
-                                            "mnemo": "ITS_AUTH_3M",
+                                            "mnemo": "ITS_CLOSERS_30",
                                             "type": "metric",
                                             "active": "true"
                                         }
