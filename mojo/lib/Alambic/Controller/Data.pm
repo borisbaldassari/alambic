@@ -13,10 +13,8 @@ sub download {
 
     if ($in_doc =~ m!^quality_model_full.json$!) {
 
-#        $self->res->headers->content_type('ascii/json');
-#        push @{$static->paths}, $self->config->{'dir_models'};
-        $self->reply->static('../models/quality_model_full.json');
-#        $self->reply->static( $self->config->{'dir_models'} . '/quality_model_full.json');
+        my $qm_full = $self->{app}->models->get_qm_full();
+        $self->render(json => $qm_full);
 
     } elsif ($in_doc =~ m!^model_attributes.json$!) {
 
