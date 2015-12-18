@@ -1,6 +1,6 @@
   {
-    "name": "PolarSys Questions",
-    "version": "1.0.1",
+    "name": "Alambic Questions",
+    "version": "0.1",
     "children": [
       {
         "name": "Code complexity",

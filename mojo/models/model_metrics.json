@@ -1,6 +1,6 @@
   {
-    "name": "PolarSys Metrics",
-    "version": "1.0.1",
+    "name": "Alambic Metrics",
+    "version": "0.1",
     "children": [
       {
         "name": "Maximum depth of nesting",
