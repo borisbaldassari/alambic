@@ -342,7 +342,7 @@ sub get_project_all_values($) {
     my %model = %{$self->{app}->models->get_model()};
 
     # Create a rich version of the quality model with all info on nodes.
-    &populate_qm($model{"children"}, $projects{$project_id}{'attrs'}, $projects{$project_id}{'questions'}, $projects{$project_id}{'metrics'}, $projects{$project_id}{'indicators'});
+    $self->{app}->models->populate_qm($model{"children"}, $projects{$project_id}{'attrs'}, $projects{$project_id}{'questions'}, $projects{$project_id}{'metrics'}, $projects{$project_id}{'indicators'});
 
     return \%model;
 }
@@ -481,46 +481,6 @@ sub delete_project_comment($$) {
     &write_project_data( $file_to, $raw);
 
     return 1;
-}
-
-
-
-# Recursive function to populate the quality model with information from 
-# external files (metrics/questions/attributes definition). 
-# Params:
-#   $qm a ref to an array of children
-#   $attrs a ref to hash of values for attributes
-#   $questions a ref to hash of values for questions
-#   $metrics a ref to hash of values for metrics
-#   $inds a ref to hash of indicators for metrics
-sub populate_qm($$$$$) {
-    my $qm = shift;
-    my $l_attrs = shift;
-    my $l_questions = shift;
-    my $l_metrics = shift;
-    my $l_inds = shift;
-
-    foreach my $child (@{$qm}) {
-        my $mnemo = $child->{"mnemo"};
-        
-        if ($child->{"type"} =~ m!attribute!) {
-            $child->{"name"} = $attributes{$mnemo}{"name"};
-            $child->{"ind"} = $l_attrs->{$mnemo};
-        } elsif ($child->{"type"} =~ m!concept!) {
-            $child->{"name"} = $questions{$mnemo}{"name"};
-            $child->{"ind"} = $l_questions->{$mnemo};
-        } elsif ($child->{"type"} =~ m!metric!) {
-            $child->{"name"} = $metrics{$mnemo}{"name"};
-            $child->{"value"} = eval sprintf("%.1f", $l_metrics->{$mnemo} || 0);
-            $child->{"ind"} = $l_inds->{$mnemo};
-        } else { 
-            print( "[Model::Projects] WARN: cannot recognize type " . $child->{"type"} . "." ); 
-        }
-        
-        if ( exists($child->{"children"}) ) {
-            &populate_qm($child->{"children"}, $l_attrs, $l_questions, $l_metrics, $l_inds);
-        }
-    }
 }
 
 

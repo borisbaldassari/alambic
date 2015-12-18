@@ -190,46 +190,8 @@ sub compute_scale($$) {
 }
 
 
-
-
-
-# Recursive function to populate the quality model with information from 
-# external files (metrics/questions/attributes definition). 
-# Params:
-#   $qm a ref to an array of children
-#   $attrs a ref to hash of values for attributes
-#   $questions a ref to hash of values for questions
-#   $metrics a ref to hash of values for metrics
-#   $inds a ref to hash of indicators for metrics
-sub populate_qm($$$$$) {
-    my $qm = shift;
-    my $attrs = shift;
-    my $questions = shift;
-    my $metrics = shift;
-    my $inds = shift;
-    
-    foreach my $child (@{$qm}) {
-	my $mnemo = $child->{"mnemo"};
-	
-	if ($child->{"type"} =~ m!attribute!) {
-	    $child->{"name"} = $flat_attributes{$mnemo}{"name"};
-	    $child->{"ind"} = $attrs->{$mnemo};
-	} elsif ($child->{"type"} =~ m!concept!) {
-	    $child->{"name"} = $flat_questions{$mnemo}{"name"};
-	    $child->{"ind"} = $questions->{$mnemo};
-	} elsif ($child->{"type"} =~ m!metric!) {
-	    $child->{"name"} = $flat_metrics{$mnemo}{"name"};
-	    $child->{"value"} = $metrics->{$mnemo};
-	    $child->{"ind"} = $inds->{$mnemo};
-	} else { print "WARN: cannot recognize type " . $child->{"type"} . "\n"; }
-
-	if ( exists($child->{"children"}) ) {
-	    &populate_qm($child->{"children"}, $attrs, $questions, $metrics, $inds);
-	}
-    }
-}
-
-
+# Recursive function to compute aggregates of the quality model
+# from the leafs up to the root.
 sub aggregate_inds($$$$$) {
     my $raw_qm = shift;
     my $values = shift;
@@ -279,7 +241,6 @@ sub aggregate_inds($$$$$) {
 	    
 	    $coef = $sum / $full_weight;
 	    my $coef_round = sprintf("%.1f", $coef);
-#	    my $coef_round = int($coef);
 	    $raw_qm->{"ind"} = $coef_round;
 	    $coef = $coef_round;
 	}
@@ -410,7 +371,7 @@ sub compute_inds {
     my $file_attrs_conf = $project_path . '/' . $project_id . '_attributes_confidence.json';
     &write_data($file_attrs_conf, $raw_attrs_conf);
 
-    &populate_qm($raw_qm->{"children"}, 
+    $self->{app}->models->populate_qm($raw_qm->{"children"}, 
 		 \%project_attrs, 
 		 \%project_questions, 
 		 \%project_values, 

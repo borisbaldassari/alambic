@@ -26,7 +26,9 @@ our @EXPORT_OK = qw( read_all_files
                  get_questions_info 
                  get_questions_full
                  get_rules 
-                 get_rules_sources );  
+                 get_rules_sources 
+                 populate_qm
+                 );
 
 
 my %metrics;
@@ -87,11 +89,11 @@ sub read_all_files() {
 # Read metrics definition and set the global %metrics variable.
 #
 sub read_metrics($) {
-    my $app = shift;
+    my $self = shift;
     my $dir_conf = shift;
 
     my $file_metrics = $dir_conf . "/model_metrics.json";
-    $app->log->info( "[Model::Models] Reading metrics definition from [$file_metrics]." );
+    $self->log->info( "[Model::Models] Reading metrics definition from [$file_metrics]." );
 
     my $json_metrics = &read_data($file_metrics);
 
@@ -101,9 +103,7 @@ sub read_metrics($) {
         my $metric_mnemo = $tmp_metric->{"mnemo"};
         my $metric_ds = $tmp_metric->{"ds"};
 	if (exists $metrics{$metric_mnemo}) {
-	    my $err = "WARN: Metric [$metric_mnemo] already exists!.";
-#	    push( @{$project_errors{'MAIN'}}, $err);
-#	    print "$err\n",
+	    $self->log->info( "WARN: Metric [$metric_mnemo] already exists!." );
             next;
 	}
 
@@ -116,7 +116,7 @@ sub read_metrics($) {
 	    if (defined($node->{"father"})) {
 		$tmp_nodes{$node->{"father"}}++;
 	    } else {
-		$app->log->info( "[Model::Models] ERR: no father on " . $node->{"mnemo"} . "" );
+		$self->log->info( "[Model::Models] ERR: no father on " . $node->{"mnemo"} . "" );
 	    }
 
 	    if ($node->{"active"} =~ m!true!i) { 
@@ -138,9 +138,6 @@ sub read_metrics($) {
 
     $metrics_info{'name'} = $json_metrics->{'name'};
     $metrics_info{'version'} = $json_metrics->{'version'};
-
-    # Create a rich version of the quality model with all info on nodes.
-    #&populate_qm($model{"children"}, undef, undef, undef, undef);
 
 }
 
@@ -173,11 +170,11 @@ sub find_qm_node($$$$) {
 # Read attributes definition and set the %attributes global var.
 #
 sub read_attributes($) {
-    my $app = shift;
+    my $self = shift;
     my $dir_conf = shift;
 
     my $file_attrs = $dir_conf . "/model_attributes.json";
-    $app->log->info( "[Model::Models] Reading attributes definition from [$file_attrs]." );
+    $self->log->info( "[Model::Models] Reading attributes definition from [$file_attrs]." );
     my $json_attrs = &read_data($file_attrs);
     foreach my $item (@{$json_attrs->{'children'}}) {
         $attributes{$item->{'mnemo'}} = $item;
@@ -191,11 +188,11 @@ sub read_attributes($) {
 # Read questions definition and set the %questions global var.
 #
 sub read_questions($) {
-    my $app = shift;
+    my $self = shift;
     my $dir_conf = shift;
 
     my $file_questions = $dir_conf . "/model_questions.json";
-    $app->log->info( "[Model::Models] Reading questions definition from [$file_questions]." );
+    $self->log->info( "[Model::Models] Reading questions definition from [$file_questions]." );
     my $json_questions = &read_data($file_questions);
     foreach my $item (@{$json_questions->{'children'}}) {
         $questions{$item->{'mnemo'}} = $item;
@@ -209,14 +206,14 @@ sub read_questions($) {
 # Read questions definition and set the %questions global var.
 #
 sub read_rules($) {
-    my $app = shift;
+    my $self = shift;
     my $dir_rules = shift;
 
-    $app->log->info( "[Model::Models] Reading rules definition from [$dir_rules]." );
+    $self->log->info( "[Model::Models] Reading rules definition from [$dir_rules]." );
 
     my @files = <$dir_rules/*_rules.json>;
     foreach my $file_rules (@files) {
-        $app->log->info( "[Model::Models]   * Reading file [$file_rules]." );
+        $self->log->info( "[Model::Models]   * Reading file [$file_rules]." );
         my $json_rules = &read_data($file_rules);
         my $source = $json_rules->{'name'} . " " . $json_rules->{'version'};
         foreach my $item (@{$json_rules->{'children'}}) {
@@ -231,41 +228,88 @@ sub read_rules($) {
 }
 
 
+# Get the full quality model for the documentation visualisation.
+sub get_qm_full() {
+    my $self = shift;
+
+    my $qm_full_children = $model{"children"};
+
+    # Create a rich version of the quality model with all info on nodes.
+    &_populate_qm($qm_full_children, undef, undef, undef, undef);
+
+    my %model_info = $self->{app}->models->get_model_info();
+    print Dumper(%model_info);
+    my $qm_full = {
+        "name" => $model_info{'name'},
+        "version" => $model_info{'version'},
+        "children" => $qm_full_children,
+    };
+    
+    return $qm_full;
+}
+
+
 # Recursive function to populate the quality model with information from 
 # external files (metrics/questions/attributes definition). 
+#
+# This one can be called from other modules.
+#
 # Params:
 #   $qm a ref to an array of children
 #   $attrs a ref to hash of values for attributes
 #   $questions a ref to hash of values for questions
 #   $metrics a ref to hash of values for metrics
 #   $inds a ref to hash of indicators for metrics
-# sub populate_qm($$$$$) {
-#     my $qm = shift;
-#     my $l_attrs = shift;
-#     my $l_questions = shift;
-#     my $l_metrics = shift;
-#     my $l_inds = shift;
-    
-#     foreach my $child (@{$qm}) {
-# 	my $mnemo = $child->{"mnemo"};
-	
-# 	if ($child->{"type"} =~ m!attribute!) {
-# 	    $child->{"name"} = $attributes{$mnemo}{"name"};
-# 	    $child->{"ind"} = $l_attrs->{$mnemo};
-# 	} elsif ($child->{"type"} =~ m!concept!) {
-# 	    $child->{"name"} = $questions{$mnemo}{"name"};
-# 	    $child->{"ind"} = $l_questions->{$mnemo};
-# 	} elsif ($child->{"type"} =~ m!metric!) {
-# 	    $child->{"name"} = $metrics{$mnemo}{"name"};
-# 	    $child->{"value"} = $l_metrics->{$mnemo};
-# 	    $child->{"ind"} = $l_inds->{$mnemo};
-# 	} else { print "WARN: cannot recognize type " . $child->{"type"} . "\n"; }
+sub populate_qm($$$$$) {
+    my $self = shift;
+    my $qm = shift;
+    my $l_attrs = shift;
+    my $l_questions = shift;
+    my $l_metrics = shift;
+    my $l_inds = shift;
 
-# 	if ( exists($child->{"children"}) ) {
-# 	    &populate_qm($child->{"children"}, $attrs, $questions, $metrics, $inds);
-# 	}
-#     }
-# }
+    return &_populate_qm($qm, $l_attrs, $l_questions, $l_metrics, $l_inds);
+}
+
+
+# Recursive function to populate the quality model with information from 
+# external files (metrics/questions/attributes definition). 
+#
+# This function is for internal use only (no self passed as 1st argument).
+#
+# Params:
+#   $qm a ref to an array of children
+#   $attrs a ref to hash of values for attributes
+#   $questions a ref to hash of values for questions
+#   $metrics a ref to hash of values for metrics
+#   $inds a ref to hash of indicators for metrics
+sub _populate_qm($$$$$) {
+    my $qm = shift;
+    my $l_attrs = shift;
+    my $l_questions = shift;
+    my $l_metrics = shift;
+    my $l_inds = shift;
+    
+    foreach my $child (@{$qm}) {
+	my $mnemo = $child->{"mnemo"};
+	
+	if ($child->{"type"} =~ m!attribute!) {
+	    $child->{"name"} = $attributes{$mnemo}{"name"};
+	    $child->{"ind"} = $l_attrs->{$mnemo};
+	} elsif ($child->{"type"} =~ m!concept!) {
+	    $child->{"name"} = $questions{$mnemo}{"name"};
+	    $child->{"ind"} = $l_questions->{$mnemo};
+	} elsif ($child->{"type"} =~ m!metric!) {
+	    $child->{"name"} = $metrics{$mnemo}{"name"};
+            $child->{"value"} = eval sprintf("%.1f", $l_metrics->{$mnemo} || 0);
+	    $child->{"ind"} = $l_inds->{$mnemo};
+	} else { print "WARN: cannot recognize type " . $child->{"type"} . "\n"; }
+
+	if ( exists($child->{"children"}) ) {
+	    &_populate_qm($child->{"children"}, $l_attrs, $l_questions, $l_metrics, $l_inds);
+	}
+    }
+}
 
 sub get_model() {
     return \%model;
