@@ -188,17 +188,9 @@
         ]
       },
       {
-        "name": "Developer ML activity",
-        "mnemo": "MLS_DEV_ACTIVITY",
-        "question": "How active is the developer mailing list?",
-        "desc": [
-            "Activity on the developer mailing list."
-        ]
-      },
-      {
-        "name": "User ML activity",
-        "mnemo": "MLS_USR_ACTIVITY",
-        "question": "How active is the user mailing list?",
+        "name": "ML activity",
+        "mnemo": "MLS_ACTIVITY",
+        "question": "How active is the mailing list?",
         "desc": [
             "Activity on the user mailing list."
         ]
@@ -212,17 +204,9 @@
         ]
       },
       {
-        "name": "Developer ML diversity",
-        "mnemo": "MLS_DEV_DIVERSITY",
-        "question": "How many users have contributed to the developer mailing list?",
-        "desc": [
-            "Diversity of users on the developer mailing list."
-        ]
-      },
-      {
-        "name": "User ML diversity",
-        "mnemo": "MLS_USR_DIVERSITY",
-        "question": "How many users have contributed to the user mailing list?",
+        "name": "ML diversity",
+        "mnemo": "MLS_DIVERSITY",
+        "question": "How many users have contributed to the mailing list?",
         "desc": [
             "Diversity of users on the user mailing list."
         ]
@@ -236,42 +220,11 @@
         ]
       },
       {
-        "name": "Developer ML responsiveness",
-        "mnemo": "MLS_DEV_RESPONSIVENESS",
-        "question": "How long have questions on the developer mailing list to wait before being answered?",
+        "name": "ML support",
+        "mnemo": "MLS_SUPPORT",
+        "question": "What amount of resources can be gathered from the mailing list?",
         "desc": [
-            "The delay of answers on the developer mailing list."
-        ]
-      },
-      {
-        "name": "User ML responsiveness",
-        "mnemo": "MLS_USR_RESPONSIVENESS",
-        "question": "How long have questions on the user mailing list to wait before being answered?",
-        "desc": [
-            "The delay of answers on the developer mailing list."
-        ]
-      },
-      {
-        "name": "Developer ML support",
-        "mnemo": "MLS_DEV_SUPPORT",
-        "question": "What amount of resources can be gathered from the developer mailing list?",
-        "desc": [
-            "The quantity of information gathered by questions on the developer mailing list."
-        ]
-      },
-      {
-        "name": "User ML support",
-        "mnemo": "MLS_USR_SUPPORT",
-        "question": "What amount of resources can be gathered from the user mailing list?",
-        "desc": [
-            "The quantity of information gathered by questions on the user mailing list."
-        ]
-      },
-      {
-        "name": "Plan on time",
-        "mnemo": "PLAN_ON_TIME",
-        "desc": [
-            "Is the project on time according to its schedule?"
+            "The quantity of information gathered by questions on the mailing list."
         ]
       },
       {
