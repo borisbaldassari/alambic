@@ -45,12 +45,12 @@ var myconcepts = {};
 var myvalues = new Object();
 
 // Load file for attributes.
-d3.json("/data/model_attributes.json", function(error, attributes) {
+d3.json("/data/model_attributes.json", function(error, attrs) {
   if (error) return console.warn(error);
 
-  for(i=0;i<attributes.children.length;i++) {
-    attr_mnemo = attributes.children[i]['mnemo'];
-    myattrs[attr_mnemo] = attributes.children[i];
+  for (var i in attrs.children) {
+    if (!attrs.children.hasOwnProperty(i)) { continue; }
+    myattrs[i] = attrs.children[i];
   }
 });
 
@@ -58,9 +58,9 @@ d3.json("/data/model_attributes.json", function(error, attributes) {
 d3.json("/data/model_questions.json", function(error, concepts) {
   if (error) return console.warn(error);
   
-  for(i=0;i<concepts.children.length;i++) {
-    concept_name = concepts.children[i].mnemo;
-    myconcepts[concept_name] = concepts.children[i];
+  for (var i in concepts.children) {
+    if (!concepts.children.hasOwnProperty(i)) { continue; }
+    myconcepts[i] = concepts.children[i];
   }
 });
 
@@ -68,9 +68,9 @@ d3.json("/data/model_questions.json", function(error, concepts) {
 d3.json("/data/model_metrics.json", function(error, metrics) {
   if (error) return console.warn(error);
   
-  for(i=0;i<metrics.children.length;i++) {
-    metric_name = metrics.children[i].mnemo;
-    mymetrics[metric_name] = metrics.children[i];
+  for (var i in metrics.children) {
+    if (!metrics.children.hasOwnProperty(i)) { continue; }
+    mymetrics[i] = metrics.children[i];
   }
 });
 
