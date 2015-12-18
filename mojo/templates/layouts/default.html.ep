@@ -66,7 +66,7 @@
                   <li><a href="/documentation/attributes.html">Attributes</a></li>
                   <li><a href="/documentation/questions.html">Questions</a></li>
                   <li><a href="/documentation/metrics.html">Metrics</a></li>
-                  <li><a href="/documentation/scales.html">Scales</a></li>
+                  <!-- li><a href="/documentation/scales.html">Scales</a></li -->
                   <li><a href="/documentation/rules.html">Practices</a></li>
                   <li><a href="/documentation/references.html">References</a></li>
               </ul></li>
