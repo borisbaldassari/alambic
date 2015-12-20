@@ -172,7 +172,6 @@ sub compute_data($) {
     my $metrics_new;
 
     my $file_in = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_mls.json";
-    my $json;
     do { 
         local $/;
         open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";

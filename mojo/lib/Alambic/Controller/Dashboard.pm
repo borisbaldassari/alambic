@@ -115,6 +115,18 @@ sub display {
         # Render template "alambic/dashboard/errors.html.ep"
         $self->render(template => 'alambic/dashboard/customdata');
         
+    } elsif ($page_id =~ m!^plugins_(.+)$!) {
+
+        my $plugin_id = $1;
+        # Prepare data for template.
+        $self->stash(
+            project_id => $project_id,
+            plugin_id => $plugin_id,
+            );
+        
+        # Render template for plugins
+        $self->render(template => 'alambic/dashboard/plugins');
+        
     } else {
         
         my %cds;
@@ -128,10 +140,11 @@ sub display {
             project_id => $project_id,
             project_attrs => $self->app->projects->get_project_attrs($project_id),
             project_attrs_conf => $self->app->projects->get_project_attrs_conf($project_id),
+            project_attrs_last => $self->app->projects->get_project_attrs_last($project_id),
+            project_metrics => $self->app->projects->get_project_metrics($project_id),
             project_pmi => $self->app->projects->get_project_pmi($project_id),
             project_comments => $self->app->projects->get_project_comments($project_id),
             project_cdata => \%cds,
-            project_attrs_last => $self->app->projects->get_project_attrs_last($project_id),
             );    
         
         # Render template "alambic/dashboard.html.ep"

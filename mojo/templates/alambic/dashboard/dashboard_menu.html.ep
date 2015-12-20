@@ -9,6 +9,14 @@
                 <li role="presentation"<%== ( $current =~ m!^/projects/practices$! ) ? ' class="active"' : '' %>><a href="<%= $project_id %>_practices.html">Practices</a></li>
                 <li role="presentation"<%== ( $current =~ m!^/projects/cdata! ) ? ' class="active"' : '' %>><a href="<%= $project_id %>_cdata.html">Manual data</a></li>
                 <li role="presentation" class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Plugins <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+% foreach my $plugin ( keys %{app->projects->get_project_viz($project_id)} ) {
+                    <li role="presentation"><a href="/projects/<%= $project_id %>_plugins_<%= $plugin %>.html"><%= $plugin %></a></li>
+% }
+                  </ul>
+                </li>
+                <li role="presentation" class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Download <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
                     <li role="presentation"><a href="/data/<%= $project_id %>_attributes.json">Attributes JSON</a></li>

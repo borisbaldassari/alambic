@@ -18,6 +18,7 @@ our @EXPORT_OK = qw( read_all_files
                      list_active_projects
                      get_all_projects
                      get_project_info
+                     get_project_viz
                      get_project_name_by_id
                      get_project_metrics
                      get_project_metrics_last
@@ -288,6 +289,21 @@ sub get_project_info($) {
     my $project_id = shift;
 
     return $projects_info{$project_id};
+}
+
+sub get_project_viz($$) {
+    my $self = shift;
+    my $project_id = shift;
+
+    my %viz;
+    my $plugins = $projects_info{$project_id}{'ds'};
+    my $viz_avail = $self->{app}->al_plugins->get_list_viz();
+    foreach my $plugin (keys %{$plugins}) {
+        if ( grep( /${plugin}/, @{$viz_avail}) ) {
+            $viz{$plugin}++;
+        }
+    }
+    return \%viz;
 }
 
 sub get_project_errors($) {

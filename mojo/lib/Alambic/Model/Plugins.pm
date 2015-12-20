@@ -88,13 +88,23 @@ sub get_list_cds() {
 }
 
 sub get_list_metrics() {
-    my @list = map { return $plugins{$_}{'id'} if grep('metrics', $plugins{$_}{'ability'}) } keys %plugins;
+    my @list = map { $plugins{$_}{'id'} if grep('metrics', $plugins{$_}{'ability'}) } keys %plugins;
     return \@list;
 }
 
-sub get_list_viz() {
-    my @list = map { return $plugins{$_}{'id'} if grep('viz', $plugins{$_}{'ability'}) } keys %plugins;
-    return \@list;
+sub get_list_viz() {    
+
+    my @viz;
+    foreach my $plugin (keys %plugins) {
+        if ( grep( /^viz$/, @{$plugins{$plugin}->get_conf()->{'ability'}} ) ) {
+            push( @viz, $plugin );
+        }
+    }
+#    my @list = grep { 
+#        'viz' ~~ @{$plugins{$_}->get_conf()->{'ability'}}
+#    } keys %plugins;
+
+    return \@viz;
 }
 
 sub get_plugin($) {

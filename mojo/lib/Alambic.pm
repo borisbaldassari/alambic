@@ -132,6 +132,9 @@ sub startup {
     
     # Dashboards
     $r->get('/projects/#id')->to('dashboard#display');
+    # Figures
+    $r->get('/projects/figures/#plugin/#project/#fig')->to('figures#plugins');
+    
     
     # Login form
     $r->get('/login')->to('alambic#login');
