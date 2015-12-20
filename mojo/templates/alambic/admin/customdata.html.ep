@@ -1,5 +1,5 @@
 
-            <h2>Administration: Custom data types</h2>
+            <h1 class="text-right" style="color: orange;"><small>Administration</small> Custom data types</h1>
             <br />
             
 %= include 'alambic/admin/admin_menu', current => '/admin/cdata'

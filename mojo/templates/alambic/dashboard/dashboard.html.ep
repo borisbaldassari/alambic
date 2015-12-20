@@ -117,10 +117,15 @@
             </div>
             <div class="row">
               <div class="col-sm-4">
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Stack Overflow</div>
-                  <div class="panel-body">
-                    <img src="figures/stack_overflow/<%= $project_id %>/blob-so-plot-1.svg" class="img-responsive" alt="No data."/>
-                  </div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Configuration management</div>
+                  <ul class="list-group">
+                    <li class="list-group-item"><b>Overall:</b> <br />
+                      <b><%= $project_metrics->{'SCM_COMMITS'} %></b> commits made by <b><%= $project_metrics->{'ITS_AUTHORS'} %></b> authors and <b><%= $project_metrics->{'ITS_COMMITTERS'} %></b> committers, representing <%= $project_metrics->{'SCM_FILES'} %></b> files.</li>
+                    <li class="list-group-item"><b>Last month:</b> <br />
+                      <%= $project_metrics->{'SCM_COMMITS_30'} %> commits by <%= $project_metrics->{'SCM_AUTHORS_30'} %> authors.</li>
+                    <li class="list-group-item"><b>Last year:</b> <br />
+                      <%= $project_metrics->{'SCM_COMMITS_365'} %> commits by <%= $project_metrics->{'SCM_AUTHORS_365'} %> authors.</li>
+                  </ul>
                 </div>
               </div>
               <div class="col-sm-4">
@@ -137,11 +142,29 @@
                 </div>
               </div>
               <div class="col-sm-4">
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Configuration Management</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Mailing lists</div>
+                  <ul class="list-group">
+                    <li class="list-group-item"><b>Overall:</b> <br />
+                      <b><%= $project_metrics->{'MLS_SENT'} %></b> messages sent by <b><%= $project_metrics->{'MLS_SENDERS'} %></b> authors in <b><%= $project_metrics->{'MLS_THREADS'} %></b> threads.</li>
+                    <li class="list-group-item"><b>Last month:</b> <br />
+                      <%= $project_metrics->{'MLS_SENT_30'} %> messages sent by <%= $project_metrics->{'MLS_SENDERS_30'} %> authors.</li>
+                    <li class="list-group-item"><b>Last year:</b> <br />
+                      <%= $project_metrics->{'MLS_SENT_365'} %> messages sent by <%= $project_metrics->{'MLS_SENDERS_365'} %> authors.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Stack Overflow</div>
                   <div class="panel-body">
-                    
+                    <img src="figures/stack_overflow/<%= $project_id %>/blob-so-plot-1.svg" class="img-responsive" alt="No data."/>
                   </div>
                 </div>
+              </div>
+              <div class="col-sm-4">
+              </div>
+              <div class="col-sm-4">
               </div>
             </div>
             

@@ -1,5 +1,5 @@
 
-            <h2>Administration: Alambic repository</h2>
+            <h1 class="text-right" style="color: orange;"><small>Administration</small> Alambic Repository</h1>
             <br />
 
 % my $msg = flash( 'msg' );

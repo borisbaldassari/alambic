@@ -2,7 +2,7 @@
 % my $project = stash( 'project_id' );
 % my $projects = stash( 'projects' );
 
-            <h2>Administration: Project <%= $project %></h2>
+            <h1 class="text-right" style="color: orange;"><small>Administration</small> Project <%= $project %></h1>
             <br />
 
 % my $msg = flash( 'msg' );

@@ -1,5 +1,5 @@
 
-            <h2>Install</h2>
+            <h1 class="text-right" style="color: orange;">Install Alambic</h1>
             <br />
 
 % my $msg = flash( 'msg' );

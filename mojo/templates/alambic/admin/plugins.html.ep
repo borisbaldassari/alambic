@@ -1,5 +1,5 @@
 
-            <h2>Administration: Plugins</h2>
+            <h1 class="text-right" style="color: orange;"><small>Administration</small> Plugins</h1>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/plugins'

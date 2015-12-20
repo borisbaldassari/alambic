@@ -1,5 +1,7 @@
 
-            <h2>Definition of Metrics</h2>
+            <h1 class="text-right" style="color: orange;"><small>Documentation</small> Metrics</h1>
+            <br />
+
             <p>All metrics used in the maturity assessment process are described thereafter, with useful information and references. They are classified according to their source. </p><br />
 
 % my $vol = scalar keys %{$metrics};

@@ -1,5 +1,5 @@
 
-            <h2>Administration: Users</h2>
+            <h1 class="text-right" style="color: orange;"><small>Administration</small> Users</h1>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/users'

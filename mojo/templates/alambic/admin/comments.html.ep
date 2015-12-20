@@ -1,7 +1,7 @@
 
-            <h2>Administration: Comments</h2>
+            <h1 class="text-right" style="color: orange;"><small>Administration</small> Comments</h1>
             <br />
-            
+
 %= include 'alambic/admin/admin_menu', current => '/admin/comments'
 
             <p>These pages allow teams to add custom comments to the projects, in order for users to better understand how the project is organised. Please note that you must be <a href="/comments/login">logged in</a> to write comments.</p>

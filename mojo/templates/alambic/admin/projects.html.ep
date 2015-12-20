@@ -1,5 +1,6 @@
 
-            <h2>Administration: Projects</h2>
+
+            <h1 class="text-right" style="color: orange;"><small>Administration</small> Projects</h1>
             <br />
 
 % my $msg = flash( 'msg' );

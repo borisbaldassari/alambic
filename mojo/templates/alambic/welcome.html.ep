@@ -1,5 +1,5 @@
 
-            <h1 class="pull-right"><small>Welcome to the</small> AlambicDashboard</h1>
+            <h1 class="pull-right"><small>Welcome to the</small> Alambic Dashboard</h1>
 
             <div class="row">
               <div class="col-lg-6">
@@ -10,8 +10,9 @@
                 <br />
                 <br />
                 <p>This is the demonstration page of the <a href="http://castalia.camp/alambic">Alambic engine</a>, an open-source project for software development data analysis.</p>
-                <p>The complete process is fully documented, from <a href="/documentation/attributes.html">quality attributes</a> to the <a href="/documentation/metrics.html">metrics</a> retrieved. Data sources include mailing lists, configuration management, issue tracking system, source code, and more. See the full list of data sources in the plugins section.</p>
-                <p>This instance is proudly hosted by <a href="http://castalia.solutions">Castalia Solutions</a>.</p>
+                <p>Basically Alambic uses plugins to <a href="/documentation/plugins.html">retrieve data from various tools and repositories</a> of the software development process, applies these values to a <a href="/documentation/quality_model.html">quality model</a> and generates a variety of graphs, numbers, and reports. Alambic also provides a <a href="/about.html#data">unified API</a> to retrieve this data.</p>
+                <p>The complete process is fully documented, from <a href="/documentation/attributes.html">quality attributes</a> to the <a href="/documentation/metrics.html">metrics</a> retrieved. Data sources include mailing lists, configuration management, issue tracking system, source code, and more. See the full list of data sources in the <a href="/documentations/plugins.html">Data sources section</a> of the documentation.</p>
+                <p>This instance of Alambic is proudly hosted by <a href="http://castalia.solutions">Castalia Solutions</a>.</p>
               </div>
             </div>
 
@@ -35,8 +36,9 @@
                 <div class="panel panel-default">
                   <div class="panel-heading"><i class="fa fa-wrench fa-fw"></i> &nbsp; Administration tools</div>
                   <div class="list-group">
-                    <a href="analyse_metrics.html" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; List of available metrics per project</a>
-                    <a href="comments/" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Comments administration panel</a>
+                    <a href="admin/summary" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Main administration panel</a>
+                    <a href="admin/projects" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Projects management</a>
+                    <a href="comments/" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Comments</a>
                   </div>
                 </div>
               </div>
