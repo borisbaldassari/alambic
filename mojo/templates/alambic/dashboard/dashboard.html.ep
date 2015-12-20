@@ -43,7 +43,7 @@
     
             <div class="row">
               <div class="col-sm-4">
-                <div class="panel panel-primary"><div class="panel-heading">Rating for main quality attributes</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Rating for main quality attributes</div>
                   <div class="panel-body">
                     <dl>
                       <dt>Completeness of metrics</dt>
@@ -106,42 +106,40 @@
 % }
                   </ul>
                 </div>
+                <div class="panel panel-primary"><div class="panel-heading">Visualisation plugins</div>
+                  <ul class="list-group">
+% foreach my $plugin ( keys %{app->projects->get_project_viz($project_id)} ) {
+                    <li class="list-group-item"><a href="/projects/<%= $project_id %>_plugins_<%= $plugin %>.html"><%= $plugin %></a></li>
+% }
+                  </ul>
+                </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-4">
-                <div class="panel panel-primary"><div class="panel-heading">Ecosystem</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Stack Overflow</div>
                   <div class="panel-body">
-                    <dl>
-                      <%= $attribute->('QM_ACTIVITY') %>
-                      <%= $attribute->('QM_DIVERSITY') %>
-                      <%= $attribute->('QM_RESPONSIVENESS') %>
-                      <%= $attribute->('QM_SUPPORT') %>
-                    </dl>
+                    <img src="figures/stack_overflow/<%= $project_id %>/blob-so-plot-1.svg" class="img-responsive" alt="No data."/>
                   </div>
                 </div>
               </div>
               <div class="col-sm-4">
-                <div class="panel panel-primary"><div class="panel-heading">Process</div>
-                  <div class="panel-body">
-                    <dl>
-                      <%= $attribute->('QM_SCM') %>
-                      <%= $attribute->('QM_ITS') %>
-                      <%= $attribute->('QM_PLAN') %>
-                      <%= $attribute->('QM_TST') %>
-                    </dl>
-                  </div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Issue Tracking System</div>
+                  <ul class="list-group">
+                    <li class="list-group-item"><b>Overall:</b> <br />
+                      <b><%= $project_metrics->{'ITS_OPENED'} %></b> issues opened by <b><%= $project_metrics->{'ITS_OPENERS'} %></b> people<br />
+                      <b><%= $project_metrics->{'ITS_CLOSED'} %></b> issues closed by<b> <%= $project_metrics->{'ITS_CLOSERS'} %></b> people.</li>
+                    <li class="list-group-item"><b>Last month:</b> <br />
+                      <%= $project_metrics->{'ITS_PERCENTAGE_CLOSED_30'} %> % issues were closed by <%= $project_metrics->{'ITS_CLOSERS_30'} %> people.</li>
+                    <li class="list-group-item"><b>Last year:</b> <br />
+                      <%= $project_metrics->{'ITS_PERCENTAGE_CLOSED_365'} %> % issues were closed by <%= $project_metrics->{'ITS_CLOSERS_365'} %> people.</li>
+                  </ul>
                 </div>
               </div>
               <div class="col-sm-4">
-                <div class="panel panel-primary"><div class="panel-heading">Product</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Configuration Management</div>
                   <div class="panel-body">
-                    <dl>
-                      <%= $attribute->('QM_ANA') %>
-                      <%= $attribute->('QM_CHA') %>
-                      <%= $attribute->('QM_REL') %>
-                      <%= $attribute->('QM_REU') %>
-                    </dl>
+                    
                   </div>
                 </div>
               </div>
