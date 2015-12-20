@@ -4,6 +4,8 @@ library(knitr)
 require('ggplot2')
 require(xtable)
 
+project.id <- 'technology.scout'; plugin.id <- 'stack_overflow'; file.csv <- 'technology.scout_so.csv'; project.tag <- 'eclipse-scout'; date.now <- '2015-12-20T11:16:47'; date.before <- '2010-12-20T11:16:47'
+
 opts_chunk$set(fig.width=5, fig.height=5, echo=F, warning=F, message=F,
                fig.path = paste( 'figures/', plugin.id, '/', project.id, '/', sep=""))
 opts_knit$set(progress = TRUE, self.contained=T)
@@ -46,12 +48,12 @@ end.rcode-->
 
 <h2>StackOverflow Questions</h2>
 
-    <p>This section shows information about SO posts concerning the tag <!--rinline project.id --> during the last 5 years (i.e. from <code><!-- rinline date.before --></code>). </p>
+    <p>This section shows information about SO posts concerning the tag <!--rinline project.tag --> during the last 5 years (i.e. from <code><!-- rinline date.before --></code>). </p>
 
     <h3>Quick Summary</h3>
 
     <ul>
-      <li>There is a total of <!--rinline nrow(project) --> questions and <!--rinline vol.posts --> posts related to <!--rinline project.id -->.</li>
+      <li>There is a total of <!--rinline nrow(project) --> questions and <!--rinline vol.posts --> posts related to <!--rinline project.tag -->.</li>
       <li>Posts analysed span from <!--rinline question.first --> to <!--rinline question.last -->.</li>
       <li>Last activity registered was on <!--rinline question.last.update -->.</li>
       <li><!--rinline vol.questions.answered --> of them (<!--rinline paste(answer.rate, '%', sep="") -->) have an accepted answered.</li>
@@ -111,7 +113,7 @@ questions.recent.table <- questions.recent[,c("link", "c.date", "score", "views"
 names(questions.recent.table) <- c("Question", "Created on", "Score", "Views")
 
 print(
-    xtable(questions.recent.table,
+    xtable(as.table(questions.recent.table),
         caption = paste('Recent questions without any answer on SO for tag', project.id, sep=" "),
         digits=0), type="html",
     html.table.attributes='class="table table-striped"',

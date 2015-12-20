@@ -130,6 +130,8 @@ sub compute_data() {
     my $date_now = DateTime->now( time_zone => 'local' );
     my $date_before = DateTime->now( time_zone => 'local' )->subtract( years => 5 );
     my $date_before_ok = $date_before->strftime("%Y-%m-%d");
+    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{'stack_overflow'};
+    my $project_tag = $project_conf->{'so_keyword'};
 
     my $content_json;
     open( my $fh, '<', $file_json) or die "Could not open $file_json.\n";
@@ -152,7 +154,7 @@ sub compute_data() {
         $csv_out .= "$id,$views,$score,$creation_date,$last_activity_date,$answer_count,$is_answered,$title\n";
     }
 
-    my $file_csv = "lib/Alambic/Plugins/StackOverflow/" . $project_id . "_so.csv";
+    my $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/StackOverflow/" . $project_id . "_so.csv";
         #$app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_so.csv";
     print "  * Writing to file [$file_csv].\n";
     open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
@@ -171,11 +173,12 @@ sub compute_data() {
     # to get r bin path.
     my $r_cmd = "Rscript -e \"library(knitr); " 
         . "project.id <- '${project_id}'; plugin.id <- 'stack_overflow'; file.csv <- '${project_id}_so.csv'; "
-        . "date.now <- '$date_now'; date.before <- '$date_before'; "
+        . "project.tag <- '${project_tag}'; date.now <- '$date_now'; date.before <- '$date_before'; "
         . "knit('${r_html}', output='${r_html_out}')\"";
 
     $app->log->info( "Exec [$r_cmd]." );
     my @out = `$r_cmd`;
+    print @out;
 
     # Now move files to data/project
     move( "${r_html_out}", $app->config->{'dir_input'} . "/" . $project_id . "/" );
@@ -185,10 +188,10 @@ sub compute_data() {
         my $ret = remove_tree($dir_out_fig, {verbose => 1});
     }
     my $ret = move('figures/stack_overflow/' . $project_id . '/', $dir_out_fig);
-    print "Moved files from $r_dir / figures to $dir_out_fig. ret $ret.\n";
+    print "Moved files from ${r_dir}/figures to $dir_out_fig. ret $ret.\n";
     
     # Remove csv file
-    unlink $file_csv;
+#    unlink $file_csv;
 
     return ["Done."];
 }
