@@ -1,0 +1,17 @@
+
+            <h2>Project <%= $project_id %></h2>
+            <br />
+
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/plugins', project_id => $project_id
+
+            <br />
+% my $file_in = app->home->rel_dir( 'data/' . $project_id . '/' . $project_id . '_' . $plugin_id . '.inc' );
+% my $content;
+% do { 
+%   local $/;
+%   open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
+%   $content = <$fh>;
+%   close $fh;
+% };
+            <%== $content %>
+
