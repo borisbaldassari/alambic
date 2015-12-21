@@ -4,18 +4,29 @@
               
             <h3>Issues, Pull requests, wiki</h3>
               
-            <p>The Alambic project is developed on BitBucket: <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a>. The forge offers many facilities:
-              <ul>
-                <li>An issue tracker: <a href="https://bitbucket.org/BorisBaldassari/alambic/issues">https://bitbucket.org/BorisBaldassari/alambic/issues</a>.</li>
-                <li>A wiki, for the developer and user documentation: <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/">https://bitbucket.org/BorisBaldassari/alambic/wiki/</a>.</li>
-                <li>the git repositories</li>
-              </ul>. </p>
-              
-            <p>The Alambic project home page is hosted by Castalia Solutions</p>
+            <div class="row">
+              <div class="col-md-12">
+                <!-- img src="/images/typewriter-01.png" class="img-responsive pull-right" style="width: 100px; margin-right: 80px;"/ -->
+                <p>The Alambic project is developed on BitBucket: <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a>. </p>
 
-            <h3>Contributors</h3>
-              
-            <p>You are welcome to contribute any use case, requirement, test, documentation, code or feedback! Since we invest quite some time in Alambic, we would definitely love to hear from you.</p>
+                <p>The forge offers many facilities:</p>
+                <ul>
+                  <li>An issue tracker: <a href="https://bitbucket.org/BorisBaldassari/alambic/issues">https://bitbucket.org/BorisBaldassari/alambic/issues</a>.</li>
+                  <li>A wiki, for the developer and user documentation: <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/">https://bitbucket.org/BorisBaldassari/alambic/wiki/</a>.</li>
+                  <li>the git repositories</li>
+                </ul>.
+                
+                <p>The Alambic project home page is hosted by Castalia Solutions</p>
+
+                <p>You are welcome to contribute any use case, requirement, test, documentation, code or feedback! Since we invest quite some time in Alambic, we would definitely love to hear from you.</p>
+
+              </div>
+            </div>
+
+            <h3>Contributors</h3>              
+
+            <p>These entities can be reached for more information.</p>
+
             <ul class="list-group">
               <li class="list-group-item"><strong>Boris Baldassari</strong> (Castalia Solutions)<br />
                   email: boris (dot) baldassari (by) gmail (dot) com.<br />
