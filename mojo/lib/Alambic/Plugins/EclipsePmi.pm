@@ -84,17 +84,20 @@ sub retrieve_data($) {
     my $self = shift;
     my $project_id = shift;
     
+    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
+    my $project_pmi = $project_conf->{'project_id'};
+    
     my @log;
 
     # Fetch json file from projects.eclipse.org
     my ($url, $content);
-    if ($project_id =~ m!^polarsys!) {
-        $url = $polarsys_url . $project_id;
-        push( @log, "Using PolarSys PMI infra at $url..." );
+    if ($project_pmi =~ m!^polarsys!) {
+        $url = $polarsys_url . $project_pmi;
+        push( @log, "Using PolarSys PMI infra at [$url]." );
         $content = get($url);
     } else {
-        $url = $eclipse_url . $project_id;
-        push( @log, "Using Eclipse PMI infra at $url." );
+        $url = $eclipse_url . $project_pmi;
+        push( @log, "Using Eclipse PMI infra at [$url]." );
         $content = get($url);
     }
     my $msg_failed = [ "ERROR: Could not get [$url]!" ];
