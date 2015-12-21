@@ -120,6 +120,9 @@ sub compute_data($) {
     my %pmi;
     my %metrics;
 
+    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
+    my $project_pmi = $project_conf->{'project_id'};
+    
     # Read data from pmi file in $data_input
     my $json; 
     my $file = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_pmi.json";
@@ -134,7 +137,7 @@ sub compute_data($) {
     # Decode the entire JSON
     my $raw_data = decode_json( $json );
 
-    my $raw_project = $raw_data->{"projects"}->{$project_id};
+    my $raw_project = $raw_data->{"projects"}->{$project_pmi};
     
     # Retrieve basic information about the project
     $pmi{"title"} = $raw_project->{"title"};
