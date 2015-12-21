@@ -62,7 +62,7 @@ sub retrieve_data($) {
     my $self = shift;
     my $project_id = shift;
     
-    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{'stack_overflow'};
+    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
     my $project_grim = $project_conf->{'project_id'};
     
     my @log;
