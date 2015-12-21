@@ -4,8 +4,6 @@ library(knitr)
 require('ggplot2')
 require(xtable)
 
-project.id <- 'technology.scout'; plugin.id <- 'stack_overflow'; file.csv <- 'technology.scout_so.csv'; project.tag <- 'eclipse-scout'; date.now <- '2015-12-20T11:16:47'; date.before <- '2010-12-20T11:16:47'
-
 opts_chunk$set(fig.width=5, fig.height=5, echo=F, warning=F, message=F,
                fig.path = paste( 'figures/', plugin.id, '/', project.id, '/', sep=""))
 opts_knit$set(progress = TRUE, self.contained=T)
