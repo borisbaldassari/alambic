@@ -68,9 +68,12 @@ sub retrieve_data($) {
     my $self = shift;
     my $project_id = shift;
     
+    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{'stack_overflow'};
+    my $project_grim = $project_conf->{'project_id'};
+    
     my @log;
     my $url = "http://dashboard.eclipse.org/data/json/" 
-        . $project_id 
+        . $project_grim 
         . "-its-prj-static.json";
     my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_its.json";
     push( @log, "Retrieving [$url] to [$file_out].\n" );
