@@ -22,7 +22,8 @@
                       </dd>
 <% end %>
 
-            <h2>Project <%= $project_id %></h2>
+
+            <h1 class="text-right" style="color: orange;"><small><%= $project_id %></small> Summary</h1>
             <br />
 
 %= include 'alambic/dashboard/dashboard_menu', current => '/projects/summary', project_id => "$project_id" 
