@@ -62,11 +62,11 @@
               <li class="active"><a href="/about.html"><i class="fa fa-bullseye fa-fw" style="color: orange;"></i> About</a></li>
               <li class="active"><a href="/documentation/"><i class="fa fa-life-ring fa-fw" style="color: orange;"></i> Documentation<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level active">
+                  <li><a href="/documentation/data.html">About Data</a></li>
                   <li><a href="/documentation/quality_model.html">Quality Model</a></li>
                   <li><a href="/documentation/attributes.html">Attributes</a></li>
                   <li><a href="/documentation/questions.html">Questions</a></li>
                   <li><a href="/documentation/metrics.html">Metrics</a></li>
-                  <li><a href="/documentation/plugins.html">Data sources</a></li>
                   <!-- li><a href="/documentation/scales.html">Scales</a></li -->
                   <li><a href="/documentation/rules.html">Practices</a></li>
                   <li><a href="/documentation/references.html">References</a></li>

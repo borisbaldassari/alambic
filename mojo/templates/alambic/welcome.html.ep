@@ -49,8 +49,10 @@
                   <div class="list-group">
 % my @projects = $self->app->projects->list_projects();
 % foreach my $project (sort @projects) {
+%     my $name = defined( app->projects->get_project_name_by_id($project) ) ? 
+%       app->projects->get_project_name_by_id($project) : $project;
                     <a href="projects/<%= $project %>.html" class="list-group-item">
-                      <i class="fa fa-file-o"></i>&nbsp; <%= $project %></a>
+                      <i class="fa fa-file-o"></i>&nbsp; <%= $name %></a>
 % }
                   </div>
                 </div>

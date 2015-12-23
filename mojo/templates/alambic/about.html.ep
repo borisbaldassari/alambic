@@ -2,6 +2,14 @@
             <h1 class="text-right" style="color: orange;"><small>About</small> This web site</h1>
             <br />
 
+            <h3>About this instance</h3>
+            
+            <p><b>Name</b> <br />
+              <%= app->al_config->get_name() %></p>
+            <p><b>Description</b> <br />
+              <%== app->al_config->get_desc() %></p>
+
+                <hr />
             <div class="row">
               <div class="col-lg-6">
 
@@ -19,28 +27,7 @@
                 <div class="text-center" ><img src="/images/alambic_presentation_data.jpg" class="img-responsive" style="width: 800px;" /></div>
               </div>
             </div>
-              
     
-            <hr />
-
-            <h3 id="data">A word about data</h3>
-            
-            <p>Alambic is very data-centric in its design. All the  information retrieved from the different data sources is made available through a set of cool simple rest api calls. </p>
-
-            <h4>Data sets</h4>
-            
-            <p>The quality model is defined on the disk in the file <code><%= app->config->{'dir_models'} %>/quality_model.json</code>. It can be downloaded from the server at <a href="/data/quality_model_full.json">&lt;server:port&gt;/data/quality_model_full.json</a>.</p>
-
-            <p>The attributes are defined on the disk in the file <code><%= app->config->{'dir_models'} %>/model_attributes.json</code>. It can be downloaded from the server at <a href="/data/model_attributes.json">&lt;server:port&gt;/data/model_attributes.json</a>.</p>
-
-            <p>The metrics are defined on the disk in the file <code><%= app->config->{'dir_models'} %>/model_metrics.json</code>. It can be downloaded from the server at <a href="/data/model_metrics.json">&lt;server:port&gt;/data/model_metrics.json</a>.</p>
-
-            <p>For each project, a set of json files is made available:</p>
-
-            <h4>Pictures</h4>
-
-            <p>Visualisation plugins may produce images (e.g. for plots). These can be used in any external web site simply by retieving the graphic url. For each project and plugin the set of images generated is available through a unified interface: <code>http://&lt;host:port&gt;/projects/&lt;project_id&gt;_&lt;plugin_in&gt;/image.svg</code> These url should not change as long as the project still uses the associated plugin, and the image will be regenerated at every analysis and will be always up-ot-date.</p>
-
             <hr />
 
             <h3 id="contributing">Contributing</h3>
@@ -75,7 +62,7 @@
 
             <p>The analysis process is self-documented; most of the information available is directly integrated into this very web site: check the <a href="/documentation">documentation</a> page first</p>
 
-            <p>A lot of information is available in the <a href="https://polarsys.org/wiki/Maturity_Assessment_WG">PolarSys wiki</a>, since the project's origins started there. From the beginning the PolarSys dashboard has been driven by the PolarSys members: the definition of the quality model, attributes, metrics has been discussed on the public mailing list, and the full retrieval and analysis process has received a common agreement on the mailing list. The project has also been presented a few times:
+            <p>A lot of information is also available in the <a href="https://polarsys.org/wiki/Maturity_Assessment_WG">PolarSys wiki</a>, since the project started there. From the beginning the PolarSys dashboard has been driven by the PolarSys members: the definition of the quality model, attributes, metrics has been discussed on the public mailing list, and the full retrieval and analysis process has received a common agreement on the mailing list. The project has also been presented a few times:
               <ul>
                 <li>EclipseCon Europe 2014: <a href="https://www.eclipsecon.org/europe2014/session/assessing-project-quality-improvement-polarsys-maturity-assessment-initiative">https://www.eclipsecon.org/europe2014/session/assessing-project-quality-improvement-polarsys-maturity-assessment-initiative</a></li>
                 <li>EclipseCon Europe 2014 Unconference: <a href="https://polarsys.org/wiki/EclipseConEurope2014">https://polarsys.org/wiki/EclipseConEurope2014</a></li>

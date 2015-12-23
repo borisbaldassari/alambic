@@ -1,39 +1,81 @@
 
             <h1 class="text-right" style="color: orange;">Contact us</h1>
             <br />
-              
-            <h3>Issues, Pull requests, wiki</h3>
-              
+      
             <div class="row">
-              <div class="col-md-12">
-                <!-- img src="/images/typewriter-01.png" class="img-responsive pull-right" style="width: 100px; margin-right: 80px;"/ -->
-                <p>The Alambic project is developed on BitBucket: <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a>. </p>
+              <div class="col-sm-6">
 
-                <p>The forge offers many facilities:</p>
-                <ul>
-                  <li>An issue tracker: <a href="https://bitbucket.org/BorisBaldassari/alambic/issues">https://bitbucket.org/BorisBaldassari/alambic/issues</a>.</li>
-                  <li>A wiki, for the developer and user documentation: <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/">https://bitbucket.org/BorisBaldassari/alambic/wiki/</a>.</li>
-                  <li>the git repositories</li>
-                </ul>.
+                <h3>Contact the Alambic team</h3>
                 
-                <p>The Alambic project home page is hosted by Castalia Solutions</p>
+                <p>The Alambic project is hosted on BitBucket at <a href="https://bitbucket.org/BorisBaldassari/polarsys">https://bitbucket.org/BorisBaldassari/polarsys</a>. One can find there the issue tracker, a wiki and the git repositories. </p>
 
                 <p>You are welcome to contribute any use case, requirement, test, documentation, code or feedback! Since we invest quite some time in Alambic, we would definitely love to hear from you.</p>
 
+                <h3>Meet us</h3>
+                
+                <p>We are present at major Eclipse events like EclipseCon France and EclipseCon Europe. We also regularly give talks about the <a href="https://polarsys.org/wiki/Maturity_Assessment_WG">PolarSys maturity assessment task force</a>, which uses the very same framework.</p>
+
+                <h3>Contributors</h3>              
+
+                <p>These contributors would be happy to provide more information. If you need hosting, customisation, or professional services please use this list to find a consultant.</p>
+                
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <strong><a href="http://castalia.solutions">Castalia Solutions</a></strong> (Boris Baldassari)<br />
+                    <span class="fa fa-envelope fa-fw"></span> &nbsp; boris (dot) baldassari (by) castalia (dot) solutions<br />
+                    <span class="fa fa-skype fa-fw"></span> &nbsp; boris (dot) baldassari</li>
+                  <li class="list-group-item">
+                    <strong><a href="http://ablogix.fr">ABlogiX</a></strong> (Arnaud Bourlier)<br />
+                    <span class="fa fa-envelope fa-fw"></span> &nbsp; arnaud (dot) bourlier (by) ablogix (dot) fr<br />
+                </ul>
+                
+              </div>
+              <div class="col-sm-6">
+                
+                <div class="panel panel-default" style="border-color: #3E3F3A">
+                  <div class="panel-heading" style="color: white; background-color: #3E3F3A"><strong>Send message</strong></div>
+                  <div class="panel-body">
+                    
+                    <form class="contact">
+                      <fieldset>
+	                <label class="control-label">Name</label>
+	                <div class="controls">
+		          <div class="input-group">
+		            <span class="input-group-addon" style="border-color: #3E3F3A"><i class="fa fa-user"></i></span>
+		            <input type="text" class="input-xlarge form-control" style="border-color: #3E3F3A" name="name" placeholder="Name">
+		          </div>
+	                </div>
+	                <br />
+                        
+	                <label class="control-label">Email</label>
+	                
+	                <div class="controls">
+		          <div class="input-group">
+		            <span class="input-group-addon" style="border-color: #3E3F3A"><i class="fa fa-envelope"></i></span>
+		            <input type="text" class="form-control" style="border-color: #3E3F3A" id="email" name="email" placeholder="Email">
+		          </div>
+	                </div>
+	                <br />
+                        
+	                <label class="control-label">Message</label>
+	                
+	                <div class="controls">
+		          <div class="input-group">
+		            <span class="input-group-addon" style="border-color: #3E3F3A"><i class="fa fa-pencil"></i></span>
+		            <textarea name="message" class="form-control" style="border-color: #3E3F3A" rows="10" cols="78" placeholder="Enter your message here"></textarea>
+		          </div>
+	                </div>
+                        
+                      </fieldset>
+                    </form>
+                    
+                    <br />
+                    
+                    <button class="btn btn-success pull-right" style="background-color: #5884b3" id="submit">submit</button>
+                    
+                    
+                  </div>
+                </div>
               </div>
             </div>
 
-            <h3>Contributors</h3>              
-
-            <p>These entities can be reached for more information.</p>
-
-            <ul class="list-group">
-              <li class="list-group-item"><strong>Boris Baldassari</strong> (Castalia Solutions)<br />
-                  email: boris (dot) baldassari (by) gmail (dot) com.<br />
-                  <span class="fa fa-skype"></span> &nbsp; boris (dot) baldassari</li>
-            </ul>
-              
-              
-            <h3>Meet us</h3>
-              
-            <p>We are present at major Eclipse events: we talked about the maturity assessment task force in EclipseCon France 2013 and 2014, and EclipseCon Europe 2014.</p>
