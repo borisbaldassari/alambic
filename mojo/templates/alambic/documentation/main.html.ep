@@ -1,0 +1,24 @@
+
+
+
+
+            <h3 id="data">A word about data</h3>
+            
+            <p>Alambic is very data-centric in its design. All the  information retrieved from the different data sources is made available through a set of cool simple rest api calls. </p>
+
+            <h4>Data sets</h4>
+            
+            <p>The quality model is defined on the disk in the file <code><%= app->config->{'dir_models'} %>/quality_model.json</code>. It can be downloaded from the server at <a href="/data/quality_model_full.json">&lt;server:port&gt;/data/quality_model_full.json</a>.</p>
+
+            <p>The attributes are defined on the disk in the file <code><%= app->config->{'dir_models'} %>/model_attributes.json</code>. It can be downloaded from the server at <a href="/data/model_attributes.json">&lt;server:port&gt;/data/model_attributes.json</a>.</p>
+
+            <p>The metrics are defined on the disk in the file <code><%= app->config->{'dir_models'} %>/model_metrics.json</code>. It can be downloaded from the server at <a href="/data/model_metrics.json">&lt;server:port&gt;/data/model_metrics.json</a>.</p>
+
+            <p>For each project, a set of json files is made available:</p>
+
+            <h4>Pictures</h4>
+
+            <p>Visualisation plugins may produce images (e.g. for plots). These can be used in any external web site simply by retieving the graphic url. For each project and plugin the set of images generated is available through a unified interface: <code>http://&lt;host:port&gt;/projects/&lt;project_id&gt;_&lt;plugin_in&gt;/image.svg</code> These url should not change as long as the project still uses the associated plugin, and the image will be regenerated at every analysis and will be always up-ot-date.</p>
+
+            <hr />
+
