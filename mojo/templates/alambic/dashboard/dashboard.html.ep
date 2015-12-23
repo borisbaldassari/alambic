@@ -43,7 +43,7 @@
             </div>
     
             <div class="row">
-              <div class="col-sm-4">
+              <div class="col-md-4">
                 <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Rating for main quality attributes</div>
                   <div class="panel-body">
                     <dl>
@@ -64,7 +64,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-sm-4">
+              <div class="col-md-4">
                 <div class="panel panel-primary"><div class="panel-heading">PMI Summary</div>
                   <ul class="list-group">
                     <li class="list-group-item"><span class="fa fa-dashboard"></span> &nbsp; Eclipse Dashboard <a href="">Not defined</a></li>
@@ -76,7 +76,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="col-sm-4">
+              <div class="col-md-4">
                 <div class="panel panel-primary"><div class="panel-heading">Comments</div>
                   <ul class="list-group">
 % foreach my $comment ( @{$project_comments} ) {
@@ -88,7 +88,7 @@
                       <strong><%= $comment->{'author'} %></strong> on <strong><%= $comment->{'mnemo'} %></strong> (<%= $comment->{'date'} %>)<br /><%= $comment->{'text'} %></li>
 % }
                     <li class="list-group-item">
-                      <a href="/comments/w/<%= $project_id %>">
+                      <a href="/admin/comments/<%= $project_id %>/a">
                         <div class="pull-right"><span class="fa fa-plus"></span></div>
                         Add a comment? (Authentication required)</a>
                     </li>
@@ -117,7 +117,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-4">
+              <div class="col-md-4">
                 <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Configuration management</div>
                   <ul class="list-group">
                     <li class="list-group-item"><b>Overall:</b> <br />
@@ -129,7 +129,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="col-sm-4">
+              <div class="col-md-4">
                 <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Issue Tracking System</div>
                   <ul class="list-group">
                     <li class="list-group-item"><b>Overall:</b> <br />
@@ -142,7 +142,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="col-sm-4">
+              <div class="col-md-4">
                 <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Mailing lists</div>
                   <ul class="list-group">
                     <li class="list-group-item"><b>Overall:</b> <br />
@@ -156,16 +156,16 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-4">
+              <div class="col-md-4">
                 <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Stack Overflow</div>
                   <div class="panel-body">
                     <img src="figures/stack_overflow/<%= $project_id %>/blob-so-plot-1.svg" class="img-responsive" alt="No data."/>
                   </div>
                 </div>
               </div>
-              <div class="col-sm-4">
+              <div class="col-md-4">
               </div>
-              <div class="col-sm-4">
+              <div class="col-md-4">
               </div>
             </div>
             
