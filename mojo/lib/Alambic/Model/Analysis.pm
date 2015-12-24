@@ -10,9 +10,8 @@ use Data::Dumper;
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw( read_all_files
-                 analyse_input
-                 compute_inds
+our @EXPORT_OK = qw( analyse_input
+                     compute_inds
                  );  
 
 my $project_id;
@@ -38,11 +37,6 @@ sub new {
     weaken $hash->{app};
 
     return bless $hash, $class;
-}
-
-
-sub read_all_files() {
-
 }
 
 
@@ -76,9 +70,11 @@ sub analyse_input() {
 		} else {
 		    if ($raw_values->{"children"}->{$metric} =~ m!^nan$!i) {
 			push( @project_errors, "WARNING: NAN value for [" . uc($metric) . "]." );
+                        delete $project_values{uc($metric)};
 		    } else {
                         push( @project_errors, "WARNING: Null value for [" . uc($metric) . "]: " 
                               . $raw_values->{"children"}->{$metric} . "." );
+                        delete $project_values{uc($metric)};
 		    }
 		}
 	    }
@@ -90,9 +86,11 @@ sub analyse_input() {
 		} else {
 		    if ($raw_values->{$metric} =~ m!^nan$!i) {
 			push( @project_errors, "WARNING: NAN value for [" . uc($metric) . "]." );
+                        delete $project_values{uc($metric)};
 		    } else {
                         push( @project_errors, "WARNING: Null value for [" . uc($metric) . "]: " 
                               . $raw_values->{"children"}->{$metric} . "." );
+                        delete $project_values{uc($metric)};
 		    }
 		}
 	    }        

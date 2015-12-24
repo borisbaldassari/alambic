@@ -24,10 +24,12 @@
               <tr>
                 <th>Project</th>
                 <th>Is active</th>
-                <!-- th>Last update</th -->
+                <th>Last update</th>
                 <th colspan="4">Actions</th>
               </tr>
-% my @projects = sort { app->projects->get_project_name_by_id($a) cmp app->projects->get_project_name_by_id($b) } @{$list_projects};
+% my @projects = sort { 
+%             app->projects->get_project_name_by_id($a) cmp app->projects->get_project_name_by_id($b) 
+% } @{$list_projects};
 % foreach my $project ( @projects ) {
 %     my $name = defined( app->projects->get_project_name_by_id($project) ) ? 
 %       app->projects->get_project_name_by_id($project) : $project;
@@ -35,7 +37,7 @@
               <tr>
                 <td><a href="/admin/project/<%= $project %>"><%= $name %></a></td>
                 <td><%= $info->{'is_active'} %></td>
-                <!-- td><%= $info->{'is_active'} %></td -->
+                <td><%= defined( $info->{'last_analysis'} ) ? "" . localtime( $info->{'last_analysis'} ) : "Never" %></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>"><i class="fa fa-eye"></i></a></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>/retrieve"><i class="fa fa-download"></i></a></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>/analyse"><i class="fa fa-cogs"></i></a></td>

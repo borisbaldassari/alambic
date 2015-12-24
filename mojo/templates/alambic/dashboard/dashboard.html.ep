@@ -169,3 +169,8 @@
               </div>
             </div>
             
+            <hr />
+% my $info = app->projects->get_project_info($project_id);
+            <p class="pull-right">Last analysis was on <%= defined( $info->{'last_analysis'} ) ? "" . localtime( $info->{'last_analysis'} ) : 'Never' %>.</p>
+            <br />
+

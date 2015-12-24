@@ -28,6 +28,7 @@
                 <p><b>ID</b> <%= $info->{'id'} %><br />
                 <b>Name</b> <%= $info->{'name'} %><br />
                 <b>Is active</b> <%= $info->{'is_active'} %><br />
+                <b>Last analysis</b> <%= defined( $info->{'last_analysis'} ) ? "" . localtime( $info->{'last_analysis'} ) : 'Never' %><br />
                 </p>
               </div>
               <div class="col-sm-6">

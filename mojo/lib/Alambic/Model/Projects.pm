@@ -46,7 +46,8 @@ our @EXPORT_OK = qw( read_all_files
                      set_project_cd
                      set_project_cd_item
                      delete_project_cd
- );  
+                     get_project_last_analysis
+                   );  
 
 
 use warnings;
@@ -574,7 +575,9 @@ sub analyse_project($) {
         }
     }
     
-    push( @log, "[Model::Projects] Computing indicators and attributes.." );
+    &set_project_last_analysis($self, $project_id);
+
+    # Parse and prettify log.
     foreach my $line ( @{$analysis->compute_inds($project_id)} ) {
         chomp $line;
         push( @log, "&nbsp; &nbsp; $line" );
@@ -615,11 +618,10 @@ sub add_project() {
         };
     }
 
-    &write_project_data( $file_info, $info );
-
     # Add values to the current hashes
     $projects_info{$project_id} = $info;
-#    $projects{$project_id} = {};
+
+    &write_project_data( $file_info, $info );
 
     return 1;
 }
@@ -704,7 +706,7 @@ sub set_project_cd() {
     &write_project_data( $file_to, $projects_info{$project_id});    
 }
 
-# Add a custom data plugin to the project, and update its info file.
+# Add a custom data entry to one of the plugins of the project, and update its info file.
 sub set_project_cd_item() {
     my $self = shift;
     my $project_id = shift;
@@ -727,6 +729,28 @@ sub delete_project_cd() {
     # Write updated info file.
     my $file_to = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
     &write_project_data( $file_to, $projects_info{$project_id});    
+}
+
+sub set_project_last_analysis() {
+    my $self = shift;
+    my $project_id = shift;
+
+    # Add values to the current hashes
+    $projects_info{$project_id}{'last_analysis'} = time();
+
+    my $file_info = $self->{app}->config->{'dir_data'} . '/' . $project_id . '/' . $project_id . '_info.json';
+
+    &write_project_data( $file_info, $projects_info{$project_id} );
+}
+
+sub get_project_last_analysis() {
+    my $self = shift;
+    my $project_id = shift;
+
+    # Add values to the current hashes
+    my $date = $projects_info{$project_id}{'last_analysis'};
+
+    return $date;
 }
 
 1;
