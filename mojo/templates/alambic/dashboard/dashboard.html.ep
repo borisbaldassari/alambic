@@ -120,7 +120,7 @@
                 <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Configuration management</div>
                   <ul class="list-group">
                     <li class="list-group-item"><b>Overall:</b> <br />
-                      <b><%= $project_metrics->{'SCM_COMMITS'} %></b> commits made by <b><%= $project_metrics->{'ITS_AUTHORS'} %></b> authors and <b><%= $project_metrics->{'ITS_COMMITTERS'} %></b> committers, representing <%= $project_metrics->{'SCM_FILES'} %></b> files.</li>
+                      <b><%= $project_metrics->{'SCM_COMMITS'} %></b> commits made by <b><%= $project_metrics->{'SCM_AUTHORS'} %></b> authors and <b><%= $project_metrics->{'SCM_COMMITTERS'} %></b> committers, representing <%= $project_metrics->{'SCM_FILES'} %></b> files.</li>
                     <li class="list-group-item"><b>Last month:</b> <br />
                       <%= $project_metrics->{'SCM_COMMITS_30'} %> commits by <%= $project_metrics->{'SCM_AUTHORS_30'} %> authors.</li>
                     <li class="list-group-item"><b>Last year:</b> <br />
