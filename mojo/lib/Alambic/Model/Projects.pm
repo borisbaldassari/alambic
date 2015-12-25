@@ -201,7 +201,7 @@ sub _read_files($$) {
         $project =~ m!.*[\/](.*?)_pmi.json!;
         my $id = $1;
         my $json_project = &read_project_data($project);
-        $projects{$id}{'pmi'} = $json_project->{'projects'}->{$id};
+        $projects{$id}{'pmi'} = $json_project;
     }
 
     # Read comments for projects
@@ -567,11 +567,14 @@ sub analyse_project($) {
 
     push( @log, "[Model::Projects] Copying files provided by plugins.." );
     foreach my $pi (@pis) {
-        my @files = map { 
-            $self->{app}->config->{'dir_input'} . '/' . $project_id . '/' . $project_id . '_' . $_ . '.json'
-        } @{$self->{app}->al_plugins->get_plugin($pi)->get_conf()->{'provides_files'}};
-        foreach my $file (@files) {
-            copy($file, $dir_to) or $self->{app}->log->warn( "ERROR $!" );
+        foreach my $keyword ( @{$self->{app}->al_plugins->get_plugin($pi)->get_conf()->{'provides_files'}} ) {
+            my $file_in = $self->{app}->config->{'dir_input'} . '/' . $project_id . '/' . $project_id . '_import_' . $keyword . '.json';
+            my $file_out = $dir_to . $project_id . '_' . $keyword . '.json';
+            copy(
+                $file_in, 
+                $file_out
+                ) or $self->{app}->log->warn( "ERROR $!" );
+            push( @log, "Copied file [$file_in] to [$file_out]." );
         }
     }
     
