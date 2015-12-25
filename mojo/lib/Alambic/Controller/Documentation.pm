@@ -16,6 +16,16 @@ sub welcome {
 	# Render template for quality_model
 	$self->render( template => 'alambic/documentation/quality_model' );
 
+    } elsif ($in_doc =~ m!^data(.html)?$!) {
+
+        my %attributes = %{$self->models->get_attributes()};
+
+        # TODO
+
+	# Render template for attributes
+        $self->stash( attributes => \%attributes );
+	$self->render( template => 'alambic/documentation/data' );
+
     } elsif ($in_doc =~ m!^attributes(.html)?$!) {
 
         my %attributes = %{$self->models->get_attributes()};
