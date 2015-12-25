@@ -100,14 +100,21 @@ sub retrieve_data($) {
         push( @log, "Using Eclipse PMI infra at [$url]." );
         $content = get($url);
     }
-    my $msg_failed = [ "ERROR: Could not get [$url]!" ];
-    return $msg_failed unless defined $content;
 
+    my $pmi = decode_json($content);
+    my $custom_pmi;
+    if ( defined($pmi->{'projects'}->{$project_pmi}) ) {
+        $custom_pmi = $pmi->{'projects'}->{$project_pmi};
+    } else {
+        my $msg_failed = [ "ERROR: Could not get [$url]!" ];
+        return $msg_failed unless defined $content;
+    }
+    
     my $file_json_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_pmi.json";
 
     $app->log->debug("[Plugins::EclipsePMI] Writing PMI json file to [$file_json_out].");
     open my $fh, ">", $file_json_out;
-    print $fh $content;
+    print $fh encode_json($custom_pmi);
     close $fh;
 
     return \@log;
@@ -135,10 +142,8 @@ sub compute_data($) {
     };
 
     # Decode the entire JSON
-    my $raw_data = decode_json( $json );
+    my $raw_project = decode_json( $json );
 
-    my $raw_project = $raw_data->{"projects"}->{$project_pmi};
-    
     # Retrieve basic information about the project
     $pmi{"title"} = $raw_project->{"title"};
     $pmi{"desc"} = $raw_project->{"description"}->[0]->{"safe_value"};
@@ -175,7 +180,8 @@ sub compute_data($) {
     print $fh $json_metrics;
     close $fh;
 
-    return ["Done."];
+
+    return ["Copied " . scalar ( keys %metrics ) . " metrics."];
 }
 
 
