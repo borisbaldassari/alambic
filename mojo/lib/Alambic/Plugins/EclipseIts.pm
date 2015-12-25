@@ -116,7 +116,7 @@ sub compute_data($) {
         close $fh;
     };
 
-    return ["Done."];
+    return ["Copied " . scalar( keys %{$metrics_new} ) . " metrics."];
 }
 
 
