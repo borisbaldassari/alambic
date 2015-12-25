@@ -1,5 +1,5 @@
 
-            <h2>Initialise a new repository for Alambic</h2>
+            <h1 class="al-h1">Initialise a new repository for Alambic</h1>
             <br />
 
             <p>This dialog will push the current instance into a new git repository.</p>

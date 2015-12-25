@@ -1,7 +1,7 @@
 % my $conf = stash( 'conf' );
 % my $values = stash( 'values' ) ;
 
-            <h2>Administration: Custom Data sources</h2>
+            <h1 class="al-h1"><small>Administration</small> Custom Data sources</h1>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/cdata'

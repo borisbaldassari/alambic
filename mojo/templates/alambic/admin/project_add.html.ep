@@ -4,7 +4,7 @@
 % my $project_name = param( 'name' );
 % my $project_active = param( 'is_active' );
 
-            <h1 class="text-right" style="color: orange;"><small>Administration</small> Edit project information</h1>
+            <h1 class="al-h1"><small>Administration</small> Edit project information</h1>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/projects'

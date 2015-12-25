@@ -1,5 +1,5 @@
 
-            <h2>Login</h2>
+            <h1 class="al-h1">Login</h1>
             <br />
 
 % my $msg = flash 'msg';

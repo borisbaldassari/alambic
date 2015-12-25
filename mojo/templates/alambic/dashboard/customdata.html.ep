@@ -1,5 +1,5 @@
 
-            <h1 class="text-right" style="color: orange;"><small><%= $project_id %></small> Custom data</h1>
+            <h1 class="al-h1"><small><%= $project_id %></small> Custom data</h1>
             <br />
 
 %= include 'alambic/dashboard/dashboard_menu', current => '/projects/cdata', project_id => $project_id

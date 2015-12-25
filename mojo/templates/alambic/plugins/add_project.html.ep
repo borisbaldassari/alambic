@@ -2,7 +2,7 @@
 % my $conf = stash( 'conf' );
 % my $project = stash( 'project' );
 
-            <h2>Administration: Data sources</h2>
+            <h1 class="al-h1"><small>Administration</small> Data sources</h1>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/plugins'

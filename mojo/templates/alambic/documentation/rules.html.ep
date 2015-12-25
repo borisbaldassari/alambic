@@ -1,5 +1,5 @@
 
-            <h1 class="text-right" style="color: orange;"><small>Documentation</small> Rules</h1>
+            <h1 class="al-h1"><small>Documentation</small> Rules</h1>
             <br />
 
             <p>Rules are mapped to good and bad practices, as defined by the open-source community. They are computed by open-source rule-checking tools like PMD or FindBugs. They are classified by category associated to some quality characteristics.</p><br />

@@ -1,5 +1,5 @@
 
-            <h1 class="pull-right"><small>Welcome to the</small> Alambic Dashboard</h1>
+            <h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>
 
             <div class="row">
               <div class="col-lg-6">
@@ -47,7 +47,7 @@
                 <div class="panel panel-default">
                   <div class="panel-heading"><i class="fa fa-dashboard fa-fw"></i> Projects</div>
                   <div class="list-group">
-% my @projects = $self->app->projects->list_projects();
+% my @projects = $self->app->projects->list_active_projects();
 % foreach my $project (sort @projects) {
 %     my $name = defined( app->projects->get_project_name_by_id($project) ) ? 
 %       app->projects->get_project_name_by_id($project) : $project;
