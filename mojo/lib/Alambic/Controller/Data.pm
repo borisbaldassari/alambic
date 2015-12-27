@@ -17,6 +17,11 @@ sub download {
         my $qm_full = $self->{app}->models->get_qm_full();
         $self->render(json => $qm_full);
 
+    } elsif ($in_doc =~ m!^quality_model.json$!) {
+
+        my %model = %{$self->models->get_model()};
+        $self->render( json => \%model );
+
     } elsif ($in_doc =~ m!^model_attributes.json$!) {
 
         my %attributes = %{$self->models->get_attributes_full()};
