@@ -1,1 +1,1 @@
-{"id":"tools.cdt","name":"CDT"}
+{"is_active":"on","id":"tools.cdt","cdata":{},"last_analysis":1451039963,"ds":{"eclipse_its":{"grimoire_url":"http:\/\/dashboard.eclipse.org\/data\/json\/","project_id":"tools.cdt"},"eclipse_mls":{"grimoire_url":"http:\/\/dashboard.eclipse.org\/data\/json\/","project_id":"tools.cdt"},"eclipse_pmi":{"project_id":"tools.cdt"},"stack_overflow":{"so_keyword":"eclipse-cdt","bin_r":"\/usr\/bin\/R"},"eclipse_scm":{"grimoire_url":"http:\/\/dashboard.eclipse.org\/data\/json\/","project_id":"tools.cdt"}},"name":"CDT"}
