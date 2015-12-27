@@ -3,7 +3,8 @@ package Alambic::Controller::Data;
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 
-# This action will render a template
+
+# This action will render json files to download data
 sub download {
     my $self = shift;
 
