@@ -16,7 +16,7 @@
                 <p>The hierarchy of quality attributes composing the quality model, as published in the documentation about <a href="/documentation/quality_model.html">quality model</a>.</p>
               </li>
               <li class="list-group-item">
-                <p><strong>Quality model full (JSON)</strong> <a class="pull-right" href="/data/quality_model.json">/data/quality_model.json</a></p>
+                <p><strong>Quality model full (JSON)</strong> <a class="pull-right" href="/data/quality_model_full.json">/data/quality_model_full.json</a></p>
                 <p>The full quality model has the same tree-like structure than the previous download, but also includes full names of entities and additional informations useful to sketch up a nice visualisation.</p>
               </li>
               <li class="list-group-item">
