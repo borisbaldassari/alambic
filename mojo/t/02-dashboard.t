@@ -21,7 +21,9 @@ $t->get_ok('/projects/tools.cdt.html')
         ->content_like(qr!Web <a href="http://www.eclipse.org/cdt">http://www.eclipse.org/cdt!i, 
           'PMI web is correct for the project')
         ->content_like(qr!<a href="/admin/comments/tools.cdt/a">\s+<div class="pull-right"><span class="fa fa-plus"></span></div>\s+Add a comment\? \(Authentication required\)</a>!i, 
-          'Comments field is displayed, and there is no recorded comment.')
+          'Comments field is displayed.')
+        ->content_like(qr!<a href="/admin/comments/tools.cdt/e/1451253372">!i, 
+          'There is one comment displayed.')
         ->content_like(qr!<b>35796</b> commits!i, 
           'Number of commits is correct.')
         ->content_like(qr!<b>16869</b> issues opened!i, 
