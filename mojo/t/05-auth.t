@@ -15,141 +15,165 @@ $t->ua->max_redirects(10);
 # Check login form page.
 $t->get_ok('/login')
         ->status_is(200)
-        ->content_like(qr!<form action="login" method="POST"!i, 'Get the form tag.')
-        ->content_like(qr!<input type="text" class="form-control" name="username">!i, 'Get username input tag.');
+        ->content_like(qr!<form action="login" method="POST"!i, 
+          'Get the form tag.')
+        ->content_like(qr!<input type="text" class="form-control" name="username">!i, 
+          'Get username input tag.')
+        ->content_like(qr!<input type="password" class="form-control" name="password">!i, 
+          'Get password input tag.');
 
 # Connect using POST.
 $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'admin'})
         ->status_is(200)
-        ->content_like(qr!<h2>Administration</h2>!i, 'Check title of administration page after login.');
+        ->content_like(qr!<h1 class="al-h1"><small>Administration</small> Summary</h1>!i, 
+          'Check title of administration page after login.');
 
 # Check protected pages in admin: Repository
 $t->get_ok('/admin/repo')
         ->status_is(200)
-        ->content_like(qr'<h3>Repository information</h3>'i, 'Check first paragraph: repo is defined.')
-        ->content_like(qr'Fetch url is <code>git@bitbucket.org:BorisBaldassari/alambic_test.git</code>'i, 'Check repo is ok.');
-
+        ->content_like(qr'<h1 class="al-h1"><small>Administration</small> Alambic Repository</h1>'i, 
+          'Check title: repo is defined.');
 
 # Check protected pages in admin: Plugins
 $t->get_ok('/admin/plugins')
         ->status_is(200)
+        ->content_like(qr'<h1 class="al-h1"><small>Administration</small> Plugins</h1>'i, 'Check title.')
         ->content_like(qr'<td>Eclipse Grimoire</td>'i, 'Check eclipse_grimoire name is ok.')
         ->content_like(qr'<td>eclipse_grimoire</td>'i, 'Check eclipse_grimoire id is ok.')
         ->content_like(qr'<td>Eclipse PMI</td>'i, 'Check eclipse_pmi name is ok.')
         ->content_like(qr'<td>eclipse_pmi</td>'i, 'Check eclipse_pmi id is ok.');
 
-
 # Check protected pages in admin: Comments
 $t->get_ok('/admin/comments')
         ->status_is(200)
-        ->content_like(qr'<a href="/admin/comments/modeling.gendoc/a/"><i class="fa fa-plus"></i></a>'i, 'Check rights ok on modeling.gendoc.')
-        ->content_like(qr'<a href="/admin/comments/polarsys.capella/a/"><i class="fa fa-plus"></i></a>'i, 'Check rights on polarsys.capella.');
+        ->content_like(qr'<a href="/admin/comments/tools.cdt/a/"><i class="fa fa-plus"></i></a>'i, 
+          'Check rights ok on modeling.gendoc.');
 
-
-# Check protected pages in admin: Comments for specific project polarsys.capella
-$t->get_ok('/admin/comments/polarsys.capella')
+# Check protected pages in admin: Comments for specific project tools.cdt
+$t->get_ok('/admin/comments/tools.cdt')
         ->status_is(200)
-        ->content_like(qr'<a href="/admin/comments/polarsys.capella/e/1440582148"><i class="fa fa-pencil">'i, 'Check rights ok on polarsys.capella.');
-
-
-# Check protected pages in admin: Comments for specific project modeling.gendoc
-$t->get_ok('/admin/comments/polarsys.capella')
-        ->status_is(200)
-        ->content_like(qr'<i class="fa fa-pencil">'i, 'Check rights are ok on modeling.gendoc.');
-
+        ->content_like(qr'<a href="/admin/comments/tools.cdt/e/1451253372"><i class="fa fa-pencil">'i, 
+          'Check edit rights ok on tools.cdt.')
+        ->content_like(qr'<a href="/admin/comments/tools.cdt/d/1451253372"><i class="fa fa-trash-o">'i, 
+          'Check delete ok on tools.cdt.');
 
 # Check protected pages in admin: Projects
 $t->get_ok('/admin/projects')
         ->status_is(200)
-        ->content_like(qr!<td>Capella</td>!i, 'Check polarsys.capella is in list.')
-        ->content_like(qr!<td>Gendoc</td>!i, 'Check modeling.gendoc is in list.');
-
+        ->content_like(qr!<a href="/admin/project/tools.cdt">CDT</a>!i, 
+          'Check tools.cdt is in list.')
+        ->content_like(qr!<td>on</td>\s+<td>Sun Dec 27 20:22:32 2015</td>!i, 
+          'Check project parameters.');
 
 # Check protected pages in admin: Users
 $t->get_ok('/admin/users')
         ->status_is(200)
-        ->content_like(qr!<p>Users defined on the system as for now are:</p>!i, 'Check first paragraph of users page.')
-        ->content_like(qr'<td>admin</td><td><b>Administrator</b></td>'i, 'Check admin user is in list.')
-        ->content_like(qr'<td>/admin<br />/admin/read_files<br />/admin/projects<br />/admin/users<br />/admin/repo<br />/admin/plugins</td>'i, 'Check admin rights in list.')
-        ->content_like(qr'<td>user.1</td><td><b>Anonymous</b></td>\s+<td></td>'i, 'Check anonymous user is in list.');
-
+        ->content_like(qr!<p>Users defined on the system as for now are:</p>!i, 
+          'Check first paragraph of users page.')
+        ->content_like(qr'<td>admin</td><td><b>Administrator</b></td>'i, 
+          'Check admin user is in list.')
+        ->content_like(qr'<td>/admin<br />/admin/read_files<br />/admin/projects<br />/admin/users<br />/admin/repo<br />/admin/plugins</td>'i, 
+          'Check admin rights in list.')
+        ->content_like(qr'<td>user.1</td><td><b>Anonymous</b></td>\s+<td></td>'i, 
+          'Check anonymous user is in list.');
 
 # Now logout.
 $t->get_ok('/logout')
         ->status_is(200)
-        ->content_like(qr!<p>You just landed on the <strong>PolarSys Maturity Assessment dashboard</strong>!i, 'Check logout ok.');
+        ->content_like(qr!<h1 class="al-h1"><small>Administration</small> Summary</h1>!i, 
+          'Check logout ok.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/read_files/models')
         ->status_is(200)
-        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when trying to read files.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 
+          'Check there is a login form when trying to read files.');
 
 $t->get_ok('/admin/read_files/projects')
         ->status_is(200)
-        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when trying to read files.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 
+          'Check there is a login form when trying to read files.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/plugins')
         ->status_is(200)
-        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when accessing plugins admin.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 
+          'Check there is a login form when accessing plugins admin.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/repo')
         ->status_is(200)
-        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when accessing repo admin.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 
+          'Check there is a login form when accessing repo admin.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/comments')
         ->status_is(200)
-        ->content_unlike(qr!<i class="fa fa-plus">!i, 'Check projects are not changeable in comments admin.');
+        ->content_unlike(qr!<i class="fa fa-plus">!i, 
+          'Check projects are not changeable in comments admin.');
 
 # Re-check protected pages in admin..
-$t->get_ok('/admin/comments/polarsys.capella')
+$t->get_ok('/admin/comments/tools.cdt')
         ->status_is(200)
-        ->content_unlike(qr!<i class="fa fa-pencil">!i, 'Check project polarsys.capella is not changeable in comments admin.');
+        ->content_unlike(qr!<i class="fa fa-pencil">!i, 
+          'Check project tools.cdt is not changeable in comments admin.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/projects')
         ->status_is(200)
-        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when accessing projects admin.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 
+          'Check there is a login form when accessing projects admin.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/users')
         ->status_is(200)
-        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when accessing users admin.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 
+          'Check there is a login form when accessing users admin.');
 
 # Re-check protected pages in admin: project management
 $t->get_ok('/admin/projects/new')
         ->status_is(200)
-        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when creating new project.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 
+          'Check there is a login form when creating new project.');
 
-$t->get_ok('/admin/project/polarsys.capella/retrieve')
+$t->get_ok('/admin/project/tools.cdt/retrieve')
         ->status_is(200)
-        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when retrieving project.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 
+          'Check there is a login form when retrieving project.');
 
-$t->get_ok('/admin/project/polarsys.capella/analyse')
+$t->get_ok('/admin/project/tools.cdt/analyse')
         ->status_is(200)
-        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 'Check there is a login form when analysing project.');
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 
+          'Check there is a login form when analysing project.');
 
 # Check login form page.
 $t->get_ok('/login')
         ->status_is(200)
-        ->content_like(qr!<form action="login" method="POST"!i, 'Get the form tag.')
-        ->content_like(qr!<input type="text" class="form-control" name="username">!i, 'Get username input tag.');
+        ->content_like(qr!<form action="login" method="POST"!i, 
+          'Get the form tag.')
+        ->content_like(qr!<input type="text" class="form-control" name="username">!i, 
+          'Get username input tag.')
+        ->content_like(qr!<input type="password" class="form-control" name="password">!i, 
+          'Get password input tag.');
 
 $t->post_ok('/login' => form => {'username' => 'admin', 'password' => 'bad'})
         ->status_is(200)
-        ->content_like(qr!Some parts of this site are protected!i, 'Bad password should get back to login.')
-        ->content_unlike(qr!You have been successfully authenticated!i, 'Should not be authenticated.');
+        ->content_like(qr!Some parts of this site are protected!i, 
+          'Bad password should get back to login.')
+        ->content_unlike(qr!You have been successfully authenticated!i, 
+          'Should not be authenticated.');
 
 $t->post_ok('/login' => form => {'username' => 'bad', 'password' => 'admin'})
         ->status_is(200)
-        ->content_like(qr!Some parts of this site are protected!i, 'Bad login should get back to login.')
-        ->content_unlike(qr!You have been successfully authenticated!i, 'Should not be authenticated.');
+        ->content_like(qr!Some parts of this site are protected!i, 
+          'Bad login should get back to login.')
+        ->content_unlike(qr!You have been successfully authenticated!i, 
+          'Should not be authenticated.');
 
-#$t->get_ok('/admin/project/polarsys.capella/del')
-#        ->status_is(200)
-#        ->content_like(qr!<input type="submit" value="Login"></input>!i, 'Check there is a login form when deleting project.');
+$t->get_ok('/admin/project/tools.cdt/del')
+        ->status_is(200)
+        ->content_like(qr!<input class="btn btn-primary" type="submit" value="Submit">!i, 
+          'Check there is a login form when deleting project.');
 
 
-done_testing(85);
+done_testing(87);
