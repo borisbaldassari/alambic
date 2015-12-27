@@ -76,4 +76,4 @@ $t->get_ok('/projects/tools.cdt_errors.html')
           'Missing metric pub_scm_info_pmi is missing.');
 
 
-done_testing(32);
+done_testing(33);
