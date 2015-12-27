@@ -337,7 +337,7 @@ sub get_project_metrics_last($) {
         );
     
     if (not defined($metrics_last)) {
-        return 0;
+        return undef;
     }
 
     return $metrics_last->{'children'};
@@ -380,7 +380,7 @@ sub get_project_attrs_last($) {
         );
 
     if (not defined($attrs_last)) {
-        return 0;
+        return undef;
     }
 
     return $attrs_last->{'children'};
