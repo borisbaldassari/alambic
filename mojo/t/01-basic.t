@@ -12,32 +12,33 @@ my $t = Test::Mojo->new('Alambic');
 # Check that we have the right home page (contains PolarSys).
 $t->get_ok('/')
         ->status_is(200)
-        ->content_like(qr!PolarSys Maturity Assessment Dashboard!i, 'Main page contains PolarSys Maturity Assessment Dashboard text.');
+        ->content_like(qr!<h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>!i, 
+          'Main page contains the Alambic Dashboard text.')
+        ->content_like(qr!<i class="fa fa-user fa-fw fa-lg">!i, 
+          'Main page contains the login icon.');
+
+# Check that we have the right project page for cdt (contains header).
+$t->get_ok('/projects/tools.cdt.html')
+        ->status_is(200)
+        ->content_like(qr!<h1 class="al-h1"><small>tools.cdt</small> Summary</h1>!i, 
+          'Dashboard page contains tools.cdt title')
+        ->content_like(qr!Wiki <a href="http://wiki.eclipse.org/index.php/CDT">!i, 
+          'Dashboard page contains wiki info.');
 
 # Check that we have the right admin page (contains text from admin page > projects > polarsys.capella).
 $t->get_ok('/admin/summary')
         ->status_is(200)
-        ->content_like(qr!<p>Instance: <br />\s+<code>myName</code><br />!i, 
-        'Admin summary page contains instance')
-        ->content_like(qr!<td><a href="/admin/project/polarsys.capella">Capella</a></td>!i, 
-        'Admin summary page contains Cappela')
-        ->content_like(qr!<td><a href="/admin/project/modeling.gendoc">Gendoc</a></td>!i,
-        'Admin summary page contains modeling.gendoc')
-        ->content_like(qr!<td>Quality model</td><td>PolarSys Quality Model</td>!i,
-        'Admin summary page contains quality model information')
-        ->content_like(qr!<td>Attributes</td><td>PolarSys Attributes</td>!i,
-        'Admin summary page contains attributes information')
-        ->content_like(qr!<td>Metrics</td><td>PolarSys Metrics</td>!i,
-        'Admin summary page contains metrics information')
-        ->content_like(qr!<td>Questions</td><td>PolarSys Questions</td>!i,
-        'Admin summary page contains questions information');
-
-# Check that we have the right project page for capella (contains header).
-$t->get_ok('/projects/polarsys.capella.html')
-        ->status_is(200)
-        ->content_like(qr!<h2>Project polarsys.capella</h2>!i, 
-        'Dashboard page contains polarsys.capella')
-        ->content_like(qr!Wiki <a href="https://polarsys.org/wiki/Capella">https://polarsys.org/wiki/Capella</a>!i, 
-        'Dashboard page contains wiki info.');
+        ->content_like(qr!<p><b>Instance</b> <br />\s*Official Alambic dashboard</p>!i, 
+          'Admin summary page contains instance')
+        ->content_like(qr!<td><a href="/admin/project/tools.cdt">CDT</a></td>!i, 
+          'Admin summary page contains CDT')
+        ->content_like(qr!<td>Quality model</td><td>Alambic Quality Model</td><td>0.1</td>!i,
+          'Admin summary page contains quality model information')
+        ->content_like(qr!<td>Attributes</td><td>Alambic Attributes</td><td>0.1</td>!i,
+          'Admin summary page contains attributes information')
+        ->content_like(qr!<td>Metrics</td><td>Alambic Metrics</td><td>0.1</td>!i,
+          'Admin summary page contains metrics information')
+        ->content_like(qr!<td>Questions</td><td>Alambic Questions</td>!i,
+          'Admin summary page contains questions information');
 
 done_testing(16);
