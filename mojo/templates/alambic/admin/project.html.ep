@@ -41,21 +41,6 @@
                   <a class="list-group-item" href="/projects/<%= $project %>" role="button"><i class="fa fa-dashboard"></i> &nbsp; Project dashboard</a>
                 </div>
 
-<!-- % if (exists($projects->{$project}->{'metrics'})) { -->
-<!--                   <code><%= $project %>_metrics.json</code> has <code><%= scalar keys %{$projects->{$project}->{'metrics'}} %></code> metrics defined.<br /> -->
-<!-- % } -->
-<!-- % if (exists($projects->{$project}->{'attrs'})) { -->
-<!--                   <code><%= $project %>_attributes.json</code> has <code><%= scalar keys %{$projects->{$project}->{'attrs'}} %></code> attributes defined.<br /> -->
-<!-- % } -->
-<!-- % if (exists($projects->{$project}->{'attrs_conf'})) { -->
-<!--                   <code><%= $project %>_attributes_confidence.json</code> has <code><%= scalar keys %{$projects->{$project}{'attrs_conf'}} %></code> attributes defined.<br /> -->
-<!-- % } -->
-<!-- % if (exists($projects->{$project}->{'pmi'})) { -->
-<!--                   <code><%= $project %>_pmi.json</code> has <code><%= scalar keys %{$projects->{$project}->{'pmi'}} %></code> attributes defined.<br /> -->
-<!-- % } -->
-<!-- % if (exists($projects->{$project}->{'comments'})) { -->
-<!--                   <code><%= $project %>_comments.json</code> has <code><%= scalar keys %{$projects->{$project}->{'comments'}} %></code> comments defined. -->
-<!-- % } -->
               </div>
             </div>
 
