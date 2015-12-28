@@ -52,6 +52,7 @@ sub del_input_file() {
              $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authenticated to access project management.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $ret = unlink($self->config->{'dir_input'} . '/' . $project_id . '/' . $file);
@@ -78,6 +79,7 @@ sub del_data_file() {
              $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authenticated to access project management.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $ret = unlink($self->config->{'dir_data'} . '/' . $project_id . '/' . $file);
@@ -100,6 +102,7 @@ sub projects_main {
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authenticated to access project management.' );
         $self->redirect_to( '/login' );
+        return;
     }
              
     my @list_projects = $self->app->projects->list_projects();
@@ -125,6 +128,7 @@ sub plugins {
     # Check that the connected user has the access rights for this
     if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/plugins' ) ) {
         $self->redirect_to( '/login' );
+        return;
     }
 
     # Render template 
@@ -142,6 +146,7 @@ sub repo {
     # Check that the connected user has the access rights for this
     if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
         $self->redirect_to( '/login' );
+        return;
     }
 
     # Render template "alambic/admin/repo.html.ep"
@@ -158,6 +163,7 @@ sub project_add {
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authenticated to add a project.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     # Prepare data for template.
@@ -181,6 +187,7 @@ sub project_add_post {
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authenticated to add a project.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     # If fields are not filled, fail.
@@ -188,6 +195,7 @@ sub project_add_post {
         or $project_id =~ /^\s$/ or $project_name =~ /^\s$/) {
         $self->flash( msg => "Failed to add project [$project_id]." );
         $self->redirect_to( '/admin/projects' );
+        return;
     }
 
     $self->app->projects->add_project($project_id, $project_name, $project_active);
@@ -205,6 +213,7 @@ sub project_del {
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authenticated to delete a project.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     $self->app->projects->del_project($project_id);
