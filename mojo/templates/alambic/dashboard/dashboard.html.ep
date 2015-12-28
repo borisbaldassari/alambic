@@ -64,7 +64,7 @@
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="panel panel-primary"><div class="panel-heading">PMI Summary</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">PMI Summary</div>
                   <ul class="list-group">
                     <li class="list-group-item"><span class="fa fa-dashboard"></span> &nbsp; Eclipse Dashboard <a href="">Not defined</a></li>
                     <li class="list-group-item"><span class="fa fa-globe"></span> &nbsp; Web <a href="<%= $project_pmi->{'website_url'}->[0]->{'url'} %>"><%= $project_pmi->{'website_url'}->[0]->{'url'} || "Not Defined" %></a></li>
@@ -76,7 +76,7 @@
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="panel panel-primary"><div class="panel-heading">Comments</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Comments</div>
                   <ul class="list-group">
 % foreach my $comment ( @{$project_comments} ) {
                     <li class="list-group-item">
@@ -93,7 +93,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="panel panel-primary"><div class="panel-heading">Manual data</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Manual data</div>
                   <ul class="list-group">
 % foreach my $cd ( keys %{$project_cdata} ) {
 %   my $cdata_name = al_plugins->get_plugin($cd)->get_conf()->{'name'} || "Unknown";
@@ -106,7 +106,7 @@
 % }
                   </ul>
                 </div>
-                <div class="panel panel-primary"><div class="panel-heading">Visualisation plugins</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Visualisation plugins</div>
                   <ul class="list-group">
 % foreach my $plugin ( keys %{app->projects->get_project_viz($project_id)} ) {
                     <li class="list-group-item"><a href="/projects/<%= $project_id %>_plugins_<%= $plugin %>.html"><%= $plugin %></a></li>
@@ -120,11 +120,11 @@
                 <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Configuration management</div>
                   <ul class="list-group">
                     <li class="list-group-item"><b>Overall:</b> <br />
-                      <b><%= $project_metrics->{'SCM_COMMITS'} %></b> commits made by <b><%= $project_metrics->{'SCM_AUTHORS'} %></b> authors and <b><%= $project_metrics->{'SCM_COMMITTERS'} %></b> committers, representing <%= $project_metrics->{'SCM_FILES'} %></b> files.</li>
+                      <b><%= $project_metrics->{'SCM_COMMITS'} %></b> commits made by <b><%= $project_metrics->{'SCM_AUTHORS'} %></b> authors and <b><%= $project_metrics->{'SCM_COMMITTERS'} %></b> committers, representing <b><%= $project_metrics->{'SCM_FILES'} %></b> files.</li>
                     <li class="list-group-item"><b>Last month:</b> <br />
-                      <%= $project_metrics->{'SCM_COMMITS_30'} %> commits by <%= $project_metrics->{'SCM_AUTHORS_30'} %> authors.</li>
+                      <b><%= $project_metrics->{'SCM_COMMITS_30'} %></b> commits by <b><%= $project_metrics->{'SCM_AUTHORS_30'} %></b> authors.</li>
                     <li class="list-group-item"><b>Last year:</b> <br />
-                      <%= $project_metrics->{'SCM_COMMITS_365'} %> commits by <%= $project_metrics->{'SCM_AUTHORS_365'} %> authors.</li>
+                      <b><%= $project_metrics->{'SCM_COMMITS_365'} %></b> commits by <b><%= $project_metrics->{'SCM_AUTHORS_365'} %></b> authors.</li>
                   </ul>
                 </div>
               </div>
@@ -135,9 +135,9 @@
                       <b><%= $project_metrics->{'ITS_OPENED'} %></b> issues opened by <b><%= $project_metrics->{'ITS_OPENERS'} %></b> people<br />
                       <b><%= $project_metrics->{'ITS_CLOSED'} %></b> issues closed by<b> <%= $project_metrics->{'ITS_CLOSERS'} %></b> people.</li>
                     <li class="list-group-item"><b>Last month:</b> <br />
-                      <%= $project_metrics->{'ITS_PERCENTAGE_CLOSED_30'} %> % issues were closed by <%= $project_metrics->{'ITS_CLOSERS_30'} %> people.</li>
+                      <b><%= $project_metrics->{'ITS_PERCENTAGE_CLOSED_30'} %></b> % issues were closed by <b><%= $project_metrics->{'ITS_CLOSERS_30'} %></b> people.</li>
                     <li class="list-group-item"><b>Last year:</b> <br />
-                      <%= $project_metrics->{'ITS_PERCENTAGE_CLOSED_365'} %> % issues were closed by <%= $project_metrics->{'ITS_CLOSERS_365'} %> people.</li>
+                      <b><%= $project_metrics->{'ITS_PERCENTAGE_CLOSED_365'} %></b> % issues were closed by <b><%= $project_metrics->{'ITS_CLOSERS_365'} %></b> people.</li>
                   </ul>
                 </div>
               </div>
@@ -147,9 +147,9 @@
                     <li class="list-group-item"><b>Overall:</b> <br />
                       <b><%= $project_metrics->{'MLS_SENT'} %></b> messages sent by <b><%= $project_metrics->{'MLS_SENDERS'} %></b> authors in <b><%= $project_metrics->{'MLS_THREADS'} %></b> threads.</li>
                     <li class="list-group-item"><b>Last month:</b> <br />
-                      <%= $project_metrics->{'MLS_SENT_30'} %> messages sent by <%= $project_metrics->{'MLS_SENDERS_30'} %> authors.</li>
+                      <b><%= $project_metrics->{'MLS_SENT_30'} %></b> messages sent by <b><%= $project_metrics->{'MLS_SENDERS_30'} %></b> authors.</li>
                     <li class="list-group-item"><b>Last year:</b> <br />
-                      <%= $project_metrics->{'MLS_SENT_365'} %> messages sent by <%= $project_metrics->{'MLS_SENDERS_365'} %> authors.</li>
+                      <b><%= $project_metrics->{'MLS_SENT_365'} %></b> messages sent by <b><%= $project_metrics->{'MLS_SENDERS_365'} %></b> authors.</li>
                   </ul>
                 </div>
               </div>
