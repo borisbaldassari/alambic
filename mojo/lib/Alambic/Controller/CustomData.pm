@@ -15,6 +15,7 @@ sub add_to_project {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $conf = $self->al_plugins->get_plugin($cd)->get_conf();
@@ -84,6 +85,7 @@ sub add {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $plugin = $self->al_plugins->get_plugin($cd);
@@ -113,6 +115,7 @@ sub add_post {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $plugin = $self->al_plugins->get_plugin($cd);
@@ -143,6 +146,7 @@ sub add_post {
             # Render template 
             $self->flash( msg => 'No metric returned from custom data plugin.' );
             $self->redirect_to( "/admin/project/$project_id" );   
+            return;
     }
 
 
@@ -164,6 +168,7 @@ sub edit {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $plugin = $self->al_plugins->get_plugin($cd);

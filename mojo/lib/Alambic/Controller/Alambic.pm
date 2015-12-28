@@ -46,6 +46,7 @@ sub install {
     # Check that the connected user has the access rights for this
     if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
         $self->redirect_to( '/login' );
+        return;
     }
 
     # Render template "alambic/repo/init.html.ep"
@@ -59,6 +60,7 @@ sub install_post {
     # Check that the connected user has the access rights for this
     if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $title = $self->param( 'title' );

@@ -19,6 +19,7 @@ sub add_project {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $plugin = $self->al_plugins->get_plugin($ds);
@@ -49,6 +50,7 @@ sub add_project_post {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $conf = $self->al_plugins->get_plugin($ds)->get_conf();
@@ -64,6 +66,7 @@ sub add_project_post {
     # Render template 
     $self->flash( msg => "Plugin [$ds] added to project [$project_id]." );
     $self->redirect_to( "/admin/project/$project_id" );   
+
 }
 
 
@@ -81,6 +84,7 @@ sub del_project {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     $self->app->projects->delete_project_ds($project_id, $ds);
@@ -104,6 +108,7 @@ sub check_project {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $ret = $self->al_plugins->get_plugin($ds)->check_project($project_id);
@@ -131,6 +136,7 @@ sub project_retrieve_data {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $log = $self->al_plugins->get_plugin($ds)->retrieve_data($project_id);
@@ -155,6 +161,7 @@ sub project_compute_data {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $log_ref = $self->al_plugins->get_plugin($ds)->compute_data($project_id);

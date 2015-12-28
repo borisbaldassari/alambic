@@ -135,7 +135,6 @@ sub startup {
     # Figures
     $r->get('/projects/figures/#plugin/#project/#fig')->to('figures#plugins');
     
-    
     # Login form
     $r->get('/login')->to('alambic#login');
     $r->post('/login')->to('alambic#login_post');
@@ -158,6 +157,7 @@ sub startup {
     # Admin - Data sources
     $r->get('/admin/plugins')->to( 'admin#plugins' );
 
+    # Admin -- Summary
     $r->get('/admin/projects')->to( 'admin#projects_main' );
     $r->get('/admin/projects/new')->to( 'admin#project_add' );
     $r->post('/admin/projects/new')->to( 'admin#project_add_post' );

@@ -47,7 +47,7 @@ $t->get_ok('/admin/plugins')
 $t->get_ok('/admin/comments')
         ->status_is(200)
         ->content_like(qr'<a href="/admin/comments/tools.cdt/a/"><i class="fa fa-plus"></i></a>'i, 
-          'Check rights ok on modeling.gendoc.');
+          'Check rights ok on tools.cdt.');
 
 # Check protected pages in admin: Comments for specific project tools.cdt
 $t->get_ok('/admin/comments/tools.cdt')
@@ -80,8 +80,10 @@ $t->get_ok('/admin/users')
 # Now logout.
 $t->get_ok('/logout')
         ->status_is(200)
-        ->content_like(qr!<h1 class="al-h1"><small>Administration</small> Summary</h1>!i, 
-          'Check logout ok.');
+        ->content_like(qr!<h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>!i, 
+          'Check logout ok: welcome title.')
+        ->content_like(qr!<a href="/login"><i class="fa fa-user fa-fw fa-lg"></i>!i, 
+          'Check logout ok: login icon.');
 
 # Re-check protected pages in admin..
 $t->get_ok('/admin/read_files/models')
@@ -176,4 +178,4 @@ $t->get_ok('/admin/project/tools.cdt/del')
           'Check there is a login form when deleting project.');
 
 
-done_testing(87);
+done_testing(88);

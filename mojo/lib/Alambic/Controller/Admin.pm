@@ -222,8 +222,9 @@ sub projects_id($) {
              $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => 'You must be authenticated to access project management.' );
         $self->redirect_to( '/login' );
+        return;
     }
-    
+
     # Get list of files in input and data directories.
     my $dir_projects = $self->config->{'dir_data'};
     my @files_data = <${dir_projects}/${project_id}/*.*>;
@@ -257,6 +258,7 @@ sub users_main {
     unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/users' ) ) {
         $self->flash( msg => 'You must be authenticated to access users management.' );
         $self->redirect_to( '/login' );
+        return;
     }
     
     $self->render( template => 'alambic/admin/users' );
@@ -275,6 +277,7 @@ sub project_retrieve_data {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => "You must have rights on project $project_id to access this area." );
         $self->redirect_to( '/login' );
+        return;
     }
 
     push( @log, @{$self->app->projects->retrieve_project_data($project_id)} );
@@ -300,6 +303,7 @@ sub project_analyse {
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
         $self->flash( msg => "You must have rights on project $project_id to access this area." );
         $self->redirect_to( '/login' );
+        return;
     }
     push( @log, @{$self->app->projects->analyse_project($project_id)} );
     push( @log, "Data for project $project_id has been analysed." );
@@ -308,6 +312,7 @@ sub project_analyse {
 
     $self->flash( msg => $log_str );
     $self->redirect_to( "/admin/project/$project_id" );
+
 }
 
 1;

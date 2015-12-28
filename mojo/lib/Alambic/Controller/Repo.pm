@@ -11,6 +11,7 @@ sub init {
     # Check that the connected user has the access rights for this
     if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
         $self->redirect_to( '/login' );
+        return;
     }
 
     # Render template "alambic/repo/init.html.ep"
@@ -24,6 +25,7 @@ sub init_post {
     # Check that the connected user has the access rights for this
     if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $git_repo = $self->param( 'git_repo' );
@@ -42,6 +44,7 @@ sub push() {
     # Check that the connected user has the access rights for this
     if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
         $self->redirect_to( '/login' );
+        return;
     }
 
     my $ret = $self->repo->push();
