@@ -3,6 +3,7 @@ use Mojo::Base -strict;
 use Test::Mojo;
 use Test::More;
 use File::Path qw(remove_tree);
+use Data::Dumper;
 
 # Include application
 use FindBin;
@@ -48,8 +49,7 @@ $t->get_ok('/admin/project/modeling.sirius')
 # Add a few new data sources: eclipse_grimoire
 $t->post_ok('/admin/project/modeling.sirius/ds/eclipse_grimoire/new' => 
            form => {'project_id' => 'modeling.sirius', 
-                    'rsync_from_path' => '/home/vsacct/dashboards/PolarsysMaturity/json',
-                    'rsync_from_host' => 'boris@198.41.30.221'})
+                    'grimoire_url' => 'http://dashboard.eclipse.org/data/json/'})
     ->status_is(200)
     ->content_like(qr!Plugin \[eclipse_grimoire\] added to project \[modeling.sirius\].!, 
       'Msg ok is displayed.')
@@ -180,11 +180,12 @@ $t->get_ok('/admin/project/modeling.sirius/analyse')
 # TODO add test to push new snapshot twice (second should have nothing new to push).
 
 # Clean: remove project for data and projects
-my $ret = remove_tree('data/modeling.sirius', {verbose => 1});
-if ($ret != 0) { die "Could not delete data! \n" }
-$ret = remove_tree('projects/modeling.sirius', {verbose => 1});
-if ($ret != 0) { die "Could not delete data! \n" }
+my $ret = remove_tree('data/modeling.sirius/', {verbose => 1});
+print Dumper($ret);
+#if ($ret != 0) { die "Could not delete data! \n" }
+$ret = remove_tree('projects/modeling.sirius/', {verbose => 1});
+#if ($ret != 0) { die "Could not delete projects! \n" }
 $ret = remove_tree('.git', {verbose => 1});
-if ($ret != 0) { die "Could not delete data! \n" }
+#if ($ret != 0) { die "Could not delete .git! \n" }
 
-done_testing(44);
+done_testing(72);
