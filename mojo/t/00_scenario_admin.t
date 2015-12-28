@@ -180,12 +180,8 @@ $t->get_ok('/admin/project/modeling.sirius/analyse')
 # TODO add test to push new snapshot twice (second should have nothing new to push).
 
 # Clean: remove project for data and projects
-my $ret = remove_tree('data/modeling.sirius/', {verbose => 1});
-print Dumper($ret);
-#if ($ret != 0) { die "Could not delete data! \n" }
-$ret = remove_tree('projects/modeling.sirius/', {verbose => 1});
-#if ($ret != 0) { die "Could not delete projects! \n" }
-$ret = remove_tree('.git', {verbose => 1});
-#if ($ret != 0) { die "Could not delete .git! \n" }
+remove_tree('data/modeling.sirius/', {verbose => 1});
+remove_tree('projects/modeling.sirius/', {verbose => 1});
+remove_tree('.git', {verbose => 1});
 
 done_testing(72);
