@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use Mojo::JSON qw( decode_json encode_json );
-use LWP::Simple;
+use Mojo::UserAgent;
 use Data::Dumper;
 
 # Main configuration hash for the plugin
@@ -58,17 +58,19 @@ sub check_project() {
 
     my @log;
 
+    my $ua = Mojo::UserAgent->new;
+
     push( @log, "Checking [Plugins::EclipsePMI]..." );
 
     my ($url, $content);
     if ($project_id =~ m!^polarsys!) {
         $url = $polarsys_url . $project_id;
         push( @log, "Using PolarSys PMI infra at $url..." );
-        $content = get($url);
+        $content = $ua->get($url)->res->body;
     } else {
         $url = $eclipse_url . $project_id;
         push( @log, "Using Eclipse PMI infra at $url." );
-        $content = get($url);
+        $content = $ua->get($url)->res->body;
     }
     
     if (defined $content && $content =~ m!^{"projects":{"${project_id}!) {
@@ -89,16 +91,18 @@ sub retrieve_data($) {
     
     my @log;
 
+    my $ua = Mojo::UserAgent->new;
+
     # Fetch json file from projects.eclipse.org
     my ($url, $content);
     if ($project_pmi =~ m!^polarsys!) {
         $url = $polarsys_url . $project_pmi;
         push( @log, "Using PolarSys PMI infra at [$url]." );
-        $content = get($url);
+        $content = $ua->get($url)->res->body;
     } else {
         $url = $eclipse_url . $project_pmi;
         push( @log, "Using Eclipse PMI infra at [$url]." );
-        $content = get($url);
+        $content = $ua->get($url)->res->body;
     }
 
     my $pmi = decode_json($content);
@@ -127,9 +131,6 @@ sub compute_data($) {
     my %pmi;
     my %metrics;
 
-    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
-    my $project_pmi = $project_conf->{'project_id'};
-    
     # Read data from pmi file in $data_input
     my $json; 
     my $file = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_pmi.json";
@@ -180,6 +181,12 @@ sub compute_data($) {
     print $fh $json_metrics;
     close $fh;
 
+    $file_json_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_pmi.json";
+
+    $app->log->debug("[Plugins::EclipsePMI] Writing updated PMI json file to [$file_json_out].");
+    open $fh, ">", $file_json_out;
+    print $fh encode_json($raw_project);
+    close $fh;
 
     return ["Copied " . scalar ( keys %metrics ) . " metrics."];
 }
