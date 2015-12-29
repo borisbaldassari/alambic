@@ -171,9 +171,9 @@ sub _check_pmi() {
     if ( exists($raw_project->{'website_url'}->[0]->{'url'}) ) {
         $url = $raw_project->{'website_url'}->[0]->{"url"};
         $check->{'value'} = $url;
-        push( $check->{'results'}, &_check_url($url, 'Website') );
+        push( @{$check->{'results'}}, &_check_url($url, 'Website') );
     } else {
-        push( $check->{'results'}, "Failed: no URL defined for website_url.");
+        push( @{$check->{'results'}}, "Failed: no URL defined for website_url.");
     }
     $ret_check->{'checks'}->{'website_url'} = $check;
     
@@ -184,9 +184,9 @@ sub _check_pmi() {
     if ( exists($raw_project->{'wiki_url'}->[0]->{'url'}) ) {
         $url = $raw_project->{'wiki_url'}->[0]->{'url'};
         $check->{'value'} = $url;
-        push( $check->{'results'}, &_check_url($url, 'Wiki') );
+        push( @{$check->{'results'}}, &_check_url($url, 'Wiki') );
     } else {
-        push( $check->{'results'}, "Failed: no URL defined for wiki_url.");
+        push( @{$check->{'results'}}, "Failed: no URL defined for wiki_url.");
     }
     $ret_check->{'checks'}->{'wiki_url'} = $check;
     
@@ -197,9 +197,9 @@ sub _check_pmi() {
     if ( exists($raw_project->{'bugzilla'}->[0]->{'create_url'}) ) {
         $url = $raw_project->{'bugzilla'}->[0]->{'create_url'};
         $check->{'value'} = $url;
-        push( $check->{'results'}, &_check_url($url, 'Create') );
+        push( @{$check->{'results'}}, &_check_url($url, 'Create') );
     } else {
-        push( $check->{'results'}, "Failed: no URL defined for create_url.");
+        push( @{$check->{'results'}}, "Failed: no URL defined for create_url.");
     }
     $ret_check->{'checks'}->{'bugzilla_create_url'} = $check;
     
@@ -210,9 +210,9 @@ sub _check_pmi() {
     if ( exists($raw_project->{'bugzilla'}->[0]->{'query_url'}) ) {
         $url = $raw_project->{'bugzilla'}->[0]->{'query_url'};
         $check->{'value'} = $url;
-        push( $check->{'results'}, &_check_url($url, 'Query') );
+        push( @{$check->{'results'}}, &_check_url($url, 'Query') );
     } else {
-        push( $check->{'results'}, "Failed: no URL defined for query_url.");
+        push( @{$check->{'results'}}, "Failed: no URL defined for query_url.");
     }
     $ret_check->{'checks'}->{'bugzilla_query_url'} = $check;
     
@@ -223,9 +223,9 @@ sub _check_pmi() {
     if ( exists($raw_project->{'download_url'}->[0]->{'url'}) ) {
         $url = $raw_project->{'download_url'}->[0]->{'url'};
         $check->{'value'} = $url;
-        push( $check->{'results'}, &_check_url($url, 'Download') );
+        push( @{$check->{'results'}}, &_check_url($url, 'Download') );
     } else {
-        push( $check->{'results'}, "Failed: no URL defined for download_url.");
+        push( @{$check->{'results'}}, "Failed: no URL defined for download_url.");
     }
     $ret_check->{'checks'}->{'download_url'} = $check;
     
@@ -236,9 +236,9 @@ sub _check_pmi() {
     if ( exists($raw_project->{'gettingstarted_url'}->[0]->{'url'}) ) {
         $url = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
         $check->{'value'} = $url;
-        push( $check->{'results'}, &_check_url($url, 'Documentation') );
+        push( @{$check->{'results'}}, &_check_url($url, 'Documentation') );
     } else {
-        push( $check->{'results'}, "Failed: no URL defined for gettingstarted_url.");
+        push( @{$check->{'results'}}, "Failed: no URL defined for gettingstarted_url.");
     }
     $ret_check->{'checks'}->{'gettingstarted_url'} = $check;
     
@@ -249,9 +249,9 @@ sub _check_pmi() {
     if ( exists($raw_project->{'documentation_url'}->[0]->{'url'}) ) {
         $url = $raw_project->{'documentation_url'}->[0]->{'url'};
         $check->{'value'} = $url;
-        push( $check->{'results'}, &_check_url($url, 'Documentation') );
+        push( @{$check->{'results'}}, &_check_url($url, 'Documentation') );
     } else {
-        push( $check->{'results'}, "Failed: no URL defined for documentation_url.");
+        push( @{$check->{'results'}}, "Failed: no URL defined for documentation_url.");
     }
     $ret_check->{'checks'}->{'documentation_url'} = $check;
     
@@ -262,9 +262,9 @@ sub _check_pmi() {
     if ( exists($raw_project->{'plan_url'}->[0]->{'url'}) ) {
         $url = $raw_project->{'plan_url'}->[0]->{'url'};
         $check->{'value'} = $url;
-        push( $check->{'results'}, &_check_url($url, 'Plan') );
+        push( @{$check->{'results'}}, &_check_url($url, 'Plan') );
     } else {
-        push( $check->{'results'}, "Failed: no URL defined for plan.");
+        push( @{$check->{'results'}}, "Failed: no URL defined for plan.");
     }
     $ret_check->{'checks'}->{'plan_url'} = $check;
     
@@ -275,9 +275,9 @@ sub _check_pmi() {
     if ( exists($raw_project->{'proposal_url'}->[0]->{'url'}) ) {
         $url = $raw_project->{'proposal_url'}->[0]->{'url'};
         $check->{'value'} = $url;
-        push( $check->{'results'}, &_check_url($url, 'Proposal') );
+        push( @{$check->{'results'}}, &_check_url($url, 'Proposal') );
     } else {
-        push( $check->{'results'}, "Failed: no URL defined for proposal.");
+        push( @{$check->{'results'}}, "Failed: no URL defined for proposal.");
     }
     $ret_check->{'checks'}->{'proposal_url'} = $check;
     
@@ -288,9 +288,9 @@ sub _check_pmi() {
     if ( ref($raw_project->{'dev_list'}) =~ m!HASH! ) {
         $url = $raw_project->{'dev_list'}->{'url'};
         $check->{'value'} = $url;
-        push( $check->{'results'}, &_check_url($url, 'Dev ML') );
+        push( @{$check->{'results'}}, &_check_url($url, 'Dev ML') );
     } else {
-        push( $check->{'results'}, 'Failed: no dev mailing list defined.' );
+        push( @{$check->{'results'}}, 'Failed: no dev mailing list defined.' );
     }
     $ret_check->{'checks'}->{'dev_list'} = $check;
     
@@ -306,14 +306,14 @@ sub _check_pmi() {
             my $email = $ml->{'email'};
             $check->{'value'} = $url;
             if ($email =~ m!.+@.+!) {
-                push( $check->{'results'}, "OK. [$name] ML correctly defined with email." );
+                push( @{$check->{'results'}}, "OK. [$name] ML correctly defined with email." );
             } else {
-                push( $check->{'results'}, "Failed: no email defined on [$name] ML .")
+                push( @{$check->{'results'}}, "Failed: no email defined on [$name] ML .")
             }
-            push( $check->{'results'}, &_check_url($url, "[$name] ML") );
+            push( @{$check->{'results'}}, &_check_url($url, "[$name] ML") );
         }
     } else {
-        push( $check->{'results'}, 'Failed: no mailing list defined.' );
+        push( @{$check->{'results'}}, 'Failed: no mailing list defined.' );
     }
     $ret_check->{'checks'}->{'mailing_lists'} = $check;
     
@@ -328,14 +328,14 @@ sub _check_pmi() {
             my $name = $ml->{'name'};
             $check->{'value'} = $url;
             if ($name =~ m!\S+!) {
-                push( $check->{'results'}, "OK. Forum [$name] correctly defined." );
+                push( @{$check->{'results'}}, "OK. Forum [$name] correctly defined." );
             } else {
-                push( $check->{'results'}, "Failed: no name defined on forum.")
+                push( @{$check->{'results'}}, "Failed: no name defined on forum.")
             }
-            push( $check->{'results'}, &_check_url($url, "Forum [$name]") );
+            push( @{$check->{'results'}}, &_check_url($url, "Forum [$name]") );
         }
     } else {
-        push( $check->{'results'}, 'Failed: no forums defined.' );
+        push( @{$check->{'results'}}, 'Failed: no forums defined.' );
     }
     $ret_check->{'checks'}->{'forums'} = $check;
     
@@ -352,14 +352,14 @@ sub _check_pmi() {
             my $type = $ml->{'type'};
             $check->{'value'} = $url;
             if ($path =~ m!.+$! ) {
-                push( $check->{'results'}, "OK. Source repo [$name] type [$type] path [$path]." );
+                push( @{$check->{'results'}}, "OK. Source repo [$name] type [$type] path [$path]." );
             } else {
-                push( $check->{'results'}, "Failed. Source repo [$name] bad type [$type] or path [$path].");
+                push( @{$check->{'results'}}, "Failed. Source repo [$name] bad type [$type] or path [$path].");
             }
-            push( $check->{'results'}, &_check_url($url, "Source repo [$name]") );
+            push( @{$check->{'results'}}, &_check_url($url, "Source repo [$name]") );
         }
     } else {
-        push( $check->{'results'}, 'Failed. No source repo defined.' );
+        push( @{$check->{'results'}}, 'Failed. No source repo defined.' );
     }
     $ret_check->{'checks'}->{'source_repo'} = $check;
     
@@ -374,14 +374,14 @@ sub _check_pmi() {
             my $title = $us->{'title'};
             $check->{'value'} = $url;
             if ($title =~ m!\S+! ) {
-                push( $check->{'results'}, "OK. Update site [$title] has title." );
+                push( @{$check->{'results'}}, "OK. Update site [$title] has title." );
             } else {
-                push( $check->{'results'}, "Failed. Update site has no title.");
+                push( @{$check->{'results'}}, "Failed. Update site has no title.");
             }
-            push( $check->{'results'}, &_check_url($url, "Update site [$title]") );
+            push( @{$check->{'results'}}, &_check_url($url, "Update site [$title]") );
         }
     } else {
-        push( $check->{'results'}, 'Failed. No update site defined.' );
+        push( @{$check->{'results'}}, 'Failed. No update site defined.' );
     }
     $ret_check->{'checks'}->{'update_sites'} = $check;
     
@@ -397,22 +397,21 @@ sub _check_pmi() {
         
         my $url = $proj_ci . '/api/json?depth=1';
 
-        print "Retrieving CI data from [$url].\n";
         my $json_str = $ua->get($url)->res->body;
         if ($json_str =~ m!^\s*{!) { 
             my $content_tmp = decode_json($json_str);
             my $name = $content_tmp->{'assignedLabels'}->[0]->{'name'};
             
             if (defined($name)) {
-                push( $check->{'results'}, "OK. CI URL is a Hudson instance. Title is [$name]");
+                push( @{$check->{'results'}}, "OK. CI URL is a Hudson instance. Title is [$name]");
             } else { 
-                push( $check->{'results'}, 'Failed: CI URL is not the root of a Hudson instance.'); 
+                push( @{$check->{'results'}}, 'Failed: CI URL is not the root of a Hudson instance.'); 
             }
         } else {
-            push( $check->{'results'}, "Failed: could not decode Hudson JSON."); 
+            push( @{$check->{'results'}}, "Failed: could not decode Hudson JSON."); 
         }
     } else { 
-        push( $check->{'results'}, "Failed: could not get CI URL [$proj_ci]."); 
+        push( @{$check->{'results'}}, "Failed: could not get CI URL [$proj_ci]."); 
     }
     $ret_check->{'checks'}->{'build_url'} = $check;
     
@@ -430,20 +429,19 @@ sub _check_pmi() {
                 my $milestones = scalar @{$rel->{'milestones'}};
                 my $review_state = $rel->{'review'}->{'state'}->[0]->{'value'} || 'none';
                 my $rel_type = $rel->{'type'}->[0]->{'value'} || 1;
-                print "DBG [$title] type [$rel_type] and $date and " . time() . "\n";
                 if ( $rel_type < 3 && $date < time() ) {
                     if ( $review_state =~ m!success! ) {
-                        push( $check->{'results'}, "OK. Review for [$title] is 'success'." );
+                        push( @{$check->{'results'}}, "OK. Review for [$title] is 'success'." );
                     } else {
-                        push( $check->{'results'}, "Failed. Review for [$title] type [$rel_type] is [$review_state] on [$dateval].");
+                        push( @{$check->{'results'}}, "Failed. Review for [$title] type [$rel_type] is [$review_state] on [$dateval].");
                     }
                 }
             }
         } else {
-            push( $check->{'results'}, 'Failed. No release defined.' );
+            push( @{$check->{'results'}}, 'Failed. No release defined.' );
         }
     } else {
-        push( $check->{'results'}, 'Failed. No release defined.' );
+        push( @{$check->{'results'}}, 'Failed. No release defined.' );
     }
     $ret_check->{'checks'}->{'releases'} = $check;
 
