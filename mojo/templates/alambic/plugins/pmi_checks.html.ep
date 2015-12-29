@@ -1,0 +1,125 @@
+
+% sub ok_failed($) {
+%     my $str = shift;
+%     if ($str =~ m!^OK!) { 
+%         return '<span class="pull-right" style="color: #9dbe59"><i class="fa fa-check-circle"></i> &nbsp; ' . $str . '</span>';
+%     }
+%     return '<span class="pull-right" style="color: #e68570"><i class="fa fa-exclamation-circle"></i> &nbsp; ' . $str . '</span>';
+% }
+
+<h2>PMI Check page for project <%= $p->{'name'} %></h2>
+
+<br />
+
+<p>Information is retrieved from <code><a href="<%= $p->{'pmi_url'} %>"><%= $p->{'pmi_url'} %></a></code>. Last check was on <code><%= localtime($p->{'last_update'}) %></code>.</p>
+
+
+<h3 id="summary">Project summary</h3>
+
+<p><b>Title</b>: <%= $p->{'pmi'}->{'title'} %>.</p>
+<p><b>Description</b>: <%== $p->{'pmi'}->{'description'}->[0]->{'summary'} %></p>
+<p><b>Parent project</b>: <%= $p->{'pmi'}->{'parent_project'}->[0]->{'id'} %></p>
+
+<h3 id="summary">Documentation</h3>
+
+% my $ret = &ok_failed($p->{'checks'}->{'website_url'}->{'results'}->[0]);
+<p><b>Website</b>: <%= $p->{'checks'}->{'website_url'}->{'value'} %>
+<%== $ret %></p>
+
+% $ret = &ok_failed($p->{'checks'}->{'wiki_url'}->{'results'}->[0]);
+<p><b>Wiki</b>: <%= $p->{'checks'}->{'wiki_url'}->{'value'} %> 
+<%== $ret %>.</p>
+
+% $ret = &ok_failed($p->{'checks'}->{'documentation_url'}->{'results'}->[0]);
+<p><b>Documentation</b>: <%= $p->{'checks'}->{'documentation_url'}->{'value'} %> 
+<%== $ret %>.</p>
+
+% $ret = &ok_failed($p->{'checks'}->{'gettingstarted_url'}->{'results'}->[0]);
+<p><b>Getting started</b>: <%= $p->{'checks'}->{'gettingstarted_url'}->{'value'} %> 
+<%== $ret %>.</p>
+
+% $ret = &ok_failed($p->{'checks'}->{'download_url'}->{'results'}->[0]);
+<p><b>Download</b>: <%= $p->{'checks'}->{'download_url'}->{'value'} %> 
+<%== $ret %>.</p>
+
+% $ret = &ok_failed($p->{'checks'}->{'build_url'}->{'results'}->[0]);
+% my $ret2 = &ok_failed($p->{'checks'}->{'build_url'}->{'results'}->[1]);
+<p><b>Build URL</b>: <%= $p->{'checks'}->{'build_url'}->{'value'} %>
+<%== $ret %><br /> 
+<%== $ret2 %><br /></p>
+
+% $ret = &ok_failed($p->{'checks'}->{'plan_url'}->{'results'}->[0]);
+<p><b>Plan</b>: <%= $p->{'checks'}->{'plan_url'}->{'value'} %> 
+<%== $ret %>.</p>
+
+% $ret = &ok_failed($p->{'checks'}->{'proposal_url'}->{'results'}->[0]);
+<p><b>Proposal</b>: <%= $p->{'checks'}->{'proposal_url'}->{'value'} %> 
+<%== $ret %>.</p>
+
+<h3>Mailing list</h3>
+
+% $ret = &ok_failed($p->{'checks'}->{'dev_list'}->{'results'}->[0]);
+<p><b>Dev mailing list</b>  <br />
+<%= $p->{'checks'}->{'dev_list'}->{'value'} %> 
+<%== $ret %>.</p>
+
+<p><b>Forums</b>: <br />
+% foreach my $ml ( @{$p->{'checks'}->{'forums'}->{'results'}} ) {
+%   $ret = &ok_failed($ml);
+%   my $name;
+%   if ($ml =~ m!Forum \[([^]]+)\]!) { $name = $1; } 
+Forum [<%= $name %>] <%== $ret %><br />
+% }
+</p>
+
+<p><b>Other mailing list</b>:  <br />
+% foreach my $ml ( @{$p->{'checks'}->{'mailing_lists'}->{'results'}} ) {
+%   $ret = &ok_failed($ml);
+%   my $name;
+%   if ($ml =~ m!\[([^]]+)\] ML!) { $name = $1; } 
+ML [<%= $name %>] <%== $ret %><br />
+% }
+</p>
+
+<h3>Repositories</h3>
+
+<p><b>Bugzilla</b><br />
+Number of bugzilla entries: <%= defined($p->{'pmi'}->{'bugzilla'}) ? scalar @{$p->{'pmi'}->{'bugzilla'}} : 0 %><br />
+Product: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'product'} %> &mdash; Component: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'component'} %><br />
+% $ret = &ok_failed($p->{'checks'}->{'bugzilla_create_url'}->{'results'}->[0]);
+Create URL: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'create_url'} %> <%== $ret %><br />
+% $ret = &ok_failed($p->{'checks'}->{'bugzilla_query_url'}->{'results'}->[0]);
+Query URL: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'query_url'} %> <%== $ret %></p>
+
+<p><b>Source repositories</b> <br />
+% foreach my $ml ( @{$p->{'checks'}->{'source_repo'}->{'results'}} ) {
+%   my $ml2 = $ml;
+%   $ml2 =~ s!repo \[([^]]+)\]!repo!;
+%   my $name = $1;
+%   $ret = &ok_failed($ml);
+Source repository [<%= $name %>] <%== $ret %><br />
+% }
+</p>
+
+<p><b>Update sites</b> <br />
+% foreach my $ml ( @{$p->{'checks'}->{'update_sites'}->{'results'}} ) {
+%   $ret = &ok_failed($ml);
+%   my $name;
+%   if ($ml =~ m!Update site \[([^]]+)\]!) { $name = $1; } 
+Update site [<%= $name %>] <%== $ret %><br />
+% }
+</p>
+
+
+<h3 id="releases">Releases</h3>
+
+<p><b>Releases</b> <br />
+% foreach my $ml ( @{$p->{'checks'}->{'releases'}->{'results'}} ) {
+%   my $ml2 = $ml;
+%   $ml2 =~ s!Review for \[([^]]+)\]!Review!;
+%   my $name = $1;
+%   $ret = &ok_failed($ml);
+Release [<%= $name %>] <%== $ret %><br />
+% }
+</p>
+
