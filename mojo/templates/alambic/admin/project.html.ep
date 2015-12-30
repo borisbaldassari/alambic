@@ -46,7 +46,7 @@
 
             <h3>Automatic data sources</h3>
             <table class="table table-striped">
-              <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="4">Actions</th></tr>
+              <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="3">Actions</th></tr>
 % foreach my $ds ( sort keys %{ $info->{'ds'} } ) {
 %   my $plugin_name = 'Unknown';
 %   if (defined(al_plugins->get_plugin($ds))) {
@@ -60,7 +60,7 @@
 %   my $args_str = join( '<br />', sort @args_full );
                   <%== $args_str %>
                 </td>
-                <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/check"><i class="fa fa-check"></i></a></td>
+                <!-- td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/check"><i class="fa fa-check"></i></a></td -->
                 <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/retrieve"><i class="fa fa-download"></i></a></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/compute"><i class="fa fa-cogs"></i></a></td>
                 <td width="1cm"><a href="/admin/project/<%= $project %>/ds/<%= $ds %>/del"><i class="fa fa-ban"></i></a></td></tr>
