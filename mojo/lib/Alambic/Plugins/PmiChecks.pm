@@ -393,7 +393,7 @@ sub _check_pmi() {
     $check->{'value'} = $proj_ci;
     $check->{'desc'} = "Sends a get request to the given CI URL and looks at the headers in the response (200, 404..). Also checks if the URL is really a Hudson instance (through a call to its API).";
     if ($proj_ci =~ m!\S+! && $ua->get($proj_ci)) {
-        push( $check->{'results'}, "OK. Fetched CI URL."); 
+        push( @{$check->{'results'}}, "OK. Fetched CI URL."); 
         
         my $url = $proj_ci . '/api/json?depth=1';
 
