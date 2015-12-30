@@ -13,7 +13,7 @@ sub add_to_project {
     # Check that the connected user has the access rights for this
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->flash( msg => "You must have rights on project $project_id to access this area." );
         $self->redirect_to( '/login' );
         return;
     }
@@ -83,7 +83,7 @@ sub add {
     # Check that the connected user has the access rights for this
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->flash( msg => "You must have rights on project $project_id to access this area." );
         $self->redirect_to( '/login' );
         return;
     }
@@ -113,7 +113,7 @@ sub add_post {
     # Check that the connected user has the access rights for this
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->flash( msg => "You must have rights on project $project_id to access this area." );
         $self->redirect_to( '/login' );
         return;
     }
@@ -166,7 +166,7 @@ sub edit {
     # Check that the connected user has the access rights for this
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must have rights on project $project_id to access this area.' );
+        $self->flash( msg => "You must have rights on project $project_id to access this area." );
         $self->redirect_to( '/login' );
         return;
     }
