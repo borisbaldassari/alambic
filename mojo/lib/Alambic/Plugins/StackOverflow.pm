@@ -180,8 +180,16 @@ sub compute_data() {
     my @out = `$r_cmd`;
     print @out;
 
+    my $dir_out = $app->config->{'dir_input'} . "/" . $project_id . "/";
+
+    # Create dir for figures.
+    if (! -d "${dir_out}/figures/" ) {
+        print "Creating directory [${dir_out}/figures/].\n";
+        mkdir "${dir_out}/figures/";
+    }
+
     # Now move files to data/project
-    move( "${r_html_out}", $app->config->{'dir_input'} . "/" . $project_id . "/" );
+    move( "${r_html_out}", $dir_out );
     my $dir_out_fig = $app->config->{'dir_input'} . "/" . $project_id . "/figures/stack_overflow/";
     if ( -e $dir_out_fig ) {
         print "Target directory [$dir_out_fig] exists. Removing it.\n";
