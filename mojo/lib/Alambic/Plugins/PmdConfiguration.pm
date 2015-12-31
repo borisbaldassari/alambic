@@ -68,21 +68,22 @@ sub retrieve_data() {
     my $ua = Mojo::UserAgent->new;
 
     my $content_xml = $ua->get($url_xml)->res->body;    
-    my $file_xml_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_pmd_results.xml";
+    my $file_xml_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
+        . "_import_pmd_configuration_results.xml";
     $app->log->debug("[Plugins::PmdConfiguration] Writing XML results file to [$file_xml_out].");
     open my $fh, ">", $file_xml_out;
     print $fh $content_xml;
     close $fh;
-    push( @log, "Retrieved PMD XML file from [$url_xml].");
+    push( @log, "Retrieved PMD XML file from [$url_xml]. Lenght is " . length($content_xml) . ".");
 
     my $content_conf = $ua->get($url_conf)->res->body;    
     my $file_conf_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
-        . "_import_pmd_conf.xml";
+        . "_import_pmd_configuration_conf.xml";
     $app->log->debug("[Plugins::PmdConfiguration] Writing XML results file to [$file_conf_out].");
     open $fh, ">", $file_conf_out;
     print $fh $content_conf;
     close $fh;
-    push( @log, "Retrieved PMD configuration file from [$url_conf].");
+    push( @log, "Retrieved PMD configuration file from [$url_conf]. Lenght is " . length($content_conf) . ".");
 
     return \@log;
 }
@@ -286,7 +287,7 @@ sub compute_data() {
     print "DBG total_rokr = $total_rokr.\n";
     
     my $csv_main_out = "PMD version,Timestamp,ConfFile,NCC,RULES,RKO,ROK,ROKR\n";
-    $csv_main_out .= "$pmd_version,$pmd_timestamp,$total_ncc,$vol_rules,$total_rko,$total_rok,$total_rokr\n";
+    $csv_main_out .= "$pmd_version,$pmd_timestamp,,$total_ncc,$vol_rules,$total_rko,$total_rok,$total_rokr\n";
     
     push(@data_files, $csv_name);
     open( FHCSV, ">$csv_name" ) or die "Could not open $csv_name.\n";
@@ -338,20 +339,22 @@ sub compute_data() {
     return ["Done."];
 }
 
+
+#
+# Read the rules definition files for PMD. These are stored in a directory within 
+# the plugin dir. Returns a hash of rules.
+#
 sub _read_pmd_rules() {
 
     my %rules_def;
-    my $debug = 0;
 
     print "[PMD.pm] Reading rules definition from [$pmd_rules]. \n";
 
     my @rules_files = <$pmd_rules/*.xml>;
 
+    # For each file, read, parse and store it in %rules_def.
     foreach my $file_rules (@rules_files) {
 	my $ruleset = basename($file_rules);
-#    $rulesets_def{$ruleset}++;
-	
-#	print "[PMD.pm] Name of ruleset is [$file_rules]. \n" if ($debug);
 	
 	my $parser = XML::LibXML->new;
 	my $doc = $parser->parse_file($file_rules);
@@ -359,24 +362,15 @@ sub _read_pmd_rules() {
 	my @ruleset_node = $doc->getElementsByTagName("ruleset");
 	my $rules_name = $ruleset_node[0]->getAttribute("name");
 	
-	print "[PMD.pm] Ruleset name: ", $rules_name, "\n";
-	
 	# my $file_vol_rules;
 	my @rule_nodes = $ruleset_node[0]->getElementsByTagName("rule");
 	
-	print "[PMD.pm] DBG Size of ruleset " . scalar @rule_nodes . "\n" if ($debug);
-	
 	foreach my $rule_child ( @rule_nodes ) {
 	    my $rule_disabled = $rule_child->getAttribute("ref");
-	    if (defined($rule_disabled)) { print "[PMD.pm] DBG obsolete!\n" if ($debug); next; }
-	    
 	    my $rule_name = $rule_child->getAttribute("name");
-	    print "[PMD.pm] DBG reading rule def [$rule_name]." if ($debug);
-	    
-	    my $rule_desc = $rule_child->getAttribute("message");
+            my $rule_desc = $rule_child->getAttribute("message");
 	    my @rule_priority = $rule_child->getChildrenByTagName("priority");
 	    my $priority = $rule_priority[0]->textContent();
-	    print "priority [$priority].\n" if ($debug);
 	    
 	    $rules_def{ $ruleset }{ $rule_name }{ 'desc' } = $rule_desc;
 	    $rules_def{ $ruleset }{ $rule_name }{ 'pri' } = $priority;
@@ -388,6 +382,10 @@ sub _read_pmd_rules() {
 }
 
 
+#
+# Read the XML file used for PMD configuration. Returns a hash of 
+# rules used for this run, providing some info about each rule.
+#
 sub _read_pmd_conf($) {
     my $project_id = shift;
     my $rules_def = shift;
@@ -395,7 +393,7 @@ sub _read_pmd_conf($) {
     my $debug = 0;
     
     my $pmd_conf = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
-        . "_import_pmd_conf.xml";
+        . "_import_pmd_configuration_conf.xml";
 
     # Read pmd xml results file.
     my $parser = XML::LibXML->new;
@@ -419,7 +417,7 @@ sub _read_pmd_conf($) {
 	    $ruleset_name = basename($1);
 	    print "[PMD.pm] Selecting ruleset [$ruleset_name].";
 	    if (defined($2)) {
-		print "[PMD.pm]   Including rule $3.\n";
+		print "[PMD.pm]   Including rule $3.\n" if ($debug);
 		push( @included_rules, $3);
 	    } else {
 		print "[PMD.pm]   Whole ruleset selected $ruleset_name.\n";
@@ -454,38 +452,18 @@ sub _read_pmd_conf($) {
 
     return %rules;
 }
-    
-sub _read_pmd_xml_violations($) {
-    my $project_id = shift;
-    my $rules = shift;
-    
-    my %ret;
-    
-    my $pmd_xml = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
-        . "_import_pmd_results.xml";
-    
-    my $parser = XML::LibXML->new;
-    my $doc = $parser->parse_file($pmd_xml);
 
-    my $pmd_node = $doc->findnodes("/pmd");
-    $ret{'version'} = $pmd_node->[0]->getAttribute("version");
-    $ret{'timestamp'} = $pmd_node->[0]->getAttribute("timestamp");
 
-    my @violations_nodes = $doc->findnodes("//violation");
-    foreach my $violation (@violations_nodes) {
-	my $violation_name = $violation->getAttribute('rule');
-	
-	if (exists($rules->{$violation_name})) {
-	    $ret{'violations'}{ $violation_name }{ 'vol' }++;
-	    $ret{'violations'}{ $violation_name }{ 'pri' } = $violation->getAttribute('priority');
-	    $ret{'violations'}{ $violation_name }{ 'ruleset' } = $violation->getAttribute('ruleset');
-	}
-    }
-
-    return %ret;
-
-}
-
+#
+# Read the XML results file the PMD run. Returns a hash of 
+# information about the files and violations of this run.
+# %ret = {
+#   'version' => 'pmd version',
+#   'timestamp' => 'pmd run timestamp',
+#   'violations' => hash of information about violations.
+#   'files' => hash of information about faulty files.
+# }
+#
 sub _read_pmd_xml_files($) {
     my $project_id = shift;
     my $rules = shift;
@@ -493,7 +471,7 @@ sub _read_pmd_xml_files($) {
     my %ret;
 
     my $pmd_xml = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
-        . "_import_pmd_results.xml";
+        . "_import_pmd_configuration_results.xml";
     
     my $parser = XML::LibXML->new;
     my $doc = $parser->parse_file($pmd_xml);
@@ -502,6 +480,10 @@ sub _read_pmd_xml_files($) {
     $ret{'version'} = $pmd_node->[0]->getAttribute("version");
     $ret{'timestamp'} = $pmd_node->[0]->getAttribute("timestamp");
 
+    # XML results file is organised as follows: 
+    # <file name="file_name.java">
+    #   <violation rule="UncommentedEmptyConstructor" ruleset="Design"></violation>
+    # </file>
     my @files_nodes = $doc->findnodes("//file");
     foreach my $file (@files_nodes) {
         my $file_name = $file->getAttribute('name');
