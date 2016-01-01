@@ -30,8 +30,8 @@ my %conf = (
     ],
 );
 
-my $eclipse_url = "http://projects.eclipse.org/json/project/";
-my $polarsys_url = "http://polarsys.org/json/project/";
+my $eclipse_url = "https://projects.eclipse.org/json/project/";
+my $polarsys_url = "https://polarsys.org/json/project/";
 
 my $app;
 
@@ -63,6 +63,7 @@ sub retrieve_data() {
     my @log;
 
     my $ua = Mojo::UserAgent->new;
+    $ua->max_redirects(10);
 
     # Fetch json file from projects.eclipse.org
     my ($url, $content);
@@ -154,6 +155,7 @@ sub _check_pmi() {
     $ret_check->{'last_update'} = time();
     
     my $ua = Mojo::UserAgent->new;
+    $ua->max_redirects(10);
     
     # Test title
     my $proj_name = $raw_project->{'title'};
@@ -453,6 +455,8 @@ sub _check_url($$) {
     my $str = shift || '';
     
     my $ua = Mojo::UserAgent->new;
+    $ua->max_redirects(10);
+
     my $fetch_result;
     if ($ua->get($url)) {
         $fetch_result = "OK: $str <a href=\"$url\">URL</a> could be successfully fetched.";

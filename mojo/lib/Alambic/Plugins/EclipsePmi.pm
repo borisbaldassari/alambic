@@ -26,8 +26,8 @@ my %conf = (
 );
 
 
-my $eclipse_url = "http://projects.eclipse.org/json/project/";
-my $polarsys_url = "http://polarsys.org/json/project/";
+my $eclipse_url = "https://projects.eclipse.org/json/project/";
+my $polarsys_url = "https://polarsys.org/json/project/";
 
 # my @pmi_attrs = (
 #     "title", "desc", "id",
@@ -92,6 +92,7 @@ sub retrieve_data($) {
     my @log;
 
     my $ua = Mojo::UserAgent->new;
+    $ua->max_redirects(10);
 
     # Fetch json file from projects.eclipse.org
     my ($url, $content);
@@ -104,7 +105,9 @@ sub retrieve_data($) {
         push( @log, "Using Eclipse PMI infra at [$url]." );
         $content = $ua->get($url)->res->body;
     }
+    print "DBG $url.\n";
 
+    print Dumper($content);
     my $pmi = decode_json($content);
     my $custom_pmi;
     if ( defined($pmi->{'projects'}->{$project_pmi}) ) {
@@ -130,6 +133,10 @@ sub compute_data($) {
 
     my %pmi;
     my %metrics;
+    my @log;
+
+    my $ua = Mojo::UserAgent->new;
+    $ua->max_redirects(10);
 
     # Read data from pmi file in $data_input
     my $json; 
@@ -161,13 +168,13 @@ sub compute_data($) {
 	
         $pmi{"bugzilla_create_url"} = $raw_project->{"bugzilla"}->[0]->{"create_url"};
         if ($pmi{"bugzilla_create_url"} =~ m!\S+!) { $pub_its_info++ };
-        if (head($pmi{"bugzilla_create_url"})) {
+        if ($ua->head($pmi{"bugzilla_create_url"})) {
             $pub_its_info++; 
         }
 
         $pmi{"bugzilla_query_url"} = $raw_project->{"bugzilla"}->[0]->{"query_url"};
         if ($pmi{"bugzilla_query_url"} =~ m!\S+!) { $pub_its_info++; }
-        if (head($pmi{"bugzilla_query_url"})) {
+        if ($ua->head($pmi{"bugzilla_query_url"})) {
             $pub_its_info++;
         }
     }	
