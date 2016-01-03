@@ -14,13 +14,14 @@
                 <th width="20%">Value</th>
               </tr>
 % foreach my $item (sort keys %{$project_metrics}) {
-%     next if (not exists $metrics->{$item});
+%     if ($metrics->{$item} || defined($all)) { 
               <tr>
                 <td><a href="/documentation/metrics.html#<%= $item %>"><%= $metrics->{$item}->{'name'} %></a></td>
                 <td><a href="/documentation/metrics.html#<%= $item %>"><%= $item %></a></td>
                 <td><span class="label label-scale" style="background-color: <%= comp_c($project_inds->{$item}) %>"><%= $project_inds->{$item} %></span></td>
                 <td><%= eval sprintf( "%.2f", $project_metrics->{$item}) %> (was: <%= eval sprintf( "%.2f", $project_metrics_last->{$item} || 0) %>)</td>
               </tr>
+%   }
 % }
             </table>
 

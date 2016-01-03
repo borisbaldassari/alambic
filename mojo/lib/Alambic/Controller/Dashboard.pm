@@ -57,12 +57,14 @@ sub display {
         # Render template "alambic/dashboard/questions.html.ep"
         $self->render(template => 'alambic/dashboard/questions');
         
-    } elsif ($page_id =~ m!^metrics$!) {
+    } elsif ($page_id =~ m!^metrics!) {
         
         my %metrics = %{$self->models->get_metrics()};
+        my $all = $self->param('all');
 
         # Prepare data for template.
         $self->stash(
+            all => $all,
             metrics => \%metrics,
             project_id => $project_id,
             project_metrics => $self->app->projects->get_project_metrics($project_id),
@@ -130,7 +132,8 @@ sub display {
     } else {
         
         my %cds;
-        foreach my $cd ( keys %{$self->app->projects->get_project_info($project_id)->{'cdata'}} ) {
+#        my @cdata = keys %{$self->app->projects->get_project_info($project_id)->{'cdata'}};
+        foreach my $cd ( () ) {
             $cds{$cd} = $self->app->projects->get_project_cd_content($project_id, $cd);
         }
 
