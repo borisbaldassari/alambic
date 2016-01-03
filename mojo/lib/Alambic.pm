@@ -157,7 +157,7 @@ sub startup {
     # Admin - Data sources
     $r->get('/admin/plugins')->to( 'admin#plugins' );
 
-    # Admin -- Summary
+    # Admin -- manage projects
     $r->get('/admin/projects')->to( 'admin#projects_main' );
     $r->get('/admin/projects/new')->to( 'admin#project_add' );
     $r->post('/admin/projects/new')->to( 'admin#project_add_post' );

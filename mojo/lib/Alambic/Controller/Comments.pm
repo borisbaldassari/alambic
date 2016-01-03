@@ -72,8 +72,6 @@ sub edit_post($) {
 
     my $project_id = $self->param( 'project' );
 
-    print "[Controller::Comments] edit_post user $self->session->{session_user} project $project_id.\n";
-
     # Check that the current user has the access rights for this
     unless (
         exists( $self->session->{session_user} ) &&
