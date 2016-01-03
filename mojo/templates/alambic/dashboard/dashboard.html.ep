@@ -1,10 +1,5 @@
 
-% sub comp_p($) {
-%   my $value = shift || 0;
-%   return $value * 20;
-% }
-
-<% my $attribute = begin %>
+<% my $trend_icon = begin %>
  % my $attr = shift;
  % my $v_now = $project_attrs->{$attr} || 0;
  % my $v_before = $project_attrs_last->{$attr} || 0;
@@ -13,13 +8,8 @@
  % if ($diff > 0) { $icon = "fa-arrow-up fa-rotate-p45" }
  % elsif ($diff < 0) { $icon = "fa-arrow-down fa-rotate-m45" }
  % elsif ($diff == 0) { $icon = "fa-arrow-right" }
- % else { $icon = "help" }
-                      <dt><a href="/documentation/attributes.html#<%= $attr %>"><%= $attributes->{$attr}->{'name'} %></a> &nbsp; <a href="#" data-toggle="tooltip" title="Previous value: <%= $v_before %>"><i class="fa <%= $icon %>"></i></a> <span class="pull-right">( <%= $project_attrs_conf->{$attr} %> metrics )</span></dt>
-                      <dd>
-                        <div class="progress">
-                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project_attrs->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= comp_c( $project_attrs->{$attr} ) %>; width: <%= &comp_p( $project_attrs->{$attr} ) %>%;"><%= $project_attrs->{$attr} %> / 5</div>
-                        </div>
-                      </dd>
+ % else { $icon = "fa-help" }
+  <a href="#" data-toggle="tooltip" title="Previous value: <%= $v_before %>"><i class="fa <%= $icon %>"></i></a>
 <% end %>
 
             <h1 class="al-h1"><small><%= $project_id %></small> Summary</h1>
@@ -33,7 +23,14 @@
               <div class="col-sm-6">
                 <dl class="dl-vertical">
                   <dt>Description</dt>
-                  <dd><%== app->projects->get_project_pmi($project_id)->{'description'}->[0]->{'safe_summary'} %></dd>
+                  <dd>
+                    <%== app->projects->get_project_pmi($project_id)->{'description'}->[0]->{'safe_summary'} %>
+                    <span class="label" style="background-color: #3E3F3A">#3E3F3A</span>
+                    <span class="label" style="background-color: #FFA500">#FFA500</span>
+                    <span class="label" style="background-color: #5884B3">#5884B3</span>
+                    <span class="label" style="background-color: #CC6686">#CC6686</span>
+                    <span class="label" style="background-color: #9DBE59">#9DBE59</span>
+                  </dd>
                 </dl>
               </div>
               <div class="col-sm-6">
@@ -43,28 +40,50 @@
     
             <div class="row">
               <div class="col-md-4">
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Rating for main quality attributes</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #5884B3; color: #ffffff">Highlights</div>
                   <div class="panel-body">
-                    <dl>
-                      <dt>Completeness of metrics</dt>
-                      <dd>
-                        <div class="progress">
-% my $main_attr = $project_attrs_conf->{'QM_QUALITY'} || "0 / 0";
-% my ($conf_v, $conf_m) = split( ' / ', $main_attr );
-% $conf_m = 1 if ($conf_m == 0);
-% my $conf_percent = int( $conf_v * 100 / $conf_m );
-                          <div class="progress-bar" role="progressbar" aria-valuenow="<%= $conf_v %>" aria-valuemin="0" aria-valuemax="<%= $conf_m %>"  style="background-color: <%= app->comp_c( $conf_percent / 20 ) %>;width: <%= $conf_percent %>%;"><%= $project_attrs_conf->{'QM_QUALITY'} %></div>
-                        </div>
-                      </dd>
-                      <%= $attribute->('QM_ECOSYSTEM') %>
-                      <%= $attribute->('QM_PROCESS') %>
-                      <%= $attribute->('QM_PRODUCT') %>
-                    </dl>
+                    <div class="row">
+                      <div class="col-md-6 text-center">
+                        <span style="font-size: 250%"><%= $project_attrs_conf->{'QM_QUALITY'} %></span><br />
+                        Completeness
+                      </div>
+                      <div class="col-md-6 text-center">
+                        <span style="font-size: 250%; font-weight: bold; color: #9DBE59"><%= scalar keys %{$project_metrics} %></span> <br />
+                        Metrics
+                      </div>
+                    </div><br />
+                    <div class="row">
+                      <div class="col-md-6 text-center">
+                        <span style="font-size: 250%; font-weight: bold; color: #CC6686"><%= $project_attrs->{'QM_ECOSYSTEM'} %></span> <span style="font-size: 150%">/ 5</span><br />
+                        Ecosystem <%= $trend_icon->('QM_ECOSYSTEM') %>
+                      </div>
+                      <div class="col-md-6 text-center">
+                        <span style="font-size: 250%; font-weight: bold; color: #CC6686"><%= $project_attrs->{'QM_PROCESS'} %></span> <span style="font-size: 150%">/ 5</span><br />
+                        Process <%= $trend_icon->('QM_PROCESS') %>
+                      </div>
+                    </div><br />      
+                    <div class="row">
+                      <div class="col-md-4 text-center">
+                        <span style="font-size: 250%; font-weight: bold; color: #FFA500"><%= $project_metrics->{'SCM_COMMITS_30'} %></span><br />
+                        Commits <%= $trend_icon->('SCM_COMMITS_30') %> <br />
+                        last month
+                      </div>
+                      <div class="col-md-4 text-center">
+                        <span style="font-size: 250%; font-weight: bold; color: #FFA500"><%= $project_metrics->{'ITS_CLOSED_30'} %></span><br />
+                        Issues closed <%= $trend_icon->('ITS_CLOSED_30') %> <br />
+                        last month
+                      </div>
+                      <div class="col-md-4 text-center">
+                        <span style="font-size: 250%; font-weight: bold; color: #FFA500"><%= $project_metrics->{'MLS_SENT_30'} %></span><br />
+                        Mails sent <%= $trend_icon->('MLS_SENT_30') %> <br />
+                        last month
+                      </div>
+                    </div>                      
                   </div>
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">PMI Summary</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #5884B3; color: #ffffff">PMI Summary</div>
                   <ul class="list-group">
                     <li class="list-group-item"><span class="fa fa-dashboard"></span> &nbsp; Eclipse Dashboard <a href="">Not defined</a></li>
                     <li class="list-group-item"><span class="fa fa-globe"></span> &nbsp; Web <a href="<%= $project_pmi->{'website_url'}->[0]->{'url'} %>"><%= $project_pmi->{'website_url'}->[0]->{'url'} || "Not Defined" %></a></li>
@@ -76,7 +95,7 @@
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Comments</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #5884B3; color: #ffffff">Manual Data</div>
                   <ul class="list-group">
 % foreach my $comment ( @{$project_comments} ) {
                     <li class="list-group-item">
@@ -92,8 +111,6 @@
                         Add a comment? (Authentication required)</a>
                     </li>
                   </ul>
-                </div>
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Manual data</div>
                   <ul class="list-group">
 % foreach my $cd ( keys %{$project_cdata} ) {
 %   my $cdata_name = al_plugins->get_plugin($cd)->get_conf()->{'name'} || "Unknown";
@@ -106,7 +123,7 @@
 % }
                   </ul>
                 </div>
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Visualisation plugins</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #5884B3; color: #ffffff">Visualisation plugins</div>
                   <ul class="list-group">
 % foreach my $plugin ( keys %{app->projects->get_project_viz($project_id)} ) {
                     <li class="list-group-item"><a href="/projects/<%= $project_id %>_plugins_<%= $plugin %>.html"><%= $plugin %></a></li>
@@ -117,48 +134,48 @@
             </div>
             <div class="row">
               <div class="col-md-4">
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Configuration management</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #5884B3; color: #ffffff">Configuration management</div>
                   <ul class="list-group">
                     <li class="list-group-item"><b>Overall:</b> <br />
-                      <b><%= $project_metrics->{'SCM_COMMITS'} %></b> commits made by <b><%= $project_metrics->{'SCM_AUTHORS'} %></b> authors and <b><%= $project_metrics->{'SCM_COMMITTERS'} %></b> committers, representing <b><%= $project_metrics->{'SCM_FILES'} %></b> files.</li>
+                      <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'SCM_COMMITS'} %></b> commits made by <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'SCM_AUTHORS'} %></b> authors and <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'SCM_COMMITTERS'} %></b> committers, representing <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'SCM_FILES'} %></b> files.</li>
                     <li class="list-group-item"><b>Last month:</b> <br />
-                      <b><%= $project_metrics->{'SCM_COMMITS_30'} %></b> commits by <b><%= $project_metrics->{'SCM_AUTHORS_30'} %></b> authors.</li>
+                      <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'SCM_COMMITS_30'} %></b> commits by <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'SCM_AUTHORS_30'} %></b> authors.</li>
                     <li class="list-group-item"><b>Last year:</b> <br />
-                      <b><%= $project_metrics->{'SCM_COMMITS_365'} %></b> commits by <b><%= $project_metrics->{'SCM_AUTHORS_365'} %></b> authors.</li>
+                      <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'SCM_COMMITS_365'} %></b> commits by <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'SCM_AUTHORS_365'} %></b> authors.</li>
                   </ul>
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Issue Tracking System</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #5884B3; color: #ffffff">Issue Tracking System</div>
                   <ul class="list-group">
                     <li class="list-group-item"><b>Overall:</b> <br />
-                      <b><%= $project_metrics->{'ITS_OPENED'} %></b> issues opened by <b><%= $project_metrics->{'ITS_OPENERS'} %></b> people<br />
-                      <b><%= $project_metrics->{'ITS_CLOSED'} %></b> issues closed by<b> <%= $project_metrics->{'ITS_CLOSERS'} %></b> people.</li>
+                      <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'ITS_OPENED'} %></b> issues opened by <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'ITS_OPENERS'} %></b> people<br />
+                      <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'ITS_CLOSED'} %></b> issues closed by<b style="color: #FFA500; font-size: 110%"> <%= $project_metrics->{'ITS_CLOSERS'} %></b> people.</li>
                     <li class="list-group-item"><b>Last month:</b> <br />
-                      <b><%= $project_metrics->{'ITS_PERCENTAGE_CLOSED_30'} %></b> % issues were closed by <b><%= $project_metrics->{'ITS_CLOSERS_30'} %></b> people.</li>
+                      <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'ITS_PERCENTAGE_CLOSED_30'} %></b> % of issues were closed by <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'ITS_CLOSERS_30'} %></b> people.</li>
                     <li class="list-group-item"><b>Last year:</b> <br />
-                      <b><%= $project_metrics->{'ITS_PERCENTAGE_CLOSED_365'} %></b> % issues were closed by <b><%= $project_metrics->{'ITS_CLOSERS_365'} %></b> people.</li>
+                      <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'ITS_PERCENTAGE_CLOSED_365'} %></b> % of issues were closed by <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'ITS_CLOSERS_365'} %></b> people.</li>
                   </ul>
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Mailing lists</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #5884B3; color: #ffffff">Mailing lists</div>
                   <ul class="list-group">
                     <li class="list-group-item"><b>Overall:</b> <br />
-                      <b><%= $project_metrics->{'MLS_SENT'} %></b> messages sent by <b><%= $project_metrics->{'MLS_SENDERS'} %></b> authors in <b><%= $project_metrics->{'MLS_THREADS'} %></b> threads.</li>
+                      <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'MLS_SENT'} %></b> messages sent by <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'MLS_SENDERS'} %></b> authors in <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'MLS_THREADS'} %></b> threads.</li>
                     <li class="list-group-item"><b>Last month:</b> <br />
-                      <b><%= $project_metrics->{'MLS_SENT_30'} %></b> messages sent by <b><%= $project_metrics->{'MLS_SENDERS_30'} %></b> authors.</li>
+                      <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'MLS_SENT_30'} %></b> messages sent by <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'MLS_SENDERS_30'} %></b> authors.</li>
                     <li class="list-group-item"><b>Last year:</b> <br />
-                      <b><%= $project_metrics->{'MLS_SENT_365'} %></b> messages sent by <b><%= $project_metrics->{'MLS_SENDERS_365'} %></b> authors.</li>
+                      <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'MLS_SENT_365'} %></b> messages sent by <b style="color: #FFA500; font-size: 110%"><%= $project_metrics->{'MLS_SENDERS_365'} %></b> authors.</li>
                   </ul>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-md-4">
-                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #4793FF; color: #ffffff">Stack Overflow</div>
+                <div class="panel" style="border-color: #3E3F3A"><div class="panel-heading" style="border-color: #3E3F3A; background-color: #5884B3; color: #ffffff">Stack Overflow</div>
                   <div class="panel-body">
-                    <img src="figures/stack_overflow/<%= $project_id %>/blob-so-plot-1.svg" class="img-responsive" alt="No data."/>
+                    <a href="/projects/<%= ${project_id} %>_plugins_stack_overflow.html"><img src="figures/stack_overflow/<%= $project_id %>/blob-so-plot-1.svg" class="img-responsive" alt="No data."/></a>
                   </div>
                 </div>
               </div>
@@ -172,4 +189,5 @@
 % my $info = app->projects->get_project_info($project_id);
             <p class="pull-right">Last analysis was on <%= defined( $info->{'last_analysis'} ) ? "" . localtime( $info->{'last_analysis'} ) : 'Never' %>.</p>
             <br />
+
 
