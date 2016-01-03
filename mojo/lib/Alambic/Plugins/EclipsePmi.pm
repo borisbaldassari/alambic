@@ -19,6 +19,8 @@ my %conf = (
     },
     "provides_metrics" => {
         
+        "PUB_SCM_INFO_PMI" => "PUB_SCM_INFO_PMI",
+        "PUB_ITS_INFO_PMI" => "PUB_ITS_INFO_PMI",
     },
     "provides_files" => [
         "pmi", 
@@ -60,7 +62,7 @@ sub check_project() {
 
     my $ua = Mojo::UserAgent->new;
 
-    push( @log, "Checking [Plugins::EclipsePMI]..." );
+    push( @log, "Checking [Plugins::EclipsePMI] for [$project_id]..." );
 
     my ($url, $content);
     if ($project_id =~ m!^polarsys!) {
@@ -105,9 +107,8 @@ sub retrieve_data($) {
         push( @log, "Using Eclipse PMI infra at [$url]." );
         $content = $ua->get($url)->res->body;
     }
-    print "DBG $url.\n";
 
-    print Dumper($content);
+    # Check if we actually get some results.
     my $pmi = decode_json($content);
     my $custom_pmi;
     if ( defined($pmi->{'projects'}->{$project_pmi}) ) {
@@ -150,7 +151,7 @@ sub compute_data($) {
     };
 
     # Decode the entire JSON
-    my $raw_project = decode_json( $json );
+    my $raw_project = decode_json( $json ) or return [ "ERROR: Could not decode json: \n$json" ];;
 
     # Retrieve basic information about the project
     $pmi{"title"} = $raw_project->{"title"};
@@ -179,6 +180,25 @@ sub compute_data($) {
         }
     }	
     $metrics{"PUB_ITS_INFO_PMI"} = $pub_its_info;
+
+    # Retrieve information about source repos
+    my $pub_scm_info = 0;
+    if (scalar @{$raw_project->{"source_repo"}} > 0) {
+	$pmi{"source_repo_type"} = $raw_project->{"source_repo"}->[0]->{"type"};
+	if ($pmi{"source_repo_type"} =~ m!\S+!) { $pub_scm_info += 2; };
+
+	$pmi{"source_repo_name"} = $raw_project->{"source_repo"}->[0]->{"name"};
+	if ($pmi{"source_repo_name"} =~ m!\S+!) { $pub_scm_info++ };
+
+	$pmi{"source_repo_url"} = $raw_project->{"source_repo"}->[0]->{"url"};
+	if ($pmi{"source_repo_url"} =~ m!\S+!) { $pub_scm_info++ };
+	if ($ua->head($pmi{"source_repo_url"})) {
+	    $pub_scm_info++;
+	    $app->log->info( "  Got git url [" . $pmi{"source_repo_url"} . "]!" ); 
+	}
+
+    }
+    $metrics{"PUB_SCM_INFO_PMI"} = $pub_scm_info;
 
     my $json_metrics = encode_json(\%metrics);
 
