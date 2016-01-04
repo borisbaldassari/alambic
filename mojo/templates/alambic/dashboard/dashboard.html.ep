@@ -25,11 +25,11 @@
                   <dt>Description</dt>
                   <dd>
                     <%== app->projects->get_project_pmi($project_id)->{'description'}->[0]->{'safe_summary'} %>
-                    <span class="label" style="background-color: #3E3F3A">#3E3F3A</span>
-                    <span class="label" style="background-color: #FFA500">#FFA500</span>
-                    <span class="label" style="background-color: #5884B3">#5884B3</span>
-                    <span class="label" style="background-color: #CC6686">#CC6686</span>
-                    <span class="label" style="background-color: #9DBE59">#9DBE59</span>
+                    <!-- <span class="label" style="background-color: #3E3F3A">#3E3F3A</span> -->
+                    <!-- <span class="label" style="background-color: #FFA500">#FFA500</span> -->
+                    <!-- <span class="label" style="background-color: #5884B3">#5884B3</span> -->
+                    <!-- <span class="label" style="background-color: #CC6686">#CC6686</span> -->
+                    <!-- <span class="label" style="background-color: #9DBE59">#9DBE59</span> -->
                   </dd>
                 </dl>
               </div>
