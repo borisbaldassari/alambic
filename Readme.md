@@ -19,10 +19,10 @@ Alambic is notably used by (and is actually derived from) the [PolarSys dashboar
 
 # More information
 
-The project is hosted at [http://bitbucket.org](BitBucket): https://bitbucket.org/BorisBaldassari/alambic
+The project is hosted at [BitBucket](http://bitbucket.org): https://bitbucket.org/BorisBaldassari/alambic
 
 * Bug tracking can be done at https://bitbucket.org/BorisBaldassari/alambic/issues
 * Wiki and documentation can be found at https://bitbucket.org/BorisBaldassari/alambic/wiki/
 * Source can be viewed (and pull requests generated) at https://bitbucket.org/BorisBaldassari/alambic/overview
 
-The [http://castalia.camp/alambic](Castalia Camp web site) provides a few more information and examples, along with links to existing instances of Alambic for known forges. 
+The [Castalia Camp web site](http://castalia.camp/alambic) provides a few more information and examples, along with links to existing instances of Alambic for known forges.
