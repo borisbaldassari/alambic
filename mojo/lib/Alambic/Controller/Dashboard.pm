@@ -145,6 +145,7 @@ sub display {
             project_attrs_conf => $self->app->projects->get_project_attrs_conf($project_id),
             project_attrs_last => $self->app->projects->get_project_attrs_last($project_id),
             project_metrics => $self->app->projects->get_project_metrics($project_id),
+            project_metrics_last => $self->app->projects->get_project_metrics_last($project_id),
             project_pmi => $self->app->projects->get_project_pmi($project_id),
             project_comments => $self->app->projects->get_project_comments($project_id),
             project_cdata => \%cds,

@@ -11,7 +11,7 @@ use Data::Dumper;
 my %conf = (
     "id" => "data_openness_rating",
     "name" => "Custom Data: Openness rating",
-    "desc" => "Proposes a survey to evaluate the openness of the project. See ref [xxx]  for more information.",
+    "desc" => "Proposes a survey to evaluate the openness of the project. See ref [xxx] for more information.",
     "ability" => [ "metrics", "files"],
     "requires" => {
         "project_id" => "default value",

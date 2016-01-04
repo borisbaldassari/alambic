@@ -9,7 +9,8 @@
             <p><b>Description</b> <br />
               <%== app->al_config->get_desc() %></p>
 
-                <hr />
+            <hr />
+
             <div class="row">
               <div class="col-lg-6">
 

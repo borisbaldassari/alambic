@@ -1,8 +1,21 @@
 
-<% my $trend_icon = begin %>
+<% my $trend_icon_attr = begin %>
  % my $attr = shift;
  % my $v_now = $project_attrs->{$attr} || 0;
  % my $v_before = $project_attrs_last->{$attr} || 0;
+ % my $diff = $v_now - $v_before;
+ % my $icon;
+ % if ($diff > 0) { $icon = "fa-arrow-up fa-rotate-p45" }
+ % elsif ($diff < 0) { $icon = "fa-arrow-down fa-rotate-m45" }
+ % elsif ($diff == 0) { $icon = "fa-arrow-right" }
+ % else { $icon = "fa-help" }
+  <a href="#" data-toggle="tooltip" title="Previous value: <%= $v_before %>"><i class="fa <%= $icon %>"></i></a>
+<% end %>
+
+<% my $trend_icon_metrics = begin %>
+ % my $attr = shift;
+ % my $v_now = $project_metrics->{$attr} || 0;
+ % my $v_before = $project_metrics_last->{$attr} || 0;
  % my $diff = $v_now - $v_before;
  % my $icon;
  % if ($diff > 0) { $icon = "fa-arrow-up fa-rotate-p45" }
@@ -55,27 +68,27 @@
                     <div class="row">
                       <div class="col-md-6 text-center">
                         <span style="font-size: 250%; font-weight: bold; color: #CC6686"><%= $project_attrs->{'QM_ECOSYSTEM'} %></span> <span style="font-size: 150%">/ 5</span><br />
-                        Ecosystem <%= $trend_icon->('QM_ECOSYSTEM') %>
+                        Ecosystem <%= $trend_icon_attr->('QM_ECOSYSTEM') %>
                       </div>
                       <div class="col-md-6 text-center">
                         <span style="font-size: 250%; font-weight: bold; color: #CC6686"><%= $project_attrs->{'QM_PROCESS'} %></span> <span style="font-size: 150%">/ 5</span><br />
-                        Process <%= $trend_icon->('QM_PROCESS') %>
+                        Process <%= $trend_icon_attr->('QM_PROCESS') %>
                       </div>
                     </div><br />      
                     <div class="row">
                       <div class="col-md-4 text-center">
                         <span style="font-size: 250%; font-weight: bold; color: #FFA500"><%= $project_metrics->{'SCM_COMMITS_30'} %></span><br />
-                        Commits <%= $trend_icon->('SCM_COMMITS_30') %> <br />
+                        Commits <%= $trend_icon_metrics->('SCM_COMMITS_30') %> <br />
                         last month
                       </div>
                       <div class="col-md-4 text-center">
                         <span style="font-size: 250%; font-weight: bold; color: #FFA500"><%= $project_metrics->{'ITS_CLOSED_30'} %></span><br />
-                        Issues closed <%= $trend_icon->('ITS_CLOSED_30') %> <br />
+                        Issues closed <%= $trend_icon_metrics->('ITS_CLOSED_30') %> <br />
                         last month
                       </div>
                       <div class="col-md-4 text-center">
                         <span style="font-size: 250%; font-weight: bold; color: #FFA500"><%= $project_metrics->{'MLS_SENT_30'} %></span><br />
-                        Mails sent <%= $trend_icon->('MLS_SENT_30') %> <br />
+                        Mails sent <%= $trend_icon_metrics->('MLS_SENT_30') %> <br />
                         last month
                       </div>
                     </div>                      
