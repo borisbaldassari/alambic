@@ -1,0 +1,68 @@
+
+<% my $icon_ability = begin %>
+ % my $ability = shift;
+ % my $icon;
+ % if ($ability =~ m!metrics!) { $icon = "fa-tasks" }
+ % elsif ($ability =~ m!files!) { $icon = "fa-file-o" }
+ % elsif ($ability =~ m!viz!) { $icon = "fa-pie-chart" }
+ % else { $icon = "fa-question" }
+  <a href="#" data-toggle="tooltip" title="<%= $ability %>"><i class="fa <%= $icon %>"></i> <%= $ability %></a>
+<% end %>
+
+            <h1 class="al-h1"><small>Documentation</small> Plugins</h1>
+            <br />
+
+            <p>Plugins add new functionalities to Alambic. They most notably provide new data sources for projects, computing and visualisation features, and can be easily customised to fit specific needs.</p>
+
+            <h3>Automatic data source plugins</h3>
+            <br />
+
+            <ul class="list-group">
+% my $pis_list = al_plugins->get_list_pis();
+% foreach my $pi (sort @{$pis_list}) {
+%   my $conf = al_plugins->get_plugin($pi)->get_conf();
+              <li class="list-group-item">
+                <p><b><%= $conf->{'name'} %></b> &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><b>ID</b>: <%= $conf->{'id'} %></p>
+                    <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'requires'}} ) %></p>                    
+                    <p><b>Description</b>: <%= $conf->{'desc'} %></p>
+                  </div>
+                  <div class="col-md-6">
+                    <p><b>Provides metrics</b><br />
+                    <%= join( ', ', map { $conf->{'provides_metrics'}->{$_} } keys %{$conf->{'provides_metrics'}} ) %></p>
+                    <p><b>Provides files</b> <%= join( ', ', map { '*_' . $_ . '.json' } @{$conf->{'provides_files'}} ) %></p>
+                  </div>
+                </div>
+              </li>
+% }
+            </ul>
+
+            <hr />
+
+            <h3>Manual data sources plugins</h3>
+            <br />
+
+            <ul class="list-group">
+% my $cds_list = al_plugins->get_list_cds();
+% foreach my $cd (sort @{$cds_list}) {
+%   my $conf = al_plugins->get_plugin($cd)->get_conf();
+              <li class="list-group-item">
+                <p><b><%= $conf->{'name'} %></b> &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><b>ID</b>: <%= $conf->{'id'} %></p>
+                    <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'requires'}} ) %></p>                    
+                    <p><b>Description</b>: <%= $conf->{'desc'} %></p>
+                  </div>
+                  <div class="col-md-6">
+                    <p><b>Provides metrics</b><br />
+                    <%= join( ', ', @{$conf->{'provides_metrics'}} ) %></p>
+                    <p><b>Provides files</b> <%= join( ', ', map { '*_' . $_ . '.json' } @{$conf->{'provides_files'}} ) %></p>
+                  </div>
+                </div>
+              </li>
+% }
+            </ul>
+
