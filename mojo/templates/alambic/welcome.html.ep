@@ -21,24 +21,23 @@
             <div class="row">
               <div class="col-lg-6">
                 <div class="panel panel-default">
-                  <div class="panel-heading"><i class="fa fa-life-ring fa-fw"></i> Documentation</div>
+                  <div class="panel-heading"><a href="documentation/main.html"><i class="fa fa-life-ring fa-fw"></i> Documentation</a></div>
                   <div class="list-group">
+                    <a href="documentation/plugins.html" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Plugins (data sources, visualisation)</a>
                     <a href="documentation/quality_model.html" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; The full quality model</a>
                     <a href="documentation/attributes.html" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Quality attributes definition</a>
                     <a href="documentation/questions.html" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Questions definition</a>
                     <a href="documentation/metrics.html" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Metrics definition</a>
-                    <a href="documentation/rules.html" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Rules (PMD, FindBugs)</a>
                     <a href="documentation/references.html" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; References</a>
                   </div>
                 </div>
                 <br />
 
                 <div class="panel panel-default">
-                  <div class="panel-heading"><i class="fa fa-wrench fa-fw"></i> &nbsp; Administration tools</div>
+                  <div class="panel-heading"><a href="admin/summary"><i class="fa fa-wrench fa-fw"></i> &nbsp; Administration tools</a></div>
                   <div class="list-group">
-                    <a href="admin/summary" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Main administration panel</a>
                     <a href="admin/projects" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Projects management</a>
-                    <a href="comments/" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Comments</a>
+                    <a href="comments/" class="list-group-item"><i class="fa fa-file-o"></i> &nbsp; Comments management</a>
                   </div>
                 </div>
               </div>
