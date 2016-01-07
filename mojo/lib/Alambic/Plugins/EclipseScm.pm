@@ -66,9 +66,18 @@ sub retrieve_data($) {
     my $project_grim = $project_conf->{'project_id'};
     
     my @log;
-    my $url = "http://dashboard.eclipse.org/data/json/" 
-        . $project_grim 
-        . "-scm-prj-static.json";
+
+    my $url;
+    if ($project_id =~ m!^polarsys!) {
+        $url = "http://dashboard.eclipse.org/data/json/polarsys/" 
+            . $project_grim 
+            . "-its-prj-static.json";
+    } else {
+        $url = "http://dashboard.eclipse.org/data/json/" 
+            . $project_grim 
+            . "-its-prj-static.json";
+    }
+
     my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_scm.json";
     push( @log, "Retrieving [$url] to [$file_out].\n" );
     
