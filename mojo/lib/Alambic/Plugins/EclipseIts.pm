@@ -15,7 +15,6 @@ my %conf = (
     "desc" => "Retrieves bug tracking system data from the Eclipse dashboard repository. This plugin will look for a file named project-its-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
     "ability" => [ "metrics" ],
     "requires" => {
-        "grimoire_url" => "http://dashboard.eclipse.org/data/json/",
         "project_id" => "",
     },
     "provides_metrics" => {
