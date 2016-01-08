@@ -3,6 +3,7 @@
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation"<%== ( $current =~ m!^/admin/summary$! ) ? ' class="active"' : '' %>><a href="/admin/summary">Summary</a></li>
                 <li role="presentation"<%== ( $current =~ m!^/admin/repo$! ) ? ' class="active"' : '' %>><a href="/admin/repo">Repo</a></li>
+                <li role="presentation"<%== ( $current =~ m!^/admin/jobs$! ) ? ' class="active"' : '' %>><a href="/admin/jobs">Jobs</a></li>
                 <li role="presentation"<%== ( $current =~ m!^/admin/cdata! ) ? ' class="active"' : '' %>><a href="/admin/cdata">Custom Data</a></li>
                 <li role="presentation"<%== ( $current =~ m!^/admin/plugins! ) ? ' class="active"' : '' %>><a href="/admin/plugins">Plugins</a></li>
                 <li role="presentation"<%== ( $current =~ m!^/admin/comments$! ) ? ' class="active"' : '' %>><a href="/admin/comments">Comments</a></li>

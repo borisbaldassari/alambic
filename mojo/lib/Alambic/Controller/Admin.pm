@@ -276,8 +276,6 @@ sub users_main {
 sub project_retrieve_data {
     my $self = shift;
     
-    my @log;
-
     my $project_id = $self->param( 'id' );
     $self->app->log->info("[Controller::Admin] project_retrieve_data $project_id.");
     
@@ -289,12 +287,9 @@ sub project_retrieve_data {
         return;
     }
 
-    push( @log, @{$self->app->projects->retrieve_project_data($project_id)} );
-    push( @log, "Data for project $project_id has been retrieved." );
+    my $job = $self->minion->enqueue(retrieve_project => [ $project_id ] => { delay => 0 });
 
-    my $log_str = join( '<br />', @log );
-
-    $self->flash( msg => $log_str );
+    $self->flash( msg => "Job [$job] has been queued." );
     $self->redirect_to( "/admin/project/$project_id" );
 
 }

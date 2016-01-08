@@ -9,9 +9,12 @@ use Alambic::Model::Users;
 use Alambic::Model::Repo;
 use Alambic::Model::Plugins;
 
+use Minion;
+
 use Data::Dumper;
 
 use File::ChangeNotify;
+
 
 my $app;
 
@@ -35,8 +38,11 @@ sub startup {
     # Use Config plugin for basic configuration
     my $config = $app->plugin('Config');
     
+    # Use Minion for job queuing.
+    $app->plugin( Minion => {Pg => 'postgresql://alambic:pass4alambic@/alambic_db'} );
+
     # Use application logger
-    $app->app->log->info('Comments application started.');
+    $app->app->log->info('Alambic application started.');
 
     # Helpers definition
     $app->plugin('Alambic::Model::Helpers');
@@ -111,6 +117,36 @@ sub startup {
         $app->defaults(layout => 'default');
     }
 
+    # MINION management
+
+    # Set parameters
+    $app->minion->remove_after(86400);
+
+    # Add task to retrieve ds data
+    $app->minion->add_task( retrieve_data_ds => sub {
+        my ($job, $ds, $project_id) = @_;
+        my $log_ref = $app->al_plugins->get_plugin($ds)->retrieve_data($project_id);
+        my @log = @{$log_ref};
+        $job->finish(\@log);
+    } );
+
+    # Add task to compute ds data
+    $app->minion->add_task( compute_data_ds => sub {
+        my ($job, $ds, $project_id) = @_;
+        my $log_ref = $app->al_plugins->get_plugin($ds)->compute_data($project_id);
+        my @log = @{$log_ref};
+        $job->finish(\@log);
+    } );
+    
+    # Add task to compute ds data
+    $app->minion->add_task( retrieve_project => sub {
+        my ($job, $project_id) = @_;
+        my $log_ref = $app->projects->retrieve_project_data($project_id);
+        my @log = @{$log_ref};
+        $job->finish(\@log);
+    } );
+    
+
     # Router
     my $r = $app->routes;
     
@@ -147,6 +183,11 @@ sub startup {
     $r->get('/admin/install')->to('alambic#install');
     $r->post('/admin/install')->to('alambic#install_post');
     
+    # Job management
+    $r->get('/admin/jobs')->to( 'jobs#summary' );
+    $r->get('/admin/jobs/#id')->to( 'jobs#display' );
+    $r->get('/admin/jobs/#id/del')->to( 'jobs#delete' );
+
     # Admin - Repository
     $r->get('/admin/repo')->to( 'admin#repo' );
     $r->get('/admin/repo/init')->to( 'repo#init' );

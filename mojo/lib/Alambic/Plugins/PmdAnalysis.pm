@@ -67,6 +67,7 @@ sub retrieve_data() {
     my @log;
     my $ua = Mojo::UserAgent->new;
 
+    print "DBG before get_pmd_xml. $url_xml.\n";
     my $content_xml = $ua->get($url_xml)->res->body;    
     my $file_xml_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
         . "_import_pmd_analysis_results.xml";
@@ -96,15 +97,16 @@ sub compute_data() {
     my @data_files;
     my $dir_out = $app->config->{'dir_input'} . "/" . $project_id . "/";
 
-    print "Reading rules from [$pmd_rules].\n";
+    print "DEBUG HERE $project_id!\n";
+    $app->log->debug( "Reading rules from [$pmd_rules]." );
     my %rules_def = &_read_pmd_rules();
 
-    print "Reading configuration file for project.\n";
+    $app->log->debug( "Reading configuration file for project." );
     my %rules = &_read_pmd_conf($project_id, \%rules_def);
 #    print Dumper(%rules);
     
     my $vol_rules = scalar keys %rules;
-    print "Selected a total of [$vol_rules] rules.\n\n";
+    $app->log->debug( "Selected a total of [$vol_rules] rules." );
 
     # Read violations from xml file
     my $total_ncc;
@@ -127,7 +129,7 @@ sub compute_data() {
 
     # Write rules to a csv file
     my $csv_name = $file_id . "_analysis_rules.csv";
-    print "\nWriting rules to file [$csv_name]..\n";
+    $app->log->debug( "Writing rules to file [$csv_name]." );
     
     # Compute the rate of broken rules for each priority.
     my %rules_ok;
@@ -136,7 +138,7 @@ sub compute_data() {
         if (exists($violations{$rule})) {
             $rules_ok{$prio}{'nok'}++;
         } else {
-	$rules_ok{$prio}{'ok'}++;
+            $rules_ok{$prio}{'ok'}++;
         }
     }
 
@@ -200,7 +202,7 @@ sub compute_data() {
     
     # Write violations to CSV.
     $csv_name = $file_id . "_analysis_violations.csv";
-    print "\nWriting violations to file [$csv_name]..\n";
+    $app->log->debug( "\nWriting violations to file [$csv_name].." );
     
     push(@data_files, $csv_name);
     open( FHCSV, ">$csv_name" ) or die "Could not open $csv_name.\n";
@@ -208,7 +210,7 @@ sub compute_data() {
     close FHCSV;
 
     # Format and write number of violations by file.
-    print "Computing NCC by file.\n";
+    $app->log->debug( "Computing NCC by file." );
     my $csv_files_out = "File,NCC,NCC_1,NCC_2,NCC_3,NCC_4,RKO,ROK,ROKR\n";
 
     # Loop over files and compute rate of acquired practices, 
@@ -218,7 +220,7 @@ sub compute_data() {
         my $rko = scalar keys %{$files{$file}{'rules'}};
         my $rok = $vol_rules - $rko;
         my $rokr = 100 * $rok / $vol_rules;
-        print " rokr $rokr.\n" if ($debug);
+        $app->log->debug( " rokr $rokr." ) if ($debug);
         my $ncc_1 = $files{$file}{'pri'}{1} || 0;
         my $ncc_2 = $files{$file}{'pri'}{2} || 0;
         my $ncc_3 = $files{$file}{'pri'}{3} || 0;
@@ -231,7 +233,7 @@ sub compute_data() {
     
     # Write files to a csv file
     $csv_name = $file_id . "_analysis_files.csv";
-    print "Writing files to file [$csv_name]..\n";
+    $app->log->debug( "Writing files to file [$csv_name].." );
 
     push(@data_files, $csv_name);
     open( FHCSV, ">$csv_name" ) or die "Could not open $csv_name.\n";
@@ -240,7 +242,7 @@ sub compute_data() {
 
     # Write a summary of the run.
     $csv_name = $file_id . "_analysis_main.csv";
-    print "Writing main pmd file [$csv_name]..\n";
+    $app->log->debug( "Writing main pmd file [$csv_name].." );
     
     my $total_rok = $vol_rules - $total_rko;
     print "DBG total_rok = $total_rok. vol_rules = $vol_rules.\n";
@@ -260,7 +262,7 @@ sub compute_data() {
     my $r_html_out = "${project_id}_pmd_analysis.inc";
 
     chdir $r_dir;
-    print "#############################\n" . Dumper(`ls`);
+    $app->log->debug( "#############################\n" . Dumper(`ls`) );
     $app->log->info( "Executing R script [$r_html] in [$r_dir] with [$project_id]." );
     $app->log->info( "Result to be stored in [$r_html_out]." );
 
@@ -272,31 +274,31 @@ sub compute_data() {
 
     $app->log->info( "Exec [$r_cmd]." );
     my @out = `$r_cmd`;
-    print @out;
+    $app->log->debug( @out );
 
     # Now move files to data/project
     move( "${r_html_out}", $dir_out );
     # Move all data files to target dir.
     foreach my $file (@data_files) {
-        print "Moving $file to $dir_out.\n";
+        $app->log->debug( "Moving $file to $dir_out." );
         my $ret = move($file, $dir_out);
-        print "DBG $ret $!.\n" if ($debug);
+        $app->log->debug( "DBG $ret $!." ) if ($debug);
     }
 
     # Create dir for figures.
     if (! -d "${dir_out}/figures/" ) {
-        print "Creating directory [${dir_out}/figures/].\n";
+        $app->log->debug( "Creating directory [${dir_out}/figures/]." );
         mkdir "${dir_out}/figures/";
     }
 
     # Now move figures to data/project
     my $dir_out_fig = $dir_out . "/figures/pmd_analysis/";
     if ( -e $dir_out_fig ) {
-        print "Target directory [$dir_out_fig] exists. Removing it.\n";
+        $app->log->debug( "Target directory [$dir_out_fig] exists. Removing it." );
         my $ret = remove_tree($dir_out_fig, {verbose => 1});
     }
     my $ret = move('figures/pmd_analysis/' . $project_id . '/', $dir_out_fig);
-    print "Moved figures from ${r_dir}/figures to $dir_out_fig. ret $ret.\n";
+    $app->log->debug( "Moved figures from ${r_dir}/figures to $dir_out_fig. ret $ret." );
 
     return ["Done."];
 }
