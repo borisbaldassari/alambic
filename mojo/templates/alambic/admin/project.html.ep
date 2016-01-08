@@ -34,11 +34,12 @@
               <div class="col-sm-6">
                 <br />
                 <div class="list-group">
-                  <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-bars"></i> &nbsp; Return to projets</a>
-                  <a class="list-group-item" href="/admin/projects/new?id=<%= $info->{'id'} %>&name=<%= $info->{'name'} %>&is_active=<%= $info->{'is_active'} %>" role="button"><i class="fa fa-edit"></i> &nbsp; Edit information</a>
-                  <a class="list-group-item" href="/admin/project/<%= $project %>/retrieve" role="button"><i class="fa fa-download"></i> &nbsp; Retrieve all data</a>
-                  <a class="list-group-item" href="/admin/project/<%= $project %>/analyse" role="button"><i class="fa fa-cogs"></i> &nbsp; Analyse all data</a>
-                  <a class="list-group-item" href="/projects/<%= $project %>" role="button"><i class="fa fa-dashboard"></i> &nbsp; Project dashboard</a>
+                  <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Return to projets</a>
+                  <a class="list-group-item" href="/admin/projects/new?id=<%= $info->{'id'} %>&name=<%= $info->{'name'} %>&is_active=<%= $info->{'is_active'} %>" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Edit information</a>
+                  <a class="list-group-item" href="/admin/project/<%= $project %>/run" role="button"><i class="fa fa-fw fa-rocket"></i> &nbsp; Run project</a>
+                  <a class="list-group-item" href="/admin/project/<%= $project %>/retrieve" role="button"><i class="fa fa-fw fa-angle-double-down"></i> &nbsp; Retrieve all data</a>
+                  <a class="list-group-item" href="/admin/project/<%= $project %>/analyse" role="button"><i class="fa fa-fw fa-bullhorn"></i> &nbsp; Publish data</a>
+                  <a class="list-group-item" href="/projects/<%= $project %>" role="button"><i class="fa fa-fw fa-dashboard"></i> &nbsp; Project dashboard</a>
                 </div>
 
               </div>

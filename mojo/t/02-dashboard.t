@@ -14,23 +14,23 @@ $t->get_ok('/projects/tools.cdt.html')
         ->status_is(200)
         ->content_like(qr!<h1 class="al-h1"><small>tools.cdt</small> Summary</h1>!i, 
           'Project title is ok.')
-        ->content_like(qr!<span style="color: #DA7A08; font-size: 200%">12 / 13</span>!i, 
+        ->content_like(qr!<span style="font-size: 250%">12 / 13</span><br />!i, 
           'Colour and numbers of completeness are ok.')
-        ->content_like(qr!style="background-color: #66D91A; width: 84%;">4.2 / 5!i, 
-          'Ecosystem assessment is correct for the project')
+        ->content_like(qr!color: #CC6686">4.2</span>!i, 
+          'Process assessment is correct for the project')
         ->content_like(qr!Web <a href="http://www.eclipse.org/cdt">http://www.eclipse.org/cdt!i, 
           'PMI web is correct for the project')
         ->content_like(qr!<a href="/admin/comments/tools.cdt/a">\s+<div class="pull-right"><span class="fa fa-plus"></span></div>\s+Add a comment\? \(Authentication required\)</a>!i, 
           'Comments field is displayed.')
         ->content_like(qr!<a href="/admin/comments/tools.cdt/e/1451253372">!i, 
           'There is one comment displayed.')
-        ->content_like(qr!<b>35796</b> commits!i, 
+        ->content_like(qr!<b style="color: #FFA500; font-size: 110%">35796</b> commits!i, 
           'Number of commits is correct.')
-        ->content_like(qr!<b>16869</b> issues opened!i, 
+        ->content_like(qr!<b style="color: #FFA500; font-size: 110%">16869</b> issues opened!i, 
           'Number of issues opened is ok.')
-        ->content_like(qr!<b>25898</b> messages sent!i, 
+        ->content_like(qr!<b style="color: #FFA500; font-size: 110%">25898</b> messages sent!i, 
           'Number of messages sent is correct.')
-        ->content_like(qr!<div class="panel-heading">Manual data</div>!i, 
+        ->content_like(qr!<div class="panel-heading" .+ color: #ffffff">Manual data</div>!i, 
           'Manual data field is displayed.');
 
 # Check the quality model

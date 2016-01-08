@@ -87,15 +87,21 @@ sub get_layout() {
     return $config{'layout'};
 }
 
-sub set_conf($$$) {
+sub get_pg() {
+    return $config{'conf_pg'};
+}
+
+sub set_conf($$$$) {
     my $self = shift;
     my $title = shift;
     my $name = shift;
     my $desc = shift;
+    my $conf_pg = shift;
 
     $config{'title'} = $title;
     $config{'name'} = $name;
     $config{'desc'} = $desc;
+    $config{'conf_pg'} = $conf_pg;
 
     # Write new values to file.
     &write_files($self);

@@ -9,9 +9,12 @@ use Alambic::Model::Users;
 use Alambic::Model::Repo;
 use Alambic::Model::Plugins;
 
+use Minion;
+
 use Data::Dumper;
 
 use File::ChangeNotify;
+
 
 my $app;
 
@@ -36,7 +39,7 @@ sub startup {
     my $config = $app->plugin('Config');
     
     # Use application logger
-    $app->app->log->info('Comments application started.');
+    $app->app->log->info('Alambic application started.');
 
     # Helpers definition
     $app->plugin('Alambic::Model::Helpers');
@@ -111,6 +114,57 @@ sub startup {
         $app->defaults(layout => 'default');
     }
 
+    # MINION management
+
+    # Use Minion for job queuing.
+    $app->plugin( Minion => {Pg => $app->al_config->get_pg('conf_pg')} );
+
+    # Set parameters.
+    # Automatically remove jobs from queue after one day. 86400 is one day.
+    $app->minion->remove_after(86400);
+
+    # Add task to retrieve ds data
+    $app->minion->add_task( retrieve_data_ds => sub {
+        my ($job, $ds, $project_id) = @_;
+        my $log_ref = $app->al_plugins->get_plugin($ds)->retrieve_data($project_id);
+        my @log = @{$log_ref};
+        $job->finish(\@log);
+    } );
+
+    # Add task to compute ds data
+    $app->minion->add_task( compute_data_ds => sub {
+        my ($job, $ds, $project_id) = @_;
+        my $log_ref = $app->al_plugins->get_plugin($ds)->compute_data($project_id);
+        my @log = @{$log_ref};
+        $job->finish(\@log);
+    } );
+    
+    # Add task to retrieve all data for a project
+    $app->minion->add_task( retrieve_project => sub {
+        my ($job, $project_id) = @_;
+        my $log_ref = $app->projects->retrieve_project_data($project_id);
+        my @log = @{$log_ref};
+        $job->finish(\@log);
+    } );
+    
+    # Add task to compute all data for a project
+    $app->minion->add_task( compute_project => sub {
+        my ($job, $project_id) = @_;
+        my $log_ref = $app->projects->analyse_project($project_id);
+        my @log = @{$log_ref};
+        $job->finish(\@log);
+    } );
+    
+    # Add task to run both retrieval and analysis for a project
+    $app->minion->add_task( run_project => sub {
+        my ($job, $project_id) = @_;
+        my $log_ref_retrieve = $app->projects->retrieve_project_data($project_id);
+        my $log_ref_analyse = $app->projects->analyse_project($project_id);
+        my @log = ( @{$log_ref_retrieve}, @{$log_ref_analyse} );
+        $job->finish(\@log);
+    } );
+    
+
     # Router
     my $r = $app->routes;
     
@@ -147,6 +201,12 @@ sub startup {
     $r->get('/admin/install')->to('alambic#install');
     $r->post('/admin/install')->to('alambic#install_post');
     
+    # Job management
+    $r->get('/admin/jobs')->to( 'jobs#summary' );
+    $r->get('/admin/jobs/#id')->to( 'jobs#display' );
+    $r->get('/admin/jobs/#id/del')->to( 'jobs#delete' );
+    $r->get('/admin/jobs/#id/rec')->to( 'jobs#redo' );
+
     # Admin - Repository
     $r->get('/admin/repo')->to( 'admin#repo' );
     $r->get('/admin/repo/init')->to( 'repo#init' );
@@ -163,6 +223,7 @@ sub startup {
     $r->post('/admin/projects/new')->to( 'admin#project_add_post' );
     $r->get('/admin/project/#id/retrieve')->to( 'admin#project_retrieve_data' );
     $r->get('/admin/project/#id/analyse')->to( 'admin#project_analyse' );
+    $r->get('/admin/project/#id/run')->to( 'admin#project_run' );
     $r->get('/admin/project/#id/del')->to( 'admin#project_del' );
     $r->get('/admin/project/#id')->to( 'admin#projects_id' );
 

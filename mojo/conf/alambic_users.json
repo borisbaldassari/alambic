@@ -10,6 +10,7 @@
               "/admin/read_files",
               "/admin/projects",
               "/admin/users",
+              "/admin/jobs",
               "/admin/repo",
               "/admin/plugins"
           ],

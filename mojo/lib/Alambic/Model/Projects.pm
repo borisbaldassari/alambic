@@ -523,13 +523,10 @@ sub retrieve_project_data() {
     foreach my $ds ( sort keys %{$projects_info{$project_id}{'ds'}} ) {
         if ( grep( $ds, @{$ds_list} ) ) {
             push( @log, "Plugin [$ds]:" );
-            my @ret2;
-            foreach my $line ( @{$self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id)} ) {
-                chomp $line;
-                push( @ret2, "&nbsp; &nbsp; $line" );
-            }
-            push( @log, @ret2 );
-            push( @log, map {"  " . $_} @{$self->{app}->al_plugins->get_plugin($ds)->compute_data($project_id)} );
+            push( @log, map {"&nbsp; &nbsp; " . $_} 
+                  @{$self->{app}->al_plugins->get_plugin($ds)->retrieve_data($project_id)} );
+            push( @log, map {"&nbsp; &nbsp; " . $_} 
+                  @{$self->{app}->al_plugins->get_plugin($ds)->compute_data($project_id)} );
         } else {
             $self->{app}->log->warn("[Model::Projects.pm] retrieve_project_data Cannot recognise ds [$ds]."); 
             push( @log, "[Model::Projects.pm] retrieve_project_data Cannot recognise ds [$ds]." );

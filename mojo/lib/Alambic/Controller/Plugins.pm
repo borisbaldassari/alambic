@@ -1,6 +1,8 @@
 package Alambic::Controller::Plugins;
 
 use Mojo::Base 'Mojolicious::Controller';
+use Mojo::IOLoop;
+use Minion;
 
 use Data::Dumper;
 
@@ -139,10 +141,10 @@ sub project_retrieve_data {
         return;
     }
 
-    my $log = $self->al_plugins->get_plugin($ds)->retrieve_data($project_id);
-    $self->flash( msg => join( '<br />', @{$log} ) );
-    
-    # Render template 
+    my $job = $self->minion->enqueue(retrieve_data_ds => [ $ds, $project_id ] => { delay => 0 });
+    push( @log, "Job [$job] has been queued." );
+
+    $self->flash( msg => join( '<br />', @log ) );
     $self->redirect_to( "/admin/project/$project_id" );   
 }
 
@@ -152,6 +154,8 @@ sub project_retrieve_data {
 #
 sub project_compute_data {
     my $self = shift;
+
+    my @log;
 
     my $project_id = $self->param( 'id' );
     my $ds = $self->param( 'ds' );
@@ -164,12 +168,14 @@ sub project_compute_data {
         return;
     }
 
-    my $log_ref = $self->al_plugins->get_plugin($ds)->compute_data($project_id);
-    my @log = @{$log_ref};
+    $self->app->log->debug( "[Controller::Plugins] project_compute_data [$project_id] [$ds]." );
+
+    my $job = $self->minion->enqueue(compute_data_ds => [ $ds, $project_id ] => { delay => 0 });
+    push( @log, "Job [$job] has been queued." );
+
     $self->flash( msg => join( '<br />', @log ) );
-    
-    # Render template 
-    $self->redirect_to( "/admin/project/$project_id" );   
+    $self->redirect_to( "/admin/project/$project_id" );
+
 }
 
 

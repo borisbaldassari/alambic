@@ -94,7 +94,7 @@ sub del_data_file() {
     $self->redirect_to( '/admin/project/' . $project_id );
 }
 
-
+# Display a list of projects with information and action.
 sub projects_main {
     my $self = shift;
     
@@ -153,7 +153,7 @@ sub repo {
     $self->render( template => 'alambic/admin/repo' );
 }
 
-
+# Display the form to add a project.
 sub project_add {
     my $self = shift;
     
@@ -166,16 +166,13 @@ sub project_add {
         return;
     }
 
-    # Prepare data for template.
-    $self->stash(
-        from => $from,
-        );    
-
+    # Prepare data for template and render.
+    $self->stash( from => $from );
     $self->render( template => 'alambic/admin/project_add' );
 }
 
 
-
+# Add a project (POST)
 sub project_add_post {
     my $self = shift;
     
@@ -204,6 +201,7 @@ sub project_add_post {
     $self->redirect_to( "/admin/project/$project_id" );
 }
 
+# Deletes a project
 sub project_del {
     my $self = shift;
 
@@ -221,6 +219,7 @@ sub project_del {
     $self->redirect_to( '/admin/projects' );
 }
 
+# Displays the summary of a project
 sub projects_id($) {
     my $self = shift;
 
@@ -273,11 +272,10 @@ sub users_main {
     $self->render( template => 'alambic/admin/users' );
 }
 
+# Runs retrieval of data for all plugins of a project.
 sub project_retrieve_data {
     my $self = shift;
     
-    my @log;
-
     my $project_id = $self->param( 'id' );
     $self->app->log->info("[Controller::Admin] project_retrieve_data $project_id.");
     
@@ -289,24 +287,21 @@ sub project_retrieve_data {
         return;
     }
 
-    push( @log, @{$self->app->projects->retrieve_project_data($project_id)} );
-    push( @log, "Data for project $project_id has been retrieved." );
+    # Enqueue job
+    my $job = $self->minion->enqueue(retrieve_project => [ $project_id ] => { delay => 0 });
 
-    my $log_str = join( '<br />', @log );
-
-    $self->flash( msg => $log_str );
+    $self->flash( msg => "Job [$job] has been queued." );
     $self->redirect_to( "/admin/project/$project_id" );
 
 }
 
+# Runs analysis for a project. Input data must have been updated first!
 sub project_analyse {
     my $self = shift;
-
     my $project_id = $self->param( 'id' );
+
     $self->app->log->info("[Controller::Admin] project_analyse $project_id.");
     
-    my @log;
-
     # Check authenticated user.
     unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
              $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
@@ -314,14 +309,35 @@ sub project_analyse {
         $self->redirect_to( '/login' );
         return;
     }
-    push( @log, @{$self->app->projects->analyse_project($project_id)} );
-    push( @log, "Data for project $project_id has been analysed." );
 
-    my $log_str = join( '<br />', @log );
+    # Enqueue job
+    my $job = $self->minion->enqueue(analyse_project => [ $project_id ] => { delay => 0 });
 
-    $self->flash( msg => $log_str );
+    $self->flash( msg => "Job [$job] has been queued." );
     $self->redirect_to( "/admin/project/$project_id" );
 
+}
+
+# Runs retrieve_data and analyse for a project in a single command.
+sub project_run {
+    my $self = shift;
+    my $project_id = $self->param( 'id' );
+
+    $self->app->log->info("[Controller::Admin] project_analyse $project_id.");
+    
+    # Check authenticated user.
+    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
+             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
+        $self->flash( msg => "You must have rights on project $project_id to access this area." );
+        $self->redirect_to( '/login' );
+        return;
+    }
+
+    # Enqueue job
+    my $job = $self->minion->enqueue(run_project => [ $project_id ] => { delay => 0 });
+
+    $self->flash( msg => "Job [$job] has been queued." );
+    $self->redirect_to( "/admin/project/$project_id" );
 }
 
 1;

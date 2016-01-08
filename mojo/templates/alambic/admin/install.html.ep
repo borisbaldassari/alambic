@@ -15,25 +15,68 @@
 % }
 
 %#= include '/alambic/admin/admin_menu', current => '/admin/repo'
+
+            <div class="alert alert-danger" role="alert">
+              <b>Warning</b> Using this page will reset the parameters of the instance and force a push to the git repository, removing all its contents (and history of measures, if any). Use with caution!
+            </div>
                 
-            <p>Welcome to the Alambic install wizard. This instance is for now configured with default data used for tests. This dialog helps you setup the instance, connect to the git repository of your choice, and cleanup the list of known projects so you can add you own.</p>
-
-            <form action="/admin/install" method="POST">
-              <p>Title: (<span style="color: red">*</span>) &nbsp; <input name="title" type="text"></input></p>
-              <p>Name: (<span style="color: red">*</span>) &nbsp; <input name="name" type="text"></input></p>
-              <p>Description: (<span style="color: red">*</span>) &nbsp; <input name="desc" type="text"></input></p>
-              <br />
-              <p>Git repository: (<span style="color: red">*</span>) &nbsp; <input name="git_repo" type="text"></input></p>
-              <br />
-              <input type="submit" value="Install"></input>
-              <input type="button" value="Cancel" onclick="history.go(-1);" /></input>
-            </form>
-
             <br />
-                
+
+            <p>Welcome to the Alambic install wizard. This instance is for now configured with default data used for tests. This dialog helps you setup the instance, specify the postgresql parameters, connect to the git repository of your choice, and cleanup the list of known projects so you can add you own.</p>
+
+
             <div class="row">
               <div class="col-md-6">
 
+
+                <form action="install" method="POST" class="form-horizontal" role="form">
+
+                  <div class="form-group">
+                    <label for="id" class="control-label col-xs-2">Instance title</label>
+                    <div class="col-xs-10">
+                      <input type="text" class="form-control" name="title" placeholder="Used for pages title." />
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="id" class="control-label col-xs-2">Instance name</label>
+                    <div class="col-xs-10">
+                      <input type="text" class="form-control" name="name" placeholder="Displayed on the home page." />
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="id" class="control-label col-xs-2">PostgreSQL information</label>
+                    <div class="col-xs-10">
+                      <input type="text" class="form-control" name="pg_conf" placeholder="postgresql://alambic_user:password@/alambic_db" />
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="id" class="control-label col-xs-2">Git repository</label>
+                    <div class="col-xs-10">
+                      <input type="text" class="form-control" name="git_repo" placeholder="https://github.com/borisbaldassari/alambic-test.git" />
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="id" class="control-label col-xs-2">Instance description</label>
+                    <div class="col-xs-10">
+                      <textarea class="form-control text-left" name="desc">
+                      </textarea>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <div class="col-xs-offset-2 col-xs-10">
+                      <input class="btn btn-primary" type="submit" value="Install"></input>
+                      <input class="btn btn-default" type="button" value="Cancel" onclick="history.go(-1);" /></input>
+                    </div>
+                  </div>
+                  
+                </form>
+              </div>
+              <div class="col-md-6">
                 <div class="panel panel-default">
                   <div class="panel-heading">Configuration</div>
 % my $conf = app->config;
@@ -46,9 +89,6 @@
                     <tr><td>Dir data (projects)</td><td><code><%= $conf->{'dir_data'} %></code></td></tr>
                   </table>
                 </div>
-
-              </div>
-              <div class="col-md-6">
 
               </div>
             </div>
