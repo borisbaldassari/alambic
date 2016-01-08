@@ -157,31 +157,33 @@ $t->get_ok('/admin/project/modeling.sirius/ds/stack_overflow/del')
     
 
 # Then retrieve data for all data sources
-$t->get_ok('/admin/project/modeling.sirius/retrieve')
-    ->status_is(200)
-    ->content_like(qr!Data for project modeling.sirius has been retrieved.!i, 
-      'Message states that data has been retrieved.')
-    ->content_like(qr!<td>modeling.sirius_metrics_grimoire.json!i, 
-      'Input files section has metrics_grimoire.')
-    ->content_like(qr!<td>modeling.sirius_metrics_pmi.json!i, 
-      'Input files section has metrics_pmi.')
-    ->content_like(qr!<td>modeling.sirius_import_pmi.json!i, 
-      'Input files section has pmi file.');
+$t->get_ok('/admin/project/modeling.sirius/retrieve');
+$t->app->minion->perform_jobs;
+$t->status_is(200)
+    ->content_like(qr!Job \[\d+\] has been queued.!i, 
+      'Message states that job has been queued.');
+    # ->content_like(qr!<td>modeling.sirius_metrics_mls.json!i, 
+    #   'Input files section has metrics_mls.')
+    # ->content_like(qr!<td>modeling.sirius_metrics_pmi.json!i, 
+    #   'Input files section has metrics_pmi.')
+    # ->content_like(qr!<td>modeling.sirius_import_pmi.json!i, 
+    #   'Input files section has pmi file.');
 
 
 # Analyse all data for project
-$t->get_ok('/admin/project/modeling.sirius/analyse')
-    ->status_is(200)
-    ->content_like(qr!Data for project modeling.sirius has been analysed.!i, 
-      'Message states that data has been analysed.')
-    ->content_like(qr!<td>modeling.sirius_metrics.json!i, 
-      'Data files include generated metrics.');
+$t->get_ok('/admin/project/modeling.sirius/analyse');
+$t->app->minion->perform_jobs;
+$t->status_is(200)
+    ->content_like(qr!Job \[\d+\] has been queued.!i, 
+      'Message states that job has been queued.');
+#    ->content_like(qr!<td>modeling.sirius_metrics.json!i, 
+#      'Data files include generated metrics.');
 
 # TODO add test to push new snapshot twice (second should have nothing new to push).
 
 # Clean: remove project for data and projects
-remove_tree('data/modeling.sirius/', {verbose => 1});
-remove_tree('projects/modeling.sirius/', {verbose => 1});
-remove_tree('.git', {verbose => 1});
+remove_tree('data/modeling.sirius/');
+remove_tree('projects/modeling.sirius/');
+remove_tree('.git');
 
-done_testing(72);
+done_testing(68);
