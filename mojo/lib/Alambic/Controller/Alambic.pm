@@ -67,9 +67,10 @@ sub install_post {
     my $name = $self->param( 'name' );
     my $desc = $self->param( 'desc' );
     my $git_repo = $self->param( 'git_repo' );
+    my $pg_conf = $self->param( 'pg_conf' );
 
     # Save new values for the current instance
-    $self->app->al_config->set_conf($title, $name, $desc);
+    $self->app->al_config->set_conf($title, $name, $desc, $pg_conf);
 
     # Initialise the Repo object with url.
     $self->repo->init( $git_repo );

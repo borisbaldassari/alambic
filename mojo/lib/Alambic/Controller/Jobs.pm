@@ -36,10 +36,29 @@ sub display {
 
 }
 
+# Recycles a job (re-start it).
+sub redo {
+    my $self = shift;
+    my $job_id = $self->param( 'id' );
+
+    # Check that the connected user has the access rights for this
+    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/jobs' ) ) {
+        $self->redirect_to( '/login' );
+        return;
+    }
+
+    # Enqueue job
+    my $job_info = $self->minion->backend->job_info($job_id);
+    my $job = $self->minion->enqueue($job_info->{'task'} => $job_info->{'args'} => { delay => 0 });
+
+    $self->flash( msg => "Job [$job] has been relaunched with ID [$job]." );
+    $self->redirect_to( "/admin/jobs/$job" );
+
+}
+
 # Deletes a job
 sub delete {
     my $self = shift;
-
     my $job_id = $self->param( 'id' );
 
     # Check that the connected user has the access rights for this

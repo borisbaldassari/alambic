@@ -29,22 +29,27 @@
                 <h3>Summary of job <%= $job_id %></h3>
 
                 <p><b>ID</b> <%= $job_id %><br />
+                <b>Task</b> <%= $job_info->{'task'} %><br />
+                <b>Args</b> <%= join( ', ', @{$job_info->{'args'}} ) %><br />
                 <b>State</b> <%= $job_info->{'state'} %><br />
                 <b>Created</b> <%= localtime($job_info->{'created'}) %><br />
-                <b>State</b> <%= $job_info->{'state'} %><br />
-                <b>Is active</b> on<br />
-                <b>Last analysis</b> Fri Jan  8 10:22:01 2016<br />
+                <b>Started</b> <%= defined($job_info->{'started'}) ? "" . localtime($job_info->{'started'}) : "Never" %><br />
+                <b>Finished</b> <%= defined($job_info->{'finished'}) ? "" . localtime($job_info->{'finished'}) : "Never" %><br />
+                <b>Retried</b> <%= defined($job_info->{'retried'})  ? "" . localtime($job_info->{'retried'}) : "Never"%><br />
                 </p>
               </div>
               <div class="col-sm-6">
                 <br />
                 <div class="list-group">
                   <a class="list-group-item" href="/admin/jobs/" role="button"><i class="fa fa-bars"></i> &nbsp; Return to jobs</a>
+                  <a class="list-group-item" href="/admin/jobs/<%= $job_id %>/rec" role="button"><i class="fa fa-refresh"></i> &nbsp; Restart job</a>
                   <a class="list-group-item" href="/admin/jobs/<%= $job_id %>/del" role="button"><i class="fa fa-ban"></i> &nbsp; Remove job</a>
                 </div>
 
               </div>
             </div>
+
+            <h3>Results</h3>
 
             <div class="well"><%== $results %></div>
 

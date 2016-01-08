@@ -26,6 +26,7 @@ my $git;
 
 my @files_push = (
     'conf/', 
+    'data/.keepme', 
     'models/', 
     'projects/', 
     'lib/',

@@ -38,9 +38,6 @@ sub startup {
     # Use Config plugin for basic configuration
     my $config = $app->plugin('Config');
     
-    # Use Minion for job queuing.
-    $app->plugin( Minion => {Pg => 'postgresql://alambic:pass4alambic@/alambic_db'} );
-
     # Use application logger
     $app->app->log->info('Alambic application started.');
 
@@ -119,7 +116,11 @@ sub startup {
 
     # MINION management
 
-    # Set parameters
+    # Use Minion for job queuing.
+    $app->plugin( Minion => {Pg => $app->al_config->get_pg('conf_pg')} );
+
+    # Set parameters.
+    # Automatically remove jobs from queue after one day. 86400 is one day.
     $app->minion->remove_after(86400);
 
     # Add task to retrieve ds data
@@ -138,11 +139,28 @@ sub startup {
         $job->finish(\@log);
     } );
     
-    # Add task to compute ds data
+    # Add task to retrieve all data for a project
     $app->minion->add_task( retrieve_project => sub {
         my ($job, $project_id) = @_;
         my $log_ref = $app->projects->retrieve_project_data($project_id);
         my @log = @{$log_ref};
+        $job->finish(\@log);
+    } );
+    
+    # Add task to compute all data for a project
+    $app->minion->add_task( compute_project => sub {
+        my ($job, $project_id) = @_;
+        my $log_ref = $app->projects->analyse_project($project_id);
+        my @log = @{$log_ref};
+        $job->finish(\@log);
+    } );
+    
+    # Add task to run both retrieval and analysis for a project
+    $app->minion->add_task( run_project => sub {
+        my ($job, $project_id) = @_;
+        my $log_ref_retrieve = $app->projects->retrieve_project_data($project_id);
+        my $log_ref_analyse = $app->projects->analyse_project($project_id);
+        my @log = ( @{$log_ref_retrieve}, @{$log_ref_analyse} );
         $job->finish(\@log);
     } );
     
@@ -187,6 +205,7 @@ sub startup {
     $r->get('/admin/jobs')->to( 'jobs#summary' );
     $r->get('/admin/jobs/#id')->to( 'jobs#display' );
     $r->get('/admin/jobs/#id/del')->to( 'jobs#delete' );
+    $r->get('/admin/jobs/#id/rec')->to( 'jobs#redo' );
 
     # Admin - Repository
     $r->get('/admin/repo')->to( 'admin#repo' );
@@ -204,6 +223,7 @@ sub startup {
     $r->post('/admin/projects/new')->to( 'admin#project_add_post' );
     $r->get('/admin/project/#id/retrieve')->to( 'admin#project_retrieve_data' );
     $r->get('/admin/project/#id/analyse')->to( 'admin#project_analyse' );
+    $r->get('/admin/project/#id/run')->to( 'admin#project_run' );
     $r->get('/admin/project/#id/del')->to( 'admin#project_del' );
     $r->get('/admin/project/#id')->to( 'admin#projects_id' );
 
