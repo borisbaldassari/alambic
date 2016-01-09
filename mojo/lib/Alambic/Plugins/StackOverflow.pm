@@ -156,7 +156,6 @@ sub compute_data() {
 
     my $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/StackOverflow/" . $project_id . "_so.csv";
         #$app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_so.csv";
-    print "  * Writing to file [$file_csv].\n";
     open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
     print $fh $csv_out;
     close $fh;
@@ -196,7 +195,7 @@ sub compute_data() {
         my $ret = remove_tree($dir_out_fig, {verbose => 1});
     }
     my $ret = move('figures/stack_overflow/' . $project_id . '/', $dir_out_fig);
-    print "Moved files from ${r_dir}/figures to $dir_out_fig. ret $ret.\n";
+    $app->log->info( "Moved files from ${r_dir}/figures to $dir_out_fig. ret $ret." );
     
     # Remove csv file
 #    unlink $file_csv;

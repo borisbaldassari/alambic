@@ -96,15 +96,14 @@ sub compute_data() {
     my @data_files;
     my $dir_out = $app->config->{'dir_input'} . "/" . $project_id . "/";
 
-    print "Reading rules from [$pmd_rules].\n";
+    $app->log->debug( "Reading rules from [$pmd_rules]." );
     my %rules_def = &_read_pmd_rules();
 
-    print "Reading configuration file for project.\n";
+    $app->log->debug( "Reading configuration file for project." );
     my %rules = &_read_pmd_conf($project_id, \%rules_def);
-#    print Dumper(%rules);
     
     my $vol_rules = scalar keys %rules;
-    print "Selected a total of [$vol_rules] rules.\n\n";
+    $app->log->debug( "Selected a total of [$vol_rules] rules." );
 
     # Read violations from xml file
     my $total_ncc;
@@ -127,7 +126,7 @@ sub compute_data() {
 
     # Write rules to a csv file
     my $csv_name = $file_id . "_conf_rules.csv";
-    print "\nWriting rules to file [$csv_name]..\n";
+    $app->log->debug( "Writing rules to file [$csv_name]." );
     
     # Compute the rate of broken rules for each priority.
     my %rules_ok;
@@ -136,7 +135,7 @@ sub compute_data() {
         if (exists($violations{$rule})) {
             $rules_ok{$prio}{'nok'}++;
         } else {
-	$rules_ok{$prio}{'ok'}++;
+            $rules_ok{$prio}{'ok'}++;
         }
     }
 
@@ -172,7 +171,6 @@ sub compute_data() {
         my $ruleset = $violations{$violation}->{'ruleset'};
         my $vol = $violations{$violation}->{'vol'};
         my $pri = $violations{$violation}->{'pri'};
-        print "Working on $violation: $vol.\n" if ($debug);
         my $tmp_m = "        {\n";
         $tmp_m   .= "            \"name\": \"$violation\",\n";
         $tmp_m   .= "            \"priority\": \"$pri\",\n";
@@ -200,7 +198,7 @@ sub compute_data() {
     
     # Write violations to CSV.
     $csv_name = $file_id . "_conf_violations.csv";
-    print "\nWriting violations to file [$csv_name]..\n";
+    $app->log->debug( "Writing violations to file [$csv_name].." );
     
     push(@data_files, $csv_name);
     open( FHCSV, ">$csv_name" ) or die "Could not open $csv_name.\n";
@@ -208,7 +206,6 @@ sub compute_data() {
     close FHCSV;
 
     # Format and write number of violations by file.
-    print "Computing NCC by file.\n";
     my $csv_files_out = "File,NCC,NCC_1,NCC_2,NCC_3,NCC_4,RKO,ROK,ROKR\n";
 
     # Loop over files and compute rate of acquired practices, 
@@ -218,7 +215,6 @@ sub compute_data() {
         my $rko = scalar keys %{$files{$file}{'rules'}};
         my $rok = $vol_rules - $rko;
         my $rokr = 100 * $rok / $vol_rules;
-        print " rokr $rokr.\n" if ($debug);
         my $ncc_1 = $files{$file}{'pri'}{1} || 0;
         my $ncc_2 = $files{$file}{'pri'}{2} || 0;
         my $ncc_3 = $files{$file}{'pri'}{3} || 0;
@@ -231,7 +227,7 @@ sub compute_data() {
     
     # Write files to a csv file
     $csv_name = $file_id . "_conf_files.csv";
-    print "Writing files to file [$csv_name]..\n";
+    $app->log->debug( "Writing files to file [$csv_name].." );
 
     push(@data_files, $csv_name);
     open( FHCSV, ">$csv_name" ) or die "Could not open $csv_name.\n";
@@ -270,7 +266,7 @@ sub compute_data() {
     
     # Write rulesets to CSV (second format).
     $csv_name = $file_id . "_conf_rulesets2.csv";
-    print "Writing rulesets to file [$csv_name]..\n";
+    print "Writing rulesets2 to file [$csv_name]..\n";
     
     push(@data_files, $csv_name);
     open( FHCSV, ">$csv_name" ) or die "Could not open $csv_name.\n";
@@ -279,12 +275,10 @@ sub compute_data() {
 
     # Write a summary of the run.
     $csv_name = $file_id . "_conf_main.csv";
-    print "Writing main pmd file [$csv_name]..\n";
+    $app->log->debug( "Writing main pmd file [$csv_name].." );
     
     my $total_rok = $vol_rules - $total_rko;
-    print "DBG total_rok = $total_rok. vol_rules = $vol_rules.\n";
     my $total_rokr = 100 * $total_rok / $vol_rules;
-    print "DBG total_rokr = $total_rokr.\n";
     
     my $csv_main_out = "PMD version,Timestamp,ConfFile,NCC,RULES,RKO,ROK,ROKR\n";
     $csv_main_out .= "$pmd_version,$pmd_timestamp,,$total_ncc,$vol_rules,$total_rko,$total_rok,$total_rokr\n";
@@ -310,31 +304,30 @@ sub compute_data() {
 
     $app->log->info( "Exec [$r_cmd]." );
     my @out = `$r_cmd`;
-    print @out;
+    $app->log->debug( @out );
 
     # Now move files to data/project
     move( "${r_html_out}", $dir_out );
     # Move all data files to target dir.
     foreach my $file (@data_files) {
-        print "Moving $file to $dir_out.\n";
+        $app->log->debug( "Moving $file to $dir_out." );
         my $ret = move($file, $dir_out);
-        print "DBG $ret $!.\n" if ($debug);
     }
 
     # Create dir for figures.
     if (! -d "${dir_out}/figures/" ) {
-        print "Creating directory [${dir_out}/figures/].\n";
+        $app->log->debug( "Creating directory [${dir_out}/figures/]." );
         mkdir "${dir_out}/figures/";
     }
 
     # Now move figures to data/project
     my $dir_out_fig = $dir_out . "/figures/pmd_configuration/";
     if ( -e $dir_out_fig ) {
-        print "Target directory [$dir_out_fig] exists. Removing it.\n";
+        $app->log->debug( "Target directory [$dir_out_fig] exists. Removing it." );
         my $ret = remove_tree($dir_out_fig, {verbose => 1});
     }
     my $ret = move('figures/pmd_configuration/' . $project_id . '/', $dir_out_fig);
-    print "Moved figures from ${r_dir}/figures to $dir_out_fig. ret $ret.\n";
+    $app->log->debug( "Moved figures from ${r_dir}/figures to $dir_out_fig. ret $ret." );
 
     return ["Done."];
 }
@@ -348,7 +341,7 @@ sub _read_pmd_rules() {
 
     my %rules_def;
 
-    print "[PMD.pm] Reading rules definition from [$pmd_rules]. \n";
+    $app->log->debug( "[PmdConfiguration] Reading rules definition from [$pmd_rules]." );
 
     my @rules_files = <$pmd_rules/*.xml>;
 
@@ -367,12 +360,13 @@ sub _read_pmd_rules() {
 	
 	foreach my $rule_child ( @rule_nodes ) {
 	    my $rule_disabled = $rule_child->getAttribute("ref");
-	    my $rule_name = $rule_child->getAttribute("name");
-            my $rule_desc = $rule_child->getAttribute("message");
+	    if (defined($rule_disabled)) { next; }
+	    
+	    my $rule_name = $rule_child->getAttribute("name");	    
+	    my $rule_desc = $rule_child->getAttribute("message");
 	    my @rule_priority = $rule_child->getChildrenByTagName("priority");
 	    my $priority = $rule_priority[0]->textContent();
-	    
-	    $rules_def{ $ruleset }{ $rule_name }{ 'desc' } = $rule_desc;
+            $rules_def{ $ruleset }{ $rule_name }{ 'desc' } = $rule_desc;
 	    $rules_def{ $ruleset }{ $rule_name }{ 'pri' } = $priority;
 	}
     }
@@ -415,16 +409,13 @@ sub _read_pmd_conf($) {
 	
 	if ($rule_ref =~ m!^(.*\.xml)(/(.*))?$!) {
 	    $ruleset_name = basename($1);
-	    print "[PMD.pm] Selecting ruleset [$ruleset_name].";
 	    if (defined($2)) {
-		print "[PMD.pm]   Including rule $3.\n" if ($debug);
 		push( @included_rules, $3);
 	    } else {
-		print "[PMD.pm]   Whole ruleset selected $ruleset_name.\n";
 		@included_rules = keys %{ $rules_def->{ $ruleset_name } };   
 	    }
 	} else {
-	    print "[PMD.pm] ERR could not parse rule ref [$rule_ref].\n";
+	    $app->log->debug( "[PmdConfiguration] ERR could not parse rule ref [$rule_ref]." );
 	}
 	
 	my @excluded_rules = $rule_child->getElementsByTagName("exclude");
@@ -434,20 +425,17 @@ sub _read_pmd_conf($) {
 	    $excluded{$name}++;
 	}
 	
-	print "[PMD.pm] Adding rules from ruleset [$ruleset_name].\n" if ($debug);
-	
 	foreach my $rule ( @included_rules ) {
 	    if ( exists($excluded{$rule}) ) {
 		next;
 	    } else {
-		print "  Adding rule [$rule].\n" if ($debug);
 		$rules{ $rule } = $rules_def->{ $ruleset_name }{ $rule };
 		$file_vol_rules++;
 	    }
 	}
 	$vol_rules += $file_vol_rules;
 	
-	print "[PMD.pm] Imported [$file_vol_rules] rules from ruleset [$ruleset_name].\n\n";
+	$app->log->debug( "[PmdConfiguration] Imported [$file_vol_rules] rules from ruleset [$ruleset_name]." );
     }
 
     return %rules;
@@ -511,7 +499,7 @@ sub _read_pmd_xml_files($) {
         	$ret{'files'}{$file}{'pri'}{$pri}++;
         	$ret{'rulesets'}{$ruleset}{$pri}++;
             } else {
-        	print "WARN Could not find rule [$rule] from ruleset [$ruleset] in rules definition.\n";
+        	$app->log->debug( "[PmdConfiguration] WARN Could not find rule [$rule] from ruleset [$ruleset] in rules definition." );
             }
         }
 	
