@@ -107,7 +107,9 @@ sub compute_data() {
 
     # Read violations from xml file
     my $total_ncc;
+    $app->log->debug( "BEFORE _read_pmd_xml_files." );
     my %ret = &_read_pmd_xml_files($project_id, \%rules);
+    $app->log->debug( "AFTER _read_pmd_xml_files." );
     my %files = %{$ret{'files'}};
     my %rulesets = %{$ret{'rulesets'}};
     my %violations = %{$ret{'violations'}};
@@ -492,11 +494,11 @@ sub _read_pmd_xml_files($) {
             my $ruleset = $violation->getAttribute('ruleset');
 	    
             if (exists($rules->{$rule})) {
-        	$ret{'files'}{$file}{'name'} = $file_name;
-        	$ret{'files'}{$file}{'vol'}++;
-        	$ret{'files'}{$file}{'rules'}{$rule}{'vol'}++;
-        	$ret{'files'}{$file}{'rules'}{$rule}{'pri'} = $pri;
-        	$ret{'files'}{$file}{'pri'}{$pri}++;
+        	$ret{'files'}{$file_name}{'name'} = $file_name;
+        	$ret{'files'}{$file_name}{'vol'}++;
+        	$ret{'files'}{$file_name}{'rules'}{$rule}{'vol'}++;
+        	$ret{'files'}{$file_name}{'rules'}{$rule}{'pri'} = $pri;
+        	$ret{'files'}{$file_name}{'pri'}{$pri}++;
         	$ret{'rulesets'}{$ruleset}{$pri}++;
             } else {
         	$app->log->debug( "[PmdConfiguration] WARN Could not find rule [$rule] from ruleset [$ruleset] in rules definition." );
