@@ -68,16 +68,8 @@ sub retrieve_data($) {
     
     my @log;
 
-    my $url;
-    if ($project_id =~ m!^polarsys!) {
-        $url = "http://dashboard.eclipse.org/data/json/polarsys/" 
-            . $project_grim 
-            . "-its-prj-static.json";
-    } else {
-        $url = "http://dashboard.eclipse.org/data/json/" 
-            . $project_grim 
-            . "-its-prj-static.json";
-    }
+    my $url = "http://dashboard.eclipse.org/data/json/" 
+            . $project_grim . "-mls-prj-static.json";
 
     my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_mls.json";
     push( @log, "Retrieving [$url] to [$file_out].\n" );
