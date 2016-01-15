@@ -14,7 +14,7 @@ The Naming Ruleset contains rules regarding preferred usage of names and identif
   		  since="0.3"
         message="Avoid variables with short names like {0}"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#ShortVariable">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#ShortVariable">
     <description>
 Fields, local variables, or parameter names that are very short are not helpful to the reader.
     </description>
@@ -54,7 +54,7 @@ public class Something {
   		  since="0.3"
         message="Avoid excessively long variable names like {0}"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#LongVariable">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#LongVariable">
     <description>
 Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.
     </description>
@@ -89,7 +89,7 @@ public class Something {
   		  since="0.3"
         message="Avoid using short method names"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#ShortMethodName">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#ShortMethodName">
      <description>
 Method names that are very short are not helpful to the reader.
      </description>
@@ -118,7 +118,7 @@ public class ShortMethod {
     since="1.2"
     message="{0} variable {1} should begin with {2}"
     class="net.sourceforge.pmd.lang.java.rule.naming.VariableNamingConventionsRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#VariableNamingConventions">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#VariableNamingConventions">
         <description>
 A variable naming conventions rule - customize this to your liking.  Currently, it
 checks for final variables that should be fully capitalized and non-final variables
@@ -140,7 +140,7 @@ public class Foo {
     			  since="1.2"
               message="Method name does not begin with a lower case character."
               class="net.sourceforge.pmd.lang.java.rule.naming.MethodNamingConventionsRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#MethodNamingConventions">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#MethodNamingConventions">
           <description>
 Method names should always begin with a lower case character, and should not contain underscores.
           </description>
@@ -159,7 +159,7 @@ public class Foo {
     		 since="1.2"
           message="Class names should begin with an uppercase character"
           class="net.sourceforge.pmd.lang.java.rule.naming.ClassNamingConventionsRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#ClassNamingConventions">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#ClassNamingConventions">
       <description>
 Class names should always begin with an upper case character.
       </description>
@@ -176,7 +176,7 @@ public class Foo {}
     		 since="1.4"
           message="Abstract classes should be named 'AbstractXXX'"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#AbstractNaming">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#AbstractNaming">
        <description>
 Abstract classes should be named 'AbstractXXX'.
        </description>
@@ -204,7 +204,7 @@ public abstract class Foo { // should be AbstractFoo
     		  since="1.5"
            message="Avoid using dollar signs in variable/method/class/interface names"
            class="net.sourceforge.pmd.lang.java.rule.naming.AvoidDollarSignsRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#AvoidDollarSigns">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#AvoidDollarSigns">
        <description>
 Avoid using dollar signs in variable/method/class/interface names.
        </description>
@@ -221,7 +221,7 @@ public class Fo$o {  // not a recommended name
     		 since="1.5"
           message="Classes should not have non-constructor methods with the same name as the class"
           class="net.sourceforge.pmd.lang.java.rule.naming.MethodWithSameNameAsEnclosingClassRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#MethodWithSameNameAsEnclosingClass">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#MethodWithSameNameAsEnclosingClass">
        <description>
 Non-constructor methods should not have the same name as the enclosing class.
        </description>
@@ -242,7 +242,7 @@ public class MyClass {
     		 since="1.5"
           message="The method name and return type are suspiciously close to hashCode()"
           class="net.sourceforge.pmd.lang.java.rule.naming.SuspiciousHashcodeMethodNameRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#SuspiciousHashcodeMethodName">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#SuspiciousHashcodeMethodName">
        <description>
 The method name and return type are suspiciously close to hashCode(), which may denote an intention
 to override the hashCode() method.
@@ -264,7 +264,7 @@ public class Foo {
     		 since="2.0"
           message="The field name indicates a constant but its modifiers do not"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#SuspiciousConstantFieldName">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#SuspiciousConstantFieldName">
        <description>
 Field names using all uppercase characters - Sun's Java naming conventions indicating constants - should
 be declared as final.
@@ -299,7 +299,7 @@ public class Foo {
           since="2.0"
           message="The method name and parameter number are suspiciously close to equals(Object)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#SuspiciousEqualsMethodName">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#SuspiciousEqualsMethodName">
         <description>
 The method name and parameter number are suspiciously close to equals(Object), which can denote an
 intention to override the equals(Object) method.
@@ -349,7 +349,7 @@ public class Foo {
           since="3.0"
           message="It is somewhat confusing to have a field name matching the declaring class name"
           class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingTypeNameRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#AvoidFieldNameMatchingTypeName">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#AvoidFieldNameMatchingTypeName">
       <description>
 It is somewhat confusing to have a field name matching the declaring class name.
 This probably means that type and/or field names should be chosen more carefully.
@@ -368,7 +368,7 @@ public class Foo extends Bar {
     	  since="3.0"
           message="Field {0} has the same name as a method"
           class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingMethodNameRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#AvoidFieldNameMatchingMethodName">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#AvoidFieldNameMatchingMethodName">
       <description>
 It can be confusing to have a field name with the same name as a method. While this is permitted, 
 having information (field) and actions (method) is not clear naming. Developers versed in 
@@ -394,7 +394,7 @@ public class Foo {
           since="3.3"
           message="All classes and interfaces must belong to a named package"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#NoPackage">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#NoPackage">
     <description>
 Detects when a class or interface does not have a package definition.
     </description>
@@ -422,7 +422,7 @@ public class ClassInDefaultPackage {
             since="3.3"
             message="Package name contains upper case characters"
             class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#PackageCase">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#PackageCase">
         <description>
 Detects when a package definition contains uppercase characters.
         </description>
@@ -451,7 +451,7 @@ public class SomeClass {
           since="3.4"
           message="Avoid naming non-fields with the prefix 'm_'"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#MisleadingVariableName">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#MisleadingVariableName">
       <description>
 Detects when a non-field has a name starting with 'm_'.  This usually denotes a field and could be confusing.
       </description>
@@ -484,7 +484,7 @@ public class Foo {
         since="4.0"
         message="A 'getX()' method which returns a boolean should be named 'isX()'"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#BooleanGetMethodName">
+        externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#BooleanGetMethodName">
         <description>
 Methods that return boolean results should be named as predicate statements to denote this.
 I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the use of the 'get'
@@ -519,7 +519,7 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
             since="5.0"
             message="Avoid short class names like {0}"
             class="net.sourceforge.pmd.lang.rule.XPathRule"
-            externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#ShortClassName">
+            externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#ShortClassName">
         <description>
             <![CDATA[
 Short Classnames with fewer than e.g. five characters are not recommended.
@@ -549,7 +549,7 @@ public class Foo {
          since="4.2.6"
          message="Generics names should be a one letter long and upper case."
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/naming.html#GenericsNaming">
+        externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/naming.html#GenericsNaming">
         <description>
 Names for references to generic values should be limited to a single uppercase letter.
         </description>
