@@ -13,7 +13,7 @@ The Braces ruleset contains rules regarding the use and placement of braces.
    		since="1.0"
          message="Avoid using if statements without curly braces"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/braces.html#IfStmtsMustUseBraces">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/braces.html#IfStmtsMustUseBraces">
      <description>
 Avoid using if statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
@@ -48,7 +48,7 @@ if (foo) {	// preferred approach
     		 since="0.7"
           message="Avoid using 'while' statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/braces.html#WhileLoopsMustUseBraces">
+          externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/braces.html#WhileLoopsMustUseBraces">
       <description>
 Avoid using 'while' statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
@@ -81,7 +81,7 @@ while (true) {	// preferred approach
             since="0.2"
             message="Avoid using 'if...else' statements without curly braces"
             class="net.sourceforge.pmd.lang.rule.XPathRule"
-            externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/braces.html#IfElseStmtsMustUseBraces">
+            externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/braces.html#IfElseStmtsMustUseBraces">
        <description>
 Avoid using if..else statements without using surrounding braces. If the code formatting 
 or indentation is lost then it becomes difficult to separate the code being controlled 
@@ -119,7 +119,7 @@ if (foo)
            since="0.7"
            message="Avoid using 'for' statements without curly braces"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
-           externalInfoUrl="http://pmd.sourceforge.net/snapshot/pmd-java/rules/java/braces.html#ForLoopsMustUseBraces">
+           externalInfoUrl="http://pmd.sourceforge.net/pmd-5.3.1/pmd-java/rules/java/braces.html#ForLoopsMustUseBraces">
        <description>
 Avoid using 'for' statements without using curly braces. If the code formatting or 
 indentation is lost then it becomes difficult to separate the code being controlled 
