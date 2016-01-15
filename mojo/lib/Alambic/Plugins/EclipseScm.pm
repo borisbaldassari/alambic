@@ -83,6 +83,8 @@ sub compute_data($) {
     my $self = shift;
     my $project_id = shift;
 
+    $app->log->info("[Plugins::EclipseScm] Starting compute data for [$project_id].");
+
     my $metrics_new;
 
     my $file_in = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_scm.json";

@@ -124,6 +124,8 @@ sub retrieve_data() {
 sub compute_data() {
     my $self = shift;
     my $project_id = shift;
+
+    $app->log->info("[Plugins::StackOverflow] Starting compute data for [$project_id].");
     
     my $file_json = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_so.json";
 

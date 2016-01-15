@@ -62,7 +62,7 @@ sub check_project() {
 
     my $ua = Mojo::UserAgent->new;
 
-    push( @log, "Checking [Plugins::EclipsePMI] for [$project_id]..." );
+    push( @log, "Checking [Plugins::EclipsePmi] for [$project_id]..." );
 
     my ($url, $content);
     if ($project_id =~ m!^polarsys!) {
@@ -88,6 +88,8 @@ sub retrieve_data($) {
     my $self = shift;
     my $project_id = shift;
     
+    $app->log->info("[Plugins::EclipsePmi] Starting retrieve data for [$project_id].");
+
     my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
     my $project_pmi = $project_conf->{'project_id'};
     
@@ -120,7 +122,7 @@ sub retrieve_data($) {
     
     my $file_json_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_pmi.json";
 
-    $app->log->debug("[Plugins::EclipsePMI] Writing PMI json file to [$file_json_out].");
+    $app->log->info("[Plugins::EclipsePmi] Writing PMI json file to [$file_json_out].");
     open my $fh, ">", $file_json_out;
     print $fh encode_json($custom_pmi);
     close $fh;
@@ -131,6 +133,8 @@ sub retrieve_data($) {
 sub compute_data($) {
     my $self = shift;
     my $project_id = shift;
+
+    $app->log->info("[Plugins::EclipsePmi] Starting compute data for [$project_id].");
 
     my %pmi;
     my %metrics;
@@ -203,14 +207,14 @@ sub compute_data($) {
     my $json_metrics = encode_json(\%metrics);
 
     my $file_json_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_metrics_pmi.json";
-    $app->log->debug("[Plugins::EclipsePMI] Writing PMI metrics json file to [$file_json_out].");
+    $app->log->info("[Plugins::EclipsePmi] Writing PMI metrics json file to [$file_json_out].");
     open my $fh, ">", $file_json_out;
     print $fh $json_metrics;
     close $fh;
 
     $file_json_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_pmi.json";
 
-    $app->log->debug("[Plugins::EclipsePMI] Writing updated PMI json file to [$file_json_out].");
+    $app->log->info("[Plugins::EclipsePmi] Writing updated PMI json file to [$file_json_out].");
     open $fh, ">", $file_json_out;
     print $fh encode_json($raw_project);
     close $fh;

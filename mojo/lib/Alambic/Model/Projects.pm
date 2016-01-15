@@ -252,10 +252,9 @@ sub write_project_data($$) {
     my $content = shift;
 
     my $json_content = encode_json($content);
-
     do { 
         local $/;
-        open my $fh, '>', $file or die "Could not open data file [$file].\n";
+        open my $fh, '>', $file or die "Could not open data file [$file] for write.\n";
         print $fh $json_content;
         close $fh;
     };
@@ -508,12 +507,13 @@ sub retrieve_project_data() {
     my $self = shift;
     my $project_id = shift;
     my $ds = shift || 'all';
-    
+
     my @log;
 
     # Create target dir if it does not exist
     if (not -d $self->{app}->config->{'dir_input'} . '/' . $project_id . '/') { 
         mkdir( $self->{app}->config->{'dir_input'} . '/' . $project_id . '/');
+        mkdir( $self->{app}->config->{'dir_input'} . '/' . $project_id . '/figures/');
     }
 
     # Get list of all plugins.

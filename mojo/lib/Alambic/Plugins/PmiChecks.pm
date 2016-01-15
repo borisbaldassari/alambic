@@ -99,6 +99,8 @@ sub retrieve_data() {
 sub compute_data() {
     my $self = shift;
     my $project_id = shift;
+
+    $app->log->info("[Plugins::PmiChecks] Starting compute data for [$project_id].");
     
     my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
     my $project_pmi = $project_conf->{'project_id'};
