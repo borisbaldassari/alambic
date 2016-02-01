@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use Mojo::JSON qw( decode_json encode_json );
-use LWP::Simple;
+use Mojo::UserAgent;
 use Data::Dumper;
 
 # Main configuration hash for the plugin
@@ -81,8 +81,15 @@ sub retrieve_data($) {
     push( @log, "Retrieving [$url] to [$file_out].\n" );
     
     # Fetch json file from the dashboard.eclipse.org
-    my $content = getstore($url, $file_out);
-    if ($content != 200) { push( @log, "Cannot find [$url].\n" ) };
+    my $ua = Mojo::UserAgent->new;
+    my $content = $ua->get($url)->res->body;
+    if (length($content) < 10) { 
+	push( @log, "Cannot find [$url].\n" ) ;
+    } else {
+	open my $fh, ">", $file_out;
+	print $fh $content;
+	close $fh;
+    }
 
     return \@log;
 }

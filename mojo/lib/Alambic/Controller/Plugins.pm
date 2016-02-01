@@ -2,7 +2,6 @@ package Alambic::Controller::Plugins;
 
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::IOLoop;
-use Minion;
 
 use Data::Dumper;
 

@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use Mojo::JSON qw( decode_json encode_json );
-use LWP::Simple;
+use Mojo::UserAgent;
 use Data::Dumper;
 
 # Main configuration hash for the plugin
@@ -66,7 +66,7 @@ sub check_project() {
 sub retrieve_data($) {
     my $self = shift;
     my $project_id = shift;
-    
+
     my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
     my $project_grim = $project_conf->{'project_id'};
     
@@ -75,12 +75,21 @@ sub retrieve_data($) {
     my $url = "http://dashboard.eclipse.org/data/json/" 
             . $project_grim . "-its-prj-static.json";
 
+    $app->log->info("[Plugins::EclipseIts] Starting retrieval of data for [$project_id] url [$url].");
+    
     my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_its.json";
     push( @log, "Retrieving [$url] to [$file_out].\n" );
     
     # Fetch json file from the dashboard.eclipse.org
-    my $content = getstore($url, $file_out);
-    if ($content != 200) { push( @log, "Cannot find [$url].\n" ) };
+    my $ua = Mojo::UserAgent->new;
+    my $content = $ua->get($url)->res->body;
+    if (length($content) < 10) {
+	push( @log, "Cannot find [$url].\n" ) ;
+    } else {
+	open my $fh, ">", $file_out;
+	print $fh $content;
+	close $fh;
+    }
 
     return \@log;
 }
