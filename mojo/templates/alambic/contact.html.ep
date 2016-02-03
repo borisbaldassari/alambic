@@ -3,7 +3,7 @@
             <br />
       
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-md-6">
 
                 <h3>Contact the Alambic team</h3>
                 
@@ -30,13 +30,13 @@
                 </ul>
                 
               </div>
-              <div class="col-sm-6">
+              <div class="col-md-6">
                 
                 <div class="panel panel-default" style="border-color: #3E3F3A">
                   <div class="panel-heading" style="color: white; background-color: #3E3F3A"><strong>Send message</strong></div>
                   <div class="panel-body">
                     
-                    <form class="contact">
+                    <form action="contact" method="POST" class="form-horizontal" role="form">
                       <fieldset>
 	                <label class="control-label">Name</label>
 	                <div class="controls">
@@ -48,7 +48,6 @@
 	                <br />
                         
 	                <label class="control-label">Email</label>
-	                
 	                <div class="controls">
 		          <div class="input-group">
 		            <span class="input-group-addon" style="border-color: #3E3F3A"><i class="fa fa-envelope"></i></span>
@@ -57,23 +56,18 @@
 	                </div>
 	                <br />
                         
-	                <label class="control-label">Message</label>
-	                
+	                <label class="control-label">Message</label>  
 	                <div class="controls">
 		          <div class="input-group">
 		            <span class="input-group-addon" style="border-color: #3E3F3A"><i class="fa fa-pencil"></i></span>
 		            <textarea name="message" class="form-control" style="border-color: #3E3F3A" rows="10" cols="78" placeholder="Enter your message here"></textarea>
 		          </div>
 	                </div>
-                        
                       </fieldset>
+                      <br />
+                    
+                      <button class="btn btn-success pull-right" style="background-color: #5884b3" id="submit">submit</button>
                     </form>
-                    
-                    <br />
-                    
-                    <button class="btn btn-success pull-right" style="background-color: #5884b3" id="submit">submit</button>
-                    
-                    
                   </div>
                 </div>
               </div>

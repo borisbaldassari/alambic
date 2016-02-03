@@ -37,6 +37,16 @@ sub startup {
 
     # Use Config plugin for basic configuration
     my $config = $app->plugin('Config');
+
+    my $conf_mail = {
+	from     => 'alambic@eclipse.castalia.camp',
+	encoding => 'base64',
+	type     => 'text/html',
+	how      => 'sendmail',
+	howargs  => [ '/usr/sbin/sendmail -t' ],
+    };
+    
+    $app->plugin( 'mail' => $conf_mail );
     
     # Use application logger
     $app->app->log->info('Alambic application started.');
@@ -174,6 +184,7 @@ sub startup {
     # Simple pages
     $r->get('/about.html')->to( template => 'alambic/about');
     $r->get('/contact.html')->to( template => 'alambic/contact');
+    $r->post('/contact')->to( 'alambic#contact_post' );
 
     # Data (quality_model.json, etc.).
     $r->get('/data/#id')->to('data#download');

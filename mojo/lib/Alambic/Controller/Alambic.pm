@@ -1,6 +1,8 @@
 package Alambic::Controller::Alambic;
 use Mojo::Base 'Mojolicious::Controller';
 
+use Data::Dumper;
+
 # This action will render a template
 sub welcome {
     my $self = shift;
@@ -32,6 +34,31 @@ sub login_post() {
     }
 }
 
+sub contact_post() {
+    my $self = shift;
+    
+    my $name = $self->param( 'name' );
+    my $email = $self->param( 'email' );
+    my $message = $self->param( 'message' );
+
+    # Prepare mail content
+    my $data = $self->render_mail('alambic/contact', 
+				  name => $name, 
+				  email => $email, 
+				  message => $message);
+    # Actually send the email
+    $self->mail(
+	mail => {
+	    To => 'boris.baldassari@gmail.com',
+	    Format => 'mail',
+            Data => $data,
+        },
+    );
+
+    $self->flash( msg => "Message has been sent. Thank you!" );
+    $self->redirect_to( '/' );    
+}
+
 sub logout() {
     my $self = shift;
 
@@ -49,7 +76,7 @@ sub install {
         return;
     }
 
-    # Render template "alambic/repo/init.html.ep"
+    # Render template "alambic/admin/install.html.ep"
     $self->render(template => 'alambic/admin/install');   
 
 }
