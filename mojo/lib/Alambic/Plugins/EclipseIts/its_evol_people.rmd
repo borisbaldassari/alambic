@@ -1,0 +1,17 @@
+---
+output: html_document
+---
+
+```{r init, echo=FALSE, message=FALSE}
+library(dygraphs)
+library(xts)
+
+project.id <- 'tools.cdt'
+file.evol = paste("", project.id, "_its_evol.csv", sep="")
+evol <- read.csv(file=file.evol, header=T)
+
+evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
+p <-dygraph(evol.xts[,c('changers', 'openers', 'closers')], width = NULL, height = NULL) %>% dyRangeSelector()
+p
+```
+

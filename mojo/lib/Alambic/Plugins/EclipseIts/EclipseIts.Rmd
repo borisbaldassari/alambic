@@ -1,0 +1,121 @@
+---
+title: "Eclipse ITS visualisation"
+author:
+- name: "Boris Baldassari"
+  affiliation: Castalia Solutions
+output:
+  html_fragment:
+    toc: false
+    fig_caption: true
+    fig.width: 800
+    self_contained: false
+    lib_dir: libs
+    echo: false
+    dev: svg
+---
+
+```{r init, echo=FALSE, message=FALSE}
+project.id <- 'tools.cdt'
+plugin.id <- 'eclipse_its'
+file.static = paste("", project.id, "_its.csv", sep="")
+file.evol = paste("", project.id, "_its_evol.csv", sep="")
+
+library(knitr)
+library(xts)
+library(reshape2)
+
+knitr::opts_chunk$set(fig.path = paste( 'figures/', plugin.id, '/', project.id, '/', sep=""))
+#opts_knit$set(progress = TRUE, verbose = TRUE, self.contained=T)
+
+require(ggplot2)
+require(xtable)
+
+metrics <- read.csv(file=file.static, header=T)
+evol <- read.csv(file=file.evol, header=T)
+url <- paste('http://dashboard.eclipse.org/data/json/', project.id, '-its-prj-static.json', sep='');
+```
+
+## Eclipse Issue Tracking System
+
+<div class="row">
+<div class="col-md-6">
+  <p>Data source is `r url`.</p>
+
+  <p>There is a total of `r  metrics[['ITS_OPENED']]` issues opened and `r metrics[['ITS_CLOSED']]` issues closed.</p>
+  <p>Percentage of issues closed</p>
+</div>
+<div class="col-md-6">
+  <iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_summary.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+</div>
+</div>
+
+### History
+
+**Changed**
+
+<div class="row">
+<div class="col-md-12">
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_changed.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+</div></div>
+
+**People**
+
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_people.html" frameborder="0" style="width: 100%; height: 500px"></iframe>
+
+**Opened vs Closed**
+
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_opened.html" frameborder="0" style="width: 100%; height: 400px"></iframe>
+
+```{r evol, echo=FALSE, message=FALSE, results='asis', eval=F}
+#if (nrow(evol) < 2) {
+#  print( "No historical data found.")
+#} else {
+  evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
+  p <-dygraph(evol.xts[,c(2:8)]) %>% dyRangeSelector()
+  p
+#}
+```
+
+Googlevis
+
+```{r static-gvis, echo=FALSE, message=FALSE, results='asis'}
+suppressPackageStartupMessages(library(googleVis))
+options(gvis.plot.tag='chart')
+my.chart <- evol[,c(1:8)]
+p <- gvisLineChart(my.chart, options = list(
+      title="Bugs",
+      width=500, height=350
+      ))
+
+print(p, 'chart')
+```
+
+With ggplot:
+
+```{r ggplot, reuslts='asis'}
+my.data.long <- melt(evol[,c("unixtime", "opened", "closed")], id.vars="unixtime", value.name="value", variable.name="metric")
+my.data.long$time <- as.POSIXct(as.numeric(as.character(my.data.long$unixtime)), origin="1970-01-01")
+
+p <- ggplot(my.data.long, aes(x = time, y = value, color=metric)) + geom_line(size = .1)
+p
+```
+
+With iframe
+
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_ggplot.html" frameborder="0" style="width: 800px; height: 500px"></iframe>
+
+
+```{r test, reuslts='asis', eval=F}
+scatterplot3js(data[,c(3,6,1)],
+               labels=row.names(mtcars),    # mousing over a point will show what model car it is
+               size=mtcars$hp/100,          # the size of a point maps to horsepower
+               flip.y=TRUE,
+               color=col,renderer="canvas") # point color indicates number of cylindars 
+
+data(economics, package = "ggplot2")
+econ <- transform(economics, date = as.character(date))
+m1 <- mPlot(x = "date", y = c("psavert", "uempmed"), type = "Line", data = econ)
+m1$set(pointSize = 0, lineWidth = 1)
+m1$print("chart2")
+```
+
