@@ -9,10 +9,12 @@ library(xts)
 #project.id <- 'tools.cdt'
 file.evol = paste("", project.id, "_its_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
+evol <- evol[evol$opened != 0 & evol$closed != 0,]
 
 evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
 p <-dygraph(evol.xts[,c('opened', 'closed')],
-        width = 800, height = 200 ) %>% 
+        main = paste('Opened vs Closed bugs for ', project.id, sep=''),
+        width = 800, height = 250 ) %>% 
       dyRangeSelector()
 p
 ```

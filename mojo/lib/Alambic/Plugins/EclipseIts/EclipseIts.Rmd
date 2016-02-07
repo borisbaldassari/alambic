@@ -15,6 +15,7 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
+project.id <- 'tools.pdt'
 plugin.id <- 'eclipse_its'
 file.static = paste("", project.id, "_its.csv", sep="")
 file.evol = paste("", project.id, "_its_evol.csv", sep="")
@@ -36,36 +37,34 @@ url <- paste('http://dashboard.eclipse.org/data/json/', project.id, '-its-prj-st
 
 ## Eclipse Issue Tracking System
 
-<div class="row">
-<div class="col-md-6">
-  <p>Data source is `r url`.</p>
+### Metrics
 
-  <p>There is a total of `r  metrics[['ITS_OPENED']]` issues opened and `r metrics[['ITS_CLOSED']]` issues closed.</p>
-  <p>Percentage of issues closed</p>
-</div>
-<div class="col-md-6">
-  <!-- iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_summary.html" frameborder="0" style="width: 100%; height: 300px"></iframe -->
-</div>
-</div>
+<p>
+```{r metrics_table, echo=FALSE, message=FALSE, results='asis'}
+t <- lapply(names(metrics), function(x) paste(x, ' <span class="badge">', metrics[[x]], '</span>, ', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</p>
+
+### Timeline
 
 <iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_summary.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
 
-### History
-
-**Changed**
+### Changed
 
 <div class="row">
 <div class="col-md-12">
-<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_changed.html" frameborder="0" style="width: 100%; height: 250px"></iframe>
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_changed.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
 </div></div>
 
-**People**
+### People
 
-<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_people.html" frameborder="0" style="width: 100%; height: 250px"></iframe>
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_people.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
 
-**Opened vs Closed**
+### Opened vs Closed
 
-<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_opened.html" frameborder="0" style="width: 100%; height: 250px"></iframe>
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_opened.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
 
 ```{r evol, echo=FALSE, message=FALSE, results='asis', eval=F}
 #if (nrow(evol) < 2) {
@@ -77,9 +76,9 @@ url <- paste('http://dashboard.eclipse.org/data/json/', project.id, '-its-prj-st
 #}
 ```
 
-Googlevis
 
-```{r static-gvis, echo=FALSE, message=FALSE, results='asis'}
+
+```{r static-gvis, echo=FALSE, message=FALSE, results='asis', eval=F}
 suppressPackageStartupMessages(library(googleVis))
 options(gvis.plot.tag='chart')
 my.chart <- evol[,c(1:8)]
@@ -91,9 +90,7 @@ p <- gvisLineChart(my.chart, options = list(
 print(p, 'chart')
 ```
 
-With ggplot:
-
-```{r ggplot, reuslts='asis'}
+```{r ggplot, echo=FALSE, message=F, results='asis', eval=F}
 my.data.long <- melt(evol[,c("unixtime", "opened", "closed")], id.vars="unixtime", value.name="value", variable.name="metric")
 my.data.long$time <- as.POSIXct(as.numeric(as.character(my.data.long$unixtime)), origin="1970-01-01")
 
@@ -101,12 +98,11 @@ p <- ggplot(my.data.long, aes(x = time, y = value, color=metric)) + geom_line(si
 p
 ```
 
-With iframe
 
-<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_ggplot.html" frameborder="0" style="width: 800px; height: 500px"></iframe>
+<!-- iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_ggplot.html" frameborder="0" style="width: 800px; height: 500px"></iframe -->
 
 
-```{r test, reuslts='asis', eval=F}
+```{r test, echo=FALSE, message=FALSE, results='asis', eval=F}
 scatterplot3js(data[,c(3,6,1)],
                labels=row.names(mtcars),    # mousing over a point will show what model car it is
                size=mtcars$hp/100,          # the size of a point maps to horsepower

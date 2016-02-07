@@ -9,10 +9,12 @@ library(xts)
 #project.id <- 'tools.cdt'
 file.evol = paste("", project.id, "_its_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
+evol <- evol[evol$changers != 0,]
 
 evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
 p <-dygraph(evol.xts[,c('changers', 'openers', 'closers')],
-        width = 800, height = 200 ) %>% 
+        main = paste('Changers, Openers, and Closers for ', project.id, sep=''),
+        width = 800, height = 250 ) %>% 
       dyRangeSelector()
 p
 ```
