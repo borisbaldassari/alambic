@@ -15,7 +15,6 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-project.id <- 'tools.cdt'
 plugin.id <- 'eclipse_its'
 file.static = paste("", project.id, "_its.csv", sep="")
 file.evol = paste("", project.id, "_its_evol.csv", sep="")
@@ -45,9 +44,11 @@ url <- paste('http://dashboard.eclipse.org/data/json/', project.id, '-its-prj-st
   <p>Percentage of issues closed</p>
 </div>
 <div class="col-md-6">
-  <iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_summary.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+  <!-- iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_summary.html" frameborder="0" style="width: 100%; height: 300px"></iframe -->
 </div>
 </div>
+
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_summary.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
 
 ### History
 
@@ -55,16 +56,16 @@ url <- paste('http://dashboard.eclipse.org/data/json/', project.id, '-its-prj-st
 
 <div class="row">
 <div class="col-md-12">
-<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_changed.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_changed.html" frameborder="0" style="width: 100%; height: 250px"></iframe>
 </div></div>
 
 **People**
 
-<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_people.html" frameborder="0" style="width: 100%; height: 500px"></iframe>
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_people.html" frameborder="0" style="width: 100%; height: 250px"></iframe>
 
 **Opened vs Closed**
 
-<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_opened.html" frameborder="0" style="width: 100%; height: 400px"></iframe>
+<iframe src="/projects/figures/eclipse_its/`r project.id`/its_evol_opened.html" frameborder="0" style="width: 100%; height: 250px"></iframe>
 
 ```{r evol, echo=FALSE, message=FALSE, results='asis', eval=F}
 #if (nrow(evol) < 2) {

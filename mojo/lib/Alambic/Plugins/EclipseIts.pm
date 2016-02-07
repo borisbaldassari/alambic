@@ -237,7 +237,7 @@ sub compute_data($) {
 	
 	# to get r bin path.
 	my $r_cmd = "Rscript -e \"library(rmarkdown); " 
-	    . "project.id <- '${project_id}'; plugin.id <- 'eclipse_its'; "
+	    . "project.id <- '${project_id}'; "
 	    . "rmarkdown::render('${r_md}', output_format='html_document', output_file='$r_md_out')\"";
 	
 	$app->log->info( "Exec [$r_cmd]." );
@@ -258,10 +258,10 @@ sub compute_data($) {
     
     my $files = ${dir_in_fig} . "*";
     my @files = glob qq(${files});
-    print "DBG Looking for files in [$files]: " . join(', ', @files) . "\n";
+#    print "DBG Looking for files in [$files]: " . join(', ', @files) . "\n";
     foreach my $file (@files) {
 	my $ret = move($file, $dir_out_fig);
-	print "DBG Moved file from ${file} to $dir_out_fig. ret $ret.\n";
+#	print "DBG Moved file from ${file} to $dir_out_fig. ret $ret.\n";
 	$app->log->info( "Moved files from ${file} to $dir_out_fig. ret $ret." );
     }
     
