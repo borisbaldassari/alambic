@@ -7,16 +7,7 @@
             <br />
 % my $plugin_template = "templates/alambic/plugins/" . $plugin_id . ".html.ep";
 % if ( -e $plugin_template ) {
-%   my $file_in = app->home->rel_dir( 'data/' . $project_id . '/' . $project_id . '_' . $plugin_id . '.json' );
-%   my $content;
-%   do { 
-%     local $/;
-%     open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
-%     $content = <$fh>;
-%     close $fh;
-%   };
-%   $content = decode_json($content); 
-%= include "/alambic/plugins/$plugin_id", p => $content
+%= include "/alambic/plugins/$plugin_id", project_id => $project_id
 % } else {
 %   my $file_in = app->home->rel_dir( 'data/' . $project_id . '/' . $project_id . '_' . $plugin_id . '.inc' );
 %   my $content;

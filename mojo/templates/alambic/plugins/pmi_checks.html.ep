@@ -1,4 +1,13 @@
 
+% my $file_in = app->home->rel_dir( 'data/' . $project_id . '/' . $project_id . '_' . $plugin_id . '.json' );
+% my $content;
+% do { 
+%   local $/;
+%   open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
+%   $content = <$fh>;
+%   close $fh;
+% };
+% my $p = decode_json($content);
 % sub ok_failed($) {
 %     my $str = shift;
 %     if ($str =~ m!^OK!) { 

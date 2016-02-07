@@ -13,7 +13,7 @@ use DateTime;
 
 my %conf = (
     "id" => "stack_overflow",
-    "name" => "Stack Overflow metrics",
+    "name" => "Stack Overflow",
     "desc" => "Retrieves data from Stack Overflow by using a provided tag, during the last 5 years.",
     "ability" => [
         "metrics",

@@ -158,7 +158,7 @@ sub startup {
     } );
     
     # Add task to compute all data for a project
-    $app->minion->add_task( compute_project => sub {
+    $app->minion->add_task( analyse_project => sub {
         my ($job, $project_id) = @_;
         my $log_ref = $app->projects->analyse_project($project_id);
         my @log = @{$log_ref};
