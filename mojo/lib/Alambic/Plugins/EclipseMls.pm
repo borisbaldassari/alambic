@@ -38,7 +38,6 @@ my %conf = (
     "provides_viz" => [
         "eclipse_mls",
     ],
-
     "provides_fig" => {
         'mls_evol_summary.rmd' => "mls_evol_summary.html",
         'mls_evol_sent.rmd' => "mls_evol_sent.html",

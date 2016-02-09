@@ -14,11 +14,11 @@ evol <- evol[evol$sent != 0,]
 evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
 p <-dygraph( 
         evol.xts[,c('sent', 'threads', 'sent_response')],
-        main = paste('Number of changed bugs for ', project.id, sep=''),
+        main = paste('Number of sent emails for ', project.id, sep=''),
         width = 800, height = 250 ) %>% 
       dyAxis("x", drawGrid = FALSE) %>%
       dySeries("sent", label = "Sent emails") %>%
-      dySeries("threads", label = "Sent emails") %>%
+      dySeries("threads", label = "Threads") %>%
       dySeries("sent_response", label = "Sent response") %>%
 #      dyOptions(colors = RColorBrewer::brewer.pal(3, "Set1")) %>%
       dyRangeSelector()
