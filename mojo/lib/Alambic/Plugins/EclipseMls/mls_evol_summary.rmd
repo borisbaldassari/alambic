@@ -6,7 +6,7 @@ output: html_document
 library(plotly)
 library(reshape2)
 
-project.id <- 'tools.pdt'
+#project.id <- 'tools.pdt'
 file.evol = paste("", project.id, "_mls_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 evol <- evol[evol$sent != 0,]

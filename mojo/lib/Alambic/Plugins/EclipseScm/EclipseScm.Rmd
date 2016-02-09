@@ -15,7 +15,7 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-project.id <- 'tools.pdt'
+#project.id <- 'tools.pdt'
 plugin.id <- 'eclipse_scm'
 file.static = paste("", project.id, "_scm.csv", sep="")
 file.evol = paste("", project.id, "_scm_evol.csv", sep="")
@@ -51,13 +51,17 @@ cat(t)
 
 <iframe src="/projects/figures/eclipse_scm/`r project.id`/scm_evol_summary.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
 
-### Sent emails
+### Added / Removed lines
 
 <div class="row">
 <div class="col-md-12">
-<iframe src="/projects/figures/eclipse_scm/`r project.id`/scm_evol_sent.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+<iframe src="/projects/figures/eclipse_scm/`r project.id`/scm_evol_lines.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
 </div></div>
 
 ### People
 
 <iframe src="/projects/figures/eclipse_scm/`r project.id`/scm_evol_people.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+
+### Commits
+
+<iframe src="/projects/figures/eclipse_scm/`r project.id`/scm_evol_commits.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
