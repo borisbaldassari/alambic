@@ -6,7 +6,7 @@ output: html_document
 library(plotly)
 library(reshape2)
 
-project.id <- 'tools.pdt'
+#project.id <- 'tools.pdt'
 file.evol = paste("", project.id, "_its_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 
