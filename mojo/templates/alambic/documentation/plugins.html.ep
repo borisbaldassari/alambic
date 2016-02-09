@@ -13,12 +13,15 @@
             <br />
 
             <p>Plugins add new functionalities to Alambic. They most notably provide new data sources for projects, computing and visualisation features, and can be easily customised to fit specific needs.</p>
+            <p>A random project is selected from the list to demonstrate the figures and visualisation pages for each plugin.</p>
 
             <h3>Automatic data source plugins</h3>
             <br />
 
             <ul class="list-group">
 % my $pis_list = al_plugins->get_list_pis();
+% my @projects = app->projects->list_active_projects();
+% my $project_id = defined( $projects[0] ) ? $projects[0] : 'project_id';
 % foreach my $pi (sort @{$pis_list}) {
 %   my $conf = al_plugins->get_plugin($pi)->get_conf();
               <li class="list-group-item">
@@ -33,6 +36,10 @@
                     <p><b>Provides metrics</b><br />
                     <%= join( ', ', map { $conf->{'provides_metrics'}->{$_} } keys %{$conf->{'provides_metrics'}} ) %></p>
                     <p><b>Provides files</b> <%= join( ', ', map { '*_' . $_ . '.json' } @{$conf->{'provides_files'}} ) %></p>
+                    <p><b>Provides viz</b> <br />
+                    <%== join( ', ', map { '<a href="/projects/' . $project_id . '_plugins_' . $pi . '.html">' . $conf->{'provides_viz'}->{$_} . '</a>' } keys %{$conf->{'provides_viz'}} ) %></p>
+                    <p><b>Provides figures</b> <br />
+                    <%== join( ', ', map { '<a href="/projects/figures/' . $pi . '/' . $project_id . '/' . $conf->{'provides_fig'}->{$_} . '">' . $conf->{'provides_fig'}->{$_} . '</a>' } keys %{$conf->{'provides_fig'}} ) %></p>
                   </div>
                 </div>
               </li>
