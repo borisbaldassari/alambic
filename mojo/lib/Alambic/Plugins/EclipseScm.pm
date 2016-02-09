@@ -7,6 +7,8 @@ use warnings;
 use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
 use Data::Dumper;
+use File::Copy;
+use File::Path qw(remove_tree);
 
 # Main configuration hash for the plugin
 my %conf = (
@@ -19,13 +21,27 @@ my %conf = (
     },
     "provides_metrics" => {
         "AUTHORS" => "SCM_AUTHORS", 
+        "AUTHORS_7" => "SCM_AUTHORS_7",
         "AUTHORS_30" => "SCM_AUTHORS_30", 
         "AUTHORS_365" => "SCM_AUTHORS_365", 
-        "AUTHORS_7" => "SCM_AUTHORS_7",
+        "DIFF_NETAUTHORS_7" => "SCM_DIFF_NETAUTHORS_7",
+        "DIFF_NETAUTHORS_30" => "SCM_DIFF_NETAUTHORS_30", 
+        "DIFF_NETAUTHORS_365" => "SCM_DIFF_NETAUTHORS_365", 
+        "PERCENTAGE_AUTHORS_7" => "SCM_PERCENTAGE_AUTHORS_7",
+        "PERCENTAGE_AUTHORS_30" => "SCM_PERCENTAGE_AUTHORS_30", 
+        "PERCENTAGE_AUTHORS_365" => "SCM_PERCENTAGE_AUTHORS_365", 
+        "AVG_COMMITS_AUTHOR" => "SCM_AVG_COMMITS_AUTHOR",
+        "AVG_COMMITS_MONTH" => "SCM_AVG_COMMITS_MONTH",
         "COMMITS" => "SCM_COMMITS", 
+        "COMMITS_7" => "SCM_COMMITS_7", 
         "COMMITS_30" => "SCM_COMMITS_30",
         "COMMITS_365" => "SCM_COMMITS_365",
-        "COMMITS_7" => "SCM_COMMITS_7", 
+        "DIFF_NETCOMMITS_7" => "SCM_DIFF_NETCOMMITS_7", 
+        "DIFF_NETCOMMITS_30" => "SCM_DIFF_NETCOMMITS_30",
+        "DIFF_NETCOMMITS_365" => "SCM_DIFF_NETCOMMITS_365",
+        "PERCENTAGE_COMMITS_7" => "SCM_PERCENTAGE_COMMITS_7", 
+        "PERCENTAGE_COMMITS_30" => "SCM_PERCENTAGE_COMMITS_30",
+        "PERCENTAGE_COMMITS_365" => "SCM_PERCENTAGE_COMMITS_365",
         "COMMITTERS" => "SCM_COMMITTERS",
         "FILES" => "SCM_FILES", 
         "REPOSITORIES" => "SCM_REPOSITORIES",
@@ -149,9 +165,7 @@ sub compute_data($) {
     print "DBG Writing csv..\n";
 
     # Write static metrics file
-    my @metrics = ( "SCM_SENDERS", "SCM_SENDERS_7", "SCM_SENDERS_30", "SCM_SENDERS_365", 
-                    "SCM_SENT" , "SCM_SENT_7", "SCM_SENT_30", "SCM_SENT_365", 
-                    "SCM_REPOSITORIES", "SCM_SENT_RESPONSE", "SCM_THREADS" );
+    my @metrics = sort keys $conf{'provides_metrics'};
     my $csv_out = join( ',', sort @metrics) . "\n";
     $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
     
@@ -170,20 +184,19 @@ sub compute_data($) {
         close $fh;
     };
     my $metrics_evol = decode_json($json);
-    print Dumper($metrics_evol);
+#    print Dumper($metrics_evol);
 
     # Create csv data for evol
-    $csv_out = "date,sent_response,id,senders_init,senders_response,sent,threads,repositories,senders,unixtime\n";
+    $csv_out = "date,id,authors,added_lines,removed_lines,commits,committers,repositories,unixtime\n";
     foreach my $id ( 0 .. (scalar(@{$metrics_evol->{'date'}}) -1 ) ) {
 	$csv_out .= $metrics_evol->{'date'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'sent_response'}->[$id] . ',';
 	$csv_out .= $metrics_evol->{'id'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'senders_init'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'senders_response'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'sent'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'threads'}->[$id] . ',';
+	$csv_out .= $metrics_evol->{'authors'}->[$id] . ',';
+	$csv_out .= $metrics_evol->{'added_lines'}->[$id] . ',';
+	$csv_out .= $metrics_evol->{'removed_lines'}->[$id] . ',';
+	$csv_out .= $metrics_evol->{'commits'}->[$id] . ',';
+	$csv_out .= $metrics_evol->{'committers'}->[$id] . ',';
 	$csv_out .= $metrics_evol->{'repositories'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'senders'}->[$id] . ',';
 	$csv_out .= $metrics_evol->{'unixtime'}->[$id] . "\n";
     }
 
