@@ -48,9 +48,9 @@ my %conf = (
     },
     "provides_files" => [
     ],
-    "provides_viz" => [
-        "eclipse_scm",
-    ],
+    "provides_viz" => {
+        "eclipse_scm" => "Eclipse SCM",
+    },
     "provides_fig" => {
         'scm_evol_summary.rmd' => "scm_evol_summary.html",
         'scm_evol_lines.rmd' => "scm_evol_lines.html",

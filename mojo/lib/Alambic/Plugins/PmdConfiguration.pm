@@ -30,9 +30,9 @@ my %conf = (
     },
     "provides_files" => [
     ],
-    "provides_viz" => [
-        "pmd_configuration",
-    ],
+    "provides_viz" => {
+        "pmd_configuration" => "PMD Configuration",
+    },
 );
 
 my $pmd_rules = "/Alambic/Plugins/PmdConfiguration/rules/";

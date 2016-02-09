@@ -25,9 +25,9 @@ my %conf = (
     },
     "provides_files" => [
     ],
-    "provides_viz" => [
-        "pmi_checks",
-    ],
+    "provides_viz" => {
+        "pmi_checks" => "PMI Checks",
+    },
 );
 
 my $eclipse_url = "https://projects.eclipse.org/json/project/";

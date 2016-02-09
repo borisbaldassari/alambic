@@ -27,9 +27,9 @@ my %conf = (
     },
     "provides_files" => [
     ],
-    "provides_viz" => [
-        "stack_overflow",
-    ],
+    "provides_viz" => {
+        "stack_overflow" => "Stack Overflow",
+    },
 );
 
 my $app;

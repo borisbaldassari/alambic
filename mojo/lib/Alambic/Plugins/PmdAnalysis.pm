@@ -30,9 +30,9 @@ my %conf = (
     },
     "provides_files" => [
     ],
-    "provides_viz" => [
-        "pmd_analysis",
-    ],
+    "provides_viz" => {
+        "pmd_analysis" => "PMD Analysis",
+    },
 );
 
 my $home = Mojo::Home->new;

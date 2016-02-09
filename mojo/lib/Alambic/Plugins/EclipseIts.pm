@@ -50,9 +50,9 @@ my %conf = (
     },
     "provides_files" => [
     ],
-    "provides_viz" => [
-        "eclipse_its",
-    ],
+    "provides_viz" => {
+        "eclipse_its" => "Eclipse ITS",
+    },
     "provides_fig" => {
         'its_evol_summary.rmd' => "its_evol_summary.html",
         'its_evol_changed.rmd' => "its_evol_changed.html",

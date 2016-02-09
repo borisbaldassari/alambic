@@ -18,7 +18,6 @@ my %conf = (
         "project_id" => "",
     },
     "provides_metrics" => {
-        
         "PUB_SCM_INFO_PMI" => "PUB_SCM_INFO_PMI",
         "PUB_ITS_INFO_PMI" => "PUB_ITS_INFO_PMI",
     },
