@@ -11,7 +11,6 @@ use File::Copy;
 use File::Path qw(remove_tree);
 use XML::LibXML;
 use File::Basename;
-use Mojo::Home;
 
 
 my %conf = (
@@ -35,8 +34,7 @@ my %conf = (
     },
 );
 
-my $home = Mojo::Home->new;
-my $pmd_rules = $home->rel_dir( "lib" ) . "/Alambic/Plugins/PmdAnalysis/rules/";
+my $pmd_rules = "/Alambic/Plugins/PmdAnalysis/rules/";
 
 my $app;
 
@@ -308,10 +306,11 @@ sub _read_pmd_rules() {
 
     my %rules_def;
 
+    $pmd_rules = $app->home->rel_dir('lib') . $pmd_rules;
     $app->log->info( "[PmdAnalysis] Reading rules definition from [$pmd_rules]." );
 
     my @rules_files = <$pmd_rules/*.xml>;
-
+    my $rules_vol = 0;
     # For each file, read, parse and store it in %rules_def.
     foreach my $file_rules (@rules_files) {
 	my $ruleset = basename($file_rules);
@@ -334,8 +333,11 @@ sub _read_pmd_rules() {
 	    my $priority = $rule_priority[0]->textContent();
             $rules_def{ $ruleset }{ $rule_name }{ 'desc' } = $rule_desc;
 	    $rules_def{ $ruleset }{ $rule_name }{ 'pri' } = $priority;
+	    $rules_vol++;
 	}
     }
+
+    $app->log->info( "[PmdAnalysis] Got [$rules_vol] rules." );
 
     return \%rules_def;    
 }
@@ -426,6 +428,8 @@ sub _read_pmd_xml_files($) {
 
     my $pmd_xml = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
         . "_import_pmd_analysis_results.xml";
+
+    if (not -e $pmd_xml) { print "### XML file does'nt exist!!\n" }
     
     my $parser = XML::LibXML->new;
     my $doc = $parser->parse_file($pmd_xml);
