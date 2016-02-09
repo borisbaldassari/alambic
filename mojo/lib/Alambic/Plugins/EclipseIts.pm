@@ -27,17 +27,26 @@ my %conf = (
         "CLOSED_30" => "ITS_CLOSED_30", 
         "CLOSED_365" => "ITS_CLOSED_365", 
         "CLOSED_7" => "ITS_CLOSED_7",
-        "CLOSERS" => "ITS_CLOSERS", 
-        "CLOSERS_30" => "ITS_CLOSERS_30", 
-        "CLOSERS_365" => "ITS_CLOSERS_365", 
-        "CLOSERS_7" => "ITS_CLOSERS_7", 
-        "TRACKERS" => "ITS_TRACKERS", 
-        "OPENED" => "ITS_OPENED", 
-        "OPENERS" => "ITS_OPENERS", 
+        "DIFF_NETCLOSED_30" => "ITS_DIFF_NETCLOSED_30", 
+        "DIFF_NETCLOSED_365" => "ITS_DIFF_NETCLOSED_365", 
+        "DIFF_NETCLOSED_7" => "ITS_DIFF_NETCLOSED_7",
         "PERCENTAGE_CLOSED" => "ITS_PERCENTAGE_CLOSED", 
         "PERCENTAGE_CLOSED_30" => "ITS_PERCENTAGE_CLOSED_30", 
         "PERCENTAGE_CLOSED_365" => "ITS_PERCENTAGE_CLOSED_365",
         "PERCENTAGE_CLOSED_7" => "ITS_PERCENTAGE_CLOSED_7", 
+        "CLOSERS" => "ITS_CLOSERS", 
+        "CLOSERS_30" => "ITS_CLOSERS_30", 
+        "CLOSERS_365" => "ITS_CLOSERS_365", 
+        "CLOSERS_7" => "ITS_CLOSERS_7", 
+        "DIFF_NETCLOSERS_30" => "ITS_DIFF_NETCLOSERS_30", 
+        "DIFF_NETCLOSERS_365" => "ITS_DIFF_NETCLOSERS_365", 
+        "DIFF_NETCLOSERS_7" => "ITS_DIFF_NETCLOSERS_7", 
+        "PERCENTAGE_CLOSERS_30" => "ITS_PERCENTAGE_CLOSERS_30", 
+        "PERCENTAGE_CLOSERS_365" => "ITS_PERCENTAGE_CLOSERS_365", 
+        "PERCENTAGE_CLOSERS_7" => "ITS_PERCENTAGE_CLOSERS_7", 
+        "TRACKERS" => "ITS_TRACKERS", 
+        "OPENED" => "ITS_OPENED", 
+        "OPENERS" => "ITS_OPENERS", 
     },
     "provides_files" => [
     ],
@@ -158,10 +167,7 @@ sub compute_data($) {
     };
 
     # Write static metrics file
-    my @metrics = ( "ITS_CLOSED_30", "ITS_CLOSERS_7", "ITS_CLOSED_7", "ITS_CLOSED_365", "ITS_CHANGERS", "" 
-	. "ITS_CLOSERS_365", "ITS_TRACKERS", "ITS_PERCENTAGE_CLOSED_7", "ITS_PERCENTAGE_CLOSED_30", ""
-	. "ITS_PERCENTAGE_CLOSED_365", "ITS_CLOSED", "ITS_OPENERS", "ITS_OPENED", "ITS_CHANGED", ""
-		    . "ITS_CLOSERS_30", "ITS_CLOSERS" );
+    my @metrics = sort keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics) . "\n";
     $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
     
@@ -205,6 +211,22 @@ sub compute_data($) {
     my $r_md_out = "${project_id}_eclipse_its.inc";
 
     chdir $r_dir;
+    # Create dir for figures.
+    if (! -d "figures/" ) {
+        print "Creating directory [figures/].\n";
+        mkdir "figures/";
+    }
+    # Create dir for figures/eclipse_its.
+    if (! -d "figures/eclipse_its" ) {
+        print "Creating directory [figures/eclipse_its].\n";
+        mkdir "figures/eclipse_its";
+    }
+    # Create dir for figures/eclipse_its/project_id.
+    if (! -d "figures/eclipse_its/${project_id}" ) {
+        print "Creating directory [figures/eclipse_its/${project_id}].\n";
+        mkdir "figures/eclipse_its/${project_id}";
+    }
+
     $app->log->info( "Executing R script [$r_md] in [$r_dir] with [$project_id]." );
     $app->log->info( "Result to be stored in [$r_md_out]." );
 

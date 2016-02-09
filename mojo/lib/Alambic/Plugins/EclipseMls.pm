@@ -25,11 +25,23 @@ my %conf = (
         "SENDERS_30" => "MLS_SENDERS_30", 
         "SENDERS_365" => "MLS_SENDERS_365", 
         "SENDERS_7" => "MLS_SENDERS_7", 
+        "DIFF_NETSENDERS_30" => "MLS_DIFF_NETSENDERS_30", 
+        "DIFF_NETSENDERS_365" => "MLS_DIFF_NETSENDERS_365", 
+        "DIFF_NETSENDERS_7" => "MLS_DIFF_NETSENDERS_7", 
         "SENDERS_RESPONSE" => "MLS_SENDERS_RESPONSE",
+        "PERCENTAGE_SENDERS_30" => "MLS_PERCENTAGE_SENDERS_30", 
+        "PERCENTAGE_SENDERS_365" => "MLS_PERCENTAGE_SENDERS_365", 
+        "PERCENTAGE_SENDERS_7" => "MLS_PERCENTAGE_SENDERS_7", 
         "SENT" => "MLS_SENT", 
         "SENT_30" => "MLS_SENT_30", 
         "SENT_365" => "MLS_SENT_365", 
         "SENT_7" => "MLS_SENT_7", 
+        "DIFF_NETSENT_30" => "MLS_DIFF_NETSENT_30", 
+        "DIFF_NETSENT_365" => "MLS_DIFF_NETSENT_365", 
+        "DIFF_NETSENT_7" => "MLS_DIFF_NETSENT_7", 
+        "PERCENTAGE_SENT_30" => "MLS_PERCENTAGE_SENT_30", 
+        "PERCENTAGE_SENT_365" => "MLS_PERCENTAGE_SENT_365", 
+        "PERCENTAGE_SENT_7" => "MLS_PERCENTAGE_SENT_7", 
         "SENT_RESPONSE" => "MLS_SENT_RESPONSE", 
         "THREADS" => "MLS_THREADS",
     },
@@ -152,9 +164,7 @@ sub compute_data($) {
     };
 
     # Write static metrics file
-    my @metrics = ( "MLS_SENDERS", "MLS_SENDERS_7", "MLS_SENDERS_30", "MLS_SENDERS_365", 
-                    "MLS_SENT" , "MLS_SENT_7", "MLS_SENT_30", "MLS_SENT_365", 
-                    "MLS_REPOSITORIES", "MLS_SENT_RESPONSE", "MLS_THREADS" );
+    my @metrics = sort keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics) . "\n";
     $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
     
@@ -199,6 +209,22 @@ sub compute_data($) {
     my $r_md_out = "${project_id}_eclipse_mls.inc";
 
     chdir $r_dir;
+    # Create dir for figures.
+    if (! -d "figures/" ) {
+        print "Creating directory [figures/].\n";
+        mkdir "figures/";
+    }
+    # Create dir for figures/eclipse_mls.
+    if (! -d "figures/eclipse_mls" ) {
+        print "Creating directory [figures/eclipse_mls].\n";
+        mkdir "figures/eclipse_mls";
+    }
+    # Create dir for figures/eclipse_mls/project_id.
+    if (! -d "figures/eclipse_mls/${project_id}" ) {
+        print "Creating directory [figures/eclipse_mls/${project_id}].\n";
+        mkdir "figures/eclipse_mls/${project_id}";
+    }
+
     $app->log->info( "Executing R script [$r_md] in [$r_dir] with [$project_id]." );
     $app->log->info( "Result to be stored in [$r_md_out]." );
 

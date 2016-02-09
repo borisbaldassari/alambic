@@ -53,8 +53,9 @@ my %conf = (
     ],
     "provides_fig" => {
         'scm_evol_summary.rmd' => "scm_evol_summary.html",
-        'scm_evol_sent.rmd' => "scm_evol_sent.html",
+        'scm_evol_lines.rmd' => "scm_evol_lines.html",
         'scm_evol_people.rmd' => "scm_evol_people.html",
+        'scm_evol_commits.rmd' => "scm_evol_commits.html",
     },
 
 );
@@ -162,10 +163,8 @@ sub compute_data($) {
         close $fh;
     };
 
-    print "DBG Writing csv..\n";
-
     # Write static metrics file
-    my @metrics = sort keys $conf{'provides_metrics'};
+    my @metrics = sort keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics) . "\n";
     $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
     
@@ -204,13 +203,29 @@ sub compute_data($) {
     open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
     print $fh $csv_out;
     close $fh;
-    
+
     # Now execute the main R script.
     my $r_dir = $app->home->rel_dir('lib') . "/Alambic/Plugins/EclipseScm/";
     my $r_md = "EclipseScm.Rmd";
     my $r_md_out = "${project_id}_eclipse_scm.inc";
 
     chdir $r_dir;
+    # Create dir for figures.
+    if (! -d "figures/" ) {
+        print "Creating directory [figures/].\n";
+        mkdir "figures/";
+    }
+    # Create dir for figures/eclipse_scm.
+    if (! -d "figures/eclipse_scm" ) {
+        print "Creating directory [figures/eclipse_scm].\n";
+        mkdir "figures/eclipse_scm";
+    }
+    # Create dir for figures/eclipse_scm/project_id.
+    if (! -d "figures/eclipse_scm/${project_id}" ) {
+        print "Creating directory [figures/eclipse_scm/${project_id}].\n";
+        mkdir "figures/eclipse_scm/${project_id}";
+    }
+    
     $app->log->info( "Executing R script [$r_md] in [$r_dir] with [$project_id]." );
     $app->log->info( "Result to be stored in [$r_md_out]." );
 
