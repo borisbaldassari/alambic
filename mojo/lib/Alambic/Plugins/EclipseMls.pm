@@ -164,7 +164,7 @@ sub compute_data($) {
     };
 
     # Write static metrics file
-    my @metrics = sort keys %{$conf{'provides_metrics'}};
+    my @metrics = sort map {$conf{'provides_metrics'}{$_}} keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics) . "\n";
     $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
     
