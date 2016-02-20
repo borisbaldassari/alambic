@@ -140,6 +140,8 @@ sub project_retrieve_data {
         return;
     }
 
+    $self->app->log->debug( "[Controller::Plugins] project_retrieve_data [$project_id] [$ds]." );
+
     my $job = $self->minion->enqueue(retrieve_data_ds => [ $ds, $project_id ] => { delay => 0 });
     push( @log, "Job [$job] has been queued." );
 
