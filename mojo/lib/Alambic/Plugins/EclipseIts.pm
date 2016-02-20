@@ -16,7 +16,7 @@ my %conf = (
     "id" => "eclipse_its",
     "name" => "Eclipse ITS",
     "desc" => "Retrieves bug tracking system data from the Eclipse dashboard repository. This plugin will look for a file named project-its-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
-    "ability" => [ 'metrics', 'viz' ],
+    "ability" => [ 'metrics', 'viz', 'fig' ],
     "requires" => {
         "project_id" => "",
     },

@@ -15,7 +15,7 @@ my %conf = (
     "id" => "eclipse_scm",
     "name" => "Eclipse SCM",
     "desc" => "Retrieves configuration management data from the Eclipse dashboard repository. This plugin will look for a file named project-scm-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
-    "ability" => [ "metrics", "viz" ],
+    "ability" => [ "metrics", "viz", "fig" ],
     "requires" => {
         "project_id" => "",
     },

@@ -15,7 +15,7 @@ my %conf = (
     "id" => "eclipse_mls",
     "name" => "Eclipse MLS",
     "desc" => "Retrieves mailing list data from the Eclipse dashboard repository. This plugin will look for a file named project-mls-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
-    "ability" => [ "metrics", "viz" ],
+    "ability" => [ "metrics", "viz", 'fig' ],
     "requires" => {
         "project_id" => "",
     },
