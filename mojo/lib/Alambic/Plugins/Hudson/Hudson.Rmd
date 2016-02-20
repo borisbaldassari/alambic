@@ -15,7 +15,7 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-#project.id <- 'tools.pdt'
+project.id <- 'modeling.sirius'
 plugin.id <- 'hudson'
 file.main = paste("", project.id, "_hudson_main.csv", sep="")
 file.jobs = paste("", project.id, "_hudson_jobs.csv", sep="")
@@ -32,6 +32,9 @@ require(xtable)
 
 metrics <- read.csv(file=file.main, header=T)
 jobs <- read.csv(file=file.jobs, header=T)
+jobs$last_build_date <- as.POSIXct(jobs$last_build_time, origin="1970-01-01")
+jobs$last_successful_build_date <- as.POSIXct(jobs$last_successful_build_time, origin="1970-01-01")
+jobs$last_failed_build_date <- as.POSIXct(jobs$last_failed_build_time, origin="1970-01-01")
 ```
 
 ## Hudson Continuous Integration Engine
@@ -46,7 +49,26 @@ cat(t)
 ```
 </p>
 
-### Timeline
+### Failing jobs
+
+List of failing jobs, sorted by last successful build.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Failing jobs</div>
+<ul class="list-group">
+```{r hudson_failing_jobs, echo=FALSE, message=FALSE, results='asis'}
+# Filter nozbe tasks & get projects from task list.
+t <- apply(jobs, 1, 
+           function(x) paste('<li class="list-group-item"><i class="fa fa-thumbs-down"></i> ',
+                             x[['name']], ' <small>', x[['last_build_date']], '</small><span class="pull-right"><span class="label label-success">',
+                             x[['last_build_duration']], ' ms</span>', ' <span class="label" style="background-color: #cc6686">',
+                             x[['health_report']], '</span></span></li>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</ul>
+</div>
+</div>
 
 ### Changed
 
