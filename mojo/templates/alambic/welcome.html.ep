@@ -23,7 +23,9 @@
                 <br />
                 <p>This is the demonstration page of the <a href="http://castalia.camp/alambic">Alambic engine</a>, an open-source project for software development data analysis.</p>
                 <p>Basically Alambic uses plugins to <a href="/documentation/data.html">retrieve data from various tools and repositories</a> of the software development process, applies these values to a <a href="/documentation/quality_model.html">quality model</a> and generates a variety of graphs, numbers, and reports. Alambic also provides a <a href="/about.html#data">unified API</a> to retrieve this data.</p>
-                <p>The complete process is fully documented, from <a href="/documentation/attributes.html">quality attributes</a> to the <a href="/documentation/metrics.html">metrics</a> retrieved. Data sources include mailing lists, configuration management, issue tracking system, source code, and more. See the full list of data sources in the <a href="/documentations/plugins.html">Data sources section</a> of the documentation.</p>
+                <p>The complete process is fully documented, from <a href="/documentation/attributes.html">quality attributes</a> to the <a href="/documentation/metrics.html">metrics</a> retrieved. Data sources include mailing lists, configuration management, issue tracking system, source code, and more. See the full list of data sources in the <a href="/documentation/plugins.html">Data sources section</a> of the documentation.</p>
+		<p><b>Please note that this project is still in beta.</b> You can check the <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Roadmap/Roadmap">roadmap</a> or you can <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Help_Us">help us</a>.</p>
+		<p><b>If you want to add an Eclipse project</b>, please <a href="/contact.html">get in touch</a> with us!</p>
                 <p>This instance of Alambic is proudly hosted by <a href="http://castalia.solutions">Castalia Solutions</a>.</p>
               </div>
             </div>
