@@ -2,7 +2,7 @@
             <h1 class="al-h1"><small>Documentation</small> Metrics</h1>
             <br />
 
-            <p>All metrics used in the maturity assessment process are described thereafter, with useful information and references. They are classified according to their source. </p><br />
+            <p>All metrics used in the quality model are described thereafter, with useful information and references. They are classified according to their source. Plase note also that several other metrics may be retrieved but not used in the quality model.</p><br />
 
 % my $vol = scalar keys %{$metrics};
 % my $if_main_active = $repo =~ m!^$! ? ' class="active"' : '';
