@@ -14,7 +14,7 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-project.id <- 'modeling.sirius'
+#project.id <- 'modeling.sirius'
 plugin.id <- 'hudson'
 file.main = paste("", project.id, "_hudson_main.csv", sep="")
 file.metrics = paste("", project.id, "_hudson_metrics.csv", sep="")

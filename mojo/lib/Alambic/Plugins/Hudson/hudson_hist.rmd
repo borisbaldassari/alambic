@@ -7,7 +7,7 @@ output: html_document
 library(xts)
 library(dygraphs)
 
-project.id <- 'modeling.sirius'
+#project.id <- 'modeling.sirius'
 file.builds = paste("", project.id, "_hudson_builds.csv", sep="")
 builds <- read.csv(file=file.builds, header=T)
 builds$date <- as.POSIXct(builds$time / 1000, origin="1970-01-01")
