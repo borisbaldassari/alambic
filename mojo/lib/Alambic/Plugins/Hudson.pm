@@ -35,6 +35,7 @@ my %conf = (
         "hudson" => "Hudson",
     },
     "provides_fig" => {
+        'hudson_hist.rmd' => "hudson_hist.html",
         'hudson_pie.rmd' => "hudson_pie.html",
     },
 );
@@ -123,8 +124,14 @@ sub compute_data($) {
     $metrics{'JOBS_FAILED_1W'} = 0;
 
     # Find the date for one week ago
-    my $date = DateTime->now();
-    $date->subtract(days => 7);
+    my $date_now = DateTime->now();
+    my $date_1w = DateTime->now()->subtract(days => 7);
+    my $date_1w_ms = $date_1w->epoch() * 1000;
+
+    print "############################ \n";
+    print "# Date is $date_now and $date_1w.\n";
+    print "############################ \n";
+    
     foreach my $job (@{$hudson->{'jobs'}}) {
 	if ($job->{'color'} =~ m!green!) { 
 	    $metrics{'JOBS_GREEN'}++;
@@ -134,9 +141,12 @@ sub compute_data($) {
 	    $metrics{'JOBS_RED'}++;
 	}
 
+	my $job_last_success = $job->{'lastSuccessfulBuild'}{'timestamp'} || 0;
+	print "Job: " . $date_1w_ms . " " . $job->{'lastSuccessfulBuild'}{'timestamp'} . 
+	    " " . $job->{'color'} . "\n";
 	# If last successful build is more than 1W old, count it.
-	if (exists($job->{'lastFailedBuild'}{'timestamp'}) 
-	    && $job->{'lastFailedBuild'}{'timestamp'} < $date->epoch()) {
+	if ( $job_last_success < $date_1w_ms
+	    && $job->{'color'} =~ m!red! ) {
 	    $metrics{'JOBS_FAILED_1W'}++;
 	}
     }

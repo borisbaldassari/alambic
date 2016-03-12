@@ -3,12 +3,9 @@ output: html_document
 ---
 
 ```{r init, echo=FALSE, message=FALSE, results='asis'}
-knitr::opts_chunk$set(fig.width=6, fig.height=6, echo=F)
 
-library(dygraphs)
 library(xts)
-library(ggplot2)
-library(reshape2)
+library(dygraphs)
 
 project.id <- 'modeling.sirius'
 file.builds = paste("", project.id, "_hudson_builds.csv", sep="")
@@ -19,8 +16,6 @@ builds$duration <- builds$duration / 1000 / 60
 
 evol.xts <- xts(builds, order.by = builds$day)
 
-dates <- seq(from=as.Date(as.character(first(evol.xts)$day)), to=as.Date(as.character(last(evol.xts)$day)), by=1)
-
 t.ok <- as.data.frame(table(evol.xts[evol.xts$result == 'SUCCESS',c('day')]))
 t.unstable <- as.data.frame(table(evol.xts[evol.xts$result == 'UNSTABLE',c('day')]))
 t.failed <- as.data.frame(table(evol.xts[evol.xts$result == 'FAILURE',c('day')]))
@@ -28,53 +23,19 @@ t.failed <- as.data.frame(table(evol.xts[evol.xts$result == 'FAILURE',c('day')])
 t <- merge(t.ok, t.unstable, by = 'Var1')
 t <- merge(t, t.failed, by = 'Var1')
 names(t) <- c('date', 'ok', 'unstable', 'failed')
-long <- melt(t, id.vars = 'date', variable.name = 'status')
-long$date <- as.Date(long$date)
-long.xts <- xts(long, order.by = long$date)
 
-ggplot(evol.xts, aes(x=day, y=)) +
-  geom_area(stat='count')
+t.xts <- xts(t, order.by = as.POSIXlt(t$date))
+
+p <-dygraph( 
+        data = t.xts,
+        main = paste('CI builds for ', project.id, sep=''),
+        width = 800, height = 250 ) %>% 
+      dyAxis("x", drawGrid = FALSE) %>%
+      dySeries("ok", label = "Successful builds") %>%
+      dySeries("failed", label = "Failed builds") %>%
+      dySeries("unstable", label = "Unstable builds") %>%
+#      dyOptions(colors = RColorBrewer::brewer.pal(3, "Set1")) %>%
+      dyRangeSelector()
 p
-
-ggplotly(p)
-
-require(plotly)
-
-plot_ly(data = t, x = date, y = ok, name="Successful builds") %>%
-  add_trace(y=failed, name="Failed builds") %>%
-  add_trace(y=unstable, name="Unstable builds")
-
-# t <- merge(xts(t.ok), xts(,dates), all=T)
-# t <- merge(t, t.unstable)
-# t <- merge(t, t.failed)
-# t
-# p <-dygraph(evol.xts[,c('duration')],
-#         main = paste('Hudson CI builds for ', project.id, sep=''),
-#         width = 800, height = 250 ) %>% 
-#       dyRangeSelector()
-# p
-
-ggplot(t) +
-  geom_dotplot()
-
-
-#apply.daily(evol.xts[,c('duration')])
-
-# aes(size=score), shape=21, colour='black', alpha=0.5) 
-# +
-#   scale_size_area(max_size=30) +
-#   theme(
-#     panel.background=element_blank(),
-#     axis.line=element_line(colour='black')
-#         ) +
-#   ggtitle('Questions on StackOverflow across years') +
-#   xlab("Time") +
-#   ylab("Number of answers") +
-#   scale_fill_manual(values=binary.colours) +
-#   labs( fill="Has an accepted answer", size="Number of votes" ) +
-#   guides(fill=guide_legend(override.aes=list(size=5)))
-# 
-# p
-
 ```
 

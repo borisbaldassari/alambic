@@ -7,7 +7,6 @@ output:
   html_fragment:
     toc: false
     fig_caption: true
-    fig.width: 800
     self_contained: false
     lib_dir: libs
     echo: false
@@ -18,6 +17,7 @@ output:
 project.id <- 'modeling.sirius'
 plugin.id <- 'hudson'
 file.main = paste("", project.id, "_hudson_main.csv", sep="")
+file.metrics = paste("", project.id, "_hudson_metrics.csv", sep="")
 file.jobs = paste("", project.id, "_hudson_jobs.csv", sep="")
 file.builds = paste("", project.id, "_hudson_builds.csv", sep="")
 
@@ -32,6 +32,7 @@ require(ggplot2)
 require(xtable)
 
 main <- read.csv(file=file.main, header=T)
+metrics <- read.csv(file=file.metrics, header=T)
 jobs <- read.csv(file=file.jobs, header=T)
 builds <- read.csv(file=file.builds, header=T)
 jobs$last_build_duration <- round(jobs$last_build_duration / 1000)
@@ -41,6 +42,7 @@ jobs$last_build_date <- as.POSIXct(jobs$last_build_time / 1000, origin="1970-01-
 jobs$last_successful_build_date <- as.POSIXct(jobs$last_successful_build_time / 1000, origin="1970-01-01")
 jobs$last_failed_build_date <- as.POSIXct(jobs$last_failed_build_time / 1000, origin="1970-01-01")
 jobs.ok <- jobs[jobs$color == 'green',]
+jobs.unstable <- jobs[jobs$color == 'yelllow',]
 jobs.nok <- jobs[jobs$color == 'red',]
 ```
 
@@ -49,128 +51,133 @@ jobs.nok <- jobs[jobs$color == 'red',]
 
 ## Hudson Continuous Integration Engine
 
-Hudson instance ``r main$name`` is located at ``r main$url``. ``r main$jobs`` are defined.
+Hudson instance [``r main$name``] is located at ``r main$url``. 
+
+There are ``r metrics$JOBS`` jobs defined on this instance. ``r metrics$JOBS_GREEN`` are green (stable), ``r metrics$JOBS_YELLOW`` are yellow (unstable), ``r metrics$JOBS_RED`` are red (failing).
 
 ## Metrics
 
-  <p>There are ``r metrics$JOBS`` jobs defined. ``r metrics$JOBS_GREEN`` are green (stable), ``r metrics$JOBS_YELLOW`` are yellow (unstable), ``r metrics$JOBS_RED`` are red (failing).</p>
-  <p>Number of jobs failing for more than one week: ``r metrics$JOBS_FAILED_1W``.</p>
-  <p>
-```{r metrics_table, echo=FALSE, message=FALSE, results='asis'}
-t <- lapply(names(metrics), function(x) paste(x, ' <span class="badge">', metrics[[x]], '</span>, ', sep=''))
+The following metrics are available:
+
+<ul>
+  <li>Number of jobs defined on the host (JOBS): ``r metrics[['JOBS']]``.</li>
+  <li>Number of jobs in status failed for more than one week (JOBS_FAILED_1W): ``r metrics[['JOBS_FAILED_1W']]``.</li>
+  <li>Number of jobs in status green (JOBS_GREEN): ``r metrics[['JOBS_GREEN']]``.</li>
+  <li>Number of jobs in status yellow (JOBS_YELLOW): ``r metrics[['JOBS_YELLOW']]``.</li>
+  <li>Number of jobs in status red (JOBS_RED): ``r metrics[['JOBS_RED']]``.</li>
+```{r metrics_table, echo=FALSE, message=FALSE, results='asis', eval=F}
+t <- lapply(names(metrics), function(x) paste(' <li>', x, ': ', metrics[[x]], '</li>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
-  </p>
-  <p>
-  The following jobs have been failing for more than one week: <br />
-  <ul>
-```{r jobs_old, echo=FALSE, message=FALSE, results='asis'}
-jobs.nok$since <- round(abs(jobs.nok$last_successful_build_date - Sys.time()))
-jobs.nok.long <- jobs.nok[jobs.nok$since > 7,c('name', 'since')]
-#print(jobs.nok.long[,c('name', 'since')])
-t <- apply(jobs.nok.long, 1, function(x) paste('<li><code>', x[['name']], '</code> has been failing for <code>', x[['since']], '</code>. </li>', sep=''))
-t <- paste(t, collapse=" ")
-cat(t)
-```
-  </ul>
-  </p>
+</ul>
+
 </div>
 <div class="col-md-6">
   <iframe src="/projects/figures/hudson/`r project.id`/hudson_pie.html" frameborder="0" style="width: 500px; height: 340px"></iframe>
 </div>
 </div>
 
-### Jobs
+## History 
+
+<iframe src="/projects/figures/hudson/`r project.id`/hudson_hist.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+
+## Failing Jobs
+
+There are ``r metrics[['JOBS_RED']]`` failing jobs on the instance. This should not happen. 
+
+These jobs have not been failing for a long time (less than a week). It should be quite easy to make them succeed again. <b>Fix them</b> as soon as possible.
+
+<ul>
+```{r jobs_failed_young, echo=FALSE, message=FALSE, results='asis'}
+jobs.nok$since <- round(abs(jobs.nok$last_successful_build_date - Sys.time()))
+jobs.nok.long <- jobs.nok[jobs.nok$since < 7 & jobs.nok$last_successful_build_time > 10,c('name', 'since')]
+#print(jobs.nok.long[,c('name', 'since')])
+t <- apply(jobs.nok.long, 1, function(x) paste('<li><code>', x[[1]], '</code> has been failing for <code>', x[[2]], '</code>. </li>', sep=''))
+t <- paste(t, collapse=" ")
+if (nchar(t) < 2) { t <- "<li>No job failing for less than a week!</li>" }
+cat(t)
+```
+</ul>
+
+These jobs have been failing for quite a long time (more than a month). Constantly failing builds are not good for build confidence. <b>They should be disabled</b> if they are not relevant anymore, or if you think they still have some value then fix them.
+
+<ul>
+```{r jobs_failed_old, echo=FALSE, message=FALSE, results='asis'}
+jobs.nok$since <- round(abs(jobs.nok$last_successful_build_date - Sys.time()))
+jobs.nok.long <- jobs.nok[jobs.nok$since > 30,c('name', 'since')]
+#print(jobs.nok.long[,c('name', 'since')])
+t <- apply(jobs.nok.long, 1, function(x) paste('<li><code>', x[['name']], '</code> has been failing for <code>', x[['since']], '</code>. </li>', sep=''))
+t <- paste(t, collapse=" ")
+if (nchar(t) < 2) { t <- "<li>No job failing for more than a week!</li>" }
+cat(t)
+```
+</ul>
 
 List of failing jobs, sorted by last successful build.
 
 <div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Failing jobs</div>
+<table class="table table-striped">
+  <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
+```{r hudson_failing_jobs, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(jobs.nok, 1, 
+           function(x) paste('<tr><td><i class="fa fa-thumbs-up"></i> ',
+                             x[[1]], '</td><td><small>', x[[16]], 
+                             '</small></td><td><small>', x[[6]], 
+                             ' sec.</small></td><td>', ' ',
+                             x[[14]], ' &percnt;</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+## Unstable Jobs
+
+A build is considered unstable if it was built successfully and one or more publishers report it unstable. For example if the JUnit publisher is configured and a test fails then the build will be marked unstable. 
+
+One of the purpose of continuous integration is to provide confidence in builds and deliveries, so unstability is not an option. <b>Fix them, or disable the failing publishers</b> if they are not relevant anymore. This list should be generally empty, or at least a temporary, time-limited stage for builds.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Unstable jobs</div>
+<table class="table table-striped">
+  <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
+```{r jobs_unstable, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(jobs.unstable, 1, 
+           function(x) paste('<tr><td><i class="fa fa-thumbs-up"></i> ',
+                             x[[1]], '</td><td><small>', x[[16]], 
+                             '</small></td><td><small>', x[[6]], 
+                             ' sec.</small></td><td>', ' ',
+                             x[[14]], ' &percnt;</td></tr>', sep=''))
+#<span class="label" style="background-color: #cc6686"></span>
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+## Successful Jobs
+
+These jobs run well, congrats! 
+
+Maybe you could check from time to time if this criterion is still relevant: are the builds succeeding because they measure the wrong thing, because the build is outdated and doesn't evolve anymore, or because things are plainly right?
+
+<div class="panel panel-default">
 <div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  OK jobs</div>
 <table class="table table-striped">
-  <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Params</th></tr>
+  <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
 ```{r hudson_ok_jobs, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(jobs.ok, 1, 
-           function(x) paste('<tr><td><i class="fa fa-thumbs-down"></i> ',
+           function(x) paste('<tr><td><i class="fa fa-thumbs-up"></i> ',
                              x[['name']], '</td><td><small>', x[['last_build_date']], 
                              '</small></td><td><small>', x[['last_build_duration']], 
-                             ' sec.</small></td><td><span class="label label-success">',
-                             x[['last_build_duration']], '</span>', ' <span class="label" style="background-color: #cc6686">',
-                             x[['health_report']], '</span></td></tr>', sep=''))
+                             ' sec.</small></td><td>', ' ',
+                             x[['health_report']], ' &percnt;</td></tr>', sep=''))
+#<span class="label" style="background-color: #cc6686"></span>
 t <- paste(t, collapse=" ")
 cat(t)
 ```
 </table>
 </div>
 </div>
-
-<div class="panel panel-default">
-<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Failing jobs</div>
-<ul class="list-group">
-```{r hudson_failing_jobs, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(jobs.nok, 1, 
-           function(x) paste('<li class="list-group-item"><i class="fa fa-thumbs-down"></i> ',
-                             x[['name']], ' <small>', x[['last_build_date']], '</small><span class="pull-right"><span class="label label-success">',
-                             x[['last_build_duration']], ' ms</span>', ' <span class="label" style="background-color: #cc6686">',
-                             x[['health_report']], '</span></span></li>', sep=''))
-t <- paste(t, collapse=" ")
-cat(t)
-```
-</ul>
-</div>
-</div>
-
-### Changed
-
-
-### People
-
-### Opened vs Closed
-
-```{r evol, echo=FALSE, message=FALSE, results='asis', eval=F}
-#if (nrow(evol) < 2) {
-#  print( "No historical data found.")
-#} else {
-  evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
-  p <-dygraph(evol.xts[,c(2:8)]) %>% dyRangeSelector()
-  p
-#}
-```
-
-
-
-```{r static-gvis, echo=FALSE, message=FALSE, results='asis', eval=F}
-suppressPackageStartupMessages(library(googleVis))
-options(gvis.plot.tag='chart')
-my.chart <- evol[,c(1:8)]
-p <- gvisLineChart(my.chart, options = list(
-      title="Bugs",
-      width=500, height=350
-      ))
-
-print(p, 'chart')
-```
-
-```{r ggplot, echo=FALSE, message=F, results='asis', eval=F}
-my.data.long <- melt(evol[,c("unixtime", "opened", "closed")], id.vars="unixtime", value.name="value", variable.name="metric")
-my.data.long$time <- as.POSIXct(as.numeric(as.character(my.data.long$unixtime)), origin="1970-01-01")
-
-p <- ggplot(my.data.long, aes(x = time, y = value, color=metric)) + geom_line(size = .1)
-p
-```
-
-
-```{r test, echo=FALSE, message=FALSE, results='asis', eval=F}
-scatterplot3js(data[,c(3,6,1)],
-               labels=row.names(mtcars),    # mousing over a point will show what model car it is
-               size=mtcars$hp/100,          # the size of a point maps to horsepower
-               flip.y=TRUE,
-               color=col,renderer="canvas") # point color indicates number of cylindars 
-
-data(economics, package = "ggplot2")
-econ <- transform(economics, date = as.character(date))
-m1 <- mPlot(x = "date", y = c("psavert", "uempmed"), type = "Line", data = econ)
-m1$set(pointSize = 0, lineWidth = 1)
-m1$print("chart2")
-```
-
