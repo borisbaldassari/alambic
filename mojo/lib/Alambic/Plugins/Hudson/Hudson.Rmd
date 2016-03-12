@@ -107,7 +107,7 @@ These jobs have been failing for quite a long time (more than a month). Constant
 jobs.nok$since <- round(abs(jobs.nok$last_successful_build_date - Sys.time()))
 jobs.nok.long <- jobs.nok[jobs.nok$since > 30,c('name', 'since')]
 #print(jobs.nok.long[,c('name', 'since')])
-t <- apply(jobs.nok.long, 1, function(x) paste('<li><code>', x[['name']], '</code> has been failing for <code>', x[['since']], '</code>. </li>', sep=''))
+t <- apply(jobs.nok.long, 1, function(x) paste('<li><code>', x[[1]], '</code> has been failing for <code>', x[[2]], '</code>. </li>', sep=''))
 t <- paste(t, collapse=" ")
 if (nchar(t) < 2) { t <- "<li>No job failing for more than a week!</li>" }
 cat(t)
@@ -170,10 +170,10 @@ Maybe you could check from time to time if this criterion is still relevant: are
 ```{r hudson_ok_jobs, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(jobs.ok, 1, 
            function(x) paste('<tr><td><i class="fa fa-thumbs-up"></i> ',
-                             x[['name']], '</td><td><small>', x[['last_build_date']], 
-                             '</small></td><td><small>', x[['last_build_duration']], 
+                             x[[1]], '</td><td><small>', x[[16]], 
+                             '</small></td><td><small>', x[[6]], 
                              ' sec.</small></td><td>', ' ',
-                             x[['health_report']], ' &percnt;</td></tr>', sep=''))
+                             x[[14]], ' &percnt;</td></tr>', sep=''))
 #<span class="label" style="background-color: #cc6686"></span>
 t <- paste(t, collapse=" ")
 cat(t)
