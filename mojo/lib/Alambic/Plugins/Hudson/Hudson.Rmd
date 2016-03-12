@@ -84,7 +84,7 @@ cat(t)
 
 ## Failing Jobs
 
-There are ``r metrics[['JOBS_RED']]`` failing jobs on the instance. This should not happen. 
+There are ``r metrics[['JOBS_RED']]`` failing jobs on the instance. 
 
 These jobs have not been failing for a long time (less than a week). It should be quite easy to make them succeed again. <b>Fix them</b> as soon as possible.
 
