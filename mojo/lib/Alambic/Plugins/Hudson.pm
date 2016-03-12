@@ -35,7 +35,7 @@ my %conf = (
         "hudson" => "Hudson",
     },
     "provides_fig" => {
-        'hudson_trend.rmd' => "hudson_trend.html",
+        'hudson_pie.rmd' => "hudson_pie.html",
     },
 );
 
@@ -67,7 +67,6 @@ sub retrieve_data($) {
     my $project_id = shift;
 
     my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
-    my $project_grim = $project_conf->{'project_id'};
     my $hudson_url = $project_conf->{'hudson_url'};
     
     my $hudson;
@@ -99,6 +98,9 @@ sub retrieve_data($) {
 sub compute_data($) {
     my $self = shift;
     my $project_id = shift;
+
+    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
+    my $hudson_url = $project_conf->{'hudson_url'};
 
     $app->log->info("[Plugins::Hudson] Starting compute data for [$project_id].");
 
@@ -148,17 +150,35 @@ sub compute_data($) {
         close $fh;
     };
 
-    # Write csv file for main informaiton about hudson instance
+    # Write csv file for metrics
     my @metrics_csv = sort map {$conf{'provides_metrics'}{$_}} keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics_csv) . "\n";
     $csv_out .= join( ',', map { $metrics{$_} } sort @metrics_csv) . "\n";
 
-    my $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/Hudson/" . $project_id . "_hudson_main.csv";
+    my $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/Hudson/" . $project_id . "_hudson_metrics.csv";
     print "Writing metrics to file [$file_csv].\n";
     open(my $fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
     print $fh $csv_out;
     close $fh;
 
+    # Write csv file for main information about hudson instance
+    @metrics_csv = ('name', 'desc', 'jobs', 'url');
+    $csv_out = join( ',', @metrics_csv) . "\n";
+    my $node_desc = $hudson->{'nodeDescription'};
+    print "DBG node_desc [$node_desc].\n";
+    $node_desc =~ s!"!\"!;
+    print "DBG node_desc after [$node_desc].\n";
+    $csv_out .= $hudson->{'nodeName'} . ','
+	. '"' . $node_desc . '"' . ','
+	. $metrics{'JOBS'} . ','
+	. $hudson_url . "\n";
+
+    $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/Hudson/" . $project_id . "_hudson_main.csv";
+    print "Writing metrics to file [$file_csv].\n";
+    open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
+    print $fh $csv_out;
+    close $fh;
+    
     # Write csv file for jobs
     my @jobs_metrics = ('name', 'buildable', 'color', 
 			'last_build', 'last_build_time', 'last_build_duration',
@@ -168,7 +188,11 @@ sub compute_data($) {
     $csv_out = join( ',', @jobs_metrics) . "\n";
     my $sep = ',';
     print "Building jobs csv file.\n";
-#    print Dumper(map {$_->{'name'}} @{$hudson->{'jobs'}});
+    #    print Dumper(map {$_->{'name'}} @{$hudson->{'jobs'}});
+
+    my @builds_metrics = ('time', 'name', 'result', 'id', 'number', 'duration', 'url');
+    my $csv_out_builds = join( ',', @builds_metrics) . "\n";
+
     foreach my $job (@{$hudson->{'jobs'}}) {
 	my $name = $job->{'name'};
 	print "Building jobs csv file: $name.\n";
@@ -197,11 +221,37 @@ sub compute_data($) {
 	    . $job->{'nextBuildNumber'} . $sep
 	    . $hr_score . $sep
 	    . $job->{'url'} . "\n";
+
+	# Now read all builds.
+	foreach my $build (@{$job->{'builds'}}) {
+	    my $time = $build->{'timestamp'};
+	    my $name = $build->{'fullDisplayName'};
+	    my $result = $build->{'result'};
+	    my $id = $build->{'id'};
+	    my $number = $build->{'number'};
+	    my $duration = $build->{'duration'};
+	    my $url = $build->{'url'};
+	    
+	    $csv_out_builds .= $time . $sep
+		. $name . $sep
+		. $result . $sep
+		. $id . $sep
+		. $number . $sep
+		. $duration . $sep
+		. '"' . $url . "\"\n";
+	}
     }
-    
+
+    # Write jobs csv file
     $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/Hudson/" . $project_id . "_hudson_jobs.csv";
     open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
     print $fh $csv_out;
+    close $fh;
+
+    # Write builds csv file
+    $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/Hudson/" . $project_id . "_hudson_builds.csv";
+    open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
+    print $fh $csv_out_builds;
     close $fh;
     
     # Now execute the main R script.
