@@ -14,7 +14,7 @@ evol <- evol[evol$authors != 0,]
 evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
 p <-dygraph( 
         evol.xts[,c('added_lines', 'removed_lines')],
-        main = paste('Number of added and removed lines', project.id, sep=''),
+        main = paste('Number of added and removed lines for ', project.id, sep=''),
         width = 800, height = 250 ) %>% 
       dyAxis("x", drawGrid = FALSE) %>%
       dySeries("added_lines", label = "Added lines") %>%
