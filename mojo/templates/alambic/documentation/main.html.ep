@@ -3,9 +3,79 @@
             <h1 class="al-h1"><small>Documentation</small> main page</h1>
             <br />
 
-            <p><a href="http://castalia.camp/alambic">Alambic</a> is an open-source project for software development data analysis. Its forge is hosted at <a href="https://bitbucket.org/BorisBaldassari/alambic">BitBucket</a></p>
+            <p><a href="http://castalia.camp/alambic">Alambic</a> is an <b>open-source</b> project for <b>software development data analysis</b>. Its forge is hosted at <a href="https://bitbucket.org/BorisBaldassari/alambic">BitBucket</a>.</p>
 
             <p>Basically Alambic uses plugins to <a href="/documentation/plugins.html">retrieve data from various tools and repositories</a> of the software development process, applies these values to a <a href="/documentation/quality_model.html">quality model</a> and generates a variety of graphs, numbers, and reports. Alambic also provides a <a href="/documentation/data.html">unified API</a> to retrieve this data.</p>
+
+            <h3>Local resources</h3>
+	    
+		<br />
+		<br />
+		
+		<div class="row">
+		  <div class="col-lg-4 text-center">
+                    <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?status=new&status=open"><i class="fa fa-cloud-download fa-2x"></i><br />
+                      Data
+                    </a>
+		  </div>
+		  <div class="col-lg-4 text-center">
+                    <a href="https://bitbucket.org/BorisBaldassari/alambic"><i class="fa fa-plug fa-2x"></i><br />
+                      Plugins
+                    </a>
+		  </div>
+		  <div class="col-lg-4 text-center">
+                    <a href="https://bitbucket.org/BorisBaldassari/alambic/src"><i class="fa fa-sitemap fa-2x"></i><br />    
+                      Quality model
+                    </a>
+		  </div>
+		</div>
+		
+		<br />
+		<br />
+		
+		<div class="row">
+		  <div class="col-lg-4 text-center">
+                    <a href="/documentation/attributes.html"><i class="fa fa-book fa-2x"></i><br />    
+                      Quality attributes
+                    </a>
+		  </div>
+		  <div class="col-lg-4 text-center">
+                    <a href="/documentation/questions.html"><i class="fa fa-book fa-2x"></i><br />
+                      Questions
+                    </a>
+		  </div>
+		  <div class="col-lg-4 text-center">
+                    <a href="/documentation/metrics.html"><i class="fa fa-book fa-2x"></i><br />
+                      Metrics
+                    </a>
+		  </div>
+		</div>
+		
+		<br />
+
+            <h3>Alambic resources</h3>
+	    
+		<br />
+		
+		<div class="row">
+		  <div class="col-lg-4 text-center">
+                    <a href="https://bitbucket.org/BorisBaldassari/alambic"><i class="fa fa-bitbucket fa-2x"></i><br />
+                      Project Home
+                    </a>
+		  </div>
+		  <div class="col-lg-4 text-center">
+                    <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki"><i class="fa fa-question-circle fa-2x"></i><br />
+                      Documentation
+                    </a>
+		  </div>
+		  <div class="col-lg-4 text-center">
+                    <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?status=new&status=open"><i class="fa fa-bug fa-2x"></i><br />
+                      Issues
+                    </a>
+		  </div>
+		</div>
+		
+		<br />
             
             <hr />
 
