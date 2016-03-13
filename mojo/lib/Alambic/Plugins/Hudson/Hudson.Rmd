@@ -122,7 +122,7 @@ List of failing jobs, sorted by last successful build.
   <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
 ```{r hudson_failing_jobs, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(jobs.nok, 1, 
-           function(x) paste('<tr><td><i class="fa fa-thumbs-up"></i> ',
+           function(x) paste('<tr><td>',
                              x[[1]], '</td><td><small>', x[[16]], 
                              '</small></td><td><small>', x[[6]], 
                              ' sec.</small></td><td>', ' ',
@@ -145,7 +145,7 @@ One of the purpose of continuous integration is to provide confidence in builds 
   <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
 ```{r jobs_unstable, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(jobs.unstable, 1, 
-           function(x) paste('<tr><td><i class="fa fa-thumbs-up"></i> ',
+           function(x) paste('<tr><td>',
                              x[[1]], '</td><td><small>', x[[16]], 
                              '</small></td><td><small>', x[[6]], 
                              ' sec.</small></td><td>', ' ',
@@ -169,7 +169,7 @@ Maybe you could check from time to time if this criterion is still relevant: are
   <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
 ```{r hudson_ok_jobs, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(jobs.ok, 1, 
-           function(x) paste('<tr><td><i class="fa fa-thumbs-up"></i> ',
+           function(x) paste('<tr><td>',
                              x[[1]], '</td><td><small>', x[[16]], 
                              '</small></td><td><small>', x[[6]], 
                              ' sec.</small></td><td>', ' ',

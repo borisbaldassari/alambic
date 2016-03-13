@@ -19,7 +19,6 @@ my %conf = (
     "desc" => "Retrieves information from the Hudson continuous integration engine.",
     "ability" => [ 'metrics', 'viz', 'fig' ],
     "requires" => {
-        "project_id" => "",
         "hudson_url" => "",
     },
     "provides_metrics" => {
