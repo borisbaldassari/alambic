@@ -7,17 +7,14 @@
 
                 <h3>Contact the Alambic team</h3>
                 
-                <p>The Alambic project is hosted on BitBucket at <a href="https://bitbucket.org/BorisBaldassari/polarsys">https://bitbucket.org/BorisBaldassari/polarsys</a>. One can find there the issue tracker, a wiki and the git repositories. </p>
+                <p>The Alambic project is <b>open-source</b>, published under the <a href="https://www.eclipse.org/legal/epl-v10.html">Eclipse Public Licence</a>.</p>
+		<p>The project is hosted on BitBucket at <a href="https://bitbucket.org/BorisBaldassari/alambic">bitbucket.org/BorisBaldassari/alambic</a>. You can find there the issue tracker, a wiki and the git repositories. Any contribution <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Help_Us/">is more than welcome</a>: use case, requirement, test, documentation, code or feedback! Since we invest quite some time in Alambic, we would definitely love to hear from you.</p>
 
-                <p>You are welcome to contribute any use case, requirement, test, documentation, code or feedback! Since we invest quite some time in Alambic, we would definitely love to hear from you.</p>
+		<p>The Alambic team can be contacted using the below contact web form, or at <code>alambic (at) castalia (dot) solutions</code>.</p>
+		
+                <h3>Contributors and partners</h3>              
 
-                <h3>Meet us</h3>
-                
-                <p>We are present at major Eclipse events like EclipseCon France and EclipseCon Europe. We also regularly give talks about the <a href="https://polarsys.org/wiki/Maturity_Assessment_WG">PolarSys maturity assessment task force</a>, which uses the very same framework.</p>
-
-                <h3>Contributors</h3>              
-
-                <p>These contributors would be happy to provide more information. If you need hosting, customisation, or professional services please use this list to find a consultant.</p>
+                <p>These contributors and partners would be happy to provide more information about Alambic. If you have questions, or need hosting, customisation, or professional services please use this list to find a consultant.</p>
                 
                 <ul class="list-group">
                   <li class="list-group-item">
