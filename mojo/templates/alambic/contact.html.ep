@@ -27,6 +27,12 @@
                   <li class="list-group-item">
                     <strong><a href="http://ablogix.fr">ABlogiX</a></strong> (Arnaud Bourlier)<br />
                     <span class="fa fa-envelope fa-fw"></span> &nbsp; arnaud (dot) bourlier (by) ablogix (dot) fr<br />
+		  </li>
+                  <li class="list-group-item">
+                    <strong><a href="http://bitergia.com">Bitergia</a></strong><br />
+		    <span class="fa fa-envelope fa-fw"></span> &nbsp; <a href="http://bitergia.com/#contact">Contact (web form)</a><br>
+                    <span class="fa fa-envelope fa-fw"></span> &nbsp; contact (by) bitergia (dot) com<br />
+		  </li>
                 </ul>
                 
               </div>
