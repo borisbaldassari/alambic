@@ -11,8 +11,12 @@
                 <li role="presentation" class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Plugins <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
-% foreach my $plugin ( keys %{app->projects->get_project_viz($project_id)} ) {
-                    <li role="presentation"><a href="/projects/<%= $project_id %>_plugins_<%= $plugin %>.html"><%= $plugin %></a></li>
+% foreach my $plugin ( sort keys %{app->projects->get_project_viz($project_id)} ) {
+%   my $plugin_name = 'Unknown';
+%   if (defined(al_plugins->get_plugin($plugin))) {
+%     $plugin_name = al_plugins->get_plugin($plugin)->get_conf()->{'name'};
+%   }
+                    <li role="presentation"><a href="/projects/<%= $project_id %>_plugins_<%= $plugin %>.html"><%= $plugin_name %></a></li>
 % }
                   </ul>
                 </li>
