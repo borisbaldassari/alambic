@@ -1,10 +1,6 @@
 
             <h1 class="al-h1"><small>Documentation</small> Data</h1>
             <br />
-
-            <p>Alambic is very data-centric in its design. All the  information retrieved from the different data sources is made available through a set of cool simple rest api calls. </p>
-
-            <hr />
             
             <h3>Generic information</h3>
             
