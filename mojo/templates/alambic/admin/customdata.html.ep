@@ -4,7 +4,7 @@
             
 %= include 'alambic/admin/admin_menu', current => '/admin/cdata'
 
-            <p>These pages allow teams to add custom data to the projects. Please note that you must be <a href="/comments/login">logged in</a> to write comments.</p>
+            <p>These pages allow teams to add custom data to the projects. Please note that you must be <a href="/login">logged in</a> to write comments.</p>
             
             <p>&nbsp;</p>
 

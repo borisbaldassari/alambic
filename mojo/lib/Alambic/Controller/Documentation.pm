@@ -9,7 +9,7 @@ sub welcome {
     my $self = shift;
 
     # 'id' is the specific documentation page from url.
-    my $in_doc = $self->param( 'id' );
+    my $in_doc = $self->param( 'id' ) || '';
 
     if ($in_doc =~ m!^quality_model(.html)?$!) {
 

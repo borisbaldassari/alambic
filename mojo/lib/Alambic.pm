@@ -191,6 +191,7 @@ sub startup {
     
     # Documentation
     $r->get('/documentation/#id')->to('documentation#welcome');
+    $r->get('/documentation')->to('documentation#welcome');
     
     # Comments
     $r->get('/comments/')->to('comments#welcome');
