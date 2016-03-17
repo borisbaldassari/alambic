@@ -4,6 +4,13 @@ library(knitr)
 require('ggplot2')
 require(xtable)
 
+# project.id <- 'modeling.gmf-runtime'
+# plugin.id <- 'stack_overflow'
+# file.csv <- 'modeling.gmf-runtime_so.csv'
+# project.tag <- 'eclipse-gmf'
+# date.now <- '2016-03-17T15:38:55'
+# date.before <- '2011-03-17T15:38:55'
+
 opts_chunk$set(fig.width=5, fig.height=5, echo=F, warning=F, message=F,
                fig.path = paste( 'figures/', plugin.id, '/', project.id, '/', sep=""))
 opts_knit$set(progress = TRUE, self.contained=T)
@@ -65,7 +72,7 @@ end.rcode-->
   </div>
   <div class="col-lg-5">
 
-<!--begin.rcode blob-so-tm, dev='svg', fig.width=4, fig.height=3, dev.args=list(bg='transparent'), out.extra='class="img-responsive"'
+<!--begin.rcode blob-so-tm, dev='svg', fig.width=6, fig.height=4, dev.args=list(bg='transparent'), out.extra='class="img-responsive"'
 
 require(tm)
 require(wordcloud)
@@ -222,11 +229,10 @@ end.rcode-->
   </div>
   <div class="col-lg-8">
 
-<!--begin.rcode blob-so-plot, dev='svg', fig.width=20, fig.height=12, dev.args=list(bg='transparent'), out.extra='class="img-responsive"', warning=F
-
+<!--begin.rcode blob-so-plot, dev='svg', fig.width=20, fig.height=12, dev.args=list(bg='transparent'), out.extra='class="img-responsive"'
 p <- ggplot(project, aes(x=c.date, y=answer_count, fill=factor(!is_answered))) +
   geom_point(aes(size=score), shape=21, colour='black', alpha=0.5) +
-  scale_size_area(max_size=30) +
+  scale_size(range=c(1,30)) + 
   theme(
     panel.background=element_blank(),
     axis.line=element_line(colour='black')
@@ -239,7 +245,6 @@ p <- ggplot(project, aes(x=c.date, y=answer_count, fill=factor(!is_answered))) +
   guides(fill=guide_legend(override.aes=list(size=5)))
 
 p
-
 end.rcode-->
 
   </div>
