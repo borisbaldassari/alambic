@@ -49,7 +49,7 @@ cat(t)
 
 ### Timeline
 
-<iframe src="/projects/figures/eclipse_mls/`r project.id`/mls_evol_summary.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
+<iframe src="/projects/figures/eclipse_mls/`r project.id`/mls_evol_summary.html" frameborder="0" style="width: 100%; height: 370px"></iframe>
 
 ### Sent emails
 
