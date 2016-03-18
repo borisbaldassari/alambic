@@ -15,7 +15,7 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-project.id <- 'tools.cdt'
+#project.id <- 'tools.cdt'
 plugin.id <- 'eclipse_mls'
 file.static = paste("", project.id, "_mls.csv", sep="")
 file.evol = paste("", project.id, "_mls_evol.csv", sep="")
