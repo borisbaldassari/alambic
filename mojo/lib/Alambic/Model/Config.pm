@@ -3,144 +3,69 @@ package Alambic::Model::Config;
 use warnings;
 use strict;
 
-use Scalar::Util 'weaken';
+#use Scalar::Util 'weaken';
 use Mojo::JSON qw( decode_json encode_json );
 use Data::Dumper;
 
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw( read_files
-                 write_files
-                 get_title
-                 get_name
-                 get_desc );  
+our @EXPORT_OK = qw( 
+                     get_conf 
+                     get_name
+                     get_desc 
+                     get_dir_projects 
+                     get_pg_minion
+                     get_pg_alambic
+                   );  
 
 
-my %config;
+# Default values for configuration. These can be overriden by the constructor or
+# through the setters.
+# TODO: add setters for config
+my %config = (
+    'name' => 'DefaultName',
+    'desc' => 'Default Description',
+    'dir_projects' => 'projects/',
+    'conf_pg_minion' => '',
+    'conf_pg_alambic' => '',
+);
 
+# Create a new config module with default values. Optional parameter $conf
+# looks like %config
 sub new { 
-    my $class = shift;
-    my $app = shift;
+    my ($class, $conf) = @_;
+
+    # If config is passed, use it.
+    if (@_ == 2 and ref($conf) =~ m!HASH!) {
+	%config = %{$conf};
+    }
     
-    &_read_files($app->config);
-
-    my $hash = {app => $app};
-    weaken $hash->{app};
-
-    return bless $hash, $class;
+    return bless {}, $class;
 }
 
-sub read_files() {
-    my $self = shift;
-    
-    &_read_files($self->{app}->config);
+sub get_conf() {
+    return \%config;
 }
 
-sub _read_files() {
-    my $config = shift;
-
-    my $file_conf = $config->{'file_conf'};
-    my $conf_str;
-    open my $fh, '<', $file_conf or die "Could not open conf file [$file_conf].\n";
-    while (<$fh>) { chomp; $conf_str .= $_; }
-    close $fh;
-
-    my $conf = decode_json( $conf_str );
-    %config = %{$conf};
-    
-    return 1;
-}
-
-sub write_files() {
-    my $self = shift;
-
-    my $file_conf = $self->{app}->config->{'file_conf'};
-    my $json_content = encode_json(\%config);
-    do { 
-        local $/;
-        open my $fh, '>', $file_conf or die "Could not open conf file [$file_conf].\n";
-        print $fh $json_content;
-        close $fh;
-    };
-    
-    return 1;
-}
-
-sub get_title() {
-    return $config{'title'};
-}
-
-sub get_name() {
+sub get_name() {    
     return $config{'name'};
 }
 
-sub get_desc() {
+sub get_desc() {    
     return $config{'desc'};
 }
 
-sub get_colours() {
-    return $config{'colours'};
+sub get_dir_projects() {    
+    return $config{'dir_projects'};
 }
 
-sub get_layout() {
-    return $config{'layout'};
+sub get_pg_minion() {    
+    return $config{'conf_pg_minion'};
 }
 
-sub get_pg() {
-    return $config{'conf_pg'};
-}
-
-sub set_conf($$$$) {
-    my $self = shift;
-    my $title = shift;
-    my $name = shift;
-    my $desc = shift;
-    my $conf_pg = shift;
-
-    $config{'title'} = $title;
-    $config{'name'} = $name;
-    $config{'desc'} = $desc;
-    $config{'conf_pg'} = $conf_pg;
-
-    # Write new values to file.
-    &write_files($self);
-}
-
-sub set_title($) {
-    my $self = shift;
-    my $title = shift;
-
-    $config{'title'} = $title;
-
-    # Write new values to file.
-    &write_files($self);
-
-    return 1;
-}
-
-sub set_name($) {
-    my $self = shift;
-    my $name = shift;
-
-    $config{'name'} = $name;
-
-    # Write new values to file.
-    &write_files($self);
-
-    return 1;
-}
-
-sub set_desc($) {
-    my $self = shift;
-    my $desc = shift;
-
-    $config{'desc'} = $desc;
-
-    # Write new values to file.
-    &write_files($self);
-
-    return 1;
+sub get_pg_alambic() {    
+    return $config{'conf_pg_alambic'};
 }
 
 

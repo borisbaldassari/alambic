@@ -24,7 +24,8 @@ library(knitr)
 library(xts)
 library(reshape2)
 
-knitr::opts_chunk$set(fig.path = paste( 'figures/', plugin.id, '/', project.id, '/', sep=""))
+knitr::opts_chunk$set(fig.path = "figures/")
+#paste( 'figures/', plugin.id, '/', project.id, '/', sep=""))
 #opts_knit$set(progress = TRUE, verbose = TRUE, self.contained=T)
 
 require(ggplot2)

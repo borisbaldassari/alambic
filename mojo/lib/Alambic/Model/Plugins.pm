@@ -3,122 +3,130 @@ package Alambic::Model::Plugins;
 use warnings;
 use strict;
 
-use Scalar::Util 'weaken';
-use Mojo::JSON qw( decode_json encode_json );
+use Module::Load;
 use Data::Dumper;
 
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw( read_all_files
-                 get_list_all
-                 get_list_pis
-                 get_list_cds 
-                 get_list_metrics get_list_viz
-                 get_plugin );  
+our @EXPORT_OK = qw( 
+                     get_plugin
+                     get_list_all
+                     get_list_metrics
+                     get_list_figs
+                     get_list_info
+                     get_list_recs
+                     get_list_viz
+                     get_list_post
+                     get_list_global
+                     test
+                   );  
 
 
 my %plugins;
 
 my @plugins_metrics;
-my @plugins_files;
-my @plugins_viz;
+my @plugins_info;
+my @plugins_figs;
+my @plugins_recs;
+my @plugins_post;
+my @plugins_global;
 
 my %customdata;
 
+
 # Constructor
 sub new {
-    my $class = shift;
-    my $app = shift;
-    
-    my $hash = {app => $app};
-    weaken $hash->{app};
+    my ($class) = @_;
 
-    return bless $hash, $class;
+    &_read_plugins();
+    
+    return bless {}, $class;
 }
 
 
-sub read_all_files() { 
-    my $self = shift;
-
-    $self->{app}->log->debug("[Model::Plugins] read_all_files.");
-    my $config = $self->{app}->config;
+sub _read_plugins() { 
 
     # Read plugins directory.
     my @plugins_list = <lib/Alambic/Plugins/*.pm>;
-    foreach my $plugin (@plugins_list) {
-        $plugin =~ m!.+/([^/\\]+).pm!;
-        my $plugin_name = $1;
-        $self->{app}->plugins->register_plugin('Alambic::Plugins::' . $plugin_name, $self->{app});
-        my $al_plugin = $self->{app}->plugins->load_plugin('Alambic::Plugins::' . $plugin_name);
-        my $conf = $al_plugin->get_conf();
-        $plugins{ $conf->{'id'} } = $al_plugin;
-    }
+    foreach my $plugin_path (@plugins_list) {
+        $plugin_path =~ m!lib/(.+).pm!;
+        my $plugin = $1;
+	$plugin =~ s!/!::!g;
 
-    my @customdata_list = <lib/Alambic/CustomData/*.pm>;
-    foreach my $plugin (@customdata_list) {
-        $plugin =~ m!.+/([^/\\]+).pm!;
+        $plugin_path =~ m!.+/([^/\\]+).pm!;
         my $plugin_name = $1;
-        $self->{app}->plugins->register_plugin('Alambic::CustomData::' . $plugin_name, $self->{app});
-        my $al_plugin = $self->{app}->plugins->load_plugin('Alambic::CustomData::' . $plugin_name);
-        my $conf = $al_plugin->get_conf();
-        $customdata{ $conf->{'id'} } = $al_plugin;
+
+	autoload $plugin;
+
+        my $conf = $plugin->get_conf();
+        $plugins{ $conf->{'id'} } = $plugin;
     }
     
 }
 
+
 sub get_list_all() {
     my @list = keys %plugins;
-    push @list, keys %customdata;
+#    push @list, keys %customdata;
     @list = sort @list;
     
     return \@list;
 }
 
-sub get_list_pis() {
-    my @list = keys %plugins;
-    
-    return \@list;
-}
-
-sub get_list_cds() {
-    my @list = keys %customdata;
-    
-    return \@list;
-}
 
 sub get_list_metrics() {
     my @list = map { $plugins{$_}{'id'} if grep('metrics', $plugins{$_}{'ability'}) } keys %plugins;
     return \@list;
 }
 
-sub get_list_viz() {    
 
-    my @viz;
-    foreach my $plugin (keys %plugins) {
-        if ( grep( /^viz$/, @{$plugins{$plugin}->get_conf()->{'ability'}} ) ) {
-            push( @viz, $plugin );
-        }
-    }
-#    my @list = grep { 
-#        'viz' ~~ @{$plugins{$_}->get_conf()->{'ability'}}
-#    } keys %plugins;
-
-    return \@viz;
+sub get_list_figs() {    
+    my @list = map { $plugins{$_}{'id'} if grep('figs', $plugins{$_}{'ability'}) } keys %plugins;
+    return \@list;
 }
 
-sub get_plugin($) {
-    my $self = shift;
-    my $plug_id = shift;
 
-    if ( exists($plugins{$plug_id}) ) {
-        return $plugins{$plug_id};
-    } elsif ( exists($customdata{$plug_id}) ) {
-        return $customdata{$plug_id};
-    } else {
-        $self->{app}->log->error("[Model::Plugins] Could not find Custom data plugin [$plug_id].");        
-        return undef;
-    }
+sub get_list_info() {    
+    my @list = map { $plugins{$_}{'id'} if grep('info', $plugins{$_}{'ability'}) } keys %plugins;
+    return \@list;
+}
+
+
+sub get_list_recs() {    
+    my @list = map { $plugins{$_}{'id'} if grep('recs', $plugins{$_}{'ability'}) } keys %plugins;
+    return \@list;
+}
+
+
+# FIXME
+sub get_list_viz() {    
+    my @list = map { $plugins{$_}{'id'} if grep('recs', $plugins{$_}{'ability'}) } keys %plugins;
+    return \@list;
+}
+
+
+# FIXME
+sub get_list_post() {    
+    my @list = map { $plugins{$_}{'id'} if grep('recs', $plugins{$_}{'ability'}) } keys %plugins;
+    return \@list;
+}
+
+# FIXME
+sub get_list_global() {     
+    my @list = map { $plugins{$_}{'id'} if grep('recs', $plugins{$_}{'ability'}) } keys %plugins;
+    return \@list;
+}
+
+
+sub get_plugin($) {
+    my ($self, $plugin_id) = @_;    
+    return $plugins{$plugin_id};
+}
+
+sub run_plugin($$$) {
+    my ($self, $project_id, $plugin_id, $conf) = @_;    
+    return $plugins{$plugin_id}->run_plugin($project_id, $conf);
 }
 
 1;
