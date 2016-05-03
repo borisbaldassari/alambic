@@ -21,6 +21,7 @@ our @EXPORT_OK = qw(
                      get_pg_version
                      set_project_conf
                      get_project_conf
+                     get_projects_list
                    );  
 
 my $config;
@@ -130,12 +131,13 @@ sub set_project_conf($$$$) {
 	$values{'desc'} = $next->{'description'}; 
 	$values{'plugins'} = $next->{'plugins'}; 
     }
-    
+
+    my $plugins_json = encode_json($plugins);
     if ($exists) {
-	$pg->db->query("UPDATE conf_projects SET name='$name', description='$desc', plugins='$plugins' WHERE id='$id';");
+	$pg->db->query("UPDATE conf_projects SET name='$name', description='$desc', plugins='$plugins_json' WHERE id='$id';");
 	$ret = 1;
     } else {
-	my $ret_q = $pg->db->query("INSERT INTO conf_projects VALUES ('$id', '$name', '$desc', '$plugins');");
+	my $ret_q = $pg->db->query("INSERT INTO conf_projects VALUES ('$id', '$name', '$desc', '$plugins_json');");
 	$ret = 2;
     }
     
@@ -155,25 +157,25 @@ sub get_project_conf($) {
     while (my $next = $results->hash) {
 	$exists = 1;
 	$values{'name'} = $next->{'name'}; 
-	$values{'desc'} = $next->{'description'}; 
-	$values{'plugins'} = $next->{'plugins'}; 
+	$values{'desc'} = $next->{'description'};
+	$values{'plugins'} = decode_json( $next->{'plugins'} ); 
     }
 
     return \%values;
 }
 
 
-# Returns an array of projects names defined in the db.
+# Returns a hash of projects id/names defined in the db.
 sub get_projects_list() {
     my ($self) = @_;
 
-    my @projects; 
-    my $results = $pg->db->query("SELECT name FROM conf_projects;");
+    my %projects_list; 
+    my $results = $pg->db->query("SELECT id, name FROM conf_projects;");
     while (my $next = $results->hash) {
-	push( @projects, $next->{'name'} ); 
+	$projects_list{$next->{'id'}} = $next->{'name'}; 
     }
 
-    return \@projects;
+    return \%projects_list;
 }
 
 
@@ -187,7 +189,7 @@ sub get_projects_list() {
 #  - \%questions a hash ref of questions.
 #  - \%attributes a hash ref of attributes.
 #  - \%recs a hash ref of recs.
-sub add_project_run() {
+sub add_project_run($$$$$$$) {
     my ($self, $project_id, $run, $metrics, $indicators, $questions, $attributes, $recs) = @_;
 
     # Expand information..

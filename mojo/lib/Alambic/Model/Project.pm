@@ -19,13 +19,13 @@ our @EXPORT_OK = qw(
                      run_plugins
                    );  
 
+######################################
 # Data associated with a project
 my ($project_name, $project_id);
+
 my %info;
 
 my %plugins;
-my $plugins_module;
-
 # my %plugins = (
 #     "plugin_id1" => {
 # 	"param1" => "value1",
@@ -33,20 +33,38 @@ my $plugins_module;
 #     },
 #     );
 
+my %indicators;
 my %attributes;
 my %questions;
 my %metrics;
 my %recs;
+######################################
 
+# A ref to the Plugins module.
+my $plugins_module;
 
 # Constructor
 sub new {
-    my ($class, $id, $name) = @_;
+    my ($class, $id, $name, $plugins, $data) = @_;
 
     $project_id = $id;
     $project_name = $name;    
     
     $plugins_module = Alambic::Model::Plugins->new();
+    if (defined($plugins)) {
+	foreach my $plugin_id (keys %{$plugins}) {
+	    $plugins{$plugin_id} = $plugins->{$plugin_id};
+	}
+    }
+
+    if ( defined($data) ) {
+	%metrics = %{$data->{'metrics'} || {}};
+	%indicators = %{$data->{'indicators'} || {}};
+	%questions = %{$data->{'questions'} || {}};
+	%attributes = %{$data->{'attributes'} || {}};
+	%recs = %{$data->{'recs'} || {}};
+    }
+    
 #    my $config = Alambic::Model::Config->new();
 #    my $name = $config->get_name();
 
@@ -61,7 +79,29 @@ sub get_name() {
     return $project_name;
 }
 
-sub get_metrics() {
+sub metrics() {
+    my ($self, $metrics) = @_;
+
+    if (scalar @_ > 1) {
+	%metrics = %{$metrics};
+    } 
+	   
+    return \%metrics;
+}
+
+sub indicators() {
+    return \%metrics;
+}
+
+sub questions() {
+    return \%metrics;
+}
+
+sub attributes() {
+    return \%metrics;
+}
+
+sub recs() {
     return \%metrics;
 }
 
@@ -90,7 +130,34 @@ sub run_plugin($) {
 sub run_plugins() {
     my ($self) = @_;
 
+    my @log;
+
+    foreach my $plugin_id (keys %plugins) {
+	my $ret = $plugins_module->get_plugin($plugin_id)->run_plugin($project_id, $plugins{$plugin_id});
+
+	foreach my $metric (sort keys %{$ret->{'metrics'}} ) {
+	    $metrics{$metric} = $ret->{'metrics'}{$metric};
+	}
+	
+	foreach my $rec (sort keys %{$ret->{'recs'}} ) {
+	    $recs{$rec} = $ret->{'recs'}{$rec};
+	}
+
+	@log = (@log, @{$ret->{'log'}});
+    }
+
+    return { "metrics" => \%metrics, "recs" => \%recs, "log" => \@log };
+}
+
+sub run_project() {
+    my ($self) = @_;
+
+    # Run plugins
+    my $plugins_data = $self->run_plugins();
     
+    # Run post plugins
+
+    return $plugins_data;
 }
 
 

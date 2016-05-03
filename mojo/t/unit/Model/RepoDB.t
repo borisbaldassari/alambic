@@ -93,7 +93,7 @@ eval {
     is_deeply($ret, {}, "Getting a wrong project returns {}.");
     
     my $projects_list = $repodb->get_projects_list();
-    is_deeply( @$projects_list, ("Sirius"), "Projects list has Sirius.");
+    is_deeply( $projects_list, {"modeling.sirius" => "Sirius"}, "Projects list has modeling.sirius.") or diag explain $projects_list;
 
     $ret = $repodb->set_project_conf('modeling.sirius', 'SiriusChanged', 'Sirius is a great tool Changed.', '{ "EclipseIts": {"project_grim": "modeling.sirius"} }');
     ok( $ret == 1, "Second update of project_info is an update.") or diag explain $ret;
@@ -101,7 +101,7 @@ eval {
     $ret_ok = {
 	'desc' => 'Sirius is a great tool Changed.',
 	'name' => 'SiriusChanged',
-	'plugins' => '{"EclipseIts": {"project_grim": "modeling.sirius"}}'
+	'plugins' => '{ "EclipseIts": {"project_grim": "modeling.sirius"} }'
     };
     $ret = $repodb->get_project_conf('modeling.sirius');
     is_deeply($ret, $ret_ok, "Get project has correct name, desc and plugins.") or diag explain $ret;
@@ -179,4 +179,4 @@ if ($clean_db) {
     is( scalar @tables, 1, "Database has 1 tables defined after clean_db.") or diag explain @tables;
 }
 
-done_testing();
+done_testing(39);

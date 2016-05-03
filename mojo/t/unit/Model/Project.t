@@ -43,7 +43,7 @@ ok( -e "projects/tools.cdt/output/its_evol_summary.html", "Check that file its_e
 ok( -e "projects/tools.cdt/output/tools.cdt_metrics_its.json", "Check that file tools.cdt_metrics_its.json exists." );
 
 note("Get metrics from project.");
-$ret = $project->get_metrics();
+$ret = $project->metrics();
 is( $ret->{'ITS_TRACKERS'}, 2, "Number of trackers is 2." ) or diag explain $ret;
 is( scalar grep( /ITS_CLOSED/, keys %{$ret} ), 4, "There should be 4 ITS_CLOSED_*." ) or diag explain $ret;
 is( scalar grep( /ITS_CLOSERS/, keys %{$ret} ), 4, "There should be 4 ITS_CLOSERS_*." ) or diag explain $ret;
