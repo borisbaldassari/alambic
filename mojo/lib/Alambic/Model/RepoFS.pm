@@ -3,8 +3,6 @@ package Alambic::Model::RepoFS;
 use warnings;
 use strict;
 
-use Alambic::Model::Config;
-
 use File::Copy;
 
 require Exporter;
@@ -18,14 +16,10 @@ our @EXPORT_OK = qw(
                      read_plugin
                    );  
 
-my $config;
-
 # Create a new RepoFS object.
 sub new { 
     my ($class, $args) = @_;
 
-    $config = Alambic::Model::Config->new();
-    
     return bless {}, $class;
 }
 

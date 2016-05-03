@@ -10,8 +10,8 @@ use Data::Dumper;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( 
-                     get_plugin
                      get_list_all
+                     get_names_all
                      get_list_metrics
                      get_list_figs
                      get_list_info
@@ -19,6 +19,8 @@ our @EXPORT_OK = qw(
                      get_list_viz
                      get_list_post
                      get_list_global
+                     get_plugin
+                     run_plugin
                      test
                    );  
 
@@ -72,6 +74,18 @@ sub get_list_all() {
     @list = sort @list;
     
     return \@list;
+}
+
+
+sub get_names_all() {
+    my @list = keys %plugins;
+    my %list;
+    foreach my $p (@list) {
+	print Dumper(%plugins);
+	$list{$p} = $plugins{$p}->get_conf()->{'name'};
+    }
+    
+    return \%list;
 }
 
 

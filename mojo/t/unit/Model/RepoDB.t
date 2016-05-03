@@ -31,6 +31,9 @@ eval {
     note( "Initialising DB." );
     $repodb->init_db();
 
+    my $is_ok = $repodb->is_db_ok();
+    is( $is_ok, 1, "DB is_ok has more than 1 table.");
+
     # Checking database.
     push( @tables, $_->{'tablename'} ) for $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->hashes->each;
@@ -78,7 +81,7 @@ eval {
     # Check conf_projects information
     note( "Check conf_projects information." );
 
-    my $ret = $repodb->set_project_conf('modeling.sirius', 'Sirius', 'Sirius is a great tool.', '{}');
+    my $ret = $repodb->set_project_conf('modeling.sirius', 'Sirius', 'Sirius is a great tool.', 0, '{}');
     ok( $ret == 2, "First update of project_info is an insert.") or diag explain $ret;
 
     my $ret_ok = {
@@ -95,7 +98,7 @@ eval {
     my $projects_list = $repodb->get_projects_list();
     is_deeply( $projects_list, {"modeling.sirius" => "Sirius"}, "Projects list has modeling.sirius.") or diag explain $projects_list;
 
-    $ret = $repodb->set_project_conf('modeling.sirius', 'SiriusChanged', 'Sirius is a great tool Changed.', '{ "EclipseIts": {"project_grim": "modeling.sirius"} }');
+    $ret = $repodb->set_project_conf('modeling.sirius', 'SiriusChanged', 'Sirius is a great tool Changed.', '0', '{ "EclipseIts": {"project_grim": "modeling.sirius"} }');
     ok( $ret == 1, "Second update of project_info is an update.") or diag explain $ret;
 
     $ret_ok = {
@@ -179,4 +182,4 @@ if ($clean_db) {
     is( scalar @tables, 1, "Database has 1 tables defined after clean_db.") or diag explain @tables;
 }
 
-done_testing(39);
+done_testing(40);

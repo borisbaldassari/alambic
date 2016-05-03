@@ -14,14 +14,22 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( 
                      get_id
                      get_name
+                     get_plugins
+                     active
+                     metrics
+                     indicators
+                     questions
+                     attributes
+                     recs
                      add_plugin
                      run_plugin
                      run_plugins
+                     run_project
                    );  
 
 ######################################
 # Data associated with a project
-my ($project_name, $project_id);
+my ($project_name, $project_id, $project_active);
 
 my %info;
 
@@ -64,9 +72,6 @@ sub new {
 	%attributes = %{$data->{'attributes'} || {}};
 	%recs = %{$data->{'recs'} || {}};
     }
-    
-#    my $config = Alambic::Model::Config->new();
-#    my $name = $config->get_name();
 
     return bless {}, $class;
 }
@@ -77,6 +82,20 @@ sub get_id() {
 
 sub get_name() {
     return $project_name;
+}
+
+sub get_plugins() {
+    return \%plugins;
+}
+
+sub active() {
+    my ($self, $active) = @_;
+
+    if (scalar @_ > 1) {
+	$project_active = $active;
+    }
+    
+    return $project_active;
 }
 
 sub metrics() {

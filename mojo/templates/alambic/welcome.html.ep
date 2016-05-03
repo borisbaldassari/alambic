@@ -60,12 +60,10 @@
                 <div class="panel panel-default">
                   <div class="panel-heading"><i class="fa fa-dashboard fa-fw"></i> Projects</div>
                   <div class="list-group">
-% my @projects = $self->app->projects->list_active_projects();
-% foreach my $project (sort @projects) {
-%     my $name = defined( app->projects->get_project_name_by_id($project) ) ? 
-%       app->projects->get_project_name_by_id($project) : $project;
+% my $projects = app->al->get_projects_list();
+% foreach my $project (sort keys %$projects) {
                     <a href="projects/<%= $project %>.html" class="list-group-item">
-                      <i class="fa fa-file-o"></i>&nbsp; <%= $name %></a>
+                      <i class="fa fa-file-o"></i>&nbsp; <%= $projects->{$project} %></a>
 % }
                   </div>
                 </div>

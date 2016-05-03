@@ -3,8 +3,6 @@ package Alambic::Model::RepoDB;
 use warnings;
 use strict;
 
-use Alambic::Model::Config;
-
 use Mojo::Pg;
 use Mojo::JSON qw( decode_json encode_json );
 #use File::Copy;
@@ -18,30 +16,26 @@ our @EXPORT_OK = qw(
                      desc
                      init_db
                      is_db_defined
+                     is_db_ok
                      get_pg_version
-                     set_project_conf
                      get_project_conf
                      get_projects_list
+                     set_project_conf
                    );  
 
-my $config;
 my $pg;
 
 # Create a new RepoDB object.
 sub new { 
-    my ($class, $dbh, $args) = @_;
+    my ($class, $alambic_db, $args) = @_;
 
-    $config = Alambic::Model::Config->new();
+    my $db_url = "postgresql://alambic:pass4alambic@/alambic_db";
 
-    if (defined($dbh)) {
-	$pg = $dbh;
-    } else {
-	my $config_url = $config->get_pg_alambic();
-	my $db_url = ( defined($config_url) && $config_url =~ /^postgres/ ) ? 
-	    $config_url : 
-	    "postgresql://alambic:pass4alambic@/alambic_db";
-	$pg = Mojo::Pg->new($db_url);
+    if (defined($alambic_db) && $alambic_db =~ /^postgres/) {
+	$db_url = $alambic_db;
     }
+
+    $pg = Mojo::Pg->new($db_url);
     
     return bless {}, $class;
 }
@@ -70,6 +64,14 @@ sub is_db_defined() {
     } else {
 	return 0;
     }
+}
+
+
+sub is_db_ok() {
+    my $rows = $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
+      WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->rows;
+
+    return $rows > 1 ? 1 : 0;
 }
 
 
@@ -114,30 +116,36 @@ sub desc($) {
 #   - $name a string for the name of the project.
 #   - $desc a string for the description of the project.
 #   - \%plugins a hash ref to the configuration of plugins.
-sub set_project_conf($$$$) {
-    my ($self, $id, $name, $desc, $plugins) = @_;
+sub set_project_conf($$$$$) {
+    my $self = shift;
+    my $id = shift;
+    my $name = shift;
+    my $desc = shift;
+    my $is_active = shift;
+    my $plugins = shift;
 
     my $ret = 0;
     
     # See if the project exists
     my %values; 
     my $exists = 0;
-    my $results = $pg->db->query("SELECT name, description, plugins FROM conf_projects WHERE id='$id';");
+    my $results = $pg->db->query("SELECT name, description, is_active, plugins FROM conf_projects WHERE id='$id';");
 
     # There should be only 1 row with this id.
     while (my $next = $results->hash) {
 	$exists = 1;
 	$values{'name'} = $next->{'name'}; 
 	$values{'desc'} = $next->{'description'}; 
+	$values{'is_active'} = $next->{'is_active'} || 0; 
 	$values{'plugins'} = $next->{'plugins'}; 
     }
 
     my $plugins_json = encode_json($plugins);
     if ($exists) {
-	$pg->db->query("UPDATE conf_projects SET name='$name', description='$desc', plugins='$plugins_json' WHERE id='$id';");
+	$pg->db->query("UPDATE conf_projects SET name='$name', description='$desc', is_active='${is_active}', plugins='$plugins_json' WHERE id='$id';");
 	$ret = 1;
     } else {
-	my $ret_q = $pg->db->query("INSERT INTO conf_projects VALUES ('$id', '$name', '$desc', '$plugins_json');");
+	my $ret_q = $pg->db->query("INSERT INTO conf_projects VALUES ('$id', '$name', '$desc', '${is_active}', '$plugins_json');");
 	$ret = 2;
     }
     
@@ -152,12 +160,13 @@ sub get_project_conf($) {
     # See if the project exists
     my %values; 
     my $exists = 0;
-    my $results = $pg->db->query("SELECT name, description, plugins FROM conf_projects WHERE id='$id';");
+    my $results = $pg->db->query("SELECT name, description, is_active, plugins FROM conf_projects WHERE id='$id';");
     # There should be only 1 row with this id.
     while (my $next = $results->hash) {
 	$exists = 1;
 	$values{'name'} = $next->{'name'}; 
 	$values{'desc'} = $next->{'description'};
+	$values{'is_active'} = $next->{'is_active'};
 	$values{'plugins'} = decode_json( $next->{'plugins'} ); 
     }
 
@@ -270,6 +279,7 @@ CREATE TABLE IF NOT EXISTS conf_projects (
     id TEXT, 
     name TEXT, 
     description TEXT, 
+    is_active BOOLEAN, 
     plugins JSONB,
     PRIMARY KEY( id )
 );

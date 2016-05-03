@@ -59,23 +59,23 @@ isa_ok($config, 'Alambic::Model::Config');
 
 # Check that basic info is ok.
 $name = $config->get_name();
-ok( $name =~ m!SpecificName!, 'Default name is SpecificName') or diag explain $name;
+ok( $name =~ m!SpecificName!, 'Updated name is SpecificName') or diag explain $name;
 
 $desc = $config->get_desc();
-ok( $desc =~ m!Specific Description!, 'Desc is Specific Description') or diag explain $desc;
+ok( $desc =~ m!Specific Description!, 'Updated desc is Specific Description') or diag explain $desc;
 
 $dir_projects = $config->get_dir_projects();
-ok( $dir_projects =~ m!projects2/!, 'Default dir for projects is projects2/') or diag explain $dir_projects;
+ok( $dir_projects =~ m!projects2/!, 'Updated dir for projects is projects2/') or diag explain $dir_projects;
 
 $pg_minion = $config->get_pg_minion();
-ok( $pg_minion =~ m!^postgresql://alambic:pass4alambic@/minion_db$!, 'Default pg_minion is correct') or diag explain $pg_minion;
+ok( $pg_minion =~ m!^postgresql://alambic:pass4alambic@/minion_db$!, 'Updated pg_minion is correct') or diag explain $pg_minion;
 
 $pg_alambic = $config->get_pg_alambic();
-ok( $pg_alambic =~ m!^postgresql://alambic:pass4alambic@/alambic_db$!, 'Default pg_alambic is correct') or diag explain $pg_alambic;
+ok( $pg_alambic =~ m!^postgresql://alambic:pass4alambic@/alambic_db$!, 'Updated pg_alambic is correct') or diag explain $pg_alambic;
 
 # Check full config hash
 $config_test = $config->get_conf();
-is_deeply( $config_test, $config_ref, 'Default config is ok') or diag explain $config_test;
+is_deeply( $config_test, $config_ref, 'Updated config is ok') or diag explain $config_test;
 
 
 done_testing();

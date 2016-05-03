@@ -15,67 +15,41 @@
 % }
 
 %= include '/alambic/admin/admin_menu', current => '/admin/summary'
-                
-            <p><b>Instance</b> <br />
-              <%= app->al_config->get_name() %></p>
-            <p><b>Description</b> <br />
-              <%== app->al_config->get_desc() %></p>
-
-            <br />
-                
+% my $fa_icon = app->al->is_db_ok ? "check-circle-o" : "exclamation-circle";
+% my $fa_icon_m = app->al->is_db_m_ok ? "check-circle-o" : "exclamation-circle";
             <div class="row">
               <div class="col-md-6">
+		<p><b>Instance</b></p>
+		<p><%= app->al->instance_name() %></p>
+		<p><%== app->al->instance_desc() %></p>
 
-% my $conf = app->config;
+		<br />
+              </div>
+	      
+              <div class="col-md-6">
                 <div class="panel panel-default">
                   <div class="panel-heading">Configuration</div>
                   <table class="table table-striped">
-                    <tr><th>File</th><th>Path</th></tr>
-                    <tr><td>Dir conf</td><td><code><%= $conf->{'dir_conf'} %></code></td></tr>
-                    <tr><td>Dir models</td><td><code><%= $conf->{'dir_models'} %></code></td></tr>
-                    <tr><td>Dir rules</td><td><code><%= $conf->{'dir_rules'} %></code></td></tr>
-                    <tr><td>Dir input</td><td><code><%= $conf->{'dir_input'} %></code></td></tr>
-                    <tr><td>Dir data (projects)</td><td><code><%= $conf->{'dir_data'} %></code></td></tr>
+		    <tr><td>Alambic database</td><td><i class="fa fa-<%= $fa_icon %> fa-lg"></i> &nbsp; <%= app->al->instance_pg_alambic() %></td><td><a href="/admin/db/init">Init</a></td></tr>
+		    <tr><td>Minion database</td><td><i class="fa fa-<%= $fa_icon_m %> fa-lg"></i> &nbsp; <%= app->al->instance_pg_minion() %></td><td></td></tr>
                   </table>
-                </div>
+              </div>
+            </div>
                 
-                <div class="panel panel-default">
-                  <div class="panel-heading">Models
-%     if ( defined( session->{'session_user'} ) && users->is_user_authenticated(session->{session_user}, '/admin') ) {
-                    <span class="pull-right"><a href="/admin/read_files/models"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</span>
-% }
-                  </div>
-% my %model = app->models->get_model_info;
-% my %attrs = app->models->get_attributes_info;
-% my %metrics = app->models->get_metrics_info;
-% my %questions = app->models->get_questions_info;
-
-                  <table class="table table-striped">
-                    <tr><th>Type</th><th>Name</th><th>Version</th></tr>
-                    <tr><td>Quality model</td><td><%= $model{'name'} %></td><td><%= $model{'version'} %></td></tr>
-                    <tr><td>Attributes</td><td><%= $attrs{'name'} %></td><td><%= $attrs{'version'} %></td></tr>
-                    <tr><td>Metrics</td><td><%= $metrics{'name'} %></td><td><%= $metrics{'version'} %></td></tr>
-                    <tr><td>Questions</td><td><%= $questions{'name'} %></td><td><%= $questions{'version'} %></td></tr>
-                  </table>
-                </div>
+            <div class="row">
+              <div class="col-md-6">
+                
 
               </div>
               <div class="col-md-6">
                 
                 <div class="panel panel-default">
-                  <div class="panel-heading">Projects
-%     if ( defined( session->{'session_user'} ) && users->is_user_authenticated(session->{session_user}, '/admin') ) {
-                    <span class="pull-right"><a href="/admin/read_files/projects"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</span>
-% }
-                  </div>
-% my @projects = app->projects->list_projects;
+                  <div class="panel-heading">Projects</div>
+% my $projects = app->al->get_projects_list();
                   
                   <table class="table table-striped">
-                    <tr><th>Name</th></tr>
-% foreach my $project (sort @projects) {
-%     my $name = defined( app->projects->get_project_name_by_id($project) ) ? 
-%       app->projects->get_project_name_by_id($project) : $project;
-                    <tr><td><a href="/admin/project/<%= $project %>"><%= $name %></a></td></tr>
+% foreach my $project (sort keys %$projects) {
+                    <tr><td><a href="/admin/projects/<%= $project %>"><%= $projects->{$project} %></a></td></tr>
 % }
                   </table>
                 </div>

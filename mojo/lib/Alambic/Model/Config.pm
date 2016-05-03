@@ -38,7 +38,9 @@ sub new {
 
     # If config is passed, use it.
     if (@_ == 2 and ref($conf) =~ m!HASH!) {
-	%config = %{$conf};
+	foreach my $param (keys %$conf) {
+	    $config{$param} = $conf->{$param};
+	}
     }
     
     return bless {}, $class;
