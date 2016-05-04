@@ -54,4 +54,4 @@ ok( exists($ret->{'ITS_CHANGERS'}), "There should be a metric called ITS_CHANGER
 ok( exists($ret->{'ITS_OPENED'}), "There should be a metric called ITS_OPENED." ) or diag explain $ret;
 ok( exists($ret->{'ITS_OPENERS'}), "There should be a metric called ITS_OPENERS." ) or diag explain $ret;
 
-done_testing();
+done_testing(27);

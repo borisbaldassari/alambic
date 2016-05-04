@@ -34,4 +34,4 @@ ok( -e "projects/tools.cdt/output/its_evol_summary.html", "Check that file its_e
 ok( -e "projects/tools.cdt/output/tools.cdt_metrics_its.json", "Check that file tools.cdt_metrics_its.json exists." );
 
 
-done_testing;
+done_testing(20);

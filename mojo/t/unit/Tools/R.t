@@ -32,4 +32,4 @@ ok( -e 'projects/tools.cdt/output/its_evol_changed.html', "its_evol_changed.html
 
 
     
-done_testing();
+done_testing(9);

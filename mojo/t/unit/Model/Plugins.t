@@ -38,4 +38,4 @@ is( $ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.") or diag e
 
 #remove_tree('projects/tools.cdt');
 
-done_testing();
+done_testing(13);

@@ -18,7 +18,6 @@ our @EXPORT_OK = qw(
                      active
                      metrics
                      indicators
-                     questions
                      attributes
                      recs
                      add_plugin
@@ -43,7 +42,6 @@ my %plugins;
 
 my %indicators;
 my %attributes;
-my %questions;
 my %metrics;
 my %recs;
 ######################################
@@ -68,7 +66,6 @@ sub new {
     if ( defined($data) ) {
 	%metrics = %{$data->{'metrics'} || {}};
 	%indicators = %{$data->{'indicators'} || {}};
-	%questions = %{$data->{'questions'} || {}};
 	%attributes = %{$data->{'attributes'} || {}};
 	%recs = %{$data->{'recs'} || {}};
     }
@@ -109,10 +106,6 @@ sub metrics() {
 }
 
 sub indicators() {
-    return \%metrics;
-}
-
-sub questions() {
     return \%metrics;
 }
 

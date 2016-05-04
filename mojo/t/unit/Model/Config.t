@@ -78,4 +78,4 @@ $config_test = $config->get_conf();
 is_deeply( $config_test, $config_ref, 'Updated config is ok') or diag explain $config_test;
 
 
-done_testing();
+done_testing(15);

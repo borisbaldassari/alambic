@@ -22,4 +22,4 @@ ok( -e 'projects/test.project/output/test.project_test_file_out.json', "Output f
 my $file_output = $repofs->read_output( 'test.project', 'test_file_out.json' );
 is( $file_output, "{'test2' => 'value2'}", 'Output file can be read and is correct.') or diag explain $file_output;
 
-done_testing();
+done_testing(6);

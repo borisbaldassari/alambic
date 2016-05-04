@@ -16,4 +16,4 @@ ok( scalar @{$list} == $pv, "Tools list has $pv entries." ) or diag explain $lis
 
 ok( grep( /^r_sessions/, @{$list} ), "List of tools contains r_sessions." ) or diag explain $list;
 
-done_testing();
+done_testing(4);

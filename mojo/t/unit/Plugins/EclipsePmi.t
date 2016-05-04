@@ -46,4 +46,4 @@ ok( -e "projects/tools.cdt/output/tools.cdt_pmi.json", "Check that file tools.cd
 ok( -e "projects/tools.cdt/output/tools.cdt_pmi_checks.json", "Check that file tools.cdt_metrics_pmi_checks.json exists." );
 
 
-done_testing();
+done_testing(17);

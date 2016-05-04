@@ -41,7 +41,6 @@ sub new {
     my $pg_alambic = $config->get_pg_alambic();
     $repodb = Alambic::Model::RepoDB->new($pg_alambic);
     $plugins = Alambic::Model::Plugins->new();
-    print "In new " . Dumper($plugins);
     
     return bless {}, $class;
 }
@@ -163,7 +162,6 @@ sub run_project($) {
     my $ret = $repodb->add_project_run($project_id, $run, 
 			     $values->{'metrics'}, 
 			     $values->{'indicators'}, 
-			     $values->{'questions'}, 
 			     $values->{'attributes'}, 
 			     $values->{'recs'});
 

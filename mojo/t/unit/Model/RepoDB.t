@@ -87,6 +87,7 @@ eval {
     my $ret_ok = {
 	'desc' => 'Sirius is a great tool.',
 	'name' => 'Sirius',
+	'is_active' => 0,
 	'plugins' => '{}'
     };
     $ret = $repodb->get_project_conf('modeling.sirius');
@@ -104,6 +105,7 @@ eval {
     $ret_ok = {
 	'desc' => 'Sirius is a great tool Changed.',
 	'name' => 'SiriusChanged',
+	'is_active' => 0,
 	'plugins' => '{ "EclipseIts": {"project_grim": "modeling.sirius"} }'
     };
     $ret = $repodb->get_project_conf('modeling.sirius');
@@ -120,7 +122,6 @@ eval {
 				     }, 
 				     {'MYMETRIC' => 5}, 
 				     {'MYINDIC' => 6}, 
-				     {'MYQUEST' => 7}, 
 				     {'MYATTR' => 8} , 
 				     {'MYREC' => {
 					 'rid' => 'REC_PMI_1', 
@@ -132,7 +133,6 @@ eval {
     $results = $repodb->get_project_last_run('modeling.sirius');
     is_deeply( $results->{'metrics'}, {'MYMETRIC' => 5}, "Metrics retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'indicators'}, {'MYINDIC' => 6}, "Indicators retrieved from last run are ok.") or diag explain $results;
-    is_deeply( $results->{'questions'}, {'MYQUEST' => 7}, "Questions retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'attributes'}, {'MYATTR' => 8}, "Attributes retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'recs'}, {'MYREC' => {
 					 'rid' => 'REC_PMI_1', 
@@ -150,7 +150,6 @@ eval {
 				     }, 
 				     {'MYMETRIC' => 15}, 
 				     {'MYINDIC' => 16}, 
-				     {'MYQUEST' => 17}, 
 				     {'MYATTR' => 18} , 
 				     {'MYREC' => {
 					 'rid' => 'REC_PMI_11', 
@@ -162,7 +161,6 @@ eval {
     $results = $repodb->get_project_last_run('modeling.sirius');
     is_deeply( $results->{'metrics'}, {'MYMETRIC' => 15}, "Metrics retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'indicators'}, {'MYINDIC' => 16}, "Indicators retrieved from last run are ok.") or diag explain $results;
-    is_deeply( $results->{'questions'}, {'MYQUEST' => 17}, "Questions retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'attributes'}, {'MYATTR' => 18}, "Attributes retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'recs'}, {'MYREC' => {
 					 'rid' => 'REC_PMI_11', 
@@ -182,4 +180,4 @@ if ($clean_db) {
     is( scalar @tables, 1, "Database has 1 tables defined after clean_db.") or diag explain @tables;
 }
 
-done_testing(40);
+done_testing(38);

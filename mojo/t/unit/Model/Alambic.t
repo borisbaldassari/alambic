@@ -55,4 +55,4 @@ note("Run project from Alambic.");
 my $ret = $alambic->run_project('tools.cdt');
 ok( $ret > 0, "Adding run_project returns non-null id ($ret)." ) or diag explain $ret;
 
-done_testing();
+done_testing(16);

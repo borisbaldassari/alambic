@@ -195,11 +195,10 @@ sub get_projects_list() {
 #  - \%run a hash ref with info about the run: timestamp, delay, user.
 #  - \%metrics a hash ref of metrics.
 #  - \%indicators a hash ref of indicators.
-#  - \%questions a hash ref of questions.
 #  - \%attributes a hash ref of attributes.
 #  - \%recs a hash ref of recs.
 sub add_project_run($$$$$$$) {
-    my ($self, $project_id, $run, $metrics, $indicators, $questions, $attributes, $recs) = @_;
+    my ($self, $project_id, $run, $metrics, $indicators, $attributes, $recs) = @_;
 
     # Expand information..
     my $run_time = $run->{'timestamp'};
@@ -208,16 +207,15 @@ sub add_project_run($$$$$$$) {
 
     my $metrics_json = encode_json($metrics);
     my $indicators_json = encode_json($indicators);
-    my $questions_json = encode_json($questions);
     my $attributes_json = encode_json($attributes);
     my $recs_json = encode_json($recs);
 
     # Execute insert in db.
     my $query = "INSERT INTO projects 
-        ( project_id, run_time, run_delay, run_user, metrics, indicators, questions, attributes, recs ) 
+        ( project_id, run_time, run_delay, run_user, metrics, indicators, attributes, recs ) 
       VALUES 
         ('$project_id', '$run_time', '$run_delay', '$run_user', 
-        '$metrics_json', '$indicators_json', '$questions_json', '$attributes_json', '$recs_json') 
+        '$metrics_json', '$indicators_json', '$attributes_json', '$recs_json') 
         returning id;";
 
     my $id = 0;
@@ -248,7 +246,6 @@ sub get_project_last_run() {
 	$project{'run_user'} = $next->{'run_user'}; 
 	$project{'metrics'} = decode_json( $next->{'metrics'} ); 
 	$project{'indicators'} = decode_json( $next->{'indicators'} ); 
-	$project{'questions'} = decode_json( $next->{'questions'} ); 
 	$project{'attributes'} = decode_json( $next->{'attributes'} ); 
 	$project{'recs'} = decode_json($next->{'recs'} ); 
     }
@@ -292,7 +289,6 @@ CREATE TABLE IF NOT EXISTS projects (
     run_user TEXT,
     metrics JSONB,
     indicators JSONB,
-    questions JSONB,
     attributes JSONB,
     recs JSONB,
     PRIMARY KEY( id )
