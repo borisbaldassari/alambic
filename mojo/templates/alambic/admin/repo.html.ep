@@ -1,0 +1,50 @@
+% use File::Basename qw( fileparse );
+
+            <h1 class="al-h1"><small>Administration</small> Alambic Repository</h1>
+            <br />
+
+% my $msg = flash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%= $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+%= include 'alambic/admin/admin_menu', current => '/admin/repo'
+
+            <div class="row">
+              <div class="col-sm-6">
+		<p>All projects and configuration data is stored in a Postgres database.</p>
+		<br />
+	      </div>
+	      <div class="col-sm-6">
+                <br />
+                <div class="list-group">
+                  <a class="list-group-item" href="/admin/repo/backup" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Start a backup</a>
+                </div>
+
+              </div>
+            </div>
+
+	    
+                
+            <table class="table table-striped">
+              <tr><th>File</th><th colspan="1">Actions</th></tr>
+% my $files = stash( 'files_backup' ) || [];
+% foreach my $file (@$files) {
+%   my $file_short = fileparse($file);
+              <tr>
+                <td><%= $file_short %></td><td><a href="/admin/repo/restore/<%= $file_short %>"><i class="fa fa-upload"></i></a></td>
+              </tr>
+% }
+            </table>
+
+
+
+	    
+            
