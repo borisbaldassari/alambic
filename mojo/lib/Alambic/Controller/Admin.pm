@@ -117,28 +117,5 @@ sub projects_edit {
 }
 
 
-# # Edit project screen for Alambic admin.
-# sub repo {
-#     my $self = shift;
-    
-#     # Render template for main admin section
-#     $self->render( template => 'alambic/admin/repo' );
-# }
-
-
-# Initalisation of DB screen for Alambic admin.
-sub repo_init {
-    my $self = shift;
-
-    $self->app->al->init();
-    
-    my $msg = "Database has been initialised.";
-    
-    $self->flash( msg => $msg );
-    $self->redirect_to( '/admin/summary' );
-}
-
-
-
 
 1;

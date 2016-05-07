@@ -4,6 +4,7 @@ use warnings;
 use strict;
 
 use File::Copy;
+use POSIX;
 
 require Exporter;
 our @ISA = qw(Exporter);
@@ -112,6 +113,40 @@ sub read_plugin($$) {
         $content = <$fh>;
         close $fh;
     };
+
+    return $content;
+}
+
+
+sub write_backup($$$) {
+    my ($self, $content) = @_;
+
+    # Create backups dir if it does not exist
+    if (not -d 'backups/' ) { 
+        mkdir( 'backups/' );
+    }
+
+    my $file_name = strftime("backups/alambic_backup_%Y%m%d%H%M.sql", localtime);
+    open my $fh, ">", $file_name;
+    print $fh $content;
+    close $fh;
+
+    return $file_name;
+}
+
+sub read_backup($$) {
+    my ($self, $file_name) = @_;
+
+    my $content;
+    my $file = "backups/" . $file_name;
+    do { 
+        local $/;
+        open my $fh, '<', $file or return 0;
+        $content = <$fh>;
+        close $fh;
+    };
+
+    print "DBG in read_backup content $content.\n";
 
     return $content;
 }

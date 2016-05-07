@@ -102,8 +102,10 @@ sub startup {
     $r->get('/admin/projects/#pid/editp/#pid')->to('admin#projects_edit_plugin');
     $r->get('/admin/projects/#pid/delp/#pid')->to('admin#projects_del_plugin');
     
-#    $r->get('/admin/repo')->to('admin#repo');
-    $r->get('/admin/repo/init')->to('admin#repo_init');
+    $r->get('/admin/repo')->to('repo#summary');
+    $r->get('/admin/repo/init')->to('repo#init');
+    $r->get('/admin/repo/backup')->to('repo#backup');
+    $r->get('/admin/repo/restore/#file')->to('repo#restore');
 }
 
 1;

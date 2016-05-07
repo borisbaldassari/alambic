@@ -15,6 +15,8 @@ our @EXPORT_OK = qw(
                      clean_db
                      desc
                      init_db
+                     backup_db
+                     restore_db
                      is_db_defined
                      is_db_ok
                      get_pg_version
@@ -43,6 +45,84 @@ sub new {
 
 sub init_db() {
     &_db_init();
+}
+
+
+sub backup_db() {
+    my ($self) = @_;
+    
+    my $sql_out = '
+DROP TABLE IF EXISTS conf;
+DROP TABLE IF EXISTS conf_projects;
+DROP TABLE IF EXISTS projects;
+
+CREATE TABLE IF NOT EXISTS conf (
+    param TEXT NOT NULL, 
+    val TEXT,
+    PRIMARY KEY( param )
+);
+
+CREATE TABLE IF NOT EXISTS conf_projects (
+    id TEXT, 
+    name TEXT, 
+    description TEXT, 
+    is_active BOOLEAN, 
+    plugins JSONB,
+    PRIMARY KEY( id )
+);
+
+CREATE TABLE IF NOT EXISTS projects (
+    id BIGSERIAL, 
+    project_id TEXT NOT NULL, 
+    run_time TIMESTAMP,
+    run_delay INT,
+    run_user TEXT,
+    metrics JSONB,
+    indicators JSONB,
+    attributes JSONB,
+    recs JSONB,
+    PRIMARY KEY( id )
+);
+';
+    
+    my $results = $pg->db->query("SELECT * FROM conf");
+    while (my $next = $results->hash) {
+	my $insert_statement = qq{INSERT INTO conf (param, val)\n VALUES (};
+	$insert_statement .= "'" . $next->{'param'} . "', '" . $next->{'val'} . "');\n";
+	$sql_out .= $insert_statement;
+    }
+
+    $results = $pg->db->query("SELECT * FROM conf_projects");
+    while (my $next = $results->hash) {
+	my $insert_statement = qq{INSERT INTO conf_projects (id, name, description, is_active, plugins)\n VALUES (};
+	$insert_statement .= "'" . $next->{'id'} . "', '" . $next->{'name'} . "', '"
+	. $next->{'description'} . "', '" . $next->{'is_active'} . "', '"
+	. $next->{'plugins'} . "');\n";
+	$sql_out .= $insert_statement;
+    }
+    
+    $results = $pg->db->query("SELECT * FROM projects");
+    my $fields = "id, project_id, run_time, run_delay, run_user, metrics, indicators, attributes, recs";
+    while (my $next = $results->hash) {
+	my $insert_statement = qq{INSERT INTO projects ($fields)\n VALUES (};
+	$insert_statement .= "'" . $next->{'id'} . "', '" . $next->{'project_id'} . "', '"
+	. $next->{'run_time'} . "', '" . $next->{'run_delay'} . "', '"
+	. $next->{'run_user'} . "', '" . $next->{'metrics'} . "', '"
+	. $next->{'indicators'} . "', '" . $next->{'attributes'} . "', '"
+	. $next->{'recs'} . "');\n";
+	$sql_out .= $insert_statement;
+    }
+
+    return $sql_out;
+}
+
+
+sub restore_db($) {
+    my ($self, $sql_in) = @_;
+
+    my $results = $pg->db->query($sql_in);
+
+    return 1;
 }
 
 
@@ -119,9 +199,9 @@ sub desc($) {
 sub set_project_conf($$$$$) {
     my $self = shift;
     my $id = shift;
-    my $name = shift;
-    my $desc = shift;
-    my $is_active = shift;
+    my $name = shift || '';
+    my $desc = shift || '';
+    my $is_active = shift || 0;
     my $plugins = shift;
 
     my $ret = 0;
@@ -161,7 +241,7 @@ sub get_project_conf($) {
     my %values; 
     my $exists = 0;
     my $results = $pg->db->query("SELECT name, description, is_active, plugins FROM conf_projects WHERE id='$id';");
-    # There should be only 1 row with this id.
+    # There should be 0 or 1 row with this id.
     while (my $next = $results->hash) {
 	$exists = 1;
 	$values{'name'} = $next->{'name'}; 
@@ -170,7 +250,7 @@ sub get_project_conf($) {
 	$values{'plugins'} = decode_json( $next->{'plugins'} ); 
     }
 
-    return \%values;
+    return $exists ? \%values : undef;
 }
 
 
