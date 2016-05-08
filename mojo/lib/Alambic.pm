@@ -98,9 +98,9 @@ sub startup {
     
     $r->get('/admin/projects/#pid/edit')->to('admin#projects_edit');
     
-    $r->get('/admin/projects/#pid/addp/#pid')->to('admin#projects_add_plugin');
-    $r->get('/admin/projects/#pid/editp/#pid')->to('admin#projects_edit_plugin');
-    $r->get('/admin/projects/#pid/delp/#pid')->to('admin#projects_del_plugin');
+    $r->get('/admin/projects/#pid/addp/#plid')->to('admin#projects_add_plugin');
+    $r->get('/admin/projects/#pid/editp/#plid')->to('admin#projects_edit_plugin');
+    $r->get('/admin/projects/#pid/delp/#plid')->to('admin#projects_del_plugin');
     
     $r->get('/admin/repo')->to('repo#summary');
     $r->get('/admin/repo/init')->to('repo#init');
