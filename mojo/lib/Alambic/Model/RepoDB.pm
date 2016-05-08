@@ -23,6 +23,7 @@ our @EXPORT_OK = qw(
                      get_project_conf
                      get_projects_list
                      set_project_conf
+                     delete_project
                    );  
 
 my $pg;
@@ -230,6 +231,20 @@ sub set_project_conf($$$$$) {
     }
     
     return $ret;
+}
+
+
+# Delete from db all entries relatives to a project.
+sub delete_project() {
+    my ($self, $project_id) = @_;
+
+    # Remove project from table conf_projects
+    my $results = $pg->db->query("DELETE FROM conf_projects WHERE id='$project_id';");
+    
+    # Remove project runs from table projects
+    $results = $pg->db->query("DELETE FROM projects WHERE project_id='$project_id';");
+
+    return 1;
 }
 
 

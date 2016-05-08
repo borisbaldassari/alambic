@@ -28,9 +28,7 @@ our @EXPORT_OK = qw(
 
 ######################################
 # Data associated with a project
-my ($project_name, $project_id, $project_active);
-
-my %info;
+my ($project_name, $project_id, $project_desc, $project_active);
 
 my %plugins;
 # my %plugins = (
@@ -81,8 +79,14 @@ sub get_name() {
     return $project_name;
 }
 
-sub get_plugins() {
-    return \%plugins;
+sub desc() {
+    my ($self, $desc) = @_;
+
+    if (scalar @_ > 1) {
+	$project_desc = $desc;
+    }
+    
+    return $project_desc;
 }
 
 sub active() {
@@ -93,6 +97,10 @@ sub active() {
     }
     
     return $project_active;
+}
+
+sub get_plugins() {
+    return \%plugins;
 }
 
 sub metrics() {
@@ -161,14 +169,26 @@ sub run_plugins() {
     return { "metrics" => \%metrics, "recs" => \%recs, "log" => \@log };
 }
 
+sub run_qm() {
+
+}
+
+sub run_post() {
+
+}
+
 sub run_project() {
     my ($self) = @_;
 
     # Run plugins
     my $plugins_data = $self->run_plugins();
     
+    # Run plugins
+    my $qm_data = $self->run_qm();
+    
     # Run post plugins
-
+    my $post_data = $self->run_post();
+    
     return $plugins_data;
 }
 

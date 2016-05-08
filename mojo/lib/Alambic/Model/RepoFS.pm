@@ -4,6 +4,7 @@ use warnings;
 use strict;
 
 use File::Copy;
+use File::Path qw( remove_tree );
 use POSIX;
 
 require Exporter;
@@ -15,6 +16,7 @@ our @EXPORT_OK = qw(
                      read_output
                      write_plugin
                      read_plugin
+                     delete_project
                    );  
 
 # Create a new RepoFS object.
@@ -149,6 +151,13 @@ sub read_backup($$) {
     print "DBG in read_backup content $content.\n";
 
     return $content;
+}
+
+
+sub delete_project($) {
+    my ($self, $project_id) = @_;
+
+    remove_tree( "projects/${project_id}/" );
 }
 
 

@@ -6,6 +6,7 @@ use strict;
 use Alambic::Model::Config;
 use Alambic::Model::Project;
 use Alambic::Model::RepoDB;
+use Alambic::Model::RepoFS;
 use Alambic::Model::Plugins;
 
 use Mojo::JSON qw (decode_json encode_json);
@@ -25,14 +26,17 @@ our @EXPORT_OK = qw(
                      is_db_ok
                      is_db_m_ok
                      get_plugins
+                     get_repo_db
                      create_project
                      get_project
                      get_projects_list
                      run_project
+                     delete_project
                    );  
 
 my $config;
 my $repodb;
+my $repofs;
 my $plugins;
 
 # Create a new Alambic object.
@@ -42,6 +46,7 @@ sub new {
     $config = Alambic::Model::Config->new($config_opt);
     my $pg_alambic = $config->get_pg_alambic();
     $repodb = Alambic::Model::RepoDB->new($pg_alambic);
+    $repofs = Alambic::Model::RepoFS->new();
     $plugins = Alambic::Model::Plugins->new();
     
     return bless {}, $class;
@@ -116,6 +121,12 @@ sub is_db_m_ok() {
 # Return the Plugins.pm object for this instance.
 sub get_plugins() {
     return $plugins;
+}
+
+
+# Return the RepoDB.pm object for this instance.
+sub get_repo_db() {
+    return $repodb;
 }
 
 
@@ -239,6 +250,15 @@ sub run_globals() {
 
 }
 
+
+sub delete_project($) {
+    my ($self, $project_id) = @_;
+
+    $repodb->delete_project($project_id);
+    $repofs->delete_project($project_id);
+
+    return 1;
+}
 
 
 1;

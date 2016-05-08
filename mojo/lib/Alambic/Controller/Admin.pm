@@ -31,6 +31,10 @@ sub projects_show {
     my @files_output = <projects/${project_id}/output/*.*>;
     my %files_time;
 
+    # TODO get the list of runs for this project.
+    my $repodb = $self->app->al->get_repo_db();
+#    $repodb->get_project_hist
+    
     # Retrieve last modification time on input files.
     foreach my $file (@files_input, @files_output) { 
         $files_time{$file} = ctime( stat($file)->mtime );
@@ -86,7 +90,7 @@ sub projects_run {
 
     my $project = $self->app->al->run_project( $project_id );
 
-    my $msg = "Project has been run.";
+    my $msg = "Project $project_id has been started.";
     
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/projects/' . $project_id );
@@ -98,12 +102,11 @@ sub projects_del {
     my $self = shift;
     my $project_id = $self->param( 'pid' );
 
-    # TODO DEL PROJECT
-
-    my $msg = "Project has been deleted.";
+    $self->app->al->delete_project($project_id);
+    my $msg = "Project $project_id has been deleted.";
     
     $self->flash( msg => $msg );
-    $self->redirect_to( '/admin/projects/' . $project_id );
+    $self->redirect_to( '/admin/projects' );
 }
 
 
