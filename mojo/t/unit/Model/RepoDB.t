@@ -94,7 +94,7 @@ eval {
     is_deeply($ret, $ret_ok, "Get project has correct name, desc and empty plugins.") or diag explain $ret;
 
     $ret = $repodb->get_project_conf('wrong.project');
-    is_deeply($ret, {}, "Getting a wrong project returns {}.");
+    is($ret, undef, "Getting a wrong project returns undef.");
     
     my $projects_list = $repodb->get_projects_list();
     is_deeply( $projects_list, {"modeling.sirius" => "Sirius"}, "Projects list has modeling.sirius.") or diag explain $projects_list;
@@ -168,16 +168,44 @@ eval {
 				    }
 	                           }, "Recs retrieved from last run are ok.") or diag explain $results;
 
-};
-
-if ($clean_db) {
-    # Clean database, re-init tables.
+    $results = $repodb->get_project_all_runs('modeling.sirius');
+    is( scalar @$results, 2, "Get all runs has two entries." ) or diag explain $results;
+    my $runs_ref = [
+	{
+	    'id' => 2,
+	    'project_id' => 'modeling.sirius',
+	    'run_delay' => 113,
+	    'run_time' => '2016-05-08 16:53:57',
+	    'run_user' => 'none'
+	},
+	{
+	    'id' => 1,
+	    'project_id' => 'modeling.sirius',
+	    'run_delay' => 13,
+	    'run_time' => '2016-05-08 16:53:57',
+	    'run_user' => 'none'
+	}
+	];
+    is( $runs_ref->[0]->{'id'}, 2, "First row has 2 as id." ) or diag explain $results;
+    is( $runs_ref->[0]->{'project_id'}, 'modeling.sirius', "First row has modeling.sirius as project_id." ) or diag explain $results;
+    is( $runs_ref->[0]->{'run_delay'}, 113, "First row has 113 as run_delay." ) or diag explain $results;
     
+    $results = $repodb->delete_project('modeling.sirius');
+    is( $results, 1, "Delete project returns 1." );
+
+    $projects_list = $repodb->get_projects_list();
+    ok( scalar grep( /modeling.sirius/, keys %$projects_list ) == 0, "Projects list does not contain sirius." ) or diag explain $projects_list;
+
     $repodb->clean_db();
     @tables = ();
     push( @tables, $_->{'tablename'} ) for $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->hashes->each;
     is( scalar @tables, 1, "Database has 1 tables defined after clean_db.") or diag explain @tables;
+};
+
+END {
+    # Clean database, re-init tables.    
+    $repodb->clean_db();
 }
 
-done_testing(38);
+done_testing(44);

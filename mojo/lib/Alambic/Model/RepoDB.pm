@@ -11,19 +11,22 @@ use Data::Dumper;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( 
-                     name
-                     clean_db
-                     desc
                      init_db
                      backup_db
                      restore_db
+                     get_pg_version
+                     clean_db
                      is_db_defined
                      is_db_ok
-                     get_pg_version
-                     get_project_conf
-                     get_projects_list
+                     name
+                     desc
                      set_project_conf
                      delete_project
+                     get_project_conf
+                     get_projects_list
+                     add_project_run
+                     get_project_last_run
+                     get_project_all_runs
                    );  
 
 my $pg;
@@ -323,6 +326,28 @@ sub add_project_run($$$$$$$) {
 
 
 # Returns the results of the last job run in Alambic for the specified project.
+# {
+#   'attributes' => {
+#     'MYATTR' => 18
+#   },
+#   'id' => 2,
+#   'indicators' => {
+#     'MYINDIC' => 16
+#   },
+#   'metrics' => {
+#     'MYMETRIC' => 15
+#   },
+#   'project_id' => 'modeling.sirius',
+#   'recs' => {
+#     'MYREC' => {
+#       'desc' => 'This is a description.',
+#       'rid' => 'REC_PMI_11'
+#     }
+#   },
+#   'run_delay' => 113,
+#   'run_time' => '2016-05-08 16:53:57',
+#   'run_user' => 'none'
+# }
 #
 # Params
 #  - $id the id of the project, e.g. modeling.sirus.
@@ -346,6 +371,47 @@ sub get_project_last_run() {
     }
 
     return \%project;
+}
+
+
+# Returns an array of results of all runs in Alambic for the specified project.
+# [
+#   {
+#     'id' => 2,
+#     'project_id' => 'modeling.sirius',
+#     'run_delay' => 113,
+#     'run_time' => '2016-05-08 16:53:20',
+#     'run_user' => 'none'
+#   },
+#   {
+#     'id' => 1,
+#     'project_id' => 'modeling.sirius',
+#     'run_delay' => 13,
+#     'run_time' => '2016-05-08 16:53:20',
+#     'run_user' => 'none'
+#   }
+# ]
+#
+# Params
+#  - $id the id of the project, e.g. modeling.sirus.
+sub get_project_all_runs() {
+    my ($self, $id) = @_;
+
+    my $project;
+    
+    # Execute insert in db.
+    my $results = $pg->db->query("SELECT id, project_id, run_time, run_delay, run_user FROM projects WHERE project_id='$id' ORDER BY id DESC");
+    my $row = 0;
+    while (my $next = $results->hash) {
+	$project->[$row]{'id'} = $next->{'id'}; 
+	$project->[$row]{'project_id'} = $next->{'project_id'}; 
+	$project->[$row]{'run_time'} = $next->{'run_time'}; 
+	$project->[$row]{'run_delay'} = $next->{'run_delay'}; 
+	$project->[$row]{'run_user'} = $next->{'run_user'}; 
+	$row++;
+    }
+
+    return $project;
 }
 
 
