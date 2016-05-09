@@ -10,15 +10,16 @@ use Data::Dumper;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( 
-                     get_list_all
                      get_names_all
-                     get_list_metrics
-                     get_list_figs
-                     get_list_info
-                     get_list_recs
-                     get_list_viz
-                     get_list_post
-                     get_list_global
+                     get_list_plugins_pre
+                     get_list_plugins_cdata
+                     get_list_plugins_post
+                     get_list_plugins_global
+                     get_list_ability_metrics
+                     get_list_ability_figs
+                     get_list_ability_info
+                     get_list_ability_recs
+                     get_list_ability_viz
                      get_plugin
                      run_plugin
                      test
@@ -27,15 +28,8 @@ our @EXPORT_OK = qw(
 
 my %plugins;
 
-my @plugins_metrics;
-my @plugins_info;
-my @plugins_figs;
-my @plugins_recs;
-my @plugins_post;
-my @plugins_global;
-
-my %customdata;
-
+# array of plugin ids ordered by type.
+my %plugins_type;
 
 # Constructor
 sub new {
@@ -63,24 +57,35 @@ sub _read_plugins() {
 
         my $conf = $plugin->get_conf();
         $plugins{ $conf->{'id'} } = $plugin;
+	push( @{$plugins_type{ $conf->{'type'} }}, $conf->{'id'} );
     }
     
 }
 
 
-sub get_list_all() {
-    my @list = keys %plugins;
-#    push @list, keys %customdata;
-    @list = sort @list;
-    
-    return \@list;
+sub get_list_plugins_pre() {
+    return $plugins_type{'pre'};
+}
+
+
+sub get_list_plugins_cdata() {
+    return $plugins_type{'cdata'};
+}
+
+
+sub get_list_plugins_post() {
+    return $plugins_type{'post'};
+}
+
+
+sub get_list_plugins_global() {
+    return $plugins_type{'global'};
 }
 
 
 sub get_names_all() {
     my @list = keys %plugins;
     my %list;
-#    print Dumper(%plugins);
     foreach my $p (@list) {
 	$list{$p} = $plugins{$p}->get_conf()->{'name'};
     }

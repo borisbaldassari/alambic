@@ -215,6 +215,18 @@ sub projects_del_plugin {
 }
 
 
+#
+# Displays a list of plugins detected with information about them.
+#
+sub plugins {
+    my $self = shift;
+
+    # Render template 
+    $self->render( template => 'alambic/admin/plugins' );   
+
+}
+
+
 
 
 

@@ -112,6 +112,8 @@ sub startup {
     $r->get('/admin/projects/#pid/runp/#plid')->to('admin#projects_run_plugin');
     $r->get('/admin/projects/#pid/delp/#plid')->to('admin#projects_del_plugin');
     
+    $r->get('/admin/plugins')->to( 'admin#plugins' );
+    
     # Job management
     $r->get('/admin/jobs')->to( 'jobs#summary' );
     $r->get('/admin/jobs/#id')->to( 'jobs#display' );

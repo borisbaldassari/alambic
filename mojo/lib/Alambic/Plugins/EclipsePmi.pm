@@ -21,24 +21,28 @@ my %conf = (
 	"<code>project_grim</code> is the identifier used for the project in the Eclipse dashboard. It may be different from the id used in the PMI.",
 	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipsePmi">the project\'s wiki for more information.',
     ],
+    "type" => "pre",
     "ability" => [ "metrics", "info", 'data', "recs", "viz" ],
-    "type" => "plugin",
     "params" => {
         "project_pmi" => "",
     },
-    "provides_metrics" => {
-        "PMI_OK" => "PMI_OK",
-        "PMI_NOK" => "PMI_NOK",
-    },
+    "provides_cdata" => [
+    ],
     "provides_info" => [
         "MLS_DEV_URL", 
         "MLS_USR_URL", 
         "PUB_MAIN", 
         "PUB_WIKI", 
     ],
-    "provides_data" => [
-        "pmi_checks.json", 
-    ],
+    "provides_data" => {
+        "pmi_checks.json" => "The list of PMI checks and their results (JSON).",
+    },
+    "provides_metrics" => {
+        "PMI_OK" => "PMI_OK",
+        "PMI_NOK" => "PMI_NOK",
+    },
+    "provides_figs" => {
+    },
     "provides_recs" => [
         "PMI_ENTRY_NOT_SET",
         "PMI_ENTRY_WRONG",

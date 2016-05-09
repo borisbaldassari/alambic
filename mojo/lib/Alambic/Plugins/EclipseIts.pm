@@ -22,9 +22,18 @@ my %conf = (
 	'<code>project_grim</code> is the id used to identified the project in the PMI. Look for it in the URL of the project on <a href="http://projects.eclipse.org">http://projects.eclipse.org</a>.',
 	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseIts">the project\'s wiki</a> for more information.',
     ],
+    "type" => "pre",
     "ability" => [ 'metrics', 'recs', 'figs', 'viz' ],
     "params" => {
         "project_grim" => "",
+    },
+    "provides_cdata" => [
+    ],
+    "provides_info" => [
+	"MLS_DEV",
+    ],
+    "provides_data" => {
+	"metrics_its.json" => "Metrics for the ITS plugin (JSON).",
     },
     "provides_metrics" => {
         "CHANGED" => "ITS_CHANGED", 
