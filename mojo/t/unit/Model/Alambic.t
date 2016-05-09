@@ -60,7 +60,7 @@ my $pv = 2;
 ok( scalar @{$plugins_list} == $pv, "Plugins list has $pv entries." ) or diag explain $plugins_list;
 
 my $projects_list = $alambic->get_projects_list();
-is_deeply( $projects_list, { 'tools.cdt' => 'Tools CDT' }, "Projects list contains Tools CDT only." ) or diag explain $projects_list;
+ok( $projects_list->{'tools.cdt'} =~ m!^Tools CDT$!, "Projects list contains Tools CDT only." ) or diag explain $projects_list;
 
 note("Run project from Alambic.");
 my $ret = $alambic->run_project('tools.cdt');

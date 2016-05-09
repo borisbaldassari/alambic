@@ -89,10 +89,10 @@ sub projects_run {
     my $project_id = $self->param( 'pid' );
 
     # Start minion job
-    $self->minion->enqueue( run_project => [ $project_id ] => { delay => 0 });
+    my $job = $self->minion->enqueue( run_project => [ $project_id ] => { delay => 0 });
 #    my $project = $self->app->al->run_project( $project_id );
 
-    my $msg = "Project $project_id has been started.";
+    my $msg = "Project run for $project_id has been enqueued [$job].";
     
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/projects/' . $project_id );
@@ -178,6 +178,22 @@ sub projects_add_plugin_post {
     $self->app->al->add_project_plugin($project_id, $plugin_id, \%args);
 
     my $msg = "Plugin $plugin_id has been added to project $project_id.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Edit project screen for Alambic admin.
+sub projects_run_plugin {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+    my $plugin_id = $self->param( 'plid' );
+
+    my $job = $self->minion->enqueue( run_plugin => [ $project_id, $plugin_id ] => { delay => 0 });
+#    $self->app->al->get_project($project_id)->run_plugin($plugin_id);
+
+    my $msg = "Plugin $plugin_id has been enqueued [$job] on project $project_id.";
     
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/projects/' . $project_id );

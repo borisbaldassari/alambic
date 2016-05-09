@@ -23,7 +23,8 @@ ok( $name =~ m!^Tools CDT$!, 'Project name is Tools CDT.' ) or diag explain $nam
 
 note("Running EclipseIts plugin.");
 my $ret = $project->run_plugin( 'EclipseIts' );
-ok( grep( /^ERROR/ ) == 0, "Log has no error." ) or diag explain $ret;
+$ret = $ret->{'log'};
+ok( grep( /^ERROR/, @{$ret} ) == 0, "Log has no error." ) or diag explain $ret;
 ok( grep( /^\[Plugins::EclipseIts\] Starting retrieval/, @{$ret} ) == 1, "Log has Starting retrieval." ) or diag explain $ret;
 ok( grep( /^\[Plugins::EclipseIts\] Retrieving static/, @{$ret} ) == 1, "Log has Retrieving static." ) or diag explain $ret;
 ok( grep( /^\[Plugins::EclipseIts\] Retrieving evol/, @{$ret} ) == 1, "Log has Retrieving evol." ) or diag explain $ret;

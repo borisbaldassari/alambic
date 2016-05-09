@@ -73,6 +73,13 @@ sub startup {
         $job->finish($ret);
     } );
     
+    # Add task to compute all data for a project
+    $self->minion->add_task( run_plugin => sub {
+        my ($job, $project_id, $plugin_id) = @_;
+        my $ret = $self->al->get_project($project_id)->run_plugin($plugin_id);
+        $job->finish($ret);
+    } );
+    
     # # Add task to run both retrieval and analysis for a project
     # $self->minion->add_task( run_project => sub {
     #     my ($job, $project_id) = @_;

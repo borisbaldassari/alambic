@@ -142,7 +142,7 @@ sub run_plugin($) {
 	$recs{$rec} = $ret->{'recs'}{$rec};
     }
     
-    return $ret->{'log'};
+    return $ret;
 }
 
 sub run_plugins() {

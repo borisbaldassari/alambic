@@ -21,7 +21,7 @@ my $is_init = $repodb->is_db_defined();
 is( $is_init, 1, "DB is defined in module.");
 
 my $version = $repodb->get_pg_version;
-like( $version, qr/^PostgreSQL 9.4/, "Postgres has version 9.4." ) or diag explain $version;
+like( $version, qr/^PostgreSQL 9.5/, "Postgres has version 9.5." ) or diag explain $version;
 
 my @tables;
 
