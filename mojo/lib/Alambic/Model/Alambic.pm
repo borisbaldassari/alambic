@@ -290,7 +290,7 @@ sub run_project($) {
 			     $values->{'attributes'}, 
 			     $values->{'recs'});
 
-    return $ret;
+    return $values;
 }
 
 

@@ -88,7 +88,9 @@ sub projects_run {
     my $self = shift;
     my $project_id = $self->param( 'pid' );
 
-    my $project = $self->app->al->run_project( $project_id );
+    # Start minion job
+    $self->minion->enqueue( run_project => [ $project_id ] => { delay => 0 });
+#    my $project = $self->app->al->run_project( $project_id );
 
     my $msg = "Project $project_id has been started.";
     

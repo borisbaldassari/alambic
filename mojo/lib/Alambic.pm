@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious';
 
 use Alambic::Model::Alambic;
 
+use Minion;
 use Data::Dumper;
 
 has al => sub {
@@ -30,14 +31,16 @@ sub startup {
     $self->defaults(layout => 'default');
     
 
-    # # MINION management
+    # MINION management
+    # Use Minion for job queuing.
+    
+    # Get config from alambic.conf
+    my $config = $self->plugin('Config');
+    $self->plugin( Minion => {Pg => $config->{'conf_pg_minion'}} );
 
-    # # Use Minion for job queuing.
-    # $self->plugin( Minion => {Pg => $self->al_config->get_pg('conf_pg')} );
-
-    # # Set parameters.
-    # # Automatically remove jobs from queue after one day. 86400 is one day.
-    # $self->minion->remove_after(86400);
+    # Set parameters.
+    # Automatically remove jobs from queue after one day. 86400 is one day.
+    $self->minion->remove_after(86400);
 
     # # Add task to retrieve ds data
     # $self->minion->add_task( retrieve_data_ds => sub {
@@ -63,13 +66,12 @@ sub startup {
     #     $job->finish(\@log);
     # } );
     
-    # # Add task to compute all data for a project
-    # $self->minion->add_task( analyse_project => sub {
-    #     my ($job, $project_id) = @_;
-    #     my $log_ref = $self->projects->analyse_project($project_id);
-    #     my @log = @{$log_ref};
-    #     $job->finish(\@log);
-    # } );
+    # Add task to compute all data for a project
+    $self->minion->add_task( run_project => sub {
+        my ($job, $project_id) = @_;
+        my $ret = $self->al->run_project($project_id);
+        $job->finish($ret);
+    } );
     
     # # Add task to run both retrieval and analysis for a project
     # $self->minion->add_task( run_project => sub {
@@ -102,6 +104,12 @@ sub startup {
     $r->post('/admin/projects/#pid/setp/#plid')->to('admin#projects_add_plugin_post');
     $r->get('/admin/projects/#pid/runp/#plid')->to('admin#projects_run_plugin');
     $r->get('/admin/projects/#pid/delp/#plid')->to('admin#projects_del_plugin');
+    
+    # Job management
+    $r->get('/admin/jobs')->to( 'jobs#summary' );
+    $r->get('/admin/jobs/#id')->to( 'jobs#display' );
+    $r->get('/admin/jobs/#id/del')->to( 'jobs#delete' );
+    $r->get('/admin/jobs/#id/run')->to( 'jobs#redo' );
     
     $r->get('/admin/repo')->to('repo#summary');
     $r->get('/admin/repo/init')->to('repo#init');

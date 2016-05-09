@@ -34,8 +34,8 @@
                 <div class="list-group">
                   <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Return to projects</a>
                   <a class="list-group-item" href="/admin/projects/<%= $project_id %>/edit" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Edit project information</a>
-                  <a class="list-group-item" href="/admin/project/<%= $project_id %>/run" role="button"><i class="fa fa-fw fa-rocket"></i> &nbsp; Run project</a>
-                  <a class="list-group-item" href="/admin/project/<%= $project_id %>/del" role="button"><i class="fa fa-fw fa-ban"></i> &nbsp; Delete project</a>
+                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run" role="button"><i class="fa fa-fw fa-rocket"></i> &nbsp; Run project</a>
+                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/del" role="button"><i class="fa fa-fw fa-ban"></i> &nbsp; Delete project</a>
                   <a class="list-group-item" href="/projects/<%= $project_id %>" role="button"><i class="fa fa-fw fa-dashboard"></i> &nbsp; Project dashboard</a>
                 </div>
 
