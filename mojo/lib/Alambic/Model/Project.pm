@@ -54,6 +54,8 @@ sub new {
     $project_name = $name;    
     
     $plugins_module = Alambic::Model::Plugins->new();
+
+    # Populate the plugins hash with init data.
     %plugins = ();
     if ( defined($plugins) ) {
 	foreach my $plugin_id (keys %{$plugins}) {
@@ -61,6 +63,7 @@ sub new {
 	}
     }
 
+    # Populate the metrics, indicators and attributes hashes with init data.
     %metrics = ();
     %indicators = ();
     %attributes = ();

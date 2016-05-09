@@ -42,30 +42,6 @@ sub startup {
     # Automatically remove jobs from queue after one day. 86400 is one day.
     $self->minion->remove_after(86400);
 
-    # # Add task to retrieve ds data
-    # $self->minion->add_task( retrieve_data_ds => sub {
-    #     my ($job, $ds, $project_id) = @_;
-    #     my $log_ref = $self->al_plugins->get_plugin($ds)->retrieve_data($project_id);
-    #     my @log = @{$log_ref};
-    #     $job->finish(\@log);
-    # } );
-
-    # # Add task to compute ds data
-    # $self->minion->add_task( compute_data_ds => sub {
-    #     my ($job, $ds, $project_id) = @_;
-    #     my $log_ref = $self->al_plugins->get_plugin($ds)->compute_data($project_id);
-    #     my @log = @{$log_ref};
-    #     $job->finish(\@log);
-    # } );
-    
-    # # Add task to retrieve all data for a project
-    # $self->minion->add_task( retrieve_project => sub {
-    #     my ($job, $project_id) = @_;
-    #     my $log_ref = $self->projects->retrieve_project_data($project_id);
-    #     my @log = @{$log_ref};
-    #     $job->finish(\@log);
-    # } );
-    
     # Add task to compute all data for a project
     $self->minion->add_task( run_project => sub {
         my ($job, $project_id) = @_;
@@ -80,15 +56,6 @@ sub startup {
         $job->finish($ret);
     } );
     
-    # # Add task to run both retrieval and analysis for a project
-    # $self->minion->add_task( run_project => sub {
-    #     my ($job, $project_id) = @_;
-    #     my $log_ref_retrieve = $self->projects->retrieve_project_data($project_id);
-    #     my $log_ref_analyse = $self->projects->analyse_project($project_id);
-    #     my @log = ( @{$log_ref_retrieve}, @{$log_ref_analyse} );
-    #     $job->finish(\@log);
-    # } );
-  
     
     # Router
     my $r = $self->routes;
@@ -96,14 +63,27 @@ sub startup {
     # Normal route to controller
     $r->get('/')->to('alambic#welcome');
     
+    # Simple pages
+    $r->get('/about.html')->to( template => 'alambic/about');
+    $r->get('/contact.html')->to( template => 'alambic/contact');
+    $r->post('/contact')->to( 'alambic#contact_post' );
+    
+    # Dashboards
+    my $r_projects = $r->get('/projects')->to(controller => 'dashboard');
+    $r_projects->get('/#id')->to(action => 'display_summary');
+    $r_projects->get('/#id/#page')->to(action => 'display_project');
+    $r_projects->get('/#id/#plugin/#page')->to(action => 'display_plugins');
+    
     # Admin
-    $r->get('/admin/summary')->to('admin#summary');
-    $r->get('/admin/projects')->to('admin#projects');
-    $r->get('/admin/projects/new')->to('admin#projects_new');
-    $r->post('/admin/projects/new')->to('admin#projects_new_post');
-    $r->get('/admin/projects/#pid')->to('admin#projects_show');
-    $r->get('/admin/projects/#pid/run')->to('admin#projects_run');
-    $r->get('/admin/projects/#pid/del')->to('admin#projects_del');
+    my $r_admin = $r->get('/admin')->to(controller => 'admin');
+    $r_admin->get('/summary')->to(action => 'summary');
+    $r_admin->get('/projects')->to(action => 'projects');
+    my $r_admin_projects = $r_admin->get('/projects')->to(controller => 'admin');
+    $r_admin_projects->get('/new')->to(action => 'projects_new');
+    $r_admin_projects->post('/new')->to(action => 'projects_new_post');
+    $r_admin_projects->get('/#pid')->to(action => 'projects_show');
+    $r_admin_projects->get('/#pid/run')->to(action => 'projects_run');
+    $r_admin_projects->get('/#pid/del')->to(action => 'projects_del');
     
     $r->get('/admin/projects/#pid/edit')->to('admin#projects_edit');
     
@@ -124,6 +104,8 @@ sub startup {
     $r->get('/admin/repo/init')->to('repo#init');
     $r->get('/admin/repo/backup')->to('repo#backup');
     $r->get('/admin/repo/restore/#file')->to('repo#restore');
+
+    
 }
 
 1;

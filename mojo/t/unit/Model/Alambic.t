@@ -55,12 +55,12 @@ $project_name = $project->get_name();
 ok( $project_name =~ m!^Tools CDT$!, 'Project retrieved by Alambic has correct name.' ) or diag explain $project_name;
 
 my $plugins = $alambic->get_plugins();
-my $plugins_list = $plugins->get_list_all();
+my $plugins_list = $plugins->get_list_plugins_pre();
 my $pv = 2;
 ok( scalar @{$plugins_list} == $pv, "Plugins list has $pv entries." ) or diag explain $plugins_list;
 
 my $projects_list = $alambic->get_projects_list();
-ok( $projects_list->{'tools.cdt'} =~ m!^Tools CDT$!, "Projects list contains Tools CDT only." ) or diag explain $projects_list;
+ok( $projects_list->{'tools.cdt'} =~ m!^Tools CDT$!, "Projects list contains Tools CDT." ) or diag explain $projects_list;
 
 note("Run project from Alambic.");
 my $ret = $alambic->run_project('tools.cdt');

@@ -1,0 +1,21 @@
+% use Mojo::JSON qw( decode_json );
+            <h1 class="al-h1"><small><%= $project_id %></small> Plugin <%= $plugin_id %></h1>
+            <br />
+
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/plugins', project_id => $project_id
+
+            <br />
+% my $plugin_template = "templates/alambic/plugins/" . $plugin_id . ".html.ep";
+% if ( -e $plugin_template ) {
+%= include "/alambic/plugins/$plugin_id", project_id => $project_id
+% } else {
+%   my $file_in = app->home->rel_dir( 'data/' . $project_id . '/' . $project_id . '_' . $plugin_id . '.inc' );
+%   my $content;
+%   do { 
+%     local $/;
+%     open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
+%     $content = <$fh>;
+%     close $fh;
+%   };
+            <%== $content %>
+% }

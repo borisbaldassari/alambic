@@ -259,6 +259,30 @@ sub del_project_plugin() {
 }
 
 
+sub get_project_hist($) {
+    my $self = shift;
+    my $project_id = shift;
+
+    return $repodb->get_project_all_runs($project_id);
+    
+}
+
+sub get_project_last_run($) {
+    my $self = shift;
+    my $project_id = shift;
+
+    return $repodb->get_project_last_run($project_id);
+}
+
+sub get_project_run($$) {
+    my $self = shift;
+    my $project_id = shift;
+    my $run_id = shift;
+
+    return $repodb->get_project_run($project_id, $run_id);
+}
+
+
 # Run a full analysis on a project: plugins, qm, post plugins.
 #
 # Params

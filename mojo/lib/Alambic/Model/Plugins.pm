@@ -15,6 +15,7 @@ our @EXPORT_OK = qw(
                      get_list_plugins_cdata
                      get_list_plugins_post
                      get_list_plugins_global
+                     get_list_ability_data
                      get_list_ability_metrics
                      get_list_ability_figs
                      get_list_ability_info
@@ -30,6 +31,7 @@ my %plugins;
 
 # array of plugin ids ordered by type.
 my %plugins_type;
+my %plugins_ability;
 
 # Constructor
 sub new {
@@ -42,6 +44,11 @@ sub new {
 
 
 sub _read_plugins() { 
+
+    # Clean hashes before reading files.
+    %plugins = ();
+    %plugins_type = ();
+    %plugins_ability = ();
 
     # Read plugins directory.
     my @plugins_list = <lib/Alambic/Plugins/*.pm>;
@@ -58,28 +65,33 @@ sub _read_plugins() {
         my $conf = $plugin->get_conf();
         $plugins{ $conf->{'id'} } = $plugin;
 	push( @{$plugins_type{ $conf->{'type'} }}, $conf->{'id'} );
+	foreach my $a ( @{$conf->{'ability'}} ) {
+	    push( @{$plugins_ability{ $a }}, $conf->{'id'} );
+	}
     }
+#    print Dumper(%plugins_type);
+#    print Dumper(%plugins_ability);
     
 }
 
 
 sub get_list_plugins_pre() {
-    return $plugins_type{'pre'};
+    return $plugins_type{'pre'} || [];
 }
 
 
 sub get_list_plugins_cdata() {
-    return $plugins_type{'cdata'};
+    return $plugins_type{'cdata'} || [];
 }
 
 
 sub get_list_plugins_post() {
-    return $plugins_type{'post'};
+    return $plugins_type{'post'} || [];
 }
 
 
 sub get_list_plugins_global() {
-    return $plugins_type{'global'};
+    return $plugins_type{'global'} || [];
 }
 
 
@@ -94,47 +106,33 @@ sub get_names_all() {
 }
 
 
-sub get_list_metrics() {
-    my @list = map { $plugins{$_}{'id'} if grep('metrics', $plugins{$_}{'ability'}) } keys %plugins;
-    return \@list;
+sub get_list_ability_data() {
+    return $plugins_ability{'data'} || [];
 }
 
 
-sub get_list_figs() {    
-    my @list = map { $plugins{$_}{'id'} if grep('figs', $plugins{$_}{'ability'}) } keys %plugins;
-    return \@list;
+sub get_list_ability_metrics() {
+    return $plugins_ability{'metrics'} || [];
 }
 
 
-sub get_list_info() {    
-    my @list = map { $plugins{$_}{'id'} if grep('info', $plugins{$_}{'ability'}) } keys %plugins;
-    return \@list;
+sub get_list_ability_figs() {    
+    return $plugins_ability{'figs'} || [];
 }
 
 
-sub get_list_recs() {    
-    my @list = map { $plugins{$_}{'id'} if grep('recs', $plugins{$_}{'ability'}) } keys %plugins;
-    return \@list;
+sub get_list_ability_info() {    
+    return $plugins_ability{'info'} || [];
 }
 
 
-# FIXME
-sub get_list_viz() {    
-    my @list = map { $plugins{$_}{'id'} if grep('recs', $plugins{$_}{'ability'}) } keys %plugins;
-    return \@list;
+sub get_list_ability_recs() {    
+    return $plugins_ability{'recs'} || [];
 }
 
 
-# FIXME
-sub get_list_post() {    
-    my @list = map { $plugins{$_}{'id'} if grep('recs', $plugins{$_}{'ability'}) } keys %plugins;
-    return \@list;
-}
-
-# FIXME
-sub get_list_global() {     
-    my @list = map { $plugins{$_}{'id'} if grep('recs', $plugins{$_}{'ability'}) } keys %plugins;
-    return \@list;
+sub get_list_ability_viz() {    
+    return $plugins_ability{'viz'} || [];
 }
 
 

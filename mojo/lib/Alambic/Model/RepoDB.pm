@@ -356,8 +356,57 @@ sub get_project_last_run() {
 
     my %project;
     
-    # Execute insert in db.
+    # Execute select in db.
     my $results = $pg->db->query("SELECT * FROM projects WHERE project_id='$id' ORDER BY id DESC LIMIT 1");
+    while (my $next = $results->hash) {
+	$project{'id'} = $next->{'id'}; 
+	$project{'project_id'} = $next->{'project_id'}; 
+	$project{'run_time'} = $next->{'run_time'}; 
+	$project{'run_delay'} = $next->{'run_delay'}; 
+	$project{'run_user'} = $next->{'run_user'}; 
+	$project{'metrics'} = decode_json( $next->{'metrics'} ); 
+	$project{'indicators'} = decode_json( $next->{'indicators'} ); 
+	$project{'attributes'} = decode_json( $next->{'attributes'} ); 
+	$project{'recs'} = decode_json($next->{'recs'} ); 
+    }
+
+    return \%project;
+}
+
+
+# Returns the results of the specified job run in Alambic for the specified project.
+# {
+#   'attributes' => {
+#     'MYATTR' => 18
+#   },
+#   'id' => 2,
+#   'indicators' => {
+#     'MYINDIC' => 16
+#   },
+#   'metrics' => {
+#     'MYMETRIC' => 15
+#   },
+#   'project_id' => 'modeling.sirius',
+#   'recs' => {
+#     'MYREC' => {
+#       'desc' => 'This is a description.',
+#       'rid' => 'REC_PMI_11'
+#     }
+#   },
+#   'run_delay' => 113,
+#   'run_time' => '2016-05-08 16:53:57',
+#   'run_user' => 'none'
+# }
+#
+# Params
+#  - $id the id of the project, e.g. modeling.sirus.
+sub get_project_run() {
+    my ($self, $project_id, $plugin_id) = @_;
+
+    my %project;
+    
+    # Execute select in db.
+    my $results = $pg->db->query("SELECT * FROM projects WHERE id='$plugin_id' ORDER BY id DESC LIMIT 1");
     while (my $next = $results->hash) {
 	$project{'id'} = $next->{'id'}; 
 	$project{'project_id'} = $next->{'project_id'}; 

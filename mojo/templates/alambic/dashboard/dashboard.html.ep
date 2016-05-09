@@ -1,0 +1,63 @@
+% my $project_id = stash( 'project_id' );
+% my $run = stash( 'run' );
+
+            <h1 class="al-h1"><small><%= $project_id %></small> Summary</h1>
+            <br />
+
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/summary', project_id => "$project_id" 
+
+            <br />
+
+	    <%= dumper $project_id %>
+
+	    <div class="row">
+              <div class="col-sm-6">
+                <dl class="dl-vertical">
+                  <dt>Description</dt>
+                  <dd>
+                    <span class="label" style="background-color: #3E3F3A">#3E3F3A</span>
+                    <span class="label" style="background-color: #FFA500">#FFA500</span>
+                    <span class="label" style="background-color: #5884B3">#5884B3</span>
+                    <span class="label" style="background-color: #CC6686">#CC6686</span>
+                    <span class="label" style="background-color: #9DBE59">#9DBE59</span>
+                  </dd>
+                </dl>
+              </div>
+              <div class="col-sm-6">
+              </div>
+            </div>
+    
+            <div class="row">
+              <div class="col-md-4">
+                <div class="panel" style="border-color: #3E3F3A">
+		  <div class="panel-heading" style="border-color: #3E3F3A; background-color: #3E3F3A; color: #ffffff">Stack Overflow</div>
+                  <div class="panel-body">
+                    <a href="/projects/<%= ${project_id} %>_plugins_stack_overflow.html"><img src="figures/stack_overflow/<%= $project_id %>/blob-so-plot-1.svg" class="img-responsive" alt="No data."/></a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="panel" style="border-color: #3E3F3A">
+		  <div class="panel-heading" style="border-color: #3E3F3A; background-color: #3E3F3A; color: #ffffff">Quality Model</div>
+                  <div class="panel-body">
+                    <a href="/projects/<%= ${project_id} %>_plugins_stack_overflow.html"><img src="figures/stack_overflow/<%= $project_id %>/blob-so-plot-1.svg" class="img-responsive" alt="No data."/></a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="panel" style="border-color: #3E3F3A">
+		  <div class="panel-heading" style="border-color: #3E3F3A; background-color: #3E3F3A; color: #ffffff">Data</div>
+                  <div class="panel-body">
+		    <p>Metrics <span class="pull-right"><span class="badge"><%= scalar keys ( $run->{'metrics'} || {} ) %></span> &nbsp; <a href="/projects/<%= $project_id %>/metrics.json"><i class="fa fa-download fa-lg"></i></a></span></p>
+		    <p>Attributes <span class="pull-right"><span class="badge"><%= scalar keys ( $run->{'attributes'} || {} ) %></span> &nbsp; <a href="/projects/<%= $project_id %>/attributes.json"><i class="fa fa-download fa-lg"></i></a></span></p>
+		    <p>Recommendations <span class="pull-right"><span class="badge"><%= scalar keys ( $run->{'recs'} || {} ) %></span> &nbsp; <a href="/projects/<%= $project_id %>/recs.json"><i class="fa fa-download fa-lg"></i></a></span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <hr />
+            <p class="pull-right">Last analysis was on <%= defined( $run->{'run_time'} ) ? "" . $run->{'run_time'} : 'Never' %>.</p>
+            <br />
+
+
