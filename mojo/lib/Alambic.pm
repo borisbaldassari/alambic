@@ -98,8 +98,9 @@ sub startup {
     
     $r->get('/admin/projects/#pid/edit')->to('admin#projects_edit');
     
-    $r->get('/admin/projects/#pid/addp/#plid')->to('admin#projects_add_plugin');
-    $r->get('/admin/projects/#pid/editp/#plid')->to('admin#projects_edit_plugin');
+    $r->get('/admin/projects/#pid/setp/#plid')->to('admin#projects_add_plugin');
+    $r->post('/admin/projects/#pid/setp/#plid')->to('admin#projects_add_plugin_post');
+    $r->get('/admin/projects/#pid/runp/#plid')->to('admin#projects_run_plugin');
     $r->get('/admin/projects/#pid/delp/#plid')->to('admin#projects_del_plugin');
     
     $r->get('/admin/repo')->to('repo#summary');

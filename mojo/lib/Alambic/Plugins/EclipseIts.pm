@@ -17,7 +17,11 @@ use Data::Dumper;
 my %conf = (
     "id" => "EclipseIts",
     "name" => "Eclipse ITS",
-    "desc" => "Retrieves bug tracking system data from the Eclipse dashboard repository. This plugin will look for a file named project-its-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
+    "desc" => [
+	'Eclipse ITS retrieves bug tracking system data from the Eclipse dashboard repository. This plugin will look for a file named project-its-prj-static.json on <a href="http://dashboard.eclipse.org/data/json/">the Eclipse dashboard</a>. This plugin is redundant with the EclipseGrimoire plugin',
+	'<code>project_grim</code> is the id used to identified the project in the PMI. Look for it in the URL of the project on <a href="http://projects.eclipse.org">http://projects.eclipse.org</a>.',
+	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseIts">the project\'s wiki</a> for more information.',
+    ],
     "ability" => [ 'metrics', 'recs', 'figs', 'viz' ],
     "params" => {
         "project_grim" => "",

@@ -16,7 +16,11 @@ use Data::Dumper;
 my %conf = (
     "id" => "EclipsePmi",
     "name" => "Eclipse PMI",
-    "desc" => "Retrieves data from the Eclipse PMI infrastructure.",
+    "desc" => [ 
+	"Eclipse PMI Retrieves data from the Eclipse PMI infrastructure.",
+	"<code>project_grim</code> is the identifier used for the project in the Eclipse dashboard. It may be different from the id used in the PMI.",
+	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipsePmi">the project\'s wiki for more information.',
+    ],
     "ability" => [ "metrics", "info", 'data', "recs", "viz" ],
     "type" => "plugin",
     "params" => {

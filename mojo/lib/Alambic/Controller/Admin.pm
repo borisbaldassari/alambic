@@ -21,7 +21,7 @@ sub projects {
 }
 
 
-# Display project screen for Alambic admin.
+# Display specific project screen for Alambic admin.
 sub projects_show {
     my $self = shift;
     my $project_id = $self->param( 'pid' );
@@ -114,10 +114,89 @@ sub projects_del {
 sub projects_edit {
     my $self = shift;
     my $project_id = $self->param( 'pid' );
+
+    # TODO
     
     # Render template for main admin section
     $self->render( template => 'alambic/admin/projects_edit' );
 }
+
+
+# Edit project screen for Alambic admin (POST).
+sub projects_edit_post {
+    my $self = shift;
+    
+    my $project_id = $self->param( 'id' );
+    my $project_name = $self->param( 'name' );
+    my $project_active = $self->param( 'is_active' );
+
+    # TODO
+
+    my $msg = "Project '$project_name' ($project_id) has been created.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects' );
+}
+
+
+# Add plugin to project screen for Alambic admin.
+sub projects_add_plugin {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+    my $plugin_id = $self->param( 'plid' );
+    
+    # Prepare data for template.
+    my $conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
+    my $conf_project = $self->app->al->get_project($project_id)->get_plugins()->{$plugin_id};
+
+    $self->stash(
+        project => $project_id,
+        conf => $conf,
+	conf_project => $conf_project,
+        );
+    
+    # Render template for main admin section
+    $self->render( template => 'alambic/admin/project_plugin_add' );
+}
+
+
+# Add plugin to project screen for Alambic admin (POST).
+sub projects_add_plugin_post {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+    my $plugin_id = $self->param( 'plid' );
+    
+    my $conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
+
+    my %args;
+    foreach my $param ( keys %{$conf->{'params'}} ) {
+        $args{$param} = $self->param( $param );
+    }
+
+    $self->app->al->add_project_plugin($project_id, $plugin_id, \%args);
+
+    my $msg = "Plugin $plugin_id has been added to project $project_id.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Edit project screen for Alambic admin.
+sub projects_del_plugin {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+    my $plugin_id = $self->param( 'plid' );
+
+    $self->app->al->del_project_plugin($project_id, $plugin_id);
+
+    my $msg = "Plugin $plugin_id has been removed from project $project_id.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
 
 
 

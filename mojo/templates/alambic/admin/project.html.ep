@@ -35,6 +35,7 @@
                   <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Return to projects</a>
                   <a class="list-group-item" href="/admin/projects/<%= $project_id %>/edit" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Edit project information</a>
                   <a class="list-group-item" href="/admin/project/<%= $project_id %>/run" role="button"><i class="fa fa-fw fa-rocket"></i> &nbsp; Run project</a>
+                  <a class="list-group-item" href="/admin/project/<%= $project_id %>/del" role="button"><i class="fa fa-fw fa-ban"></i> &nbsp; Delete project</a>
                   <a class="list-group-item" href="/projects/<%= $project_id %>" role="button"><i class="fa fa-fw fa-dashboard"></i> &nbsp; Project dashboard</a>
                 </div>
 
@@ -42,10 +43,20 @@
             </div>
 
             <h3>Automatic data sources</h3>
-            <table class="table table-striped">
-              <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="3">Actions</th></tr>
+
 % my $plugins = $project->get_plugins();
 % my $plugins_all = app->al->get_plugins()->get_names_all();
+
+            <p>You can add a data source from:
+% foreach my $p (sort keys %$plugins_all) {
+%   if (not exists($plugins->{$p})) {
+              [ <a href="/admin/projects/<%= $project_id %>/setp/<%= $p %>"><%= $p %></a> ] &nbsp;
+%   }
+% }
+            </p>
+
+	    <table class="table table-striped">
+              <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="3">Actions</th></tr>
 % foreach my $plugin ( sort keys %$plugins ) {
 %   my $plugin_name = 'Unknown';
 %   if (exists($plugins_all->{$plugin})) {
@@ -54,23 +65,15 @@
               <tr>
                 <td><%= $plugin_name %></td><td><%= $plugin %></td>
                 <td>
-%   my @args_full = map { "$_: <code>" . $plugins->{$_} . "</code>"; } keys %{$plugins};
+%   my @args_full = map { "$_: <code>" . $plugins->{$plugin}->{$_} . "</code>"; } keys %{$plugins->{$plugin}};
 %   my $args_str = join( '<br />', sort @args_full );
                   <%== $args_str %>
                 </td>
-                <td width="1cm"><a href="/admin/project/<%= $project_id %>/ds/<%= $plugin %>/retrieve"><i class="fa fa-download"></i></a></td>
-                <td width="1cm"><a href="/admin/project/<%= $project_id %>/ds/<%= $plugin %>/compute"><i class="fa fa-cogs"></i></a></td>
-                <td width="1cm"><a href="/admin/project/<%= $project_id %>/ds/<%= $plugin %>/del"><i class="fa fa-ban"></i></a></td></tr>
+                <td width="1cm"><a href="/admin/projects/<%= $project_id %>/setp/<%= $plugin %>"><i class="fa fa-edit"></i></a></td>
+                <td width="1cm"><a href="/admin/projects/<%= $project_id %>/runp/<%= $plugin %>"><i class="fa fa-cogs"></i></a></td>
+                <td width="1cm"><a href="/admin/projects/<%= $project_id %>/delp/<%= $plugin %>"><i class="fa fa-ban"></i></a></td></tr>
 % }            
             </table>
-
-            <p>You can add a data source from 
-% foreach my $p (sort keys %$plugins_all) {
-%   if (not exists($plugins->{$p})) {
-              <a href="/admin/projects/<%= $project_id %>/addp/<%= $p %>"><%= $p %></a>
-%   }
-% }
-              .</p>
 
             <div class="row">
               <div class="col-md-6">

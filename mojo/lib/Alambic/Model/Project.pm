@@ -20,7 +20,6 @@ our @EXPORT_OK = qw(
                      indicators
                      attributes
                      recs
-                     add_plugin
                      run_plugin
                      run_plugins
                      run_project
@@ -30,7 +29,7 @@ our @EXPORT_OK = qw(
 # Data associated with a project
 my ($project_name, $project_id, $project_desc, $project_active);
 
-my %plugins;
+my %plugins = ();
 # my %plugins = (
 #     "plugin_id1" => {
 # 	"param1" => "value1",
@@ -38,10 +37,10 @@ my %plugins;
 #     },
 #     );
 
-my %indicators;
-my %attributes;
-my %metrics;
-my %recs;
+my %indicators = ();
+my %attributes = ();
+my %metrics = ();
+my %recs = ();
 ######################################
 
 # A ref to the Plugins module.
@@ -55,12 +54,17 @@ sub new {
     $project_name = $name;    
     
     $plugins_module = Alambic::Model::Plugins->new();
-    if (defined($plugins)) {
+    %plugins = ();
+    if ( defined($plugins) ) {
 	foreach my $plugin_id (keys %{$plugins}) {
 	    $plugins{$plugin_id} = $plugins->{$plugin_id};
 	}
     }
 
+    %metrics = ();
+    %indicators = ();
+    %attributes = ();
+    %recs = ();
     if ( defined($data) ) {
 	%metrics = %{$data->{'metrics'} || {}};
 	%indicators = %{$data->{'indicators'} || {}};
@@ -123,12 +127,6 @@ sub attributes() {
 
 sub recs() {
     return \%metrics;
-}
-
-sub add_plugin($$) {
-    my ($self, $plugin_id, $plugin_conf) = @_;
-
-    $plugins{$plugin_id} = $plugin_conf;
 }
 
 sub run_plugin($) {

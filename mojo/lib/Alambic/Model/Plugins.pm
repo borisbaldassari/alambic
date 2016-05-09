@@ -80,8 +80,8 @@ sub get_list_all() {
 sub get_names_all() {
     my @list = keys %plugins;
     my %list;
+#    print Dumper(%plugins);
     foreach my $p (@list) {
-	print Dumper(%plugins);
 	$list{$p} = $plugins{$p}->get_conf()->{'name'};
     }
     

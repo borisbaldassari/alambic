@@ -30,6 +30,7 @@ our @EXPORT_OK = qw(
                      create_project
                      get_project
                      get_projects_list
+                     add_project_plugin
                      run_project
                      delete_project
                    );  
@@ -208,6 +209,53 @@ sub get_projects_list() {
     }
     
     return $projects_list;
+}
+
+
+# Add or set a plugin to the project configuration.
+#
+# Params
+#  - project_id the project id.
+#  - plugin_id the plugin id.
+#  - plugin_conf a hash ref for the plugin configuration.
+sub add_project_plugin() {
+    my ($self, $project_id, $plugin_id, $project_conf) = @_;
+
+    my $conf = $repodb->get_project_conf($project_id);
+
+    # Add plugin conf to the hash of all plugins conf
+    $conf->{'plugins'}->{$plugin_id} = $project_conf;
+
+    $repodb->set_project_conf($project_id, 
+			      $conf->{'name'}, 
+			      $conf->{'desc'}, 
+			      $conf->{'is_active'},
+			      $conf->{'plugins'});
+    
+    return 1;
+}
+
+
+# Delete a plugin from the project configuration.
+#
+# Params
+#  - project_id the project id.
+#  - plugin_id the plugin id.
+sub del_project_plugin() {
+    my ($self, $project_id, $plugin_id) = @_;
+
+    my $conf = $repodb->get_project_conf($project_id);
+
+    # Add plugin conf to the hash of all plugins conf
+    delete $conf->{'plugins'}->{$plugin_id};
+
+    $repodb->set_project_conf($project_id, 
+			      $conf->{'name'}, 
+			      $conf->{'desc'}, 
+			      $conf->{'is_active'},
+			      $conf->{'plugins'});
+    
+    return 1;
 }
 
 
