@@ -1,0 +1,160 @@
+  {
+    "name": "Alambic Attributes",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Project Maturity",
+        "mnemo": "QM_QUALITY",
+        "desc": [
+            "The overall Maturity of the project.", 
+            "In the context of embedded software, Maturity is usually associated with some kind of reliability (most bugs have been already found) and functionality of code, sustainability of the project (will it still deliver fixes and improvements in a few years), and process predictability. Maturity in the PolarSys context has been further described <a href=\"https://polarsys.org/wiki/MaturityDefinition\">on the wiki</a>, and is actually precisely defined by the decomposition of this quality model."
+        ]
+      },
+      {
+        "name": "Ecosystem",
+        "mnemo": "QM_ECOSYSTEM",
+        "desc" : [
+            "The sustainability of the ecosystem evolving around the project.",
+            "Sustainability is a key point for long term support. If there is a lot of activity, if people can get fast and complete answers, if many people from different companies contribute to the project, then it will have more chance to still be there in a few years, and to continue providing fixes and improvements.",
+            "Ecosystem requirements have been discussed on the mailing list and during meetings, and have been further described on the <a href=\"https://polarsys.org/wiki/EclipseQualityRequirements#Identified_Requirements_for_Community\">Polarsys wiki</a>."
+        ]
+      },
+      {
+        "name": "Process",
+        "mnemo": "QM_PROCESS",
+        "desc" : [
+            "The maturity of the process used to run the project.",
+            "A sound process helps people to do things right and ease collaborative work. If the process is documented, has predictable output, helps enforcing good development practices, etc. then new comers will easily find the information to collaborate, test or change code, or participate in the community. A good process also helps producing a good product [< href=\"/documentation/references.html#Ing2003\">Ing2003</a>] -- although it is agreed that the process is not enough by itself.",
+            "Process requirements have been discussed on the mailing list and during meetings, and have been further described on the <a href=\"https://polarsys.org/wiki/EclipseQualityRequirements#Identified_Requirements_for_Process\">Polarsys wiki</a>. Some may also recognise CMMi Key Process Areas among the attributes."
+        ]
+      },
+      {
+        "name": "Product",
+        "mnemo": "QM_PRODUCT",
+        "desc" : [
+            "The quality of the product delivered by the project, i.e. the source code, binaries, tests.", 
+            "Product quality is mainly focused on maintainability for long-term support, through analysability, changeability, and reusability. Reliability is also considered for a bug may have a great impact when encountered by large teams.",
+            "Product requirements have been discussed on the mailing list and during meetings, and have been further described on the <a href=\"https://polarsys.org/wiki/EclipseQualityRequirements#Identified_Requirements_for_Product\">Polarsys wiki</a>. Some may also recognise attributes borrowed from the [<a href=\"/documentation/references.html#ISO9126\">ISO 9126</a>] and [<a href=\"/documentation/references.html#ISO250xx\">ISO 250xx SQuaRE</a>] standards."
+        ]
+      },
+      {
+        "name": "Activity",
+        "mnemo": "QM_ACTIVITY",
+        "desc" : [
+            "The activity of the project's ecosystem, as measured on the mailing lists and configuration management system.",
+            "An active project will provide a lot of information on the mailing lists, so when an user encounters an issue she will quickly find the information she needs, and has more chances to get answers if she asks. Fixes and improvements are added regularly."
+        ]
+      },
+      {
+        "name": "Diversity",
+        "mnemo": "QM_DIVERSITY",
+        "desc" : [
+            "The diversity of the project's ecosystem, as measured on the mailing lists and configuration management system.", 
+            "If many different actors from different companies are involved in the project, then it improves its sustainability (by eliminating a single point of failure) and adaptability to different situations. Having developers and users with different contexts and perspectives on the project helps widening its scope and provide a more generic support."
+        ]
+      },
+      {
+        "name": "Responsiveness",
+        "mnemo": "QM_RESPONSIVENESS",
+        "desc" : [
+            "How fast people get an answer when they ask for help about the project.",
+            "Having fast answers on the mailing lists encourages users better test and use the product, and allows developers to develop more efficiently, thus encreasing the collaboration of new comers. It also gives a good impression of the project."
+        ]
+      },
+      {
+        "name": "Support",
+        "mnemo": "QM_SUPPORT",
+        "desc" : [
+            "The amount of knowledge provided when someone asks for support.",
+            "Having many answers on a single question helps better understand how the product works in different conditions, and also provides help for people looking for a similar information later on, since mailing lists are archived and public."
+        ]
+      },      {
+        "name": "Visibility",
+        "mnemo": "QM_VISIBILITY",
+        "desc" : [
+            "How much the project is visible for people not involved in it.",
+            "If someone has a need fulfilled by the product, she has to know about the project in order to use it. Making the project visible helps people find it when they need it, through blogs, research or journal articles, conferences, or marketing. It also helps the project gather people willing to contribute and test it."
+        ]
+      },
+      {
+        "name": "Usage",
+        "mnemo": "QM_USAGE",
+        "desc" : [
+            "The degree of usage of the project: is it widely used, by different people in different context?"
+        ]
+      },      {
+        "name": "User feedback",
+        "mnemo": "QM_FEEDBACK",
+        "desc" : [
+            "How do the users of the software evaluate the project and product?"
+        ]
+      },
+      {
+        "name": "Configuration Management",
+        "mnemo": "QM_SCM",
+        "desc" : [
+            "The maturity of the project regarding access and usage of the configuration management system.",
+            "Configuration management is an essential part of the collaboration in the project. Access to the source should be documented and facilitated for new comers to easily come in."
+        ]
+      },      {
+        "name": "Change Management",
+        "mnemo": "QM_ITS",
+        "desc" : [
+            "Do the project applies best practices regarding change management?"
+        ]
+      },
+      {
+        "name": "Intellectual Property Management",
+        "mnemo": "QM_IP",
+        "desc" : [
+            "How is intellectual property handled in the project? Is there an IP log? Are the project and the Eclipse Foundation safe regarding IP?"
+        ]
+      },
+      {
+        "name": "Planning Management",
+        "mnemo": "QM_PLAN",
+        "desc" : [
+            "Is the project behaviour predicable? Are outputs delivered on planned time and quality?"
+        ]
+      },
+      {
+        "name": "Test Management",
+        "mnemo": "QM_TST",
+        "desc" : [
+            "Is the product thoroughly tested? How many tests are there, what is the code coverage?"
+        ]
+      },
+      {
+        "name": "Analysability",
+        "mnemo": "QM_ANA",
+        "desc" : [
+            "Degree of effectiveness and efficiency with which it is possible to assess the impact on a product or system of an intended change to one or more of its parts, or to diagnose a product for deficiencies or causes of failures, or to identify parts to be modified. (ISO/IEC 25010)"
+        ]
+      },
+      {
+        "name": "Changeability",
+        "mnemo": "QM_CHA",
+        "desc" : [
+            "Degree to which a product or system can be effectively and efficiently modified without introducing defects or degrading existing product quality. (ISO/IEC 25010)",
+            "Changeability is usually linked to Change Impact Analysis [ <a href=\"/documentation/references.html#Ayalew2015\">Ayalew2015</a> ] (how much code should be changed to implement this modification), complexity metrics (changing a complex code is difficult), and duplication (one has to change code in many different locations for a single modification).",
+            "A project with a good changeability is easy to maintain and will attract more developers. When modifications are applied to the code, less bugs will be introduced."
+        ]
+      },
+      {
+        "name": "Reliability",
+        "mnemo": "QM_REL",
+        "desc" : [
+            "Degree to which a system, product or component performs specified functions under specified conditions for a specified period of time. (ISO/IEC 25010)",
+            "Reliability is one of the first quality attribute end-users will notice, especially in the field of embedded systems. Beyond the user feedback, a non-reliable product may produce bad output, or unpredictable behaviour, that may impact other components of the toolchain."
+        ]
+      },
+      {
+        "name": "Reusability",
+        "mnemo": "QM_REU",
+        "desc" : [
+            "Degree to which an asset can be used in more than one system, or in building other assets. (ISO/IEC 25010)",
+            "Reusable components can be easily extended and reused at a low cost when maintaining the system or adding new features, thus inducing direct benefits for the company."
+        ]
+      }
+    ]
+  }

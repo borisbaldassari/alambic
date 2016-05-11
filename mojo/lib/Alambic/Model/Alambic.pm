@@ -8,6 +8,7 @@ use Alambic::Model::Project;
 use Alambic::Model::RepoDB;
 use Alambic::Model::RepoFS;
 use Alambic::Model::Plugins;
+use Alambic::Model::Models;
 
 use Mojo::JSON qw (decode_json encode_json);
 use Data::Dumper;
@@ -25,6 +26,7 @@ our @EXPORT_OK = qw(
                      instance_pg_minion
                      is_db_ok
                      is_db_m_ok
+                     get_models
                      get_plugins
                      get_repo_db
                      create_project
@@ -39,6 +41,7 @@ my $config;
 my $repodb;
 my $repofs;
 my $plugins;
+my $models;
 
 # Create a new Alambic object.
 sub new { 
@@ -49,6 +52,18 @@ sub new {
     $repodb = Alambic::Model::RepoDB->new($pg_alambic);
     $repofs = Alambic::Model::RepoFS->new();
     $plugins = Alambic::Model::Plugins->new();
+
+    # If the database is not initialised, then init it.
+    if (not &is_db_ok()) { 
+	print "### &init( ! \n";
+    }
+	
+    # Retrieve all metrics definition to initialise Models.pm
+    my $metrics = $repodb->get_metrics();
+    my $attributes = $repodb->get_attributes();
+    my $qm = $repodb->get_qm()->{'model'};
+    print "# In Alambic::new " . Dumper($qm);
+    $models = Alambic::Model::Models->new($metrics, $attributes, $qm, $plugins);
     
     return bless {}, $class;
 }
@@ -122,6 +137,12 @@ sub is_db_m_ok() {
 # Return the Plugins.pm object for this instance.
 sub get_plugins() {
     return $plugins;
+}
+
+
+# Return the Models.pm object for this instance.
+sub get_models() {
+    return $models;
 }
 
 

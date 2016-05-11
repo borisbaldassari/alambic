@@ -37,10 +37,13 @@ eval {
     # Checking database.
     push( @tables, $_->{'tablename'} ) for $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->hashes->each;
-    is( scalar @tables, 4, "Database has 4 tables defined.") or diag explain @tables;
+    is( scalar @tables, 7, "Database has 7 tables defined.") or diag explain @tables;
     ok( grep( /^conf$/, @tables ) == 1, "Table conf is defined.") or diag explain @tables;
     ok( grep( /^conf_projects$/, @tables ) == 1, "Table conf_projects is defined.") or diag explain @tables;
     ok( grep( /^projects$/, @tables ) == 1, "Table projects is defined.") or diag explain @tables;
+    ok( grep( /^metrics$/, @tables ) == 1, "Table metrics is defined.") or diag explain @tables;
+    ok( grep( /^attributes$/, @tables ) == 1, "Table attributes is defined.") or diag explain @tables;
+#    ok( grep( /^recs$/, @tables ) == 1, "Table recs is defined.") or diag explain @tables;
     
     my %values;
     my $results = $pg->db->query('select * from conf');
@@ -97,7 +100,7 @@ eval {
     is($ret, undef, "Getting a wrong project returns undef.");
     
     my $projects_list = $repodb->get_projects_list();
-    is_deeply( $projects_list, {"modeling.sirius" => "Sirius"}, "Projects list has modeling.sirius.") or diag explain $projects_list;
+    is( $projects_list->{'modeling.sirius'}, "Sirius", "Projects list has modeling.sirius.") or diag explain $projects_list;
 
     $ret = $repodb->set_project_conf('modeling.sirius', 'SiriusChanged', 'Sirius is a great tool Changed.', '0', '{ "EclipseIts": {"project_grim": "modeling.sirius"} }');
     ok( $ret == 1, "Second update of project_info is an update.") or diag explain $ret;
@@ -208,4 +211,4 @@ END {
     $repodb->clean_db();
 }
 
-done_testing(44);
+done_testing(46);

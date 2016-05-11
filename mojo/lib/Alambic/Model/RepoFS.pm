@@ -16,6 +16,8 @@ our @EXPORT_OK = qw(
                      read_output
                      write_plugin
                      read_plugin
+                     write_models
+                     read_models
                      delete_project
                    );  
 
@@ -141,6 +143,36 @@ sub read_backup($$) {
 
     my $content;
     my $file = "backups/" . $file_name;
+    do { 
+        local $/;
+        open my $fh, '<', $file or return 0;
+        $content = <$fh>;
+        close $fh;
+    };
+
+    return $content;
+}
+
+
+sub write_models($$$) {
+    my ($self, $type, $file_name, $content) = @_;
+
+    # Create backups dir if it does not exist
+    if (not -d 'models/' ) { 
+        mkdir( 'models/' );
+    }
+
+    my $path = 'models/' . $type . '/' . $file_name;
+    open my $fh, ">", $path;
+    print $fh $content;
+    close $fh;
+}
+
+sub read_models($$) {
+    my ($self, $type, $file_name) = @_;
+
+    my $content;
+    my $file = "models/" . $type . "/" . $file_name;
     do { 
         local $/;
         open my $fh, '<', $file or return 0;

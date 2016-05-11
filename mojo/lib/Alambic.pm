@@ -67,18 +67,24 @@ sub startup {
     $r->get('/about.html')->to( template => 'alambic/about');
     $r->get('/contact.html')->to( template => 'alambic/contact');
     $r->post('/contact')->to( 'alambic#contact_post' );
+
+    # Documentation
+    $r->get('/documentation/#id')->to( 'documentation#welcome' );
     
     # Dashboards
     my $r_projects = $r->get('/projects')->to(controller => 'dashboard');
     $r_projects->get('/#id')->to(action => 'display_summary');
     $r_projects->get('/#id/#page')->to(action => 'display_project');
     $r_projects->get('/#id/#plugin/#page')->to(action => 'display_plugins');
+
+    # JSON data for models 
+    $r->get('/data/#page')->to( 'admin#data' );
     
     # Admin
-    my $r_admin = $r->get('/admin')->to(controller => 'admin');
+    my $r_admin = $r->any('/admin')->to(controller => 'admin');
     $r_admin->get('/summary')->to(action => 'summary');
     $r_admin->get('/projects')->to(action => 'projects');
-    my $r_admin_projects = $r_admin->get('/projects')->to(controller => 'admin');
+    my $r_admin_projects = $r_admin->any('/projects')->to(controller => 'admin');
     $r_admin_projects->get('/new')->to(action => 'projects_new');
     $r_admin_projects->post('/new')->to(action => 'projects_new_post');
     $r_admin_projects->get('/#pid')->to(action => 'projects_show');
@@ -91,6 +97,10 @@ sub startup {
     $r_admin_projects->post('/#pid/setp/#plid')->to('admin#projects_add_plugin_post');
     $r_admin_projects->get('/#pid/runp/#plid')->to('admin#projects_run_plugin');
     $r_admin_projects->get('/#pid/delp/#plid')->to('admin#projects_del_plugin');
+    
+    $r_admin->get('/models')->to( 'admin#models' );
+    $r_admin->get('/models/import')->to( 'admin#models_import' );
+    # my $r_admin_models = $r->get('/admin/models/')->to( controller => 'admin' );
     
     $r->get('/admin/plugins')->to( 'admin#plugins' );
     

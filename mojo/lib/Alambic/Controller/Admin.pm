@@ -1,6 +1,7 @@
 package Alambic::Controller::Admin;
 use Mojo::Base 'Mojolicious::Controller';
 
+use Mojo::JSON qw( encode_json decode_json );
 use Data::Dumper;
 use File::stat;
 use Time::localtime;
@@ -10,6 +11,98 @@ sub summary {
     my $self = shift;
     
     $self->render( template => 'alambic/admin/summary' );
+}
+
+
+# JSON access for models data.
+sub data {
+    my $self = shift;
+    my $page = $self->param( 'page' );
+    
+    my $models = $self->app->al->get_models();
+
+    if ($page =~ m!^attributes.json$!) {
+	$self->render( json => $models->get_attributes() );
+
+    } elsif ($page =~ m!^metrics.json$!) {
+	$self->render( json => $models->get_metrics() );
+    
+    } elsif ($page =~ m!^qm.json$!) {
+	$self->render( json => $models->get_qm() );
+    
+    } elsif ($page =~ m!^qm_full.json$!) {
+	$self->render( json => $models->get_qm_full() );
+
+    } else {
+	$self->render( json => {} );
+    }
+}
+
+# Models display screen for Alambic admin.
+sub models {
+    my $self = shift;
+
+    my $models = $self->app->al->get_models();
+    
+    # Get list of metrics definition files.
+    my @files_metrics = <models/metrics/*.json>;
+    my @files_attributes = <models/attributes/*.json>;
+    my @files_qm = <models/qm/*.json>;
+
+    $self->stash(
+        files_metrics => \@files_metrics,
+        files_attributes => \@files_attributes,
+        files_qm => \@files_qm,
+	models => $models,
+        );
+    
+    $self->render( template => 'alambic/admin/models' );
+}
+
+
+# Models import for Alambic admin.
+sub models_import {
+    my $self = shift;
+    my $file = $self->param( 'file' );
+    my $type = $self->param( 'type' ) || "metrics";
+    my $add = $self->param( 'add' ) || 1;
+    
+    my $repofs = Alambic::Model::RepoFS->new();
+    my $repodb = $self->app->al->get_repo_db();
+    
+    if ($type =~ m!^metrics$!) {
+	my $metrics = decode_json( $repofs->read_models('metrics', $file) );
+	
+	foreach my $metric ( @{$metrics->{'children'}} ) {
+	    $repodb->set_metric( $metric->{'mnemo'}, 
+				 $metric->{'name'}, 
+				 encode_json($metric->{'desc'}), 
+				 encode_json($metric->{'scale'}) );
+	}
+    } elsif ($type =~ m!^attributes$!) {
+	my $attributes = decode_json( $repofs->read_models('attributes', $file) );
+	
+	foreach my $attribute ( @{$attributes->{'children'}} ) {
+	    $repodb->set_attribute( $attribute->{'mnemo'}, 
+				    $attribute->{'name'}, 
+				    encode_json($attribute->{'desc'}) );
+	}
+    } elsif ($type =~ m!^qm$!) {
+	my $qm = decode_json( $repofs->read_models('qm', $file) );
+	print "# In Admin models_import " . Dumper($qm);
+	
+#	foreach my $node ( @{$qm->{'children'}} ) {
+	$repodb->set_qm( "ALB_BASIC",
+			 "Alambic Quality Model", 
+			 encode_json($qm->{'children'}) );
+#	}
+    } else {
+	print "DBG something went wrong.\n";
+    }
+    
+    my $msg = "File $file has been imported in the $type table.";
+    $self->flash( msg => $msg );    
+    $self->redirect_to( '/admin/models' );
 }
 
 
