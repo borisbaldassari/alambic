@@ -5,12 +5,12 @@
 
             <div class="tabbable">
               <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation"<%== ( $current =~ m!^/projects/summary$! ) ? ' class="active"' : '' %>><a href="<%= $project_id %>.html">Summary</a></li>
+                <li role="presentation"<%== ( $current =~ m!^/projects/summary$! ) ? ' class="active"' : '' %>><a href="/projects/<%= $project_id %>.html">Summary</a></li>
                 <li role="presentation" class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Data <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
-                    <li role="presentation"><a href="/projects/<%= $project_id %>/data">Summary</a></li>
-                    <li role="presentation"><a href="/projects/<%= $project_id %>/downloads">Downloads</a></li>
+                    <li role="presentation"><a href="/projects/<%= $project_id %>/data">All data</a></li>
+		    <li role="separator" class="divider"></li>
                     <li role="presentation"><a href="/projects/<%= $project_id %>/info">Info</a></li>
                     <li role="presentation"><a href="/projects/<%= $project_id %>/metrics">Metrics</a></li>
                     <li role="presentation"><a href="/projects/<%= $project_id %>/attributes">Attributes</a></li>
@@ -21,28 +21,33 @@
                 <li role="presentation" class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Plugins <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
-% my $list_viz = $plugins->get_list_ability_viz(); 
+% my $list_viz = $plugins->get_list_plugins_viz(); 
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
 %   if (grep( /$p/, @$list_viz )) {
-%     my $plugin_name = exists($list->{$p}) ? $list->{$p} : "Unknown";
-                    <li role="presentation"><a href="/projects/<%= $project_id %>_plugins_<%= $p %>.html"><%= $plugin_name %></a></li>
+%     my $plugin_name = exists($list->{$p}) ? $list->{$p} : "Unknown";	 
+%     my $plugin_viz = $plugins->get_plugin($p)->get_conf()->{'provides_viz'};
+%     foreach my $pv (sort keys %{$plugin_viz}) {
+                    <li role="presentation"><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pv %>"><%= $plugin_viz->{$pv} %></a></li>
+%     }
 %   }
 % }
                   </ul>
                 </li>
                 <li role="presentation" class="dropdown">
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Download <span class="caret"></span></a>
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Downloads <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
+                    <li role="presentation"><a href="/projects/<%= $project_id %>/data">All downloads</a></li>
+		    <li role="separator" class="divider"></li>
                     <li role="presentation"><a href="/projects/<%= $project_id %>/metrics.json">Metrics JSON</a></li>
                     <li role="presentation"><a href="/projects/<%= $project_id %>/attributes.json">Attributes JSON</a></li>
                     <li role="presentation"><a href="/projects/<%= $project_id %>/recs.json">Recommendations JSON</a></li>
-		    <li role="separator" class="divider"></li>
-% my $list_data = $plugins->get_list_ability_data($project_id);
+% my $list_data = $plugins->get_list_plugins_data();
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
 %   if (grep( /$p/, @$list_data )) {
 %     my $plugin_data = $plugins->get_plugin($p)->get_conf()->{'provides_data'};
+		    <li role="separator" class="divider"></li>		    
 %     foreach my $pd (sort keys %{$plugin_data}) {
-                    <li role="presentation"><a href="/projects/<%= $project_id %>_plugins_<%= $p %>.html"><%= $pd %></a></li>
+                    <li role="presentation"><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>"><%= $p %> <%= $pd %></a></li>
 %     }
 %   }
 % }

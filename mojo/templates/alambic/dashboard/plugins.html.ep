@@ -1,4 +1,8 @@
 % use Mojo::JSON qw( decode_json );
+% my $project_id = stash( 'project_id' );
+% my $plugin_id = stash( 'plugin_id' );
+% my $page_id = stash( 'page_id' );
+
             <h1 class="al-h1"><small><%= $project_id %></small> Plugin <%= $plugin_id %></h1>
             <br />
 
@@ -9,7 +13,8 @@
 % if ( -e $plugin_template ) {
 %= include "/alambic/plugins/$plugin_id", project_id => $project_id
 % } else {
-%   my $file_in = app->home->rel_dir( 'data/' . $project_id . '/' . $project_id . '_' . $plugin_id . '.inc' );
+%   my $file_in = app->home->rel_dir( 'projects/' . $project_id . '/output/' . $page_id );
+%   $file_in =~ s/\.html$/.inc/;
 %   my $content;
 %   do { 
 %     local $/;
