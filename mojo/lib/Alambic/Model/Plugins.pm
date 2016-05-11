@@ -15,16 +15,22 @@ our @EXPORT_OK = qw(
                      get_list_plugins_cdata
                      get_list_plugins_post
                      get_list_plugins_global
-                     get_list_ability_data
-                     get_list_ability_metrics
-                     get_list_ability_figs
-                     get_list_ability_info
-                     get_list_ability_recs
-                     get_list_ability_viz
+                     get_list_plugins_data
+                     get_list_plugins_metrics
+                     get_list_plugins_figs
+                     get_list_plugins_info
+                     get_list_plugins_recs
+                     get_list_plugins_viz
                      get_plugin
                      run_plugin
                      test
                    );  
+                     # get_list_data
+                     # get_list_metrics
+                     # get_list_figs
+                     # get_list_info
+                     # get_list_recs
+                     # get_list_viz
 
 
 my %plugins;
@@ -106,35 +112,65 @@ sub get_names_all() {
 }
 
 
-sub get_list_ability_data() {
+sub get_list_plugins_data() {
     return $plugins_ability{'data'} || [];
 }
 
 
-sub get_list_ability_metrics() {
+sub get_list_plugins_metrics() {
     return $plugins_ability{'metrics'} || [];
 }
 
 
-sub get_list_ability_figs() {    
+sub get_list_plugins_figs() {    
     return $plugins_ability{'figs'} || [];
 }
 
 
-sub get_list_ability_info() {    
+sub get_list_plugins_info() {    
     return $plugins_ability{'info'} || [];
 }
 
 
-sub get_list_ability_recs() {    
+sub get_list_plugins_recs() {    
     return $plugins_ability{'recs'} || [];
 }
 
 
-sub get_list_ability_viz() {    
+sub get_list_plugins_viz() {    
     return $plugins_ability{'viz'} || [];
 }
 
+
+
+# sub get_list_data() {
+#     return $plugins_ability{'data'} || [];
+# }
+
+
+# sub get_list_metrics() {
+#     return $plugins_ability{'metrics'} || [];
+# }
+
+
+# sub get_list_figs() {    
+#     return $plugins_ability{'figs'} || [];
+# }
+
+
+# sub get_list_info() {    
+#     return $plugins_ability{'info'} || [];
+# }
+
+
+# sub get_list_recs() {    
+#     return $plugins_ability{'recs'} || [];
+# }
+
+
+# sub get_list_viz() {    
+#     return $plugins_ability{'viz'} || [];
+# }
 
 sub get_plugin($) {
     my ($self, $plugin_id) = @_;    

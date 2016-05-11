@@ -11,7 +11,6 @@ sub summary {
 
     # Get list of backup files.
     my @files_backup = <backups/*.*>;
-    print Dumper(@files_backup);
 
     $self->stash(
         files_backup => \@files_backup,
@@ -56,8 +55,6 @@ sub restore {
 
     my $repofs = Alambic::Model::RepoFS->new();
     my $sql = $repofs->read_backup($file_sql);
-
-    print "#DBG sql $sql.\n";
 
     if (length($sql) < 10) {
 	$self->flash( msg => "Could not find SQL file. Database has NOT been restored." );

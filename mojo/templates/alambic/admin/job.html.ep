@@ -17,11 +17,12 @@
 %= include 'alambic/admin/admin_menu', current => '/admin/jobs'
 
 % my $job_info = app->minion->backend->job_info($job_id);
-% my $log = ""; my $metrics = ""; my $attrs = ""; my $recs = ""; 
+% my $log = ""; my $info = ""; my $metrics = ""; my $attrs = ""; my $recs = ""; 
 % if ($job_info->{'state'} =~ m!^failed!) { $log = $job_info->{'result'}{'log'} }
 % elsif ($job_info->{'state'} =~ m!^finished!) { 
 %     $log = join( '<br />', @{$job_info->{'result'}{'log'}} ) ;
 %     $metrics = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'metrics'}{$_} } sort keys %{$job_info->{'result'}{'metrics'}} ) . ".";
+%     $info = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'info'}{$_} } sort keys %{$job_info->{'result'}{'info'}} ) . ".";
 %     $attrs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'attributes'}{$_} } sort keys %{$job_info->{'result'}{'attributes'}} ) . ".";
 %     $recs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'recs'}{$_} } sort keys %{$job_info->{'result'}{'recs'}} ) . ".";
 %   }
@@ -55,6 +56,10 @@
             <h3>Log</h3>
 
             <div class="well"><%== $log %></div>
+
+            <h3>Info</h3>
+
+            <div class="well"><%== $info %></div>
 
             <h3>Metrics</h3>
 

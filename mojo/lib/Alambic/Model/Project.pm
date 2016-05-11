@@ -37,6 +37,7 @@ my %plugins = ();
 #     },
 #     );
 
+my %info = ();
 my %indicators = ();
 my %attributes = ();
 my %metrics = ();
@@ -136,6 +137,10 @@ sub run_plugin($) {
     my ($self, $plugin_id) = @_;
 
     my $ret = $plugins_module->get_plugin($plugin_id)->run_plugin($project_id, $plugins{$plugin_id});
+
+    foreach my $info (sort keys %{$ret->{'info'}} ) {
+	$info{$info} = $ret->{'info'}{$info};
+    }
 
     foreach my $metric (sort keys %{$ret->{'metrics'}} ) {
 	$metrics{$metric} = $ret->{'metrics'}{$metric};

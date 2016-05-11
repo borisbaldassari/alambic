@@ -207,43 +207,8 @@ sub knit_rmarkdown_html($$) {
     return \@log;
 }
 
-sub knit_rhtml($$) {
-    
-}
-
 sub _start_session() {
     
-}
-
-
-
-# Run plugin: retrieves data + compute_data 
-sub run_plugin($$) {
-    my ($self, $project_id, $conf) = @_;
-
-    print "CONF is " . Dumper($conf);
-    
-    my %ret = (
-	'metrics' => {},
-	'info' => {},
-	'recs' => {},
-	'log' => [],
-	);
-
-    my $repofs = Alambic::Model::RepoFS->new();
-
-    my $project_pmi = $conf->{'project_pmi'};
-
-    $ret{'log'} = &_retrieve_data( $project_id, $project_pmi, $repofs );
-    
-    my $tmp_ret = &_compute_data( $project_id, $project_pmi, $repofs );
-
-    $ret{'metrics'} = $tmp_ret->{'metrics'};
-    $ret{'info'} = $tmp_ret->{'info'};
-    $ret{'recs'} = $tmp_ret->{'recs'};
-    push( @{$ret{'log'}}, @{$tmp_ret->{'log'}} );
-    
-    return \%ret;
 }
 
 

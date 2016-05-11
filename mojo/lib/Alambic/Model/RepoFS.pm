@@ -148,8 +148,6 @@ sub read_backup($$) {
         close $fh;
     };
 
-    print "DBG in read_backup content $content.\n";
-
     return $content;
 }
 

@@ -48,7 +48,7 @@ my %conf = (
         "PMI_ENTRY_WRONG",
     ],
     "provides_viz" => {
-        "eclipse_pmi" => "Eclipse PMI",
+        "eclipse_pmi.html" => "Eclipse PMI",
     },
 );
 
@@ -500,13 +500,6 @@ sub _compute_data($) {
         push( @{$check->{'results'}}, 'Failed. No release defined.' );
     }
     $ret_check->{'checks'}->{'releases'} = $check;
-
-    # Now create a html file with results and store it in projects/project.id/output/
-    my $renderer = Mojolicious::Renderer->new;
-    my ($output, $format) = $renderer->render(Mojolicious::Controller->new, {
-        template => 'alambic/plugins/pmi_checks',
-        project => $ret_check
-    });
 
     # Write pmi checks json file to disk.
     push( @log, "[Plugins::EclipsePmi] Writing PMI checks json file to output dir." );

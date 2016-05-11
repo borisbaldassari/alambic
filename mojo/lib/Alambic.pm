@@ -85,12 +85,12 @@ sub startup {
     $r_admin_projects->get('/#pid/run')->to(action => 'projects_run');
     $r_admin_projects->get('/#pid/del')->to(action => 'projects_del');
     
-    $r->get('/admin/projects/#pid/edit')->to('admin#projects_edit');
+    $r_admin_projects->get('/#pid/edit')->to('admin#projects_edit');
     
-    $r->get('/admin/projects/#pid/setp/#plid')->to('admin#projects_add_plugin');
-    $r->post('/admin/projects/#pid/setp/#plid')->to('admin#projects_add_plugin_post');
-    $r->get('/admin/projects/#pid/runp/#plid')->to('admin#projects_run_plugin');
-    $r->get('/admin/projects/#pid/delp/#plid')->to('admin#projects_del_plugin');
+    $r_admin_projects->get('/#pid/setp/#plid')->to('admin#projects_add_plugin');
+    $r_admin_projects->post('/#pid/setp/#plid')->to('admin#projects_add_plugin_post');
+    $r_admin_projects->get('/#pid/runp/#plid')->to('admin#projects_run_plugin');
+    $r_admin_projects->get('/#pid/delp/#plid')->to('admin#projects_del_plugin');
     
     $r->get('/admin/plugins')->to( 'admin#plugins' );
     

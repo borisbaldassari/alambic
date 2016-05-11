@@ -74,7 +74,7 @@ my %conf = (
         "ITS_WATCH_BUGS",
     ],
     "provides_viz" => {
-        "EclipseIts" => "Eclipse ITS",
+        "eclipse_its.html" => "Eclipse ITS",
     },
 );
 
@@ -157,7 +157,7 @@ sub _retrieve_data($$$) {
     return \@log;
 }
 
-sub _compute_data($) {
+sub _compute_data($$$) {
     my ($project_id, $project_pmi, $repofs) = @_;
 
     my %recs;
@@ -209,12 +209,13 @@ sub _compute_data($) {
     # Now execute the main R script.
     push( @log, "[Plugins::EclipseIts] Executing R main file." );
     my $r = Alambic::Tools::R->new();
-    my @log_r = $r->knit_rmarkdown_inc( 'EclipseIts', 'tools.cdt', 'EclipseIts.Rmd' );
+    my @log_r = $r->knit_rmarkdown_inc( 'EclipseIts', $project_id, 'eclipse_its.Rmd' );
 
     # And execute the figures R scripts.
     my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
     foreach my $fig (sort @figs) {
-	@log_r = $r->knit_rmarkdown_html( 'EclipseIts', 'tools.cdt', $fig );
+	push( @log, "[Plugins::EclipseIts] Executing R fig file [$fig]." );
+	@log_r = $r->knit_rmarkdown_html( 'EclipseIts', $project_id, $fig );
     }
     
     return {

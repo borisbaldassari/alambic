@@ -28,7 +28,7 @@ ok( grep( /^ERROR/, @{$ret} ) == 0, "Log has no error." ) or diag explain $ret;
 ok( grep( /^\[Plugins::EclipseIts\] Starting retrieval/, @{$ret} ) == 1, "Log has Starting retrieval." ) or diag explain $ret;
 ok( grep( /^\[Plugins::EclipseIts\] Retrieving static/, @{$ret} ) == 1, "Log has Retrieving static." ) or diag explain $ret;
 ok( grep( /^\[Plugins::EclipseIts\] Retrieving evol/, @{$ret} ) == 1, "Log has Retrieving evol." ) or diag explain $ret;
-ok( grep( /^\[Plugins::EclipseIts\] Executing R/, @{$ret} ) == 1, "Log has Executing R." ) or diag explain $ret;
+ok( grep( /^\[Plugins::EclipseIts\] Executing R/, @{$ret} ) >= 1, "Log has Executing R." ) or diag explain $ret;
 
 # Check that files have been created.
 ok( -e "projects/tools.cdt/input/tools.cdt_import_its.json", "Check that file import_its.json exists." );
