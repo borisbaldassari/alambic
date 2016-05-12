@@ -55,15 +55,18 @@ sub new {
 
     # If the database is not initialised, then init it.
     if (not &is_db_ok()) { 
+	print "### ###################\n";
 	print "### &init( ! \n";
+	print "### ###################\n";
+	&init();
     }
 	
     # Retrieve all metrics definition to initialise Models.pm
     my $metrics = $repodb->get_metrics();
     my $attributes = $repodb->get_attributes();
-    my $qm = $repodb->get_qm()->{'model'};
-    print "# In Alambic::new " . Dumper($qm);
-    $models = Alambic::Model::Models->new($metrics, $attributes, $qm, $plugins);
+    my $qm = $repodb->get_qm();
+#    print "# In Alambic::new " . Dumper($qm);
+    $models = Alambic::Model::Models->new($metrics, $attributes, $qm, $plugins->get_conf_all());
     
     return bless {}, $class;
 }
@@ -169,7 +172,7 @@ sub create_project($$) {
     my $active = shift || 0;
 
     my $ret = $repodb->set_project_conf( $id, $name, $desc, $active, {} );
-    # $ret == 2 means the insert did work.
+    # $ret == 0 means the insert didn't work.
     if ( $ret == 0 ) {
 	return 0;
     }

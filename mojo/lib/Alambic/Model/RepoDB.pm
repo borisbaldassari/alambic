@@ -131,6 +131,8 @@ sub is_db_ok() {
     my $rows = $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->rows;
 
+#    print "# In RepoDB::is_db_ok rows is $rows.\n";
+    
     return $rows == 7 ? 1 : 0;
 }
 
@@ -280,7 +282,7 @@ sub get_qm($) {
 	$ret->{'model'} = decode_json( $next->{'model'} );
     }
 
-    return $ret;
+    return $ret->{'model'} || [];
 }
 
 
@@ -325,7 +327,7 @@ sub set_project_conf($$$$$) {
 	. "ON CONFLICT (id) DO UPDATE SET (name, description, is_active, plugins) "
 	. "= (?, ?, ?, ?)";
     $pg->db->query($query,
-		   ($id, $name, $desc, $is_active, $plugins_json, $name, $desc, $is_active, $plugins_json, $id));
+		   ($id, $name, $desc, $is_active, $plugins_json, $name, $desc, $is_active, $plugins_json));
     
     return 1;
 }

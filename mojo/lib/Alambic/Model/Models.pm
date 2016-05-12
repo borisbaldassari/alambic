@@ -11,7 +11,9 @@ use Data::Dumper;
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw( read_all_files
+our @EXPORT_OK = qw( 
+                 read_all_files
+                 init_models
                  get_model_info
                  get_model_nodes 
                  get_attributes 
@@ -38,14 +40,34 @@ sub new {
     my $class = shift;
     my $in_metrics = shift || {};
     my $in_attributes = shift || {};
-    my $in_qm = shift || {};
+    my $in_qm = shift || [];
     my $in_plugins = shift || {};
+
+#    print "# In Models::new " . Dumper($in_qm);
 
     &_init_metrics($in_metrics, $in_qm, $in_plugins);
     %attributes = %$in_attributes;
     $model = $in_qm;
     
     return bless {}, $class;
+}
+
+sub init_models($$$$) {
+    my $self = shift;
+    my $in_metrics = shift || {};
+    my $in_attributes = shift || {};
+    my $in_qm = shift || [];
+    my $in_plugins = shift || {};
+
+    %metrics = ();
+    %attributes = ();
+    $metrics_total = 0;
+    %metrics_ds = ();
+    @metrics_active = ();
+    
+    &_init_metrics($in_metrics, $in_qm, $in_plugins);
+    %attributes = %$in_attributes;
+    $model = $in_qm;
 }
 
 #
@@ -72,7 +94,8 @@ sub _init_metrics($) {
 #		$self->log->info( "[Model::Models] ERR: no father on " . $node->{"mnemo"} . "" );
 	    }
 
-	    if ($node->{"active"} =~ m!true!i) { 
+	    my $active = $node->{"active"} || '';
+	    if ($active =~ m!true!i) { 
 		$in_metrics->{$tmp_metric}->{"active"} = "true"; 
 	    } else {
 		$in_metrics->{$tmp_metric}->{"active"} = "false"; 
@@ -82,17 +105,19 @@ sub _init_metrics($) {
 
 	# Populate metrics_ds and %metrics only if the metric has been found in the qm.
 #	if ( defined($in_metrics->{$tmp_metric}->{"active"}) ) {
-	    $metrics_total++;
-	    $metrics{$metric_mnemo} = $in_metrics->{$tmp_metric};
-# FIXME           if ( $in_metrics->{$tmp_metric}->{'active'} =~ m!true! ) { push( @metrics_active, $metric_mnemo ) }
+	$metrics_total++;
+	$metrics{$metric_mnemo} = $in_metrics->{$tmp_metric};
+	if ( defined($in_metrics->{$tmp_metric}->{'active'}) &&
+	     $in_metrics->{$tmp_metric}->{'active'} =~ m!true! ) { 
+	    push( @metrics_active, $metric_mnemo ) 
+	}
 #	} 
     }
 
     # Now build the list of data sources by reading through
     # plugins and assigning each metric its plugin.
-    my $pis = $in_plugins->get_names_all();
-    foreach my $pi_ref (keys %$pis) {
-        my $pi_conf = $in_plugins->get_plugin($pi_ref)->get_conf();
+    foreach my $pi_ref (keys %$in_plugins) {
+        my $pi_conf = $in_plugins->{$pi_ref};
         foreach my $metric (keys %{$pi_conf->{'provides_metrics'}}) {
             my $metric_map = $pi_conf->{'provides_metrics'}{$metric};
             if ( exists($metrics{$metric_map}) ) {
@@ -133,7 +158,6 @@ sub find_qm_node($$$$) {
 sub get_qm_full() {
     my $self = shift;
 
-    print "# In Models::get_qm_full " . Dumper($model);
     my $qm_full_children = $model;
 
     # Create a rich version of the quality model with all info on nodes.
