@@ -2,7 +2,7 @@
             <h1 class="al-h1"><small>Documentation</small> Metrics</h1>
             <br />
 
-            <p>All metrics used in the quality model are described thereafter, with useful information and references. They are classified according to their source. Plase note also that several other metrics may be retrieved but not used in the quality model.</p><br />
+            <p>All metrics used in the quality model are described thereafter, with useful information and references. They are classified according to their source. Please note also that several other metrics may be retrieved but not used in the quality model.</p><br />
 
 % my $vol = scalar keys %{$metrics};
 % my $if_main_active = $repo =~ m!^$! ? ' class="active"' : '';
@@ -20,7 +20,6 @@
               </ul>
             </div>
             <br />
-
             <ul class="list-group">
 % foreach my $item (sort keys %{$metrics}) {
 %     # if a repo is provided, just display metrics for this repo.
@@ -32,7 +31,7 @@
 %     # build the used_by attribute.
 %     my @used_by;
 %     foreach my $parent (sort keys %{$metrics->{$item}{"parents"}}) {
-%       push(@used_by, "<a href=\"questions.html#$parent\">" . $parent . "</a>\n");
+%       push(@used_by, "<a href=\"attributes.html#$parent\">" . $parent . "</a>\n");
 %     }
 %     my $used_by_str = join(', ', @used_by);
               <li class="list-group-item"><p id="<%= $metrics->{$item}{'mnemo'} %>"><strong><%= $metrics->{$item}{'name'} %></strong> ( <%= $metrics->{$item}{'mnemo'} %> )</p>
@@ -45,7 +44,7 @@
                   <span class="label label-scale" style="background-color: #66D91A;"> 4  </span> &lt; <%= $metrics->{$item}{'scale'}[3] %> &le; 
                   <span class="label label-scale" style="background-color: #33CC00;"> 5 </span></p>
                 <p class="desc"><b></b></p>
-%     foreach my $desc (@{$metrics->{$item}->{'desc'}}) {
+%     foreach my $desc (@{$metrics->{$item}->{'description'}}) {
                 <p class="desc"><%== $desc %></p>
 %     }
               </li>
