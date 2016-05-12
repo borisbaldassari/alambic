@@ -79,4 +79,4 @@ is( $ret->{'log'}[0], '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https:/
 is( $ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.") or diag explain $ret;
 
 
-done_testing(13);
+done_testing(23);

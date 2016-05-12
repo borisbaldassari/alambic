@@ -33,6 +33,7 @@ ok( $sql =~ m!DROP TABLE IF EXISTS conf!, "SQL backup has drop table for conf.")
 ok( $sql =~ m!CREATE TABLE IF NOT EXISTS conf!, "SQL backup has create table for conf.") or diag explain $sql;
 ok( $sql =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', 'MyDBNameInit'\);!, "SQL backup has insert for name.") or diag explain $sql;
 ok( $sql =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', 'MyDBDescInit'\);!, "SQL backup has insert for desc.") or diag explain $sql;
+ok( $sql !~ /tools.cdt/, "SQL backup has NOT tools.cdt." ) or diag explain $sql;
 
 note("Create empty project from Alambic.");
 my $project = $alambic->create_project( 'tools.cdt', 'Tools CDT' );
@@ -64,12 +65,12 @@ ok( $projects_list->{'tools.cdt'} =~ m!^Tools CDT$!, "Projects list contains Too
 
 note("Run project from Alambic.");
 my $ret = $alambic->run_project('tools.cdt');
-ok( $ret > 0, "Adding run_project returns non-null id ($ret)." ) or diag explain $ret;
+ok( scalar(keys %$ret) == 3, "Adding run_project returns hash with 3 entries." ) or diag explain $ret;
 
 # Restore previous backup and make sure the created project is not there.
 $alambic->restore($sql);
 $project = $alambic->get_project('tools.cdt');
-is( $project, undef, "Get project tools.cdt returns undef." );
+is( $project, undef, "Get project tools.cdt returns undef after restore." );
 
 
-done_testing(23);
+done_testing(24);
