@@ -1,0 +1,59 @@
+
+<% my $icon_ability = begin %>
+ % my $ability = shift;
+ % my $icon;
+ % if ($ability =~ m!metrics!) { $icon = "fa-tasks" }
+ % elsif ($ability =~ m!figs!) { $icon = "fa-picture-o" }
+ % elsif ($ability =~ m!info!) { $icon = "fa-info" }
+ % elsif ($ability =~ m!data!) { $icon = "fa-download" }
+ % elsif ($ability =~ m!recs!) { $icon = "fa-map-signs" }
+ % elsif ($ability =~ m!viz!) { $icon = "fa-pie-chart" }
+ % else { $icon = "fa-question" }
+  <a href="#" data-toggle="tooltip" title="<%= $ability %>"><i class="fa <%= $icon %>"></i> <%= $ability %></a>
+<% end %>
+
+            <h1 class="al-h1"><small>Documentation</small> Plugins</h1>
+            <br />
+
+            <p>Plugins add new functionalities to Alambic. They most notably provide new data sources for projects, computing and visualisation features, and can be easily customised to fit specific needs.</p>
+            <p>A random project is selected from the list to demonstrate the figures and visualisation pages for each plugin.</p>
+
+            <h3>Automatic data source plugins</h3>
+            <br />
+
+            <ul class="list-group">
+% my $plugins = app->al->get_plugins();
+% my $pis_list = $plugins->get_names_all();
+% my $projects = app->al->get_projects_list('true');
+% my @projects = keys %$projects;
+% my $project_id = exists( $projects[0] ) ? $projects[0] : 'project_id';
+% foreach my $pi (sort keys %{$pis_list}) {
+%   my $conf = $plugins->get_plugin($pi)->get_conf();
+              <li class="list-group-item">
+                <p><b><%= $conf->{'name'} %></b> &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><b>ID</b>: <%= $conf->{'id'} %></p>
+                    <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'requires'}} ) %></p>                    
+                    <p><b>Description</b>: <%= join( '<br />', @{$conf->{'desc'}}) %></p>
+                  </div>
+                  <div class="col-md-6">
+                    <p><b>Provides metrics</b><br />
+                    <%== join( ', ', map { "<a href=\"/documentation/metrics.html#$_\">" . $conf->{'provides_metrics'}->{$_} . "</a>" } sort keys %{$conf->{'provides_metrics'}} ) %></p>
+                    <p><b>Provides figures</b><br />
+                    <%== join( ', ', map { '<a href="/projects/' . $project_id . '/' . $pi . '/' . $conf->{'provides_figs'}->{$_} . '">' . $conf->{'provides_figs'}->{$_} . '</a>' } sort keys %{$conf->{'provides_figs'}} ) %></p>
+                    <p><b>Provides data</b><br />
+                    <%= join( ', ', map { '*_' . $_ } sort keys %{$conf->{'provides_data'}} ) %></p>
+                    <p><b>Provides recommendations</b><br />
+                    <%= join( ', ', map { $_ } sort @{$conf->{'provides_recs'}} ) %></p>
+                    <p><b>Provides viz</b> <br />
+                    <%== join( ', ', map { '' . $conf->{'provides_viz'}->{$_} . '' } sort keys %{$conf->{'provides_viz'}} ) %></p>
+                  </div>
+                </div>
+              </li>
+% }
+            </ul>
+
+            <hr />
+
+

@@ -220,7 +220,7 @@ sub _get_project($) {
 # Get a hash ref of all project ids with their names.
 #
 # Params
-#  - id the project id.
+#  - is_active (1|0) list only active projects?
 # Returns
 #  - $projects = {
 #      "modeling.sirius" => "Sirius",
