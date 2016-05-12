@@ -1,0 +1,78 @@
+{
+    "name": "Alambic Metrics",
+    "version": "0.1",
+    "children": [
+	{
+            "name": "Number of issue closed during last month",
+            "mnemo": "ITS_CLOSED_30",
+            "desc": [
+		"Number of distinct identities opening tickets during the last month in the issue tracking system.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Identities of openers are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
+            ],
+            "scale": [1,2,3,4]
+	},
+	{
+            "name": "ITS updates",
+            "mnemo": "ITS_UPDATES_3M",
+            "desc": [
+		"Number of updates to tickets during the last three months, in the issue tracking system.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Update means an operation on a ticket changing its state, or adding information. Opening and closing a ticket are considered as updates. Time range is measured as three calendar months period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            ],
+            "scale": [4,13,37,596]
+	},
+	{
+            "name": "ITS closers",
+            "mnemo": "ITS_CLOSERS_30",
+            "desc": [
+		"Number of distinct identities closing tickets during the last month in the issue tracking system.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Update means an operation on a ticket changing its state, or adding information. Opening and closing a ticket are considered as updates. Identities of updaters are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "Defect density",
+            "mnemo": "ITS_BUGS_DENSITY",
+            "desc": [
+		"Ratio of the total number of tickets in the issue tracking system to the size of the source code in KLOC, at the time of the data retrieval. ",
+	        "The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Source code is all source code found in the source code management repository."
+            ],
+            "scale": [3.36826347305,0.0755602867593,0.0335380213652,0.009367219332]
+	},
+	{
+            "name": "Number of issue closed during last month",
+            "mnemo": "ITS_CLOSED_30",
+            "desc": [
+		"Number of distinct identities opening tickets during the last month in the issue tracking system.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Identities of openers are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
+            ],
+            "scale": [1,2,3,4]
+	},
+	{
+            "name": "ITS updates",
+            "mnemo": "ITS_UPDATES_3M",
+            "desc": [
+		"Number of updates to tickets during the last three months, in the issue tracking system.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Update means an operation on a ticket changing its state, or adding information. Opening and closing a ticket are considered as updates. Time range is measured as three calendar months period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            ],
+            "scale": [4,13,37,596]
+	},
+	{
+            "name": "ITS closers",
+            "mnemo": "ITS_CLOSERS_30",
+            "desc": [
+		"Number of distinct identities closing tickets during the last month in the issue tracking system.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Update means an operation on a ticket changing its state, or adding information. Opening and closing a ticket are considered as updates. Identities of updaters are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "Defect density",
+            "mnemo": "ITS_BUGS_DENSITY",
+            "desc": [
+		"Ratio of the total number of tickets in the issue tracking system to the size of the source code in KLOC, at the time of the data retrieval. ",
+	        "The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Source code is all source code found in the source code management repository."
+            ],
+            "scale": [3.36826347305,0.0755602867593,0.0335380213652,0.009367219332]
+	}
+    ]
+}
