@@ -362,7 +362,15 @@ sub get_project_conf($) {
 	$values{'desc'} = $next->{'description'};
 	$values{'is_active'} = $next->{'is_active'};
 	$values{'plugins'} = decode_json( $next->{'plugins'} ); 
+	$values{'last_run'} = '';
+
+	my $results_last_run = $pg->db->query("SELECT run_time FROM projects WHERE project_id=? ORDER BY run_time DESC LIMIT 1;", ($id));
+	# There should be 0 or 1 row with this id.
+	while (my $next = $results_last_run->hash) {
+	    $values{'last_run'} = $next->{'run_time'};
+	}
     }
+
 
     return $exists ? \%values : undef;
 }
@@ -381,6 +389,18 @@ sub get_projects_list() {
     return \%projects_list;
 }
 
+# Returns a hash of projects id/names defined in the db.
+sub get_active_projects_list() {
+    my ($self) = @_;
+
+    my %projects_list; 
+    my $results = $pg->db->query("SELECT id, name FROM conf_projects WHERE is_active=TRUE;");
+    while (my $next = $results->hash) {
+	$projects_list{$next->{'id'}} = $next->{'name'}; 
+    }
+
+    return \%projects_list;
+}
 
 # Stores the results of a job run in Alambic.
 #

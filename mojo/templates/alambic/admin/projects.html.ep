@@ -30,14 +30,15 @@
 
 % my $projects = app->al->get_projects_list();
 % my @projects = sort { $projects->{$a} cmp $projects->{$b} } keys %$projects;
-% foreach my $project ( @projects ) {
+% foreach my $project_id ( @projects ) {
+%   my $project = app->al->get_project($project_id);
               <tr>
-                <td><a href="/admin/projects/<%= $project %>"><%= $projects->{$project} %></a></td>
-                <td></td>
-                <td></td>
-                <td width="1cm"><a href="/admin/projects/<%= $project %>"><i class="fa fa-eye"></i></a></td>
-                <td width="1cm"><a href="/admin/projects/<%= $project %>/run"><i class="fa fa-rocket"></i></a></td>
-                <td width="1cm"><a href="/admin/projects/<%= $project %>/del"><i class="fa fa-ban"></i></a></td>
+                <td><a href="/admin/projects/<%= $project %>"><%= $projects->{$project_id} %></a></td>
+                <td><%= $project->active() %></td>
+                <td><%= $project->last_run() %></td>
+                <td width="1cm"><a href="/admin/projects/<%= $project_id %>"><i class="fa fa-eye"></i></a></td>
+                <td width="1cm"><a href="/admin/projects/<%= $project_id %>/run"><i class="fa fa-rocket"></i></a></td>
+                <td width="1cm"><a href="/admin/projects/<%= $project_id %>/del"><i class="fa fa-ban"></i></a></td>
               </tr>
 % }
               </table>

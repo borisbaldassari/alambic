@@ -12,7 +12,7 @@ my $plugins_conf = {
 	"project_grim" => "tools.cdt",
     }
 };
-my $project = Alambic::Model::Project->new( 'tools.cdt', 'Tools CDT', $plugins_conf );
+my $project = Alambic::Model::Project->new( 'tools.cdt', 'Tools CDT', 'TRUE', '', $plugins_conf );
 isa_ok( $project, 'Alambic::Model::Project' );
 
 my $id = $project->get_id();

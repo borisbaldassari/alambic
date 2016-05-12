@@ -15,6 +15,7 @@ our @EXPORT_OK = qw(
                      get_id
                      get_name
                      get_plugins
+                     last_run
                      active
                      metrics
                      indicators
@@ -27,7 +28,9 @@ our @EXPORT_OK = qw(
 
 ######################################
 # Data associated with a project
-my ($project_name, $project_id, $project_desc, $project_active);
+my ($project_name, $project_id, $project_desc);
+my $project_active = 0;
+my $project_last_run = '';
 
 my %plugins = ();
 # my %plugins = (
@@ -49,10 +52,12 @@ my $plugins_module;
 
 # Constructor
 sub new {
-    my ($class, $id, $name, $plugins, $data) = @_;
+    my ($class, $id, $name, $active, $last_run, $plugins, $data) = @_;
 
     $project_id = $id;
-    $project_name = $name;    
+    $project_name = $name;
+    $project_active = $active;
+    $project_last_run = $last_run;
     
     $plugins_module = Alambic::Model::Plugins->new();
 
@@ -105,6 +110,16 @@ sub active() {
     }
     
     return $project_active;
+}
+
+sub last_run() {
+    my ($self, $last_run) = @_;
+
+    if (scalar @_ > 1) {
+	$project_last_run = $last_run;
+    }
+    
+    return $project_last_run;
 }
 
 sub get_plugins() {

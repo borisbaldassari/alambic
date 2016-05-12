@@ -207,10 +207,11 @@ sub _get_project($) {
     
     my $project_data = $repodb->get_project_last_run($id);
     
-    my $project = Alambic::Model::Project->new( $id, $project_conf->{'name'}, 
+    my $project = Alambic::Model::Project->new( $id, $project_conf->{'name'},
+						$project_conf->{'is_active'}, 
+						$project_conf->{'last_run'},
 						$project_conf->{'plugins'}, 
 						$project_data );
-    $project->active( $project_conf->{'is_active'} );
     
     return $project;
 }
@@ -226,10 +227,16 @@ sub _get_project($) {
 #      "tools.cdt" => "CDT",
 #    }
 sub get_projects_list() {
-
+    my $self = shift;
+    my $is_active = shift || '';
+    
     my $projects_list = {};
     if ( $repodb->is_db_ok() ) {
-	$projects_list = $repodb->get_projects_list();
+	if ($is_active) {
+	    $projects_list = $repodb->get_active_projects_list();
+	} else {
+	    $projects_list = $repodb->get_projects_list();
+	}
     }
     
     return $projects_list;
