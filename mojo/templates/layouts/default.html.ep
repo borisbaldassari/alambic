@@ -54,9 +54,6 @@
           <li><a href="/login"><i class="fa fa-user fa-fw fa-lg"></i></a></li>
 % }
         </ul>
-% print "URL is " . $self->req->url;
-% if ($self->req->url =~ m!^/documentation!) { print "IN DOC.\n" }
-% if ($self->req->url =~ m!^/projects!) { print "IN PROJ.\n" }
         <!-- /.navbar-header -->
         <div class="navbar-default sidebar" role="navigation">
           <div class="sidebar-nav navbar-collapse">
