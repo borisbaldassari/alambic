@@ -24,8 +24,14 @@ sub data {
     if ($page =~ m!^attributes.json$!) {
 	$self->render( json => $models->get_attributes() );
 
+    } elsif ($page =~ m!^attributes_full.json$!) {
+	$self->render( json => $models->get_attributes_full() );
+
     } elsif ($page =~ m!^metrics.json$!) {
 	$self->render( json => $models->get_metrics() );
+    
+    } elsif ($page =~ m!^metrics_full.json$!) {
+	$self->render( json => $models->get_metrics_full() );
     
     } elsif ($page =~ m!^qm.json$!) {
 	$self->render( json => $models->get_qm() );
@@ -99,8 +105,30 @@ sub models_import {
     } else {
 	print "DBG something went wrong.\n";
     }
+
+    $self->app->al->get_models()->init_models(
+	$repodb->get_metrics(), 
+	$repodb->get_attributes(), 
+	$repodb->get_qm(), 
+	$self->app->al->get_plugins()->get_conf_all());
     
     my $msg = "File $file has been imported in the $type table.";
+    $self->flash( msg => $msg );    
+    $self->redirect_to( '/admin/models' );
+}
+
+# Models display screen for Alambic admin.
+sub models_init {
+    my $self = shift;
+    
+    my $repodb = $self->app->al->get_repo_db();
+    $self->app->al->get_models()->init_models(
+	$repodb->get_metrics(), 
+	$repodb->get_attributes(), 
+	$repodb->get_qm(), 
+	$self->app->al->get_plugins()->get_conf_all());
+    
+    my $msg = "Models have been re-read.";
     $self->flash( msg => $msg );    
     $self->redirect_to( '/admin/models' );
 }

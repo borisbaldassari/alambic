@@ -11,6 +11,7 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( 
                      get_names_all
+                     get_conf_all
                      get_list_plugins_pre
                      get_list_plugins_cdata
                      get_list_plugins_post
@@ -106,6 +107,17 @@ sub get_names_all() {
     my %list;
     foreach my $p (@list) {
 	$list{$p} = $plugins{$p}->get_conf()->{'name'};
+    }
+    
+    return \%list;
+}
+
+
+sub get_conf_all() {
+    my @list = keys %plugins;
+    my %list;
+    foreach my $p (@list) {
+	$list{$p} = $plugins{$p}->get_conf();
     }
     
     return \%list;

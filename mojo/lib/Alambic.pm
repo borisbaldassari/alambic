@@ -100,6 +100,7 @@ sub startup {
     
     $r_admin->get('/models')->to( 'admin#models' );
     $r_admin->get('/models/import')->to( 'admin#models_import' );
+    $r_admin->get('/models/init')->to( 'admin#models_init' );
     # my $r_admin_models = $r->get('/admin/models/')->to( controller => 'admin' );
     
     $r->get('/admin/plugins')->to( 'admin#plugins' );
