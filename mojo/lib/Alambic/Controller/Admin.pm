@@ -322,6 +322,48 @@ sub projects_run_plugin {
 
 
 # Edit project screen for Alambic admin.
+sub projects_run_pre {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+
+    my $job = $self->minion->enqueue( run_plugins => [ $project_id ] => { delay => 0 });
+
+    my $msg = "Project run Pre plugins on project $project_id has been enqueued [$job].";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Edit project screen for Alambic admin.
+sub projects_run_qm {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+
+    my $job = $self->minion->enqueue( run_qm => [ $project_id ] => { delay => 0 });
+
+    my $msg = "Project run QM on project $project_id has been enqueued [$job].";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Edit project screen for Alambic admin.
+sub projects_run_post {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+
+    my $job = $self->minion->enqueue( run_post => [ $project_id ] => { delay => 0 });
+
+    my $msg = "Project run post plugins on project $project_id has been enqueued [$job].";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Edit project screen for Alambic admin.
 sub projects_del_plugin {
     my $self = shift;
     my $project_id = $self->param( 'pid' );

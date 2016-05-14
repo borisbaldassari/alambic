@@ -168,23 +168,28 @@ sub _display_project_html($$) {
         
     } elsif ($page_id =~ m!^metrics(\.html)?!) {
         
-        my $all = $self->param('all');
-
+	my $models = $self->app->al->get_models();
+	my $all = $self->param('all');
+	
         # Prepare data for template.
         $self->stash(
             all => $all,
             project_id => $project_id,
 	    run => $run,
+	    models => $models,
             );
         
         $self->render(template => 'alambic/dashboard/metrics');
 
     } elsif ($page_id =~ m!^attributes(\.html)?$!) {
+
+	my $models = $self->app->al->get_models();
         
         # Prepare data for template.
         $self->stash(
             project_id => $project_id,
 	    attributes => $run->{'attributes'},
+	    models => $models,
             );
         
         $self->render(template => 'alambic/dashboard/attributes');

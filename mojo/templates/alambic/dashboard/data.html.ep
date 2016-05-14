@@ -53,7 +53,7 @@
             <table class="table table-striped table-condensed table-hover">
               <tr>
                 <th width="20%">Plugin</th>
-                <th width="40%">Name</th>
+                <th width="40%">Name &ndash; Description</th>
                 <th width="40%">URL</th>
               </tr>
 % my $list_data = $plugins->get_list_plugins_data();
