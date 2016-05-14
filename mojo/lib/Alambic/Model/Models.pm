@@ -18,6 +18,7 @@ our @EXPORT_OK = qw(
                  get_model_nodes 
                  get_attributes 
                  get_attributes_full
+                 get_metric 
                  get_metrics 
                  get_metrics_repos 
                  get_metrics_full
@@ -42,8 +43,6 @@ sub new {
     my $in_attributes = shift || {};
     my $in_qm = shift || [];
     my $in_plugins = shift || {};
-
-#    print "# In Models::new " . Dumper($in_qm);
 
     &_init_metrics($in_metrics, $in_qm, $in_plugins);
     %attributes = %$in_attributes;
@@ -80,12 +79,11 @@ sub _init_metrics($) {
 
     # Import metrics and enhance their defition (add is_active)
     foreach my $tmp_metric (keys %$in_metrics) {
-        my $metric_mnemo = $in_metrics->{$tmp_metric}->{"mnemo"};
 
 	# Check if the metric is active in the qm 
 	my @nodes_array;
         # Find nodes of qm which have the same mnemonic.
-	&find_qm_node($in_model, "metric", $metric_mnemo, \@nodes_array, "root");
+	&find_qm_node($in_model, "metric", $tmp_metric, \@nodes_array, "root");
 	my %tmp_nodes;
 	foreach my $node (@nodes_array) {
 	    if (defined($node->{"father"})) {
@@ -102,16 +100,16 @@ sub _init_metrics($) {
 	    }
 	}
 	$in_metrics->{$tmp_metric}->{"parents"} = \%tmp_nodes;
+	
+	$metrics_total++;
+	$metrics{$tmp_metric} = $in_metrics->{$tmp_metric};
 
 	# Populate metrics_ds and %metrics only if the metric has been found in the qm.
-#	if ( defined($in_metrics->{$tmp_metric}->{"active"}) ) {
-	$metrics_total++;
-	$metrics{$metric_mnemo} = $in_metrics->{$tmp_metric};
 	if ( defined($in_metrics->{$tmp_metric}->{'active'}) &&
 	     $in_metrics->{$tmp_metric}->{'active'} =~ m!true! ) { 
-	    push( @metrics_active, $metric_mnemo ) 
+	    print "# In Models::init_metrics metric $tmp_metric is active.\n";
+	    push( @metrics_active, $tmp_metric ) 
 	}
-#	} 
     }
 
     # Now build the list of data sources by reading through
@@ -251,6 +249,47 @@ sub find_nodes($) {
     return uniq(@nodes_ret);
 }
 
+
+# Returns information about a single metric.
+#
+# Params:
+#  - $metric the id of the requested metric
+#
+# Returns:
+# {
+#     'active' => 'false',
+#     'desc' => [ 'Desc' ],
+# 	'mnemo' => 'METRIC1',
+# 	'ds' => 'EclipseIts',
+#       'scale' => [1, 2, 3, 4],
+# 	    'name' => 'Metric 1',
+# 	    'parents' => {
+# 		'ATTR1' => 1
+# 	}
+# }
+sub get_metric($) {
+    my ($self, $metric) = @_;
+    return $metrics{$metric};
+}
+
+
+# Returns information about all metrics.
+#
+# Returns:
+# {
+#     'METRIC1' => {
+# 	'active' => 'false',
+# 	'desc' => [ 'Desc' ],
+# 	    'mnemo' => 'METRIC1',
+# 	    'ds' => 'EclipseIts',
+# 	    'scale' => [1, 2, 3, 4],
+# 		'name' => 'Metric 1',
+# 		'parents' => {
+# 		    'ATTR1' => 1
+# 	    }
+#     }
+# };
+
 sub get_metrics() {
     return \%metrics;
 }
@@ -271,6 +310,11 @@ sub get_metrics_full() {
     );
 
     return \%full;
+}
+
+sub get_attribute($) {
+    my ($self, $attr) = @_;
+    return $attributes{$attr};
 }
 
 sub get_attributes() {

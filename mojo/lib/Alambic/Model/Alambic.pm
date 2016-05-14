@@ -65,7 +65,6 @@ sub new {
     my $metrics = $repodb->get_metrics();
     my $attributes = $repodb->get_attributes();
     my $qm = $repodb->get_qm();
-#    print "# In Alambic::new " . Dumper($qm);
     $models = Alambic::Model::Models->new($metrics, $attributes, $qm, $plugins->get_conf_all());
     
     return bless {}, $class;
@@ -337,13 +336,100 @@ sub run_project($) {
     };
 
     my $project = &_get_project($project_id);
-    my $values = $project->run_plugins();
+    my $values = $project->run_project($models);
+    print "# In Model::Alambic::run_project " . Dumper($values);
     
     my $ret = $repodb->add_project_run($project_id, $run, 
 			     $values->{'metrics'}, 
-			     $values->{'indicators'}, 
-			     $values->{'attributes'}, 
+			     $values->{'inds'}, 
+			     $values->{'attrs'}, 
 			     $values->{'recs'});
+
+    return $values;
+}
+
+
+# Run a full analysis on a project: plugins, qm, post plugins.
+#
+# Params
+#  - id the project id.
+# Returns
+#  - $ret = {
+#      "metrics" => {'metric1' => 'value1'},
+#      "indicators" => {'ind1' => 'value1'},
+#      "attributes" => {'attr1' => 'value1'},
+#      "recs" => {'rec1' => 'value1'},
+#      "log" => ['log entry'],
+#    }
+sub run_plugins($) {
+    my ($self, $project_id) = @_;
+
+    my $time_start = time;
+    my $run = {
+	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
+	'delay' => 0,
+	'user' => 'none',
+    };
+
+    my $project = &_get_project($project_id);
+    my $values = $project->run_plugins();
+
+    return $values;
+}
+
+
+# Run a full analysis on a project: plugins, qm, post plugins.
+#
+# Params
+#  - id the project id.
+# Returns
+#  - $ret = {
+#      "metrics" => {'metric1' => 'value1'},
+#      "indicators" => {'ind1' => 'value1'},
+#      "attributes" => {'attr1' => 'value1'},
+#      "recs" => {'rec1' => 'value1'},
+#      "log" => ['log entry'],
+#    }
+sub run_qm($) {
+    my ($self, $project_id) = @_;
+
+    my $time_start = time;
+    my $run = {
+	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
+	'delay' => 0,
+	'user' => 'none',
+    };
+
+    my $project = &_get_project($project_id);
+    my $values = $project->run_qm($models);
+    return $values;
+}
+
+
+# Run a full analysis on a project: plugins, qm, post plugins.
+#
+# Params
+#  - id the project id.
+# Returns
+#  - $ret = {
+#      "metrics" => {'metric1' => 'value1'},
+#      "indicators" => {'ind1' => 'value1'},
+#      "attributes" => {'attr1' => 'value1'},
+#      "recs" => {'rec1' => 'value1'},
+#      "log" => ['log entry'],
+#    }
+sub run_post($) {
+    my ($self, $project_id) = @_;
+
+    my $time_start = time;
+    my $run = {
+	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
+	'delay' => 0,
+	'user' => 'none',
+    };
+
+    my $project = &_get_project($project_id);
+    my $values = $project->run_post($models);
 
     return $values;
 }
