@@ -48,7 +48,7 @@ my %conf = (
         "PMI_ENTRY_WRONG",
     ],
     "provides_viz" => {
-        "eclipse_pmi.html" => "Eclipse PMI",
+        "pmi_checks" => "Eclipse PMI Checks",
     },
 );
 
