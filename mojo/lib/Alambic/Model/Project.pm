@@ -22,6 +22,7 @@ our @EXPORT_OK = qw(
                      indicators
                      attributes
                      recs
+                     get_qm
                      run_plugin
                      run_plugins
                      run_qm
@@ -132,6 +133,14 @@ sub last_run() {
 
 sub get_plugins() {
     return \%plugins;
+}
+
+sub get_qm($) {
+    my ($self, $qm, $attributes, $metrics) = @_;
+    
+    &_populate_qm($qm, $attributes, $metrics);
+    
+    return $qm;
 }
 
 sub info() {
@@ -478,6 +487,43 @@ sub _compute_inds($) {
     $ret{'log'} = $log;
 
     return \%ret;
+}
+
+
+# Recursive function to populate the quality model with information from 
+# external files (metrics/questions/attributes definition). 
+#
+# This function is for internal use only (no self passed as 1st argument).
+#
+# Params:
+#   $qm a ref to an array of children
+#   $attrs a ref to hash of values for attributes
+#   $questions a ref to hash of values for questions
+#   $metrics a ref to hash of values for metrics
+#   $inds a ref to hash of indicators for metrics
+sub _populate_qm($$$$$) {
+    my $qm = shift;
+    my $attrs_def = shift;
+    my $metrics_def = shift;
+
+    foreach my $child (@{$qm}) {
+	my $mnemo = $child->{"mnemo"};
+
+	print "# In Project::populate_qm $mnemo.\n";
+	
+	if ($child->{"type"} =~ m!attribute!) {
+	    $child->{"name"} = $attrs_def->{$mnemo}{"name"};
+	    $child->{"ind"} = $attributes{$mnemo};
+	} elsif ($child->{"type"} =~ m!metric!) {
+	    $child->{"name"} = $metrics_def->{$mnemo}{"name"};
+            $child->{"value"} = eval sprintf("%.1f", $metrics{$mnemo} || 0);
+	    $child->{"ind"} = $indicators{$mnemo};
+	} else { print "WARN: cannot recognize type " . $child->{"type"} . "\n"; }
+
+	if ( exists($child->{"children"}) ) {
+	    &_populate_qm($child->{"children"}, $attrs_def, $metrics_def);
+	}
+    }
 }
 
 
