@@ -1,5 +1,4 @@
-
-% my $file_in = app->home->rel_dir( 'data/' . $project_id . '/' . $project_id . '_' . $plugin_id . '.json' );
+% my $file_in = app->home->rel_dir( 'projects/' . $project_id . '/output/' . $project_id . '_pmi_checks.json' );
 % my $content;
 % do { 
 %   local $/;
@@ -11,16 +10,21 @@
 % sub ok_failed($) {
 %     my $str = shift;
 %     if ($str =~ m!^OK!) { 
-%         return '<span class="pull-right" style="color: #9dbe59"><i class="fa fa-check-circle"></i> &nbsp; ' . $str . '</span>';
+%         return '<span style="color: #9dbe59"><i class="fa fa-check-circle"></i> &nbsp; ' . $str . '</span>';
 %     }
-%     return '<span class="pull-right" style="color: #e68570"><i class="fa fa-exclamation-circle"></i> &nbsp; ' . $str . '</span>';
+%     return '<span style="color: #e68570"><i class="fa fa-exclamation-circle"></i> &nbsp; ' . $str . '</span>';
 % }
 
-<h2>PMI Check page for project <%= $p->{'name'} %></h2>
+<h2>PMI Checks for project <%= $p->{'name'} %></h2>
 
 <br />
 
-<p>Information is retrieved from <code><a href="<%= $p->{'pmi_url'} %>"><%= $p->{'pmi_url'} %></a></code>. Last check was on <code><%= localtime($p->{'last_update'}) %></code>.</p>
+<p>The PMI (<a href="https://wiki.eclipse.org/Project_Management_Infrastructure">Project Management Infrastructure</a>) holds meta-data about all projects hosted on the Eclipse forge. Its information covers Licenses, Releases, mailing lists, links to the wiki, official web site and downloads, and more.</p>
+
+<p>Information is retrieved from <code><a href="<%= $p->{'pmi_url'} %>"><%= $p->{'pmi_url'} %></a></code>.<br />
+  Last check was on <code><%= localtime($p->{'last_update'}) %></code>.</p>
+
+<hr />
 
 
 <h3 id="summary">Project summary</h3>
@@ -29,106 +33,168 @@
 <p><b>Description</b>: <%== $p->{'pmi'}->{'description'}->[0]->{'summary'} %></p>
 <p><b>Parent project</b>: <%= $p->{'pmi'}->{'parent_project'}->[0]->{'id'} %></p>
 
+<hr />
+
 <h3 id="summary">Documentation</h3>
 
-% my $ret = &ok_failed($p->{'checks'}->{'website_url'}->{'results'}->[0]);
-<p><b>Website</b>: <%= $p->{'checks'}->{'website_url'}->{'value'} %>
-<%== $ret %></p>
+<table class="table table-striped table-condensed table-hover">
+  <tr>
+    <th width="20%">Section</th>
+    <th width="30%">Value checked</th>
+    <th width="50%">Result</th>
+  </tr>
+  <tr>
+    <td><b>Website</b></td>
+    <td><%= $p->{'checks'}->{'website_url'}->{'value'} %></td>
+    <td><%== &ok_failed($p->{'checks'}->{'website_url'}->{'results'}->[0]) %></td>
+  </tr>
+  <tr>
+    <td><b>Wiki</b></td>
+    <td><%= $p->{'checks'}->{'wiki_url'}->{'value'} %></td>
+    <td><%== &ok_failed($p->{'checks'}->{'wiki_url'}->{'results'}->[0]) %></td>
+  </tr>
+  <tr>
+    <td><b>Documentation</b></td>
+    <td><%= $p->{'checks'}->{'documentation_url'}->{'value'} %></td>
+    <td><%== &ok_failed($p->{'checks'}->{'documentation_url'}->{'results'}->[0]) %></td>
+  </tr>
+  <tr>
+    <td><b>Getting started</b></td>
+    <td><%= $p->{'checks'}->{'gettingstarted_url'}->{'value'} %></td>
+    <td><%== &ok_failed($p->{'checks'}->{'gettingstarted_url'}->{'results'}->[0]) %></td>
+  </tr>
+  <tr>
+    <td><b>Download</b></td>
+    <td><%= $p->{'checks'}->{'download_url'}->{'value'} %></td>
+    <td><%== &ok_failed($p->{'checks'}->{'download_url'}->{'results'}->[0]) %></td>
+  </tr>
+  <tr>
+    <td><b>Build URL</b></td>
+    <td><%= $p->{'checks'}->{'build_url'}->{'value'} %></td>
+    <td><%== &ok_failed($p->{'checks'}->{'build_url'}->{'results'}->[0]) %><br /> 
+      <%== &ok_failed($p->{'checks'}->{'build_url'}->{'results'}->[1]) %></td>
+  </tr>
+  <tr>
+    <td><b>Plan</b></td>
+    <td><%= $p->{'checks'}->{'plan_url'}->{'value'} %></td>
+    <td><%== &ok_failed($p->{'checks'}->{'plan_url'}->{'results'}->[0]) %></td>
+  </tr>
+  <tr>
+    <td><b>Proposal</b></td>
+    <td><%= $p->{'checks'}->{'proposal_url'}->{'value'} %></td>
+    <td><%== &ok_failed($p->{'checks'}->{'proposal_url'}->{'results'}->[0]) %></td>
+  </tr>
+</table>
 
-% $ret = &ok_failed($p->{'checks'}->{'wiki_url'}->{'results'}->[0]);
-<p><b>Wiki</b>: <%= $p->{'checks'}->{'wiki_url'}->{'value'} %> 
-<%== $ret %>.</p>
-
-% $ret = &ok_failed($p->{'checks'}->{'documentation_url'}->{'results'}->[0]);
-<p><b>Documentation</b>: <%= $p->{'checks'}->{'documentation_url'}->{'value'} %> 
-<%== $ret %>.</p>
-
-% $ret = &ok_failed($p->{'checks'}->{'gettingstarted_url'}->{'results'}->[0]);
-<p><b>Getting started</b>: <%= $p->{'checks'}->{'gettingstarted_url'}->{'value'} %> 
-<%== $ret %>.</p>
-
-% $ret = &ok_failed($p->{'checks'}->{'download_url'}->{'results'}->[0]);
-<p><b>Download</b>: <%= $p->{'checks'}->{'download_url'}->{'value'} %> 
-<%== $ret %>.</p>
-
-% $ret = &ok_failed($p->{'checks'}->{'build_url'}->{'results'}->[0]);
-% my $ret2 = &ok_failed($p->{'checks'}->{'build_url'}->{'results'}->[1]);
-<p><b>Build URL</b>: <%= $p->{'checks'}->{'build_url'}->{'value'} %>
-<%== $ret %><br /> 
-<%== $ret2 %><br /></p>
-
-% $ret = &ok_failed($p->{'checks'}->{'plan_url'}->{'results'}->[0]);
-<p><b>Plan</b>: <%= $p->{'checks'}->{'plan_url'}->{'value'} %> 
-<%== $ret %>.</p>
-
-% $ret = &ok_failed($p->{'checks'}->{'proposal_url'}->{'results'}->[0]);
-<p><b>Proposal</b>: <%= $p->{'checks'}->{'proposal_url'}->{'value'} %> 
-<%== $ret %>.</p>
+<hr />
 
 <h3>Mailing list</h3>
 
-% $ret = &ok_failed($p->{'checks'}->{'dev_list'}->{'results'}->[0]);
-<p><b>Dev mailing list</b>  <br />
-<%= $p->{'checks'}->{'dev_list'}->{'value'} %> 
-<%== $ret %>.</p>
-
-<p><b>Forums</b>: <br />
+<table class="table table-striped table-condensed table-hover">
+  <tr>
+    <th width="20%">Section</th>
+    <th width="30%">Value checked</th>
+    <th width="50%">Result</th>
+  </tr>
+% my $ret = &ok_failed($p->{'checks'}->{'dev_list'}->{'results'}->[0]);
+  <tr>
+    <td><b>Dev mailing list</b></td>
+    <td>Dev ML [<%= $p->{'checks'}->{'dev_list'}->{'value'} %>]</td>
+    <td><%== $ret %></td>
+  </tr>
 % foreach my $ml ( @{$p->{'checks'}->{'forums'}->{'results'}} ) {
 %   $ret = &ok_failed($ml);
 %   my $name;
 %   if ($ml =~ m!Forum \[([^]]+)\]!) { $name = $1; } 
-Forum [<%= $name %>] <%== $ret %><br />
+  <tr>
+    <td><b>Forums</b></td>
+    <td>Forum [<%= $name %>]</td>
+    <td><%== $ret %></td>
+  </tr>
 % }
-</p>
-
-<p><b>Other mailing list</b>:  <br />
 % foreach my $ml ( @{$p->{'checks'}->{'mailing_lists'}->{'results'}} ) {
 %   $ret = &ok_failed($ml);
 %   my $name;
 %   if ($ml =~ m!\[([^]]+)\] ML!) { $name = $1; } 
-ML [<%= $name %>] <%== $ret %><br />
+  <tr>
+    <td><b>Other mailing list</b></td>
+    <td>ML [<%= $name %>]</td>
+    <td><%== $ret %></td>
+  </tr>
 % }
-</p>
+</table>
+
+<hr />
 
 <h3>Repositories</h3>
 
-<p><b>Bugzilla</b><br />
-Number of bugzilla entries: <%= defined($p->{'pmi'}->{'bugzilla'}) ? scalar @{$p->{'pmi'}->{'bugzilla'}} : 0 %><br />
-Product: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'product'} %> &mdash; Component: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'component'} %><br />
-% $ret = &ok_failed($p->{'checks'}->{'bugzilla_create_url'}->{'results'}->[0]);
-Create URL: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'create_url'} %> <%== $ret %><br />
-% $ret = &ok_failed($p->{'checks'}->{'bugzilla_query_url'}->{'results'}->[0]);
-Query URL: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'query_url'} %> <%== $ret %></p>
-
-<p><b>Source repositories</b> <br />
+<table class="table table-striped table-condensed table-hover">
+  <tr>
+    <th width="20%">Section</th>
+    <th width="30%">Value checked</th>
+    <th width="50%">Result</th>
+  </tr>
+  <tr>
+    <td><b>Bugzilla</b></td>
+    <td>Number of bugzilla entries: <%= defined($p->{'pmi'}->{'bugzilla'}) ? scalar @{$p->{'pmi'}->{'bugzilla'}} : 0 %></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><b>Bugzilla</b></td>
+    <td>Product: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'product'} %> &mdash; Component: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'component'} %></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><b>Bugzilla</b></td>
+    <td>Create URL: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'create_url'} %></td>
+    <td><%== &ok_failed($p->{'checks'}->{'bugzilla_create_url'}->{'results'}->[0]) %></td>
+  </tr>
+  <tr>
+    <td><b>Bugzilla</b></td>
+    <td>Query URL: <%= $p->{'pmi'}->{'bugzilla'}->[0]->{'query_url'} %></td>
+    <td><%== &ok_failed($p->{'checks'}->{'bugzilla_query_url'}->{'results'}->[0]) %></p>
+  </tr>
 % foreach my $ml ( @{$p->{'checks'}->{'source_repo'}->{'results'}} ) {
 %   my $ml2 = $ml;
 %   $ml2 =~ s!repo \[([^]]+)\]!repo!;
 %   my $name = $1;
-%   $ret = &ok_failed($ml);
-Source repository [<%= $name %>] <%== $ret %><br />
+%   my $ret = &ok_failed($ml);
+  <tr>
+    <td><b>Source repositories</b></td>
+    <td>Source repository [<%= $name %>]</td>
+    <td><%== $ret %></td>
+  </tr>
 % }
-</p>
-
-<p><b>Update sites</b> <br />
 % foreach my $ml ( @{$p->{'checks'}->{'update_sites'}->{'results'}} ) {
-%   $ret = &ok_failed($ml);
+%   my $ret = &ok_failed($ml);
 %   my $name;
 %   if ($ml =~ m!Update site \[([^]]+)\]!) { $name = $1; } 
-Update site [<%= $name %>] <%== $ret %><br />
+  <tr>
+    <td><b>Update sites</b></td>
+    <td>Update site [<%= $name %>]</td>
+    <td><%== $ret %></td>
+  </tr>
 % }
-</p>
+</table>
 
 
 <h3 id="releases">Releases</h3>
 
-<p><b>Releases</b> <br />
+<table class="table table-striped table-condensed table-hover">
+  <tr>
+    <th width="20%">Section</th>
+    <th width="30%">Value checked</th>
+    <th width="50%">Result</th>
+  </tr>
 % foreach my $ml ( @{$p->{'checks'}->{'releases'}->{'results'}} ) {
 %   my $ml2 = $ml;
 %   $ml2 =~ s!Review for \[([^]]+)\]!Review!;
 %   my $name = $1;
 %   $ret = &ok_failed($ml);
-Release [<%= $name %>] <%== $ret %><br />
+  <tr>
+    <td><b>Releases</b></td>
+    <td>Release [<%= $name %>]</td>
+    <td> <%== $ret %></td>
+  </tr>
 % }
-</p>
-
+</table>
