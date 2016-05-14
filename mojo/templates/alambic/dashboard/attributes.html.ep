@@ -1,4 +1,7 @@
-% my $project_id = stash('project_id');
+% use Data::Dumper;
+% my $project_id = stash( 'project_id' );
+% my $attributes = stash( 'attributes' );
+% my $models = stash( 'models' );
 
             <h1 class="al-h1"><small><%= $project_id %></small> Project Attributes</h1>
             <br />
@@ -9,16 +12,18 @@
 
             <table class="table table-striped table-condensed table-hover">
               <tr>
-                <th width="40%">Name</th>
-                <th width="20%">Mnemo</th>
-                <th width="20%">Indicator</th>
-                <th width="20%">Confidence</th>
+                <th>Name</th>
+                <th>Mnemo</th>
+                <th>Description</th>
+                <th>Value</th>
+                <th>Confidence</th>
               </tr>
 % foreach my $attr (sort keys %{$attributes}) {
               <tr>
-                <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attributes->{$attr}->{'name'} %></a></td>
+                <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $models->get_attribute($attr)->{'name'} %></a></td>
                 <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attr %></a></td>
-                <td></td>
+                <td><%== $models->get_attribute($attr)->{'description'}->[0] %></td>
+                <td><%= $attributes->{$attr} %></td>
                 <td></td>
               </tr>
 % }

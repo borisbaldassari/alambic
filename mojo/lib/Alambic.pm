@@ -49,10 +49,35 @@ sub startup {
         $job->finish($ret);
     } );
     
-    # Add task to compute all data for a project
+    # Add task to run a single plugin
+    # Partial runs are not recorded in the db and can only be viewed in the job log.
     $self->minion->add_task( run_plugin => sub {
         my ($job, $project_id, $plugin_id) = @_;
         my $ret = $self->al->get_project($project_id)->run_plugin($plugin_id);
+        $job->finish($ret);
+    } );
+
+    # Add task to run all plugins
+    # Partial runs are not recorded in the db and can only be viewed in the job log.
+    $self->minion->add_task( run_plugins => sub {
+        my ($job, $project_id) = @_;
+        my $ret = $self->al->run_plugins($project_id);
+        $job->finish($ret);
+    } );
+
+    # Add task to run qm analysis
+    # Partial runs are not recorded in the db and can only be viewed in the job log.
+    $self->minion->add_task( run_qm => sub {
+        my ($job, $project_id) = @_;
+        my $ret = $self->al->run_qm($project_id);
+        $job->finish($ret);
+    } );
+    
+    # Add task to run post plugins
+    # Partial runs are not recorded in the db and can only be viewed in the job log.
+    $self->minion->add_task( run_post => sub {
+        my ($job, $project_id) = @_;
+        my $ret = $self->al->run_post($project_id);
         $job->finish($ret);
     } );
     
@@ -89,6 +114,9 @@ sub startup {
     $r_admin_projects->post('/new')->to(action => 'projects_new_post');
     $r_admin_projects->get('/#pid')->to(action => 'projects_show');
     $r_admin_projects->get('/#pid/run')->to(action => 'projects_run');
+    $r_admin_projects->get('/#pid/run/pre')->to(action => 'projects_run_pre');
+    $r_admin_projects->get('/#pid/run/qm')->to(action => 'projects_run_qm');
+    $r_admin_projects->get('/#pid/run/post')->to(action => 'projects_run_post');
     $r_admin_projects->get('/#pid/del')->to(action => 'projects_del');
     
     $r_admin_projects->get('/#pid/edit')->to('admin#projects_edit');

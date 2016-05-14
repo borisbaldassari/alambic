@@ -432,10 +432,12 @@ sub add_project_run($$$$$$$) {
 
     my $id = 0;
     eval {
+	print "# Before query [$query].\n";
 	$id = $pg->db->query($query, 
-			     ('$project_id', '$run_time', '$run_delay', '$run_user', 
-			      '$metrics_json', '$indicators_json', '$attributes_json', '$recs_json') 
+			     ($project_id, $run_time, $run_delay, $run_user, 
+			      $metrics_json, $indicators_json, $attributes_json, $recs_json) 
 	    )->hash->{'id'};
+	print "# After query.\n";
     };
     
     return $id;

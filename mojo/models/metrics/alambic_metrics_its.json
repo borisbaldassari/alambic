@@ -24,7 +24,7 @@
             "name": "ITS issues closed lifetime",
             "mnemo": "ITS_CLOSED",
             "desc": [
-		"Number of issues closed distinct identities opening tickets during the overall time range covered by the analysis.",
+		"Number of issues closed during the overall time range covered by the analysis.",
 		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Identities of openers are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
             ],
             "scale": [1,2,3,4]
@@ -60,7 +60,7 @@
             "name": "ITS issues closed 1 month",
             "mnemo": "ITS_CLOSED_30",
             "desc": [
-		"Number of issues closed distinct identities opening tickets during the last month in the issue tracking system.",
+		"Number of issues closed during the last month in the issue tracking system.",
 		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Identities of openers are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
             ],
             "scale": [1,2,3,4]
