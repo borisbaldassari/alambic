@@ -33,7 +33,7 @@
 % foreach my $project_id ( @projects ) {
 %   my $project = app->al->get_project($project_id);
               <tr>
-                <td><a href="/admin/projects/<%= $project %>"><%= $projects->{$project_id} %></a></td>
+                <td><a href="/admin/projects/<%= $project_id %>"><%= $projects->{$project_id} %></a></td>
                 <td><%= $project->active() %></td>
                 <td><%= $project->last_run() %></td>
                 <td width="1cm"><a href="/admin/projects/<%= $project_id %>"><i class="fa fa-eye"></i></a></td>

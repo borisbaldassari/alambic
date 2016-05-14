@@ -20,21 +20,47 @@
 
             <div class="row">
               <div class="col-sm-6">
+
 % my $project = app->al->get_project($project_id);
+% my $plugins = app->al->get_plugins();
+% my $plugins_all = $plugins->get_names_all();
+%
+% my $project_plugins = $project->get_plugins();
+% my @data_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_data()} ) } keys %$project_plugins;
+% my @figs_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_figs()} ) } keys %$project_plugins;
+% my ($data_vol, $figs_vol) = (0, 0);
+% foreach my $dp (@data_plugins) {
+%   $data_vol += scalar keys %{$plugins->get_plugin($dp)->get_conf()->{'provides_data'}};
+% }
+% foreach my $fp (@figs_plugins) {
+%   $figs_vol += scalar keys %{$plugins->get_plugin($fp)->get_conf()->{'provides_figs'}};
+% }
 
-                <h3>Information</h3>
-
-                <p><b>ID</b> <%= $project->get_id() %><br />
-                <b>Name</b> <%= $project->get_name() %><br />
-                <b>Is active</b> <%= $project->active() %><br />
-                </p>
+                <dl class="dl-horizontal">
+		  <dt>ID</dt><dd><%= $project->get_id() %></dd>
+                  <dt>Name</dt><dd><%= $project->get_name() %></dd>
+		  <dt>Is active</dt><dd><%= $project->active() ? 'yes' : 'no' %></dd>
+		  <dt>Last run</dt><dd><%= $project->last_run() %><br />Please note that only a full run will store data in the database. Partial runs (plugin, pre, qm, post) will have their results only displayed in the job.</dd>
+		</dl>
+		  <hr />
+                <dl class="dl-horizontal">
+		  <dt>Info</dt><dd><%= scalar keys %{$project->info()} %> &nbsp; <a href="/projects/<%= $project_id %>/info">See info &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Data</dt><dd><%= $data_vol %> &nbsp; <a href="/projects/<%= $project_id %>/data">See downloadable data &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Figures</dt><dd><%= $figs_vol %> &nbsp; <a href="/projects/<%= $project_id %>/data">See figures &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Metrics</dt><dd><%= scalar keys %{$project->metrics()} %> &nbsp; <a href="/projects/<%= $project_id %>/metrics">See metrics &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Indicators</dt><dd><%= scalar keys %{$project->indicators()} %> &nbsp; <a href="/projects/<%= $project_id %>/metrics">See indicators &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Attributes</dt><dd><%= scalar keys %{$project->attributes()} %> &nbsp; <a href="/projects/<%= $project_id %>/attributes">See attributes &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Recs</dt><dd><%= scalar keys %{$project->recs()} %> &nbsp; <a href="/projects/<%= $project_id %>/recs">See recommendations &nbsp; <i class="fa fa-eye"></i></a></dd>
+		</dl>
               </div>
               <div class="col-sm-6">
-                <br />
                 <div class="list-group">
                   <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Return to projects</a>
                   <a class="list-group-item" href="/admin/projects/<%= $project_id %>/edit" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Edit project information</a>
-                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run" role="button"><i class="fa fa-fw fa-rocket"></i> &nbsp; Run project</a>
+                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run" role="button"><i class="fa fa-fw fa-rocket"></i> &nbsp; Run project full</a>
+                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/pre" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run pre plugins</a>
+                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/qm" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run quality model</a>
+                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/post" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run post plugins</a>
                   <a class="list-group-item" href="/admin/projects/<%= $project_id %>/del" role="button"><i class="fa fa-fw fa-ban"></i> &nbsp; Delete project</a>
                   <a class="list-group-item" href="/projects/<%= $project_id %>" role="button"><i class="fa fa-fw fa-dashboard"></i> &nbsp; Project dashboard</a>
                 </div>
@@ -44,12 +70,9 @@
 
             <h3>Automatic data sources</h3>
 
-% my $plugins = $project->get_plugins();
-% my $plugins_all = app->al->get_plugins()->get_names_all();
-
             <p>You can add a data source from:
 % foreach my $p (sort keys %$plugins_all) {
-%   if (not exists($plugins->{$p})) {
+%   if (not exists($project_plugins->{$p})) {
               [ <a href="/admin/projects/<%= $project_id %>/setp/<%= $p %>"><%= $p %></a> ] &nbsp;
 %   }
 % }
@@ -57,7 +80,7 @@
 
 	    <table class="table table-striped">
               <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="3">Actions</th></tr>
-% foreach my $plugin ( sort keys %$plugins ) {
+% foreach my $plugin ( sort keys %$project_plugins ) {
 %   my $plugin_name = 'Unknown';
 %   if (exists($plugins_all->{$plugin})) {
 %     $plugin_name = $plugins_all->{$plugin};
@@ -65,7 +88,7 @@
               <tr>
                 <td><%= $plugin_name %></td><td><%= $plugin %></td>
                 <td>
-%   my @args_full = map { "$_: <code>" . $plugins->{$plugin}->{$_} . "</code>"; } keys %{$plugins->{$plugin}};
+%   my @args_full = map { "$_: <code>" . $project_plugins->{$plugin}->{$_} . "</code>"; } keys %{$project_plugins->{$plugin}};
 %   my $args_str = join( '<br />', sort @args_full );
                   <%== $args_str %>
                 </td>

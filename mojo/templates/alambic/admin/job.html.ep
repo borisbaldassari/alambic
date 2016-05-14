@@ -17,13 +17,18 @@
 %= include 'alambic/admin/admin_menu', current => '/admin/jobs'
 
 % my $job_info = app->minion->backend->job_info($job_id);
-% my $log = ""; my $info = ""; my $metrics = ""; my $attrs = ""; my $recs = ""; 
-% if ($job_info->{'state'} =~ m!^failed!) { $log = $job_info->{'result'}{'log'} }
+% my $log = ""; my $info = ""; my $metrics = ""; my $attrs = ""; my $recs = "";
+%# $log = ref($job_info->{'result'}) =~ /ARRAY/ ? $job_info->{'result'}{'log'} : $job_info->{'result'};
+% if ($job_info->{'state'} =~ m!^failed!) { $log = ref($job_info->{'result'}) =~ /ARRAY/ ? $job_info->{'result'}{'log'} : $job_info->{'result'} }
 % elsif ($job_info->{'state'} =~ m!^finished!) { 
-%     $log = join( '<br />', @{$job_info->{'result'}{'log'}} ) ;
+%     $log = defined($job_info->{'result'}) ?
+%              ( exists($job_info->{'result'}{'log'}) && ref($job_info->{'result'}{'log'}) =~ /ARRAY/ ?
+%                join( '<br />', @{$job_info->{'result'}{'log'}} ) :
+%                $job_info->{'result'}{'log'} ) :
+%              "No result found.";
 %     $metrics = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'metrics'}{$_} } sort keys %{$job_info->{'result'}{'metrics'}} ) . ".";
 %     $info = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'info'}{$_} } sort keys %{$job_info->{'result'}{'info'}} ) . ".";
-%     $attrs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'attributes'}{$_} } sort keys %{$job_info->{'result'}{'attributes'}} ) . ".";
+%     $attrs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'attrs'}{$_} } sort keys %{$job_info->{'result'}{'attrs'}} ) . ".";
 %     $recs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'recs'}{$_} } sort keys %{$job_info->{'result'}{'recs'}} ) . ".";
 %   }
 
