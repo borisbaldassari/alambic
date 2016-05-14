@@ -107,7 +107,6 @@ sub _init_metrics($) {
 	# Populate metrics_ds and %metrics only if the metric has been found in the qm.
 	if ( defined($in_metrics->{$tmp_metric}->{'active'}) &&
 	     $in_metrics->{$tmp_metric}->{'active'} =~ m!true! ) { 
-	    print "# In Models::init_metrics metric $tmp_metric is active.\n";
 	    push( @metrics_active, $tmp_metric ) 
 	}
     }
