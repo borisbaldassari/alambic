@@ -213,7 +213,7 @@ sub projects_run {
     my $job = $self->minion->enqueue( run_project => [ $project_id ] => { delay => 0 });
 #    my $project = $self->app->al->run_project( $project_id );
 
-    my $msg = "Project run for $project_id has been enqueued [$job].";
+    my $msg = "Project run for $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
     
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/projects/' . $project_id );
@@ -314,7 +314,7 @@ sub projects_run_plugin {
     my $job = $self->minion->enqueue( run_plugin => [ $project_id, $plugin_id ] => { delay => 0 });
 #    $self->app->al->get_project($project_id)->run_plugin($plugin_id);
 
-    my $msg = "Plugin $plugin_id has been enqueued [$job] on project $project_id.";
+    my $msg = "Plugin $plugin_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>] on project $project_id.";
     
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/projects/' . $project_id );
@@ -328,7 +328,7 @@ sub projects_run_pre {
 
     my $job = $self->minion->enqueue( run_plugins => [ $project_id ] => { delay => 0 });
 
-    my $msg = "Project run Pre plugins on project $project_id has been enqueued [$job].";
+    my $msg = "Project run Pre plugins on project $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
     
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/projects/' . $project_id );
@@ -342,7 +342,7 @@ sub projects_run_qm {
 
     my $job = $self->minion->enqueue( run_qm => [ $project_id ] => { delay => 0 });
 
-    my $msg = "Project run QM on project $project_id has been enqueued [$job].";
+    my $msg = "Project run QM on project $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
     
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/projects/' . $project_id );
@@ -356,7 +356,7 @@ sub projects_run_post {
 
     my $job = $self->minion->enqueue( run_post => [ $project_id ] => { delay => 0 });
 
-    my $msg = "Project run post plugins on project $project_id has been enqueued [$job].";
+    my $msg = "Project run post plugins on project $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
     
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/projects/' . $project_id );

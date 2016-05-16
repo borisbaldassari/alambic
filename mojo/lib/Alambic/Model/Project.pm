@@ -74,6 +74,8 @@ sub new {
 	}
     }
 
+    print "#In Project::new " . Dumper($data);
+
     # Populate the metrics, indicators and attributes hashes with init data.
     %info = ();
     %metrics = ();
@@ -186,7 +188,7 @@ sub recs() {
 sub run_plugin($) {
     my ($self, $plugin_id) = @_;
 
-    my $ret = $plugins_module->get_plugin($plugin_id)->run_plugin($project_id, $plugins{$plugin_id});
+    my $ret = $plugins_module->run_plugin($project_id, $plugin_id, $plugins{$plugin_id});
 
     foreach my $info (sort keys %{$ret->{'info'}} ) {
 	$info{$info} = $ret->{'info'}{$info};
@@ -209,7 +211,11 @@ sub run_plugins() {
     my @log;
 
     foreach my $plugin_id (keys %plugins) {
-	my $ret = $plugins_module->get_plugin($plugin_id)->run_plugin($project_id, $plugins{$plugin_id});
+	my $ret = $plugins_module->run_plugin($project_id, $plugin_id, $plugins{$plugin_id});
+
+	foreach my $info (sort keys %{$ret->{'info'}} ) {
+	    $info{$info} = $ret->{'info'}{$info};
+	}
 
 	foreach my $metric (sort keys %{$ret->{'metrics'}} ) {
 	    $metrics{$metric} = $ret->{'metrics'}{$metric};
@@ -222,7 +228,7 @@ sub run_plugins() {
 	@log = (@log, @{$ret->{'log'}});
     }
 
-    return { "metrics" => \%metrics, "recs" => \%recs, "log" => \@log };
+    return { "info" => \%info, "metrics" => \%metrics, "recs" => \%recs, "log" => \@log };
 }
 
 
@@ -262,8 +268,10 @@ sub run_project($) {
     foreach my $item (keys %$pre_data) {
 	$ret{$item} = $pre_data->{$item};
     }
+
+    print "#In Project::run_project " . Dumper($ret{'info'});
     
-    # Run plugins
+    # Run qm
     my $qm_data = $self->run_qm($models);
     foreach my $item (keys %{$qm_data}) {
 	# Most children are hashes.
@@ -271,9 +279,8 @@ sub run_project($) {
 	    foreach my $value (keys %{$qm_data->{$item}}) {
 		$ret{$item}{$value} = $qm_data->{$item}{$value};
 	    }
-	}
+	} elsif ( defined($qm_data->{$item}) && ref($qm_data->{$item}) =~ /ARRAY/ ) {
 	# Some children are arrays (e.g. log)
-	if ( defined($qm_data->{$item}) && ref($qm_data->{$item}) =~ /ARRAY/ ) {
 	    foreach my $value (@{$qm_data->{$item}}) {
 		push( @{$ret{$item}}, $value );
 	    }
@@ -349,13 +356,12 @@ sub _aggregate_inds($$$$$) {
     my $raw_qm = shift;
     my $values = shift;
     my $inds_ref = shift;
-    my $inds_ref_conf = shift;
     my $attrs_ref = shift;
     my $attrs_ref_conf = shift;
     my $metrics = shift;
     my $log = shift;
     
-    my $mnemo = $raw_qm->{"mnemo"};
+    my $mnemo = $raw_qm->{"mnemo"} || '';
     my $coef;
 
     # Are we in a leaf?
@@ -368,8 +374,9 @@ sub _aggregate_inds($$$$$) {
 	my $full_weight;
 	foreach my $child (@children) {
 	    my $child_value = &_aggregate_inds($child, $values, 
-					      $inds_ref, $inds_ref_conf, 
-					      $attrs_ref, $attrs_ref_conf, $metrics, $log);
+					       $inds_ref, 
+					       $attrs_ref, $attrs_ref_conf, 
+					       $metrics, $log);
 	    
 	    $tmp_m_total += $child->{"m_total"};
 	    $tmp_m_ok += $child->{"m_ok"};
@@ -453,7 +460,6 @@ sub _aggregate_inds($$$$$) {
 	    $attrs_ref_conf->{$mnemo} = $confidence;
 	} elsif ($raw_qm->{"type"} =~ m!metric!) {
 	    $inds_ref->{$mnemo} = $coef;
-	    $inds_ref_conf->{$mnemo} = $confidence;
 	}
     }
     
@@ -470,18 +476,16 @@ sub _compute_inds($) {
     my $metrics = $models->get_metrics();
     
     my $project_indicators = {};
-    my $project_indicators_conf = {};
     my $project_attrs = {};
     my $project_attrs_conf = {};
 
     push( @$log, "[Model::Project] Aggregating data from leaves up to attributes." );
     &_aggregate_inds(
 	$raw_qm->[0], \%metrics, 
-	$project_indicators, $project_indicators_conf, 
+	$project_indicators, 
 	$project_attrs, $project_attrs_conf, $metrics, $log);
     
     $ret{'inds'} = $project_indicators;
-    $ret{'inds_conf'} = $project_indicators_conf;
     $ret{'attrs'} = $project_attrs;
     $ret{'attrs_conf'} = $project_attrs_conf;
     $ret{'log'} = $log;
@@ -509,8 +513,6 @@ sub _populate_qm($$$$$) {
     foreach my $child (@{$qm}) {
 	my $mnemo = $child->{"mnemo"};
 
-	print "# In Project::populate_qm $mnemo.\n";
-	
 	if ($child->{"type"} =~ m!attribute!) {
 	    $child->{"name"} = $attrs_def->{$mnemo}{"name"};
 	    $child->{"ind"} = $attributes{$mnemo};

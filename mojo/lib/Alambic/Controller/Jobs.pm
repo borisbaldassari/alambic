@@ -50,7 +50,7 @@ sub redo {
     my $job_info = $self->minion->backend->job_info($job_id);
     my $job = $self->minion->enqueue($job_info->{'task'} => $job_info->{'args'} => { delay => 0 });
 
-    $self->flash( msg => "Job [$job] has been relaunched with ID [$job]." );
+    $self->flash( msg => "Job has been relaunched with ID [$job]." );
     $self->redirect_to( "/admin/jobs/$job" );
 
 }

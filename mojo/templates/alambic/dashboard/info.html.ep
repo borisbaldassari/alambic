@@ -13,16 +13,14 @@
 
             <table class="table table-striped table-condensed table-hover">
               <tr>
-                <th width="40%">Name</th>
-                <th width="20%">Mnemo</th>
-                <th width="40%">Value</th>
+                <th>Name</th>
+                <th>Mnemo</th>
               </tr>
 % my $info = $run->{'info'};
 % foreach my $item (sort keys %{$info}) {
               <tr>
                 <td><a href="/documentation/info.html#<%= $item %>"><%= $item %></a></td>
                 <td><a href="/documentation/info.html#<%= $item %>"><%= $info->{$item} %></a></td>
-                <td></td>
                 <td></td>
               </tr>
 % }

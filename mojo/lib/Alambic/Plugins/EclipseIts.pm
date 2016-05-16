@@ -30,7 +30,6 @@ my %conf = (
     "provides_cdata" => [
     ],
     "provides_info" => [
-	"MLS_DEV",
     ],
     "provides_data" => {
 	"metrics_its.json" => "Metrics for the ITS plugin (JSON).",
@@ -95,7 +94,8 @@ sub get_conf() {
 # Run plugin: retrieves data + compute_data 
 sub run_plugin($$) {
     my ($self, $project_id, $conf) = @_;
-
+    print "# run_plugins " . $project_id;
+    
     my %ret = (
 	'metrics' => {},
 	'info' => {},
@@ -110,7 +110,6 @@ sub run_plugin($$) {
     $ret{'log'} = &_retrieve_data( $project_id, $project_grim, $repofs );
     
     my $tmp_ret = &_compute_data( $project_id, $project_grim, $repofs );
-
     
     $ret{'metrics'} = $tmp_ret->{'metrics'};
     $ret{'recs'} = $tmp_ret->{'recs'};
@@ -126,7 +125,9 @@ sub _retrieve_data($$$) {
     my @log;
 
     my $url = "http://dashboard.eclipse.org/data/json/" 
-            . $project_grim . "-its-prj-static.json";
+	. $project_grim . "-its-prj-static.json";
+
+    print "# In retrieve_data $url.\n";
 
     push( @log, "[Plugins::EclipseIts] Starting retrieval of data for [$project_id] url [$url]." );
     push( @log, "[Plugins::EclipseIts] Retrieving static [$url] to input.\n" );

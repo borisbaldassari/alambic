@@ -63,6 +63,10 @@ ok( scalar @{$plugins_list} == $pv, "Plugins list has $pv entries." ) or diag ex
 my $projects_list = $alambic->get_projects_list();
 ok( $projects_list->{'tools.cdt'} =~ m!^Tools CDT$!, "Projects list contains Tools CDT." ) or diag explain $projects_list;
 
+#note("Run project_plugin from Alambic.");
+#my $ret = $alambic->run_plugin('tools.cdt', );
+#ok( scalar(keys %$ret) == 3, "Adding run_project returns hash with 3 entries." ) or diag explain $ret;
+
 note("Run project from Alambic.");
 my $ret = $alambic->run_project('tools.cdt');
 ok( scalar(keys %$ret) == 3, "Adding run_project returns hash with 3 entries." ) or diag explain $ret;

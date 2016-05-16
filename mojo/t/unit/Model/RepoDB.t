@@ -37,12 +37,15 @@ eval {
     # Checking database.
     push( @tables, $_->{'tablename'} ) for $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->hashes->each;
-    is( scalar @tables, 7, "Database has 7 tables defined.") or diag explain @tables;
+    is( scalar @tables, 9, "Database has 9 tables defined.") or diag explain @tables;
     ok( grep( /^conf$/, @tables ) == 1, "Table conf is defined.") or diag explain @tables;
-    ok( grep( /^conf_projects$/, @tables ) == 1, "Table conf_projects is defined.") or diag explain @tables;
-    ok( grep( /^projects$/, @tables ) == 1, "Table projects is defined.") or diag explain @tables;
-    ok( grep( /^metrics$/, @tables ) == 1, "Table metrics is defined.") or diag explain @tables;
-    ok( grep( /^attributes$/, @tables ) == 1, "Table attributes is defined.") or diag explain @tables;
+    ok( grep( /^projects_conf$/, @tables ) == 1, "Table projects_conf is defined.") or diag explain @tables;
+    ok( grep( /^projects_runs$/, @tables ) == 1, "Table projects_runs is defined.") or diag explain @tables;
+    ok( grep( /^projects_cdata$/, @tables ) == 1, "Table projects_cdata is defined.") or diag explain @tables;
+    ok( grep( /^projects_info$/, @tables ) == 1, "Table projects_info is defined.") or diag explain @tables;
+    ok( grep( /^models_metrics$/, @tables ) == 1, "Table models_metrics is defined.") or diag explain @tables;
+    ok( grep( /^models_attributes$/, @tables ) == 1, "Table models_attributes is defined.") or diag explain @tables;
+    ok( grep( /^models_qms$/, @tables ) == 1, "Table models_qms is defined.") or diag explain @tables;
 #    ok( grep( /^recs$/, @tables ) == 1, "Table recs is defined.") or diag explain @tables;
     
     my %values;
@@ -81,16 +84,17 @@ eval {
     $desc = $repodb->desc();
     is( $desc, 'MyDBDescInit', "Desc from module is MyDBDescInit." ) or diag explain $desc;
 
-    # Check conf_projects information
-    note( "Check conf_projects information." );
+    # Check projects_conf information
+    note( "Check projects_conf information." );
 
     my $ret = $repodb->set_project_conf('modeling.sirius', 'Sirius', 'Sirius is a great tool.', 0, '{}');
-    ok( $ret == 2, "First update of project_info is an insert.") or diag explain $ret;
+    ok( $ret == 1, "First update of project_info returns 1.") or diag explain $ret;
 
     my $ret_ok = {
 	'desc' => 'Sirius is a great tool.',
 	'name' => 'Sirius',
 	'is_active' => 0,
+	'last_run' => '',
 	'plugins' => '{}'
     };
     $ret = $repodb->get_project_conf('modeling.sirius');
@@ -108,6 +112,7 @@ eval {
     $ret_ok = {
 	'desc' => 'Sirius is a great tool Changed.',
 	'name' => 'SiriusChanged',
+	'last_run' => '',
 	'is_active' => 0,
 	'plugins' => '{ "EclipseIts": {"project_grim": "modeling.sirius"} }'
     };
@@ -126,6 +131,7 @@ eval {
 				     {'MYMETRIC' => 5}, 
 				     {'MYINDIC' => 6}, 
 				     {'MYATTR' => 8} , 
+				     {'MYATTR_CONF' => "1 / 2"} , 
 				     {'MYREC' => {
 					 'rid' => 'REC_PMI_1', 
 					 'desc' => 'This is a description.'
@@ -137,6 +143,7 @@ eval {
     is_deeply( $results->{'metrics'}, {'MYMETRIC' => 5}, "Metrics retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'indicators'}, {'MYINDIC' => 6}, "Indicators retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'attributes'}, {'MYATTR' => 8}, "Attributes retrieved from last run are ok.") or diag explain $results;
+    is_deeply( $results->{'attributes_conf'}, {'MYATTR_CONF' => "1 / 2"}, "Attributes conf retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'recs'}, {'MYREC' => {
 					 'rid' => 'REC_PMI_1', 
 					 'desc' => 'This is a description.'
@@ -154,6 +161,7 @@ eval {
 				     {'MYMETRIC' => 15}, 
 				     {'MYINDIC' => 16}, 
 				     {'MYATTR' => 18} , 
+				     {'MYATTR_CONF' => "10 / 20"} , 
 				     {'MYREC' => {
 					 'rid' => 'REC_PMI_11', 
 					 'desc' => 'This is a description.'
@@ -165,6 +173,7 @@ eval {
     is_deeply( $results->{'metrics'}, {'MYMETRIC' => 15}, "Metrics retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'indicators'}, {'MYINDIC' => 16}, "Indicators retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'attributes'}, {'MYATTR' => 18}, "Attributes retrieved from last run are ok.") or diag explain $results;
+    is_deeply( $results->{'attributes_conf'}, {'MYATTR_CONF' => "10 / 20"}, "Attributes conf retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'recs'}, {'MYREC' => {
 					 'rid' => 'REC_PMI_11', 
 					 'desc' => 'This is a description.'
@@ -199,7 +208,7 @@ eval {
     $projects_list = $repodb->get_projects_list();
     ok( scalar grep( /modeling.sirius/, keys %$projects_list ) == 0, "Projects list does not contain sirius." ) or diag explain $projects_list;
 
-    $repodb->clean_db();
+    $repodb->clean_db() if $clean_db;
     @tables = ();
     push( @tables, $_->{'tablename'} ) for $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->hashes->each;
@@ -208,7 +217,7 @@ eval {
 
 END {
     # Clean database, re-init tables.    
-    $repodb->clean_db();
+    $repodb->clean_db() if $clean_db;
 }
 
-done_testing(46);
+done_testing(51);

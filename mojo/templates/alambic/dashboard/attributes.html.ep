@@ -18,7 +18,7 @@
                 <th>Value</th>
                 <th>Confidence</th>
               </tr>
-% foreach my $attr (sort keys %{$attributes}) {
+% foreach my $attr (sort keys %{$attributes}) { 
               <tr>
                 <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $models->get_attribute($attr)->{'name'} %></a></td>
                 <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attr %></a></td>

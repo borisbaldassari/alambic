@@ -81,7 +81,7 @@
                             "active": "true",
                             "children": [
                                 {
-                                    "mnemo": "PUB_SCM_INFO_PMI",
+                                    "mnemo": "PMI_SCM_INFO",
                                     "type": "metric",
                                     "active": "true"
                                 },
@@ -103,7 +103,7 @@
                             "active": "true",
                             "children": [
                                 {
-                                    "mnemo": "PUB_ITS_INFO_PMI",
+                                    "mnemo": "PMI_ITS_INFO",
                                     "type": "metric",
                                     "active": "true"
                                 },

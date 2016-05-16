@@ -20,6 +20,7 @@ our @EXPORT_OK = qw(
                      is_db_ok
                      name
                      desc
+                     get_info
                      get_metric
                      get_metrics
                      set_metric 
@@ -72,24 +73,25 @@ sub backup_db() {
 	$sql_out .= $insert_statement;
     }
 
-    $results = $pg->db->query("SELECT * FROM conf_projects");
+    $results = $pg->db->query("SELECT * FROM projects_conf");
     while (my $next = $results->hash) {
-	my $insert_statement = qq{INSERT INTO conf_projects (id, name, description, is_active, plugins)\n VALUES (};
+	my $insert_statement = qq{INSERT INTO projects_conf (id, name, description, is_active, plugins)\n VALUES (};
 	$insert_statement .= "'" . $next->{'id'} . "', '" . $next->{'name'} . "', '"
 	. $next->{'description'} . "', '" . $next->{'is_active'} . "', '"
 	. $next->{'plugins'} . "');\n";
 	$sql_out .= $insert_statement;
     }
     
-    $results = $pg->db->query("SELECT * FROM projects");
-    my $fields = "id, project_id, run_time, run_delay, run_user, metrics, indicators, attributes, recs";
+    $results = $pg->db->query("SELECT * FROM projects_runs");
+    my $fields = "id, project_id, run_time, run_delay, run_user, metrics, indicators, "
+	. "attributes, attributes_conf, , recs";
     while (my $next = $results->hash) {
 	my $insert_statement = qq{INSERT INTO projects ($fields)\n VALUES (};
 	$insert_statement .= "'" . $next->{'id'} . "', '" . $next->{'project_id'} . "', '"
 	. $next->{'run_time'} . "', '" . $next->{'run_delay'} . "', '"
 	. $next->{'run_user'} . "', '" . $next->{'metrics'} . "', '"
 	. $next->{'indicators'} . "', '" . $next->{'attributes'} . "', '"
-	. $next->{'recs'} . "');\n";
+	. $next->{'attributes_conf'} . "', '". $next->{'recs'} . "');\n";
 	$sql_out .= $insert_statement;
     }
 
@@ -131,9 +133,7 @@ sub is_db_ok() {
     my $rows = $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->rows;
 
-#    print "# In RepoDB::is_db_ok rows is $rows.\n";
-    
-    return $rows == 7 ? 1 : 0;
+    return $rows == 9 ? 1 : 0;
 }
 
 
@@ -171,11 +171,27 @@ sub desc($) {
 }
 
 
+# Get all info for a project from db
+sub get_info($) {
+    my ($self, $project_id) = @_;
+    
+    # Execute select in info table.
+    my %ret;
+    my $results = $pg->db->query("SELECT last_run, info FROM projects_info WHERE project_id=?", ($project_id));
+    while (my $next = $results->hash) {
+	$ret{'last_run'} = $next->{'last_run'}; 
+	$ret{'info'} = encode_json( $next->{'info'} ); 
+    }
+    
+    return \%ret;
+}
+
+
 # Get a single metric definition from db.
 sub get_metric($) {
     my ($self, $mnemo) = @_;
     
-    my $results = $pg->db->query("SELECT * FROM metrics WHERE mnemo='?';", ($mnemo));
+    my $results = $pg->db->query("SELECT * FROM models_metrics WHERE mnemo='?';", ($mnemo));
     my $ret;
 
     # Process one row at a time
@@ -191,7 +207,7 @@ sub get_metric($) {
 
 # Get all metrics definition from db
 sub get_metrics($) {
-    my $results = $pg->db->query("SELECT * FROM metrics;");
+    my $results = $pg->db->query("SELECT * FROM models_metrics;");
     my $ret;
 
     # Process one row at a time
@@ -213,7 +229,7 @@ sub set_metric($) {
     my $desc = shift || '[]';
     my $scale = shift || '[]';
     
-    my $query = "INSERT INTO metrics (mnemo, name, description, scale) VALUES "
+    my $query = "INSERT INTO models_metrics (mnemo, name, description, scale) VALUES "
 	. "(?, ?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description, scale) "
 	. "= (?, ?, ?, ?)";
     my $ret = $pg->db->query( $query, ($mnemo, $name, $desc, $scale, $mnemo, $name, $desc, $scale) );
@@ -226,7 +242,7 @@ sub set_metric($) {
 sub get_attribute($) {
     my ($self, $mnemo) = @_;
     
-    my $results = $pg->db->query("SELECT * FROM attributes WHERE mnemo='?';", ($mnemo));
+    my $results = $pg->db->query("SELECT * FROM models_attributes WHERE mnemo='?';", ($mnemo));
     my $ret;
 
     # Process one row at a time
@@ -241,7 +257,7 @@ sub get_attribute($) {
 
 # Get all attributes definition from db
 sub get_attributes($) {
-    my $results = $pg->db->query("SELECT * FROM attributes;");
+    my $results = $pg->db->query("SELECT * FROM models_attributes;");
     my $ret;
 
     # Process one row at a time
@@ -260,7 +276,7 @@ sub set_attribute($) {
     my $name = shift || '';
     my $desc = shift || '[]';
     
-    my $query = "INSERT INTO attributes (mnemo, name, description) VALUES "
+    my $query = "INSERT INTO models_attributes (mnemo, name, description) VALUES "
 	. "(?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description) "
 	. "= (?, ?, ?)";
     my $ret = $pg->db->query( $query, ($mnemo, $name, $desc, $mnemo, $name, $desc) );
@@ -273,7 +289,7 @@ sub set_attribute($) {
 sub get_qm($) {
     my ($self, $mnemo) = @_;
 
-    my $results = $pg->db->query("SELECT * FROM qms LIMIT 1;");
+    my $results = $pg->db->query("SELECT * FROM models_qms LIMIT 1;");
     my $ret;
 
     # Process one row at a time
@@ -298,7 +314,7 @@ sub set_qm($$$) {
     my $name = shift || '';
     my $model = shift || '[]';
     
-    my $query = "INSERT INTO qms (mnemo, name, model) VALUES "
+    my $query = "INSERT INTO models_qms (mnemo, name, model) VALUES "
 	. "(?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, model) "
 	. "= (?, ?, ?)";
     my $ret = $pg->db->query( $query, ($mnemo, $name, $model, $mnemo, $name, $model) );
@@ -323,7 +339,7 @@ sub set_project_conf($$$$$) {
     my $plugins = shift;
 
     my $plugins_json = encode_json($plugins);
-    my $query = "INSERT INTO conf_projects VALUES (?, ?, ?, ?, ?) "
+    my $query = "INSERT INTO projects_conf VALUES (?, ?, ?, ?, ?) "
 	. "ON CONFLICT (id) DO UPDATE SET (name, description, is_active, plugins) "
 	. "= (?, ?, ?, ?)";
     $pg->db->query($query,
@@ -338,10 +354,10 @@ sub delete_project() {
     my ($self, $project_id) = @_;
 
     # Remove project from table conf_projects
-    my $results = $pg->db->query("DELETE FROM conf_projects WHERE id=?;", ($project_id));
+    my $results = $pg->db->query("DELETE FROM projects_conf WHERE id=?;", ($project_id));
     
     # Remove project runs from table projects
-    $results = $pg->db->query("DELETE FROM projects WHERE project_id=?;", ($project_id));
+    $results = $pg->db->query("DELETE FROM projects_runs WHERE project_id=?;", ($project_id));
 
     return 1;
 }
@@ -354,7 +370,8 @@ sub get_project_conf($) {
     # See if the project exists
     my %values; 
     my $exists = 0;
-    my $results = $pg->db->query("SELECT name, description, is_active, plugins FROM conf_projects WHERE id=?;", ($id));
+    my $results = $pg->db->query("SELECT name, description, is_active, plugins FROM projects_conf WHERE id=?;", ($id));
+
     # There should be 0 or 1 row with this id.
     while (my $next = $results->hash) {
 	$exists = 1;
@@ -364,13 +381,12 @@ sub get_project_conf($) {
 	$values{'plugins'} = decode_json( $next->{'plugins'} ); 
 	$values{'last_run'} = '';
 
-	my $results_last_run = $pg->db->query("SELECT run_time FROM projects WHERE project_id=? ORDER BY run_time DESC LIMIT 1;", ($id));
+	my $results_last_run = $pg->db->query("SELECT run_time FROM projects_runs WHERE project_id=? ORDER BY run_time DESC LIMIT 1;", ($id));
 	# There should be 0 or 1 row with this id.
 	while (my $next = $results_last_run->hash) {
 	    $values{'last_run'} = $next->{'run_time'};
 	}
     }
-
 
     return $exists ? \%values : undef;
 }
@@ -381,7 +397,7 @@ sub get_projects_list() {
     my ($self) = @_;
 
     my %projects_list; 
-    my $results = $pg->db->query("SELECT id, name FROM conf_projects;");
+    my $results = $pg->db->query("SELECT id, name FROM projects_conf;");
     while (my $next = $results->hash) {
 	$projects_list{$next->{'id'}} = $next->{'name'}; 
     }
@@ -394,7 +410,7 @@ sub get_active_projects_list() {
     my ($self) = @_;
 
     my %projects_list; 
-    my $results = $pg->db->query("SELECT id, name FROM conf_projects WHERE is_active=TRUE;");
+    my $results = $pg->db->query("SELECT id, name FROM projects_conf WHERE is_active=TRUE;");
     while (my $next = $results->hash) {
 	$projects_list{$next->{'id'}} = $next->{'name'}; 
     }
@@ -407,34 +423,53 @@ sub get_active_projects_list() {
 # Params
 #  - $id the id of the project, e.g. modeling.sirus.
 #  - \%run a hash ref with info about the run: timestamp, delay, user.
+#  - \%info a hash (ref) of hash of info ($info->{'plugin1'}{'info1'}).
 #  - \%metrics a hash ref of metrics.
 #  - \%indicators a hash ref of indicators.
 #  - \%attributes a hash ref of attributes.
 #  - \%recs a hash ref of recs.
 sub add_project_run($$$$$$$) {
-    my ($self, $project_id, $run, $metrics, $indicators, $attributes, $recs) = @_;
+    my ($self, $project_id, $run, $info, $metrics, $indicators, $attributes, $attributes_conf, $recs) = @_;
 
+    print "# In RepoDB::add_project_run " . Dumper($info);
+    
     # Expand information..
     my $run_time = $run->{'timestamp'};
     my $run_delay = $run->{'delay'};
     my $run_user = $run->{'user'};
 
+    my $info_json = encode_json($info);
     my $metrics_json = encode_json($metrics);
     my $indicators_json = encode_json($indicators);
     my $attributes_json = encode_json($attributes);
+    my $attributes_conf_json = encode_json($attributes_conf);
     my $recs_json = encode_json($recs);
 
     # Execute insert in db.
-    my $query = "INSERT INTO projects 
-        ( project_id, run_time, run_delay, run_user, metrics, indicators, attributes, recs ) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    my $query = "INSERT INTO projects_info 
+        ( project_id, last_run, info ) 
+      VALUES (?, ?, ?) 
+      ON CONFLICT (project_id) DO UPDATE SET ( project_id, last_run, info ) "
+	. "= (?, ?, ?)";
+    print "# Query $query.\n";
+    my $id = 0;
+    eval {
+	$id = $pg->db->query($query, ($project_id, $run_time, $info_json, $project_id, $run_time, $info_json)
+	    )->hash->{'id'};
+    };
+    
+    # Execute insert in db.
+    $query = "INSERT INTO projects_runs 
+        ( project_id, run_time, run_delay, run_user, metrics, indicators, attributes, attributes_conf, recs ) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         returning id;";
 
-    my $id = 0;
+    $id = 0;
     eval {
 	$id = $pg->db->query($query, 
 			     ($project_id, $run_time, $run_delay, $run_user, 
-			      $metrics_json, $indicators_json, $attributes_json, $recs_json) 
+			      $metrics_json, $indicators_json, $attributes_json, 
+			      $attributes_conf_json, $recs_json) 
 	    )->hash->{'id'};
     };
     
@@ -473,8 +508,8 @@ sub get_project_last_run() {
 
     my %project;
     
-    # Execute select in db.
-    my $results = $pg->db->query("SELECT * FROM projects WHERE project_id=? ORDER BY id DESC LIMIT 1", ($id));
+    # Execute select in runs table.
+    my $results = $pg->db->query("SELECT * FROM projects_runs WHERE project_id=? ORDER BY id DESC LIMIT 1", ($id));
     while (my $next = $results->hash) {
 	$project{'id'} = $next->{'id'}; 
 	$project{'project_id'} = $next->{'project_id'}; 
@@ -484,7 +519,14 @@ sub get_project_last_run() {
 	$project{'metrics'} = decode_json( $next->{'metrics'} ); 
 	$project{'indicators'} = decode_json( $next->{'indicators'} ); 
 	$project{'attributes'} = decode_json( $next->{'attributes'} ); 
+	$project{'attributes_conf'} = decode_json( $next->{'attributes_conf'} ); 
 	$project{'recs'} = decode_json($next->{'recs'} ); 
+    }
+    
+    # Execute select in info table.
+    $results = $pg->db->query("SELECT info FROM projects_info WHERE project_id=?", ($id));
+    while (my $next = $results->hash) {
+	$project{'info'} = decode_json( $next->{'info'} ); 
     }
 
     return \%project;
@@ -518,12 +560,12 @@ sub get_project_last_run() {
 # Params
 #  - $id the id of the project, e.g. modeling.sirus.
 sub get_project_run() {
-    my ($self, $project_id, $plugin_id) = @_;
+    my ($self, $project_id, $id) = @_;
 
     my %project;
     
     # Execute select in db.
-    my $results = $pg->db->query("SELECT * FROM projects WHERE id=? ORDER BY id DESC LIMIT 1", ($plugin_id));
+    my $results = $pg->db->query("SELECT * FROM projects_runs WHERE id=? ORDER BY id DESC LIMIT 1", ($id));
     while (my $next = $results->hash) {
 	$project{'id'} = $next->{'id'}; 
 	$project{'project_id'} = $next->{'project_id'}; 
@@ -533,7 +575,14 @@ sub get_project_run() {
 	$project{'metrics'} = decode_json( $next->{'metrics'} ); 
 	$project{'indicators'} = decode_json( $next->{'indicators'} ); 
 	$project{'attributes'} = decode_json( $next->{'attributes'} ); 
+	$project{'attributes_conf'} = decode_json( $next->{'attributes_conf'} ); 
 	$project{'recs'} = decode_json($next->{'recs'} ); 
+    }
+    
+    # Execute select in info table.
+    $results = $pg->db->query("SELECT info FROM projects_info WHERE project_id=?", ($id));
+    while (my $next = $results->hash) {
+	$project{'info'} = decode_json( $next->{'info'} ); 
     }
 
     return \%project;
@@ -566,7 +615,7 @@ sub get_project_all_runs() {
     my $project;
     
     # Execute insert in db.
-    my $results = $pg->db->query("SELECT id, project_id, run_time, run_delay, run_user FROM projects WHERE project_id=? ORDER BY id DESC", ($id));
+    my $results = $pg->db->query("SELECT id, project_id, run_time, run_delay, run_user FROM projects_runs WHERE project_id=? ORDER BY id DESC", ($id));
     my $row = 0;
     while (my $next = $results->hash) {
 	$project->[$row]{'id'} = $next->{'id'}; 
@@ -592,11 +641,13 @@ INSERT INTO conf VALUES ('name', 'MyDBNameInit');
 INSERT INTO conf VALUES ('desc', 'MyDBDescInit');
 -- 1 down
 DROP TABLE IF EXISTS conf;
-DROP TABLE IF EXISTS conf_projects;
-DROP TABLE IF EXISTS projects;
-DROP TABLE IF EXISTS metrics;
-DROP TABLE IF EXISTS attributes;
-DROP TABLE IF EXISTS qms;
+DROP TABLE IF EXISTS projects_conf;
+DROP TABLE IF EXISTS projects_runs;
+DROP TABLE IF EXISTS projects_info;
+DROP TABLE IF EXISTS projects_cdata;
+DROP TABLE IF EXISTS models_metrics;
+DROP TABLE IF EXISTS models_attributes;
+DROP TABLE IF EXISTS models_qms;
 ");
 
     $migrations->migrate(1)->migrate;
@@ -608,11 +659,13 @@ sub _db_query_create() {
 
     return "
 DROP TABLE IF EXISTS conf;
-DROP TABLE IF EXISTS conf_projects;
-DROP TABLE IF EXISTS projects;
-DROP TABLE IF EXISTS metrics;
-DROP TABLE IF EXISTS attributes;
-DROP TABLE IF EXISTS qms;
+DROP TABLE IF EXISTS projects_conf;
+DROP TABLE IF EXISTS projects_runs;
+DROP TABLE IF EXISTS projects_info;
+DROP TABLE IF EXISTS projects_cdata;
+DROP TABLE IF EXISTS models_metrics;
+DROP TABLE IF EXISTS models_attributes;
+DROP TABLE IF EXISTS models_qms;
 
 CREATE TABLE IF NOT EXISTS conf (
     param TEXT NOT NULL, 
@@ -620,7 +673,7 @@ CREATE TABLE IF NOT EXISTS conf (
     PRIMARY KEY( param )
 );
 
-CREATE TABLE IF NOT EXISTS conf_projects (
+CREATE TABLE IF NOT EXISTS projects_conf (
     id TEXT, 
     name TEXT, 
     description TEXT, 
@@ -629,14 +682,14 @@ CREATE TABLE IF NOT EXISTS conf_projects (
     PRIMARY KEY( id )
 );
 
-CREATE TABLE IF NOT EXISTS attributes (
+CREATE TABLE IF NOT EXISTS models_attributes (
     mnemo TEXT, 
     name TEXT, 
     description JSONB, 
     PRIMARY KEY( mnemo )
 );
 
-CREATE TABLE IF NOT EXISTS metrics (
+CREATE TABLE IF NOT EXISTS models_metrics (
     mnemo TEXT, 
     name TEXT, 
     description JSONB, 
@@ -644,14 +697,14 @@ CREATE TABLE IF NOT EXISTS metrics (
     PRIMARY KEY( mnemo )
 );
 
-CREATE TABLE IF NOT EXISTS qms (
+CREATE TABLE IF NOT EXISTS models_qms (
     mnemo TEXT, 
     name TEXT, 
     model JSONB, 
     PRIMARY KEY( mnemo )
 );
 
-CREATE TABLE IF NOT EXISTS projects (
+CREATE TABLE IF NOT EXISTS projects_runs (
     id BIGSERIAL, 
     project_id TEXT NOT NULL, 
     run_time TIMESTAMP,
@@ -660,8 +713,25 @@ CREATE TABLE IF NOT EXISTS projects (
     metrics JSONB,
     indicators JSONB,
     attributes JSONB,
+    attributes_conf JSONB,
     recs JSONB,
     PRIMARY KEY( id )
+);
+
+CREATE TABLE IF NOT EXISTS projects_cdata (
+    id BIGSERIAL, 
+    project_id TEXT, 
+    plugin_id TEXT,  
+    last_run TIMESTAMP,
+    cdata JSONB, 
+    PRIMARY KEY( id )
+);
+
+CREATE TABLE IF NOT EXISTS projects_info (
+    project_id TEXT, 
+    last_run TIMESTAMP,
+    info JSONB, 
+    PRIMARY KEY( project_id )
 );
 ";
 }

@@ -31,7 +31,6 @@
 % my $metrics_def = $models->get_metrics();
 % my $metrics_active = $models->get_metrics_active();
 % foreach my $item (sort keys %{$metrics}) {
-
 %   if ( grep( /^$item$/, @{$metrics_active} ) || defined($all) ) { 
               <tr>
                 <td><a href="/documentation/metrics.html#<%= $item %>"><%= $metrics_def->{$item}->{'name'} %></a></td>

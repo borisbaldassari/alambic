@@ -58,7 +58,7 @@ sub new {
 	print "### ###################\n";
 	print "### &init( ! \n";
 	print "### ###################\n";
-	&init();
+	#&init();
     }
 	
     # Retrieve all metrics definition to initialise Models.pm
@@ -176,7 +176,7 @@ sub create_project($$) {
 	return 0;
     }
 
-    my $project = Alambic::Model::Project->new($id, $name);
+    my $project = Alambic::Model::Project->new( $id, $name );
     $project->desc($desc);
     $project->active($active);
 
@@ -201,10 +201,11 @@ sub _get_project($) {
     my ($id) = @_;
 
     my $project_conf = $repodb->get_project_conf($id);
-
     if (not defined($project_conf)) { return undef }
     
     my $project_data = $repodb->get_project_last_run($id);
+
+    print "# In " . Dumper($project_data);
     
     my $project = Alambic::Model::Project->new( $id, $project_conf->{'name'},
 						$project_conf->{'is_active'}, 
@@ -322,6 +323,8 @@ sub get_project_run($$) {
 #      "metrics" => {'metric1' => 'value1'},
 #      "indicators" => {'ind1' => 'value1'},
 #      "attributes" => {'attr1' => 'value1'},
+#      "attributes_conf" => {'attr1' => 'value1'},
+#      "infos" => {'info1' => 'value1'},
 #      "recs" => {'rec1' => 'value1'},
 #      "log" => ['log entry'],
 #    }
@@ -337,12 +340,15 @@ sub run_project($) {
 
     my $project = &_get_project($project_id);
     my $values = $project->run_project($models);
-    print "# In Model::Alambic::run_project " . Dumper($values);
     
-    my $ret = $repodb->add_project_run($project_id, $run, 
+    print "#In Alambic::run_project " . Dumper($values);
+
+    my $ret = $repodb->add_project_run($project_id, $run,
+			     $values->{'info'}, 
 			     $values->{'metrics'}, 
 			     $values->{'inds'}, 
 			     $values->{'attrs'}, 
+			     $values->{'attrs_conf'}, 
 			     $values->{'recs'});
 
     return $values;
@@ -358,6 +364,8 @@ sub run_project($) {
 #      "metrics" => {'metric1' => 'value1'},
 #      "indicators" => {'ind1' => 'value1'},
 #      "attributes" => {'attr1' => 'value1'},
+#      "attributes_conf" => {'attr1' => 'value1'},
+#      "infos" => {'info1' => 'value1'},
 #      "recs" => {'rec1' => 'value1'},
 #      "log" => ['log entry'],
 #    }
@@ -387,6 +395,8 @@ sub run_plugins($) {
 #      "metrics" => {'metric1' => 'value1'},
 #      "indicators" => {'ind1' => 'value1'},
 #      "attributes" => {'attr1' => 'value1'},
+#      "attributes_conf" => {'attr1' => 'value1'},
+#      "infos" => {'info1' => 'value1'},
 #      "recs" => {'rec1' => 'value1'},
 #      "log" => ['log entry'],
 #    }
@@ -415,6 +425,8 @@ sub run_qm($) {
 #      "metrics" => {'metric1' => 'value1'},
 #      "indicators" => {'ind1' => 'value1'},
 #      "attributes" => {'attr1' => 'value1'},
+#      "attributes_conf" => {'attr1' => 'value1'},
+#      "infos" => {'info1' => 'value1'},
 #      "recs" => {'rec1' => 'value1'},
 #      "log" => ['log entry'],
 #    }

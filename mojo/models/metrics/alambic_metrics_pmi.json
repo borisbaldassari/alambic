@@ -48,7 +48,7 @@
       },
       {
         "name": "SCM information",
-        "mnemo": "PUB_SCM_INFO_PMI",
+        "mnemo": "PMI_SCM_INFO",
         "desc": [
             "Is the source_repo info correctly filled in the PMI records? ",
             "The project management infrastructure file holds information about one or more source repositories. This test checks that at least one source repository is defined, and accessible."
@@ -57,7 +57,7 @@
       },
       {
         "name": "ITS information",
-        "mnemo": "PUB_ITS_INFO_PMI",
+        "mnemo": "PMI_ITS_INFO",
         "desc": [
             "Is the bugzilla info correctly filled in the PMI records?",
             "The project management infrastructure file holds information about one or more bugzilla instances. This test checks that at least one bugzilla instance is defined, with a product identifier, a create_url to enter a new issue, and a query_url to fetch all the issues for the project."

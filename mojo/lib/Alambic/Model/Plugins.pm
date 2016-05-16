@@ -76,9 +76,7 @@ sub _read_plugins() {
 	    push( @{$plugins_ability{ $a }}, $conf->{'id'} );
 	}
     }
-#    print Dumper(%plugins_type);
-#    print Dumper(%plugins_ability);
-    
+
 }
 
 
@@ -191,6 +189,7 @@ sub get_plugin($) {
 
 sub run_plugin($$$) {
     my ($self, $project_id, $plugin_id, $conf) = @_;    
+    print "# In Plugins::run_plugin $project_id.\n";
     return $plugins{$plugin_id}->run_plugin($project_id, $conf);
 }
 

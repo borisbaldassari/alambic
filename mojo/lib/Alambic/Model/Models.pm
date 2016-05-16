@@ -288,7 +288,6 @@ sub get_metric($) {
 # 	    }
 #     }
 # };
-
 sub get_metrics() {
     return \%metrics;
 }

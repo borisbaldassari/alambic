@@ -127,11 +127,9 @@ note("Run qm.");
 $ret = $project->run_qm($models);
 ok( grep( /Aggregating data/, @{$ret->{'log'}} ), "After qm run log has aggregating data." ) or diag explain $ret;
 ok( exists($ret->{'attrs'}{'ATTR1'}), "After qm run attr1 is in ret." ) or diag explain $ret;
-ok( exists($ret->{'inds'}{'ITS_CLOSED'}), "After qm run attr1 is in ret." ) or diag explain $ret;
-ok( exists($ret->{'inds'}{'ITS_CLOSERS'}), "After qm run attr1 is in ret." ) or diag explain $ret;
-ok( exists($ret->{'inds_conf'}{'ITS_CLOSED'}), "After qm run attr1 is in ret." ) or diag explain $ret;
-ok( exists($ret->{'inds_conf'}{'ITS_CLOSERS'}), "After qm run attr1 is in ret." ) or diag explain $ret;
-ok( exists($ret->{'attrs_conf'}{'ATTR1'}), "After qm run attr1 is in ret." ) or diag explain $ret;
-print Dumper($ret);
+ok( exists($ret->{'inds'}{'ITS_CLOSED'}), "After qm run inds its_closed is in ret." ) or diag explain $ret;
+ok( exists($ret->{'inds'}{'ITS_CLOSERS'}), "After qm run inds its_closers is in ret." ) or diag explain $ret;
+ok( exists($ret->{'attrs_conf'}{'ATTR1'}), "After qm run attrs_conf is in ret." ) or diag explain $ret;
+print Dumper $ret;
 
-done_testing(40);
+done_testing(38);
