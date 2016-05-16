@@ -431,8 +431,6 @@ sub get_active_projects_list() {
 sub add_project_run($$$$$$$) {
     my ($self, $project_id, $run, $info, $metrics, $indicators, $attributes, $attributes_conf, $recs) = @_;
 
-    print "# In RepoDB::add_project_run " . Dumper($info);
-    
     # Expand information..
     my $run_time = $run->{'timestamp'};
     my $run_delay = $run->{'delay'};
@@ -451,7 +449,7 @@ sub add_project_run($$$$$$$) {
       VALUES (?, ?, ?) 
       ON CONFLICT (project_id) DO UPDATE SET ( project_id, last_run, info ) "
 	. "= (?, ?, ?)";
-    print "# Query $query.\n";
+
     my $id = 0;
     eval {
 	$id = $pg->db->query($query, ($project_id, $run_time, $info_json, $project_id, $run_time, $info_json)

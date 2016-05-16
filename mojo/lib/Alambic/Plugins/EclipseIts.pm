@@ -94,7 +94,6 @@ sub get_conf() {
 # Run plugin: retrieves data + compute_data 
 sub run_plugin($$) {
     my ($self, $project_id, $conf) = @_;
-    print "# run_plugins " . $project_id;
     
     my %ret = (
 	'metrics' => {},
@@ -126,8 +125,6 @@ sub _retrieve_data($$$) {
 
     my $url = "http://dashboard.eclipse.org/data/json/" 
 	. $project_grim . "-its-prj-static.json";
-
-    print "# In retrieve_data $url.\n";
 
     push( @log, "[Plugins::EclipseIts] Starting retrieval of data for [$project_id] url [$url]." );
     push( @log, "[Plugins::EclipseIts] Retrieving static [$url] to input.\n" );

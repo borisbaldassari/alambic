@@ -524,8 +524,6 @@ sub _compute_data($) {
     push( @log, "[Plugins::EclipsePmi] Writing updated PMI json file to output dir." );
     $repofs->write_output( $project_id, "pmi.json", encode_json($raw_project) );
 
-    print "# In EclipsePmi " . Dumper(%info);
-    
     return {
 	"info" => \%info,
 	"metrics" => \%metrics,

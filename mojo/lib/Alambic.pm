@@ -23,6 +23,16 @@ sub startup {
     
     # Use application logger
     $self->log->info('Alambic v3.0 application started.');
+
+    my $conf_mail = {
+	from     => 'alambic@eclipse.castalia.camp',
+	encoding => 'base64',
+	type     => 'text/html',
+	how      => 'sendmail',
+	howargs  => [ '/usr/sbin/sendmail -t' ],
+    };
+    
+    $self->plugin( 'mail' => $conf_mail );
     
     # Alambic::Alambic.pm is the main entry point for all actions;
     #$self->helper( alambic => sub { state $repo = Alambic::Model::Alambic->new() } );

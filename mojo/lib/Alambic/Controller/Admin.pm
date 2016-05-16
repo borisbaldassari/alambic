@@ -95,13 +95,11 @@ sub models_import {
 	}
     } elsif ($type =~ m!^qm$!) {
 	my $qm = decode_json( $repofs->read_models('qm', $file) );
-	print "# In Admin models_import " . Dumper($qm);
-	
-#	foreach my $node ( @{$qm->{'children'}} ) {
+
 	$repodb->set_qm( "ALB_BASIC",
 			 "Alambic Quality Model", 
 			 encode_json($qm->{'children'}) );
-#	}
+
     } else {
 	print "DBG something went wrong.\n";
     }

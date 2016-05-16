@@ -205,8 +205,6 @@ sub _get_project($) {
     
     my $project_data = $repodb->get_project_last_run($id);
 
-    print "# In " . Dumper($project_data);
-    
     my $project = Alambic::Model::Project->new( $id, $project_conf->{'name'},
 						$project_conf->{'is_active'}, 
 						$project_conf->{'last_run'},
@@ -341,8 +339,6 @@ sub run_project($) {
     my $project = &_get_project($project_id);
     my $values = $project->run_project($models);
     
-    print "#In Alambic::run_project " . Dumper($values);
-
     my $ret = $repodb->add_project_run($project_id, $run,
 			     $values->{'info'}, 
 			     $values->{'metrics'}, 

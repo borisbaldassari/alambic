@@ -74,8 +74,6 @@ sub new {
 	}
     }
 
-    print "#In Project::new " . Dumper($data);
-
     # Populate the metrics, indicators and attributes hashes with init data.
     %info = ();
     %metrics = ();
@@ -269,8 +267,6 @@ sub run_project($) {
 	$ret{$item} = $pre_data->{$item};
     }
 
-    print "#In Project::run_project " . Dumper($ret{'info'});
-    
     # Run qm
     my $qm_data = $self->run_qm($models);
     foreach my $item (keys %{$qm_data}) {

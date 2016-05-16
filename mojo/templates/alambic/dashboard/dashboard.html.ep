@@ -57,11 +57,11 @@
                 </div>
                 <div class="panel panel-default">
 		  <div class="panel-heading">Plugins</div>
-                  <div class="panel-body">
-		    <p>Last analysis: <%= $run->{'run_time'} %>.</p>
-		    <p></p>
-		    <p></p>
-                  </div>
+		  <ul class="list-group">
+% foreach my $p ( sort keys %{$project->get_plugins()} ) {
+                    <li class="list-group-item"><%= $p %></li>
+% }
+		  </ul>
                 </div>
               </div>
               <div class="col-md-4">
