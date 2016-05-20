@@ -256,7 +256,7 @@ sub set_project($) {
     my $active = shift || '';
     my $plugins = shift || {};
 
-    my $project => $repodb->get_project_conf($project_id);
+    my $project = $repodb->get_project_conf($project_id);
     
     if ($name !~ m!^$!) { $project->{'name'} = $name }
     if ($desc !~ m!^$!) { $project->{'desc'} = $desc }

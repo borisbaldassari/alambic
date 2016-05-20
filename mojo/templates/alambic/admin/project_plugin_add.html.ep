@@ -1,0 +1,42 @@
+
+% my $conf = stash( 'conf' );
+% my $project = stash( 'project' );
+% my $conf_project = stash( 'conf_project' );
+
+            <h1 class="al-h1"><small>Administration</small> Data sources</h1>
+            <br />
+
+%= include 'alambic/admin/admin_menu', current => '/admin/projects'
+
+            <div class="row">
+              <div class="col-md-6">
+		<h3>Set a data source to project</h3>
+	    
+		<p>This action will add or set the <code><%= $conf->{'id'} %></code> plugin to project <code><%= $project %></code>.</p>
+		<br />
+
+		<form action="/admin/projects/<%= $project %>/setp/<%= $conf->{'id'} %>" method="POST">
+% foreach my $arg (keys %{$conf->{'params'}}) {
+%   if ($arg eq 'project_id') { $conf->{'params'}->{$arg} = $project; }
+%   if (defined($conf_project)) { $conf->{'params'}->{$arg} = $conf_project->{$arg}; }
+                  <p><b><%= $arg %></b> (<span style="color: red">*</span>)</p>
+                  <p><input name="<%= $arg %>" type="text" value="<%= $conf->{'params'}->{$arg} %>"/></p>
+% }
+		  <br /><br />
+		  <input type="submit" value="Set data source" />
+		  <input type="button" value="Cancel" onclick="history.go(-1);" />
+		</form>
+	      </div>
+              <div class="col-md-6">
+		<h3><%= $conf->{'name'} %></h3>
+		<br />
+		<blockquote>
+% foreach my $d (@{$conf->{'desc'}}) {
+		  <p><%== $d %></p>
+% }
+		</blockquote>
+		
+	      </div>
+	    </div>
+	    
+	    

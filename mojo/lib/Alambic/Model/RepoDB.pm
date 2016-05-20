@@ -338,6 +338,8 @@ sub set_project_conf($$$$$) {
     my $is_active = shift || 0;
     my $plugins = shift;
 
+    print "# In RepoDB::set_project_conf " . Dumper($plugins);
+    
     my $plugins_json = encode_json($plugins);
     my $query = "INSERT INTO projects_conf VALUES (?, ?, ?, ?, ?) "
 	. "ON CONFLICT (id) DO UPDATE SET (name, description, is_active, plugins) "
