@@ -29,7 +29,7 @@
 % my $project_id = exists( $projects[0] ) ? $projects[0] : 'project_id';
 % foreach my $pi (sort keys %{$pis_list}) {
 %   my $conf = $plugins->get_plugin($pi)->get_conf();
-              <li class="list-group-item">
+              <li id="<%= $pi %>" class="list-group-item">
                 <p><b><%= $conf->{'name'} %></b> &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
                 <div class="row">
                   <div class="col-md-6">
