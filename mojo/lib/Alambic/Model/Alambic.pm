@@ -240,6 +240,35 @@ sub get_project($) {
 }
 
 
+# set properties of a project from its id.
+#
+# Params
+#  - id the id of the project to be set.
+#  - name the name of the project to be set.
+#  - desc the desc of the project to be set.
+#  - active the is_active flag of the project to be set.
+#  - plugins the plugins conf of the project to be set.
+sub set_project($) {
+    my $self = shift;
+    my $project_id = shift || '';
+    my $name = shift || '';
+    my $desc = shift || '';
+    my $active = shift || '';
+    my $plugins = shift || {};
+
+    my $project => $repodb->get_project_conf($project_id);
+    
+    if ($name !~ m!^$!) { $project->{'name'} = $name }
+    if ($desc !~ m!^$!) { $project->{'desc'} = $desc }
+    if ($active !~ m!^$!) { $project->{'active'} = $active }
+    if (ref($plugins) =~ m!^HASH$! && scalar keys %$plugins > 1) { $project->{'plugins'} = $plugins }
+
+    $repodb->set_project_conf( $project_id, $project->{'name'}, 
+			       $project->{'desc'}, $project->{'active'}, 
+			       $project->{'plugins'});
+}
+
+
 # Get a pointer to the project identified by its id.
 sub _get_project($) {
     my ($id) = @_;

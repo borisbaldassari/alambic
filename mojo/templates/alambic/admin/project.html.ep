@@ -71,9 +71,11 @@
               </div>
             </div>
 
+	    <hr />
+
             <div class="row">
               <div class="col-md-6">
-		<h3>Automatic data sources</h3>
+		<h3>Plugins</h3>
 		
 		<p>You can add a data source from:
 % foreach my $p (sort keys %$plugins_all) {
@@ -117,6 +119,8 @@
 		</table>
               </div>
             </div>
+
+	    <hr />
 
             <div class="row">
               <div class="col-md-6">

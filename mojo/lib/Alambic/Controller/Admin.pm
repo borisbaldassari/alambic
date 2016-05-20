@@ -311,6 +311,18 @@ sub projects_del {
 sub projects_edit {
     my $self = shift;
     my $project_id = $self->param( 'pid' );
+
+    my $conf = $self->app->al->get_project($project_id);
+    my $project_name = $conf->name();
+    my $project_active = $conf->active();
+    my $project_desc = $conf->desc();
+    
+    $self->stash(
+        id => $project_id,
+        name => $project_name,
+	desc => $project_desc,
+	is_active => $project_active,
+        );
     
     # Render template for main admin section
     $self->render( template => 'alambic/admin/project_set' );
@@ -323,14 +335,16 @@ sub projects_edit_post {
     
     my $project_id = $self->param( 'id' );
     my $project_name = $self->param( 'name' );
+    my $project_desc = $self->param( 'desc' );
     my $project_active = $self->param( 'is_active' );
 
-    # TODO
-
-    my $msg = "Project '$project_name' ($project_id) has been created.";
+    my $project = $self->app->al->set_project($project_id, $project_name, 
+					      $project_desc, $project_active);
+	
+    my $msg = "Project '$project_name' ($project_id) has been updated.";
     
     $self->flash( msg => $msg );
-    $self->redirect_to( '/admin/projects' );
+    $self->redirect_to( '/admin/projects/' . $project_id );
 }
 
 

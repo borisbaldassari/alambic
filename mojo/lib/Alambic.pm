@@ -139,6 +139,7 @@ sub startup {
     $r_admin_projects->get('/#pid/run/post')->to(action => 'projects_run_post');
     $r_admin_projects->get('/#pid/del')->to(action => 'projects_del');    
     $r_admin_projects->get('/#pid/edit')->to(action => 'projects_edit');
+    $r_admin_projects->post('/#pid/edit')->to(action => 'projects_edit_post');
     
     $r_admin_projects->get('/#pid/setp/#plid')->to( action => 'projects_add_plugin' );
     $r_admin_projects->post('/#pid/setp/#plid')->to( action => 'projects_add_plugin_post' );
