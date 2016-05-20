@@ -22,6 +22,7 @@ our @EXPORT_OK = qw(
                      metrics
                      indicators
                      attributes
+                     attributes_conf
                      recs
                      get_qm
                      run_plugin
@@ -180,6 +181,14 @@ sub attributes() {
     %attributes = %{$attributes} if (scalar @_ > 1);
 	   
     return \%attributes;
+}
+
+sub attributes_conf() {
+    my ($self, $attributes_conf) = @_;
+
+    %attributes_conf = %{$attributes_conf} if (scalar @_ > 1);
+	   
+    return \%attributes_conf;
 }
 
 sub recs() {

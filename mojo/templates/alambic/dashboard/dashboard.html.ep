@@ -1,9 +1,22 @@
 % my $project_id = stash( 'project_id' );
 % my $run = stash( 'run' );
-%
+% use Data::Dumper;
 % my $project = app->al->get_project($project_id);
+% my $attributes = $project->attributes();
+% my $attributes_conf = $project->attributes_conf();
 % my $plugins = app->al->get_plugins();
 % my $list = $plugins->get_names_all();
+% my $colours = ["#EBEBEB","#FFFF66","#CCF24D","#99E633","#66D91A","#33CC00"];
+
+<% my $comp_p = begin %>
+ % my $value = shift || 0;
+ % return $value * 20;
+<% end %>
+ 
+<% my $comp_c = begin %>
+ % my $value = shift || 0;
+ % return $colours->[int($value)];
+<% end %>
 
 <% my $icon_ability = begin %>
  % my $ability = shift;
@@ -17,7 +30,15 @@
  % elsif ($ability =~ m!viz!) { $icon = "fa-pie-chart" }
  % else { $icon = "fa-question" }
   <a href="#<%= $ability %>_<%= $plugin %>"><i class="fa <%= $icon %>"></i> <%= $ability %></a>
+ <% end %>
+
+ <% my $attribute = begin %>
+ % my $attr = shift;
+%#                      <div class="progress">
+%#                        <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project->attributes()->{'QM_QUALITY'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= comp_c( $project_attrs->{$attr} ) %>; width: <%= &comp_p( $project_attrs->{$attr} ) %>%;"><%= $project_attrs->{$attr} %> / 5</div>
+%#                      </div>
 <% end %>
+		      
             <h1 class="al-h1"><small><%= $project_id %></small> Summary</h1>
             <br />
 	    
@@ -32,8 +53,6 @@
               </div>
             </div>
 % }
-
-
 
 %= include 'alambic/dashboard/dashboard_menu', current => '/projects/summary', project_id => "$project_id" 
             <br />
@@ -50,21 +69,20 @@
               <dt>Description</dt><dd><%== $project->desc() %></dd>
 	      <dt>Last analysis</dt><dd><%= $run->{'run_time'} %></dd>
             </dl>
-	    <!-- span class="label" style="background-color: #3E3F3A">#3E3F3A</span>
+	    <span class="label" style="background-color: #3E3F3A">#3E3F3A</span>
 		 <span class="label" style="background-color: #FFA500">#FFA500</span>
 		 <span class="label" style="background-color: #5884B3">#5884B3</span>
 		 <span class="label" style="background-color: #CC6686">#CC6686</span>
-		 <span class="label" style="background-color: #9DBE59">#9DBE59</span -->
+		 <span class="label" style="background-color: #9DBE59">#9DBE59</span>
 	    
             <div class="row">
               <div class="col-lg-4">
                 <div class="panel panel-default">
 		  <div class="panel-heading">Plugins</div>
 		  <ul class="list-group">
-% my $plugins = app->al->get_plugins();
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
 %   my $conf = $plugins->get_plugin($p)->get_conf();
-                    <li class="list-group-item"><%= $p %><span class="pull-right"><a href="/documentation/plugins#<%= $p %>"><i class="fa fa-question-circle fa-lg"></i></a> &nbsp; </span><br />
+                    <li class="list-group-item"><%= $p %><span class="pull-right"><a href="/documentation/plugins#<%= $p %>"><i class="fa fa-question-circle fa-lg"></i></a></span><br />
                       <%== join( ' &nbsp; ', map { $icon_ability->($_, $p) } @{$conf->{'ability'}} ) %>
 		    </li>
 % }
@@ -75,7 +93,32 @@
                 <div class="panel panel-default">
 		  <div class="panel-heading">Quality Model</div>
                   <div class="panel-body">
-                    <a href="/projects/<%= ${project_id} %>_plugins_stack_overflow.html"><img src="figures/stack_overflow/<%= $project_id %>/blob-so-plot-1.svg" class="img-responsive" alt="No data."/></a>
+		    
+% my $attr = 'QM_QUALITY';
+                    <dt style="margin-bottom: 5px"><a href="/documentation/attributes.html#<%= $attr %>">Project Health</a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
+                    <dd>
+                      <div class="progress">
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} || 0%> / 5</div>
+                      </div>
+                    </dd>
+		    <hr />
+		    
+% $attr = 'QM_ECOSYSTEM';
+                    <dt style="margin-bottom: 5px"><a href="/documentation/attributes.html#<%= $attr %>">Ecosystem</a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
+                    <dd>
+                      <div class="progress">
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} || '' %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} %> / 5</div> 
+                      </div>
+                    </dd>
+		    
+% $attr = 'QM_PROCESS';
+                    <dt style="margin-bottom: 5px"><a href="/documentation/attributes.html#<%= $attr %>">Process</a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
+                    <dd>
+                      <div class="progress">
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} || '' %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} %> / 5</div> 
+                      </div>
+                    </dd>
+		    
                   </div>
                 </div>
               </div>
