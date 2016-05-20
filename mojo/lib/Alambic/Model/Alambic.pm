@@ -8,6 +8,7 @@ use Alambic::Model::Project;
 use Alambic::Model::RepoDB;
 use Alambic::Model::RepoFS;
 use Alambic::Model::Plugins;
+use Alambic::Model::Wizards;
 use Alambic::Model::Models;
 
 use Mojo::JSON qw (decode_json encode_json);
@@ -26,14 +27,23 @@ our @EXPORT_OK = qw(
                      instance_pg_minion
                      is_db_ok
                      is_db_m_ok
-                     get_models
                      get_plugins
+                     get_models
                      get_repo_db
+                     get_wizards
                      create_project
                      get_project
                      get_projects_list
                      add_project_plugin
+                     del_project_plugin
+                     get_project_hist
+                     get_project_last_run
+                     get_project_run
                      run_project
+                     run_plugins
+                     run_qm
+                     run_post
+                     run_globals
                      delete_project
                    );  
 
@@ -41,7 +51,9 @@ my $config;
 my $repodb;
 my $repofs;
 my $plugins;
+my $wizards;
 my $models;
+
 
 # Create a new Alambic object.
 sub new { 
@@ -52,6 +64,7 @@ sub new {
     $repodb = Alambic::Model::RepoDB->new($pg_alambic);
     $repofs = Alambic::Model::RepoFS->new();
     $plugins = Alambic::Model::Plugins->new();
+    $wizards = Alambic::Model::Wizards->new();
 
     # If the database is not initialised, then init it.
     if (not &is_db_ok()) { 
@@ -153,6 +166,11 @@ sub get_repo_db() {
     return $repodb;
 }
 
+# Return the RepoDB.pm object for this instance.
+sub get_wizards() {
+    return $wizards;
+}
+
 
 # Create a project with no plugin.
 #
@@ -184,6 +202,32 @@ sub create_project($$) {
 }
 
 
+# Create a project from a wizard.
+#
+# Params
+#  - wizard the wizard id.
+#  - id the project id.
+# Returns
+#  - Project object.
+sub create_project_from_wizard($$) {
+    my $self = shift;
+    my $wiz_id = shift;
+    my $project_id = shift;
+    my $conf = shift;
+    
+    my $ret_wiz = $wizards->get_wizard($wiz_id)->run_wizard($project_id, $conf);
+    my $project = $ret_wiz->{'project'};
+    
+    my $ret = $repodb->set_project_conf( $project_id, $project->name(), $project->desc(), 0, $project->get_plugins() );
+    # $ret == 0 means the insert didn't work.
+    if ( $ret == 0 ) {
+	return undef;
+    }
+
+    return $ret_wiz;
+}
+
+
 # Get a Project object from its id.
 # The project is populated with data (metrics, attributes, recs) 
 # if available.
@@ -210,6 +254,7 @@ sub _get_project($) {
 						$project_conf->{'last_run'},
 						$project_conf->{'plugins'}, 
 						$project_data );
+    $project->desc( $project_conf->{'desc'} );
     
     return $project;
 }

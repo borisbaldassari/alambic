@@ -1,4 +1,5 @@
-
+% my $projects = app->al->get_projects_list();
+% my @projects = sort { $projects->{$a} cmp $projects->{$b} } keys %$projects;
 
             <h1 class="al-h1"><small>Administration</small> Projects</h1>
             <br />
@@ -17,8 +18,21 @@
 
 %= include 'alambic/admin/admin_menu', current => '/admin/projects'
 
-            <p>Do you want to <a href="/admin/projects/new">add a project</a>?</p>
-            <br />
+            <div class="row">
+              <div class="col-sm-6">
+		<p><%= scalar @projects %> projects are defined on this instance. </p>
+              </div>
+              <div class="col-sm-6">
+                <div class="list-group">
+                  <a class="list-group-item" href="/admin/projects/new" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Create empty project</a>
+% my $wizards = app->al->get_wizards()->get_names_all(); use Data::Dumper; print Dumper $wizards;
+% foreach my $wiz_id ( sort keys %{$wizards} ) {
+                  <a class="list-group-item" href="/admin/projects/new/<%= $wiz_id %>" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Create project from <%= $wizards->{$wiz_id} %></a>
+% }
+                </div>
+
+              </div>
+            </div>
 
             <table class="table table-striped">
               <tr>
@@ -27,9 +41,7 @@
                 <th>Last update</th>
                 <th colspan="3">Actions</th>
               </tr>
-
-% my $projects = app->al->get_projects_list();
-% my @projects = sort { $projects->{$a} cmp $projects->{$b} } keys %$projects;
+	      
 % foreach my $project_id ( @projects ) {
 %   my $project = app->al->get_project($project_id);
               <tr>

@@ -78,7 +78,7 @@ isa_ok( $project, 'Alambic::Model::Project' );
 my $id = $project->get_id();
 ok( $id =~ m!^tools.cdt$!, 'Project id is tools.cdt.' ) or diag explain $id;
 
-my $name = $project->get_name();
+my $name = $project->name();
 ok( $name =~ m!^Tools CDT$!, 'Project name is Tools CDT.' ) or diag explain $name;
 
 note("Running EclipseIts plugin.");

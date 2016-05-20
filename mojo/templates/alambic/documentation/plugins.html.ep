@@ -35,7 +35,7 @@
                   <div class="col-md-6">
                     <p><b>ID</b>: <%= $conf->{'id'} %></p>
                     <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'requires'}} ) %></p>                    
-                    <p><b>Description</b>: <%= join( '<br />', @{$conf->{'desc'}}) %></p>
+                    <p><b>Description</b>: <%== join( '<br />', @{$conf->{'desc'}}) %></p>
                   </div>
                   <div class="col-md-6">
                     <p><b>Provides metrics</b><br />

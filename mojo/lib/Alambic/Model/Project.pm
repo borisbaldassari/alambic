@@ -13,7 +13,8 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( 
                      get_id
-                     get_name
+                     name
+                     desc
                      get_plugins
                      last_run
                      active
@@ -97,7 +98,13 @@ sub get_id() {
     return $project_id;
 }
 
-sub get_name() {
+sub name() {
+    my ($self, $name) = @_;
+
+    if (scalar @_ > 1) {
+	$project_name = $name;
+    }
+    
     return $project_name;
 }
 

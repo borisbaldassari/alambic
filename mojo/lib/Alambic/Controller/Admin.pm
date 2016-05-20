@@ -152,7 +152,7 @@ sub projects_show {
 
     # TODO get the list of runs for this project.
     my $repodb = $self->app->al->get_repo_db();
-#    $repodb->get_project_hist
+    my $runs = $repodb->get_project_all_runs($project_id);
     
     # Retrieve last modification time on input files.
     foreach my $file (@files_input, @files_output) { 
@@ -164,7 +164,8 @@ sub projects_show {
         project_id => $project_id,
         files_input => \@files_input,
         files_output => \@files_output,
-        files_time =>\%files_time,
+        files_time => \%files_time,
+	project_runs => $runs,
         );
     
     $self->render( template => 'alambic/admin/project' );
@@ -202,6 +203,81 @@ sub projects_new_post {
 }
 
 
+# New project from wizard screen for Alambic admin.
+sub projects_wizards_new_init {
+    my $self = shift;
+    my $wizard = $self->param( 'wiz' );
+
+    # XXX check if wizard is in the list of wizards.
+    my $conf_wizard = $self->app->al->get_wizards()->get_wizard($wizard)->get_conf();
+    
+    $self->stash(
+        wizard_id => $wizard,
+	conf_wizard => $conf_wizard,
+        );
+
+    $self->render( template => 'alambic/admin/project_set_wizard' );
+}
+
+
+# New project from wizard screen for Alambic admin.
+sub projects_wizards_new_init_post {
+    my $self = shift;
+    my $wizard = $self->param( 'wiz' );
+
+    my $project_id = $self->param( 'project_id' );
+
+#    print "# In Admin::projects_wizard_new_init_post $project_id.\n";
+    
+    my %args;
+    my $conf_wizard = $self->app->al->get_wizards()->get_wizard($wizard)->get_conf();
+    foreach my $param ( keys %{$conf_wizard->{'params'}} ) {
+        $args{$param} = $self->param( $param );
+    }
+    
+    my $project = $self->app->al->create_project_from_wizard( $wizard, $project_id, \%args );
+
+    my $msg = "Project [$project_id] has been created.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( "/admin/projects/$project_id" );
+}
+
+
+# New project from wizard screen for Alambic admin.
+sub projects_wizards_new_check {
+    my $self = shift;
+    my $wizard = $self->param( 'wiz' );
+    my $project_id = $self->param( 'pid' );
+
+    # XXX check if wizard is in the list of wizards.
+    
+    $self->stash(
+        project_id => $project_id,
+        wizard => $wizard,
+        );
+
+    $self->render( template => 'alambic/wizards/$wizard' );
+}
+
+
+# New project from wizard screen for Alambic admin.
+sub projects_wizards_new_check_post {
+    my $self = shift;
+    
+    my $project_id = $self->param( 'id' );
+    my $project_name = $self->param( 'name' );
+    my $project_active = $self->param( 'is_active' );
+    
+    my $project = $self->app->al->create_project_from_wizard( $project_id, $project_name, '', $project_active );
+
+    my $msg = "Project '$project_name' ($project_id) has been created.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( "/admin/projects/$project_id" );
+}
+
+
 # Run project screen for Alambic admin.
 sub projects_run {
     my $self = shift;
@@ -235,11 +311,9 @@ sub projects_del {
 sub projects_edit {
     my $self = shift;
     my $project_id = $self->param( 'pid' );
-
-    # TODO
     
     # Render template for main admin section
-    $self->render( template => 'alambic/admin/projects_edit' );
+    $self->render( template => 'alambic/admin/project_set' );
 }
 
 
@@ -384,6 +458,50 @@ sub plugins {
 
     # Render template 
     $self->render( template => 'alambic/admin/plugins' );   
+
+}
+
+#
+# Displays a list of plugins detected with information about them.
+#
+sub plugins_pre {
+    my $self = shift;
+
+    # Render template 
+    $self->render( template => 'alambic/admin/plugins_pre' );   
+
+}
+
+#
+# Displays a list of plugins detected with information about them.
+#
+sub plugins_post {
+    my $self = shift;
+
+    # Render template 
+    $self->render( template => 'alambic/admin/plugins_post' );   
+
+}
+
+#
+# Displays a list of plugins detected with information about them.
+#
+sub plugins_global {
+    my $self = shift;
+
+    # Render template 
+    $self->render( template => 'alambic/admin/plugins_global' );   
+
+}
+
+#
+# Displays a list of plugins detected with information about them.
+#
+sub plugins_wizards {
+    my $self = shift;
+
+    # Render template 
+    $self->render( template => 'alambic/admin/plugins_wizards' );   
 
 }
 

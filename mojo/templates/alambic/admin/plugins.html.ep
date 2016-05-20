@@ -158,3 +158,29 @@
             </tr>
 % }
             </table>
+
+	    <h3>Wizards</h3>
+% my $wizards = app->al->get_wizards();
+% my $list = $wizards->get_names_all();
+
+	    <p>These plugins create a new project pre-populated with various information and plugins. </p>
+
+            <table class="table table-striped">
+              <tr>
+                <th width="10%">Name</th>
+                <th width="10%">ID</th>
+                <th width="40%">Description</th>
+                <th width="20%">Parameters</th>
+                <th width="20%">Plugins</th>
+              </tr>
+% foreach my $p (sort keys %$list) {
+%   my $conf = $wizards->get_wizard($p)->get_conf();
+            <tr>
+              <td><%= $conf->{'name'} %></td>
+              <td><%= $conf->{'id'} %></td>
+              <td><%= join( ', ', @{$conf->{'desc'}} ) %></td>
+              <td><%= join( ', ', ('project_id', sort keys %{$conf->{'params'}}) ) %></td>
+              <td><%= join( ', ', sort @{$conf->{'plugins'}} ) %></td>
+            </tr>
+% }
+            </table>
