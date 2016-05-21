@@ -91,7 +91,7 @@ sub knit_rmarkdown_inc($$) {
     my $r_md = $r_file;
     $r_file =~ s/(.*)\..*+/$1/;
     my $r_md_out = "${r_file}.inc";
-    push( @log, "[$r_md] output to [$r_md_out]." );
+    push( @log, "[Tools::R] Executing [$r_md] output to [$r_md_out]." );
 
     # Change the current working directory localy only.
     {
@@ -160,7 +160,7 @@ sub knit_rmarkdown_html($$) {
     my $r_md = $r_file;
     $r_file =~ s/(.*)\..*+/$1/;
     my $r_md_out = "${r_file}.html";
-    push( @log, "[$r_md] output to [$r_md_out]." );
+    push( @log, "[Tools::R] Executing [$r_md] output to [$r_md_out]." );
 
     # Change the current working directory localy only.
     {
