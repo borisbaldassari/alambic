@@ -93,7 +93,7 @@ sub run_plugin($$) {
     my %ret = (
 	'metrics' => {},
 	'info' => {},
-	'recs' => {},
+	'recs' => [],
 	'log' => [],
 	);
 
@@ -155,7 +155,7 @@ sub _compute_data($) {
 
     my %info;
     my %metrics;
-    my %recs;
+    my @recs;
     my @log;
 
     push( @log, "[Plugins::EclipsePmi] Starting compute data for [$project_id]." );
@@ -527,7 +527,7 @@ sub _compute_data($) {
     return {
 	"info" => \%info,
 	"metrics" => \%metrics,
-	"recs" => \%recs,
+	"recs" => \@recs,
 	"log" => \@log,
     };
 }

@@ -98,7 +98,7 @@ sub run_plugin($$) {
     my %ret = (
 	'metrics' => {},
 	'info' => {},
-	'recs' => {},
+	'recs' => [],
 	'log' => [],
 	);
 
@@ -158,7 +158,7 @@ sub _retrieve_data($$$) {
 sub _compute_data($$$) {
     my ($project_id, $project_pmi, $repofs) = @_;
 
-    my %recs;
+    my @recs;
     my @log;
     
     push( @log, "[Plugins::EclipseIts] Starting compute data for [$project_id]." );
@@ -207,18 +207,18 @@ sub _compute_data($$$) {
     # Now execute the main R script.
     push( @log, "[Plugins::EclipseIts] Executing R main file." );
     my $r = Alambic::Tools::R->new();
-    my @log_r = $r->knit_rmarkdown_inc( 'EclipseIts', $project_id, 'eclipse_its.Rmd' );
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'EclipseIts', $project_id, 'eclipse_its.Rmd' )} );
 
     # And execute the figures R scripts.
     my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
     foreach my $fig (sort @figs) {
 	push( @log, "[Plugins::EclipseIts] Executing R fig file [$fig]." );
-	@log_r = $r->knit_rmarkdown_html( 'EclipseIts', $project_id, $fig );
+	@log = ( @log, @{$r->knit_rmarkdown_html( 'EclipseIts', $project_id, $fig )} );
     }
     
     return {
 	"metrics" => $metrics_new,
-	"recs" => \%recs,
+	"recs" => \@recs,
 	"log" => \@log,
     };
 }
