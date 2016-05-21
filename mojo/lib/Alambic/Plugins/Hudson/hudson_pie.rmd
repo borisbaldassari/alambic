@@ -1,0 +1,29 @@
+---
+output: html_document
+---
+
+```{r init, echo=FALSE, message=FALSE, results='asis'}
+knitr::opts_chunk$set(fig.width=6, fig.height=6, echo=F)
+
+suppressPackageStartupMessages(library(googleVis))
+options(gvis.plot.tag='chart')
+require('reshape2')
+
+#project.id <- 'modeling.sirius'
+file.metrics = paste("", project.id, "_hudson_metrics.csv", sep="")
+hudson.metrics <- read.csv(file=file.metrics, header=T)
+
+#jobs.tmp <- hudson.metrics[1,c('JOBS_GREEN', 'JOBS_YELLOW', 'JOBS_RED')]
+#jobs.tmp <- as.list(unlist(hudson.metrics[1,c('JOBS_GREEN', 'JOBS_YELLOW', 'JOBS_RED')]))
+jobs <- data.frame(unlist(c('JOBS_GREEN', 'JOBS_YELLOW', 'JOBS_RED')), unlist(hudson.metrics[1,c('JOBS_GREEN', 'JOBS_YELLOW', 'JOBS_RED')]))
+  
+p <- gvisPieChart(jobs, 
+                  options = list(
+                    title=paste("Hudson CI Builds for ", project.id, sep=""),
+                    colors="['green', 'yellow', 'red']",
+                    width=450, height=320,
+                    pieHole= 0.4))
+
+print(p, 'chart')
+```
+
