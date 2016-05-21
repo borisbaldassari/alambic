@@ -19,6 +19,7 @@ my %conf = (
     "plugins" => [
 	"EclipsePmi",
 	"EclipseIts",
+	"Hudson",
     ],
 );
 
@@ -63,21 +64,24 @@ sub run_wizard($$) {
 
     # Check if we actually get some results.
     my $pmi = decode_json($content);
-    my $custom_pmi;
+    my $project_pmi;
     if ( defined($pmi->{'projects'}{$project_id}) ) {
-        $custom_pmi = $pmi->{'projects'}{$project_id};
+        $project_pmi = $pmi->{'projects'}{$project_id};
     } else {
         push( @log, "ERROR: Could not get [$url]!" );
         return { 'log' => \@log };
     }
-    $custom_pmi->{'pmi_url'} = $url;
+    $project_pmi->{'pmi_url'} = $url;
+    print Dumper($project_pmi);
 
-    my $name = $custom_pmi->{'title'};
-    my $desc = $custom_pmi->{'description'}->[0]->{'summary'};
+    my $name = $project_pmi->{'title'};
+    my $desc = $project_pmi->{'description'}->[0]->{'summary'};
+    my $project_ci = $project_pmi->{'build_url'}->[0]->{'url'};
 
     my $plugins_conf = {
 	"EclipsePmi" => { 'project_pmi' => $project_id },
 	"EclipseIts" => { 'project_grim' => $project_id },
+	"Hudson" => { 'hudson_url' => $project_ci },
     };
 
     my $project = Alambic::Model::Project->new( $project_id, $name, 0, 0, $plugins_conf );
