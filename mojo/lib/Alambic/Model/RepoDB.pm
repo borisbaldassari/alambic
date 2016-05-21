@@ -84,7 +84,7 @@ sub backup_db() {
     
     $results = $pg->db->query("SELECT * FROM projects_runs");
     my $fields = "id, project_id, run_time, run_delay, run_user, metrics, indicators, "
-	. "attributes, attributes_conf, , recs";
+	. "attributes, attributes_conf, recs";
     while (my $next = $results->hash) {
 	my $insert_statement = qq{INSERT INTO projects ($fields)\n VALUES (};
 	$insert_statement .= "'" . $next->{'id'} . "', '" . $next->{'project_id'} . "', '"
@@ -429,7 +429,8 @@ sub get_active_projects_list() {
 #  - \%metrics a hash ref of metrics.
 #  - \%indicators a hash ref of indicators.
 #  - \%attributes a hash ref of attributes.
-#  - \%recs a hash ref of recs.
+#  - \%attributes_conf a hash ref of attributes.
+#  - \@recs a hash ref of recs.
 sub add_project_run($$$$$$$) {
     my ($self, $project_id, $run, $info, $metrics, $indicators, $attributes, $attributes_conf, $recs) = @_;
 
@@ -490,12 +491,13 @@ sub add_project_run($$$$$$$) {
 #     'MYMETRIC' => 15
 #   },
 #   'project_id' => 'modeling.sirius',
-#   'recs' => {
-#     'MYREC' => {
+#   'recs' => [
+#     {
 #       'desc' => 'This is a description.',
+#       'severity' => 3,
 #       'rid' => 'REC_PMI_11'
 #     }
-#   },
+#   ],
 #   'run_delay' => 113,
 #   'run_time' => '2016-05-08 16:53:57',
 #   'run_user' => 'none'
@@ -520,7 +522,7 @@ sub get_project_last_run() {
 	$project{'indicators'} = decode_json( $next->{'indicators'} ); 
 	$project{'attributes'} = decode_json( $next->{'attributes'} ); 
 	$project{'attributes_conf'} = decode_json( $next->{'attributes_conf'} ); 
-	$project{'recs'} = decode_json($next->{'recs'} ); 
+	$project{'recs'} = decode_json($next->{'recs'} || '[]'); 
     }
     
     # Execute select in info table.
@@ -546,12 +548,13 @@ sub get_project_last_run() {
 #     'MYMETRIC' => 15
 #   },
 #   'project_id' => 'modeling.sirius',
-#   'recs' => {
-#     'MYREC' => {
+#   'recs' => [
+#     {
 #       'desc' => 'This is a description.',
+#       'severity' => 3,
 #       'rid' => 'REC_PMI_11'
 #     }
-#   },
+#   ],
 #   'run_delay' => 113,
 #   'run_time' => '2016-05-08 16:53:57',
 #   'run_user' => 'none'

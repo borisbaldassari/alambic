@@ -397,7 +397,7 @@ sub get_project_run($$) {
 #      "attributes" => {'attr1' => 'value1'},
 #      "attributes_conf" => {'attr1' => 'value1'},
 #      "infos" => {'info1' => 'value1'},
-#      "recs" => {'rec1' => 'value1'},
+#      "recs" => ['rec1' => 'value1'],
 #      "log" => ['log entry'],
 #    }
 sub run_project($) {
@@ -436,7 +436,7 @@ sub run_project($) {
 #      "attributes" => {'attr1' => 'value1'},
 #      "attributes_conf" => {'attr1' => 'value1'},
 #      "infos" => {'info1' => 'value1'},
-#      "recs" => {'rec1' => 'value1'},
+#      "recs" => ['rec1' => 'value1'],
 #      "log" => ['log entry'],
 #    }
 sub run_plugins($) {
@@ -467,7 +467,7 @@ sub run_plugins($) {
 #      "attributes" => {'attr1' => 'value1'},
 #      "attributes_conf" => {'attr1' => 'value1'},
 #      "infos" => {'info1' => 'value1'},
-#      "recs" => {'rec1' => 'value1'},
+#      "recs" => ['rec1' => 'value1'],
 #      "log" => ['log entry'],
 #    }
 sub run_qm($) {
@@ -497,7 +497,7 @@ sub run_qm($) {
 #      "attributes" => {'attr1' => 'value1'},
 #      "attributes_conf" => {'attr1' => 'value1'},
 #      "infos" => {'info1' => 'value1'},
-#      "recs" => {'rec1' => 'value1'},
+#      "recs" => ['rec1' => 'value1'],
 #      "log" => ['log entry'],
 #    }
 sub run_post($) {

@@ -51,7 +51,7 @@ my %metrics = ();
 my %indicators = ();
 my %attributes = ();
 my %attributes_conf = ();
-my %recs = ();
+my @recs = ();
 ######################################
 
 # A ref to the Plugins module.
@@ -82,14 +82,14 @@ sub new {
     %indicators = ();
     %attributes = ();
     %attributes_conf = ();
-    %recs = ();
+    @recs = ();
     if ( defined($data) ) {
 	%info = %{$data->{'info'} || {}};
 	%metrics = %{$data->{'metrics'} || {}};
 	%indicators = %{$data->{'indicators'} || {}};
 	%attributes = %{$data->{'attributes'} || {}};
 	%attributes_conf = %{$data->{'attributes_conf'} || {}};
-	%recs = %{$data->{'recs'} || {}};
+	@recs = @{$data->{'recs'} || []};
     }
 
     return bless {}, $class;
@@ -194,9 +194,9 @@ sub attributes_conf() {
 sub recs() {
     my ($self, $recs) = @_;
     
-    %recs = %{$recs} if (scalar @_ > 1);
+    @recs = @{$recs} if (scalar @_ > 1);
 	   
-    return \%recs;
+    return \@recs;
 }
 
 sub run_plugin($) {
@@ -212,8 +212,8 @@ sub run_plugin($) {
 	$metrics{$metric} = $ret->{'metrics'}{$metric};
     }
 
-    foreach my $rec (sort keys %{$ret->{'recs'}} ) {
-	$recs{$rec} = $ret->{'recs'}{$rec};
+    foreach my $rec ( @{$ret->{'recs'}} ) {
+	push( @recs, $rec );
     }
     
     return $ret;
@@ -226,7 +226,6 @@ sub run_plugins() {
 
     foreach my $plugin_id (keys %plugins) {
 	my $ret = $plugins_module->run_plugin($project_id, $plugin_id, $plugins{$plugin_id});
-
 	foreach my $info (sort keys %{$ret->{'info'}} ) {
 	    $info{$info} = $ret->{'info'}{$info};
 	}
@@ -235,14 +234,14 @@ sub run_plugins() {
 	    $metrics{$metric} = $ret->{'metrics'}{$metric};
 	}
 	
-	foreach my $rec (sort keys %{$ret->{'recs'}} ) {
-	    $recs{$rec} = $ret->{'recs'}{$rec};
+	foreach my $rec ( @{$ret->{'recs'}} ) {
+	    push( @recs, $rec );
 	}
 
 	@log = (@log, @{$ret->{'log'}});
     }
 
-    return { "info" => \%info, "metrics" => \%metrics, "recs" => \%recs, "log" => \@log };
+    return { "info" => \%info, "metrics" => \%metrics, "recs" => \@recs, "log" => \@log };
 }
 
 
@@ -292,7 +291,7 @@ sub run_project($) {
 		$ret{$item}{$value} = $qm_data->{$item}{$value};
 	    }
 	} elsif ( defined($qm_data->{$item}) && ref($qm_data->{$item}) =~ /ARRAY/ ) {
-	# Some children are arrays (e.g. log)
+	    # Some children are arrays (e.g. log)
 	    foreach my $value (@{$qm_data->{$item}}) {
 		push( @{$ret{$item}}, $value );
 	    }

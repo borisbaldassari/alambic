@@ -1,3 +1,4 @@
+% use Data::Dumper;
 
             <h1 class="al-h1"><small>Administration</small> Alambic Repository</h1>
             <br />
@@ -28,8 +29,8 @@
 %              "No result found.";
 %     $metrics = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'metrics'}{$_} } sort keys %{$job_info->{'result'}{'metrics'}} ) . ".";
 %     $info = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'info'}{$_} } sort keys %{$job_info->{'result'}{'info'}} ) . ".";
-%     $attrs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'attrs'}{$_} } sort keys %{$job_info->{'result'}{'attrs'}} ) . ".";
-%     $recs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'recs'}{$_} } sort keys %{$job_info->{'result'}{'recs'}} ) . ".";
+%     $attrs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'attrs'}{$_} } sort keys %{$job_info->{'result'}{'attrs'}} ) . "."; 
+%     $recs = join( "<br />", map { "<code>" . $_->{'rid'} . "</code> (severity " . $_->{'severity'} . ") " . $_->{'desc'} } sort @{$job_info->{'result'}{'recs'}} ) . ".";
 %   }
 
             <div class="row">
