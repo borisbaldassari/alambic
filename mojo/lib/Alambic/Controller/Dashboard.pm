@@ -180,6 +180,7 @@ sub _display_project_html($$) {
         $self->stash(
             project_id => $project_id,
 	    attributes => $run->{'attributes'},
+	    attributes_conf => $run->{'attributes_conf'},
 	    models => $models,
             );
         

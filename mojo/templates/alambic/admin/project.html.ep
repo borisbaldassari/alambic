@@ -53,7 +53,7 @@
 		  <dt>Metrics</dt><dd><%= scalar keys %{$project->metrics()} %> &nbsp; <a href="/projects/<%= $project_id %>/metrics">See metrics &nbsp; <i class="fa fa-eye"></i></a></dd>
 		  <dt>Indicators</dt><dd><%= scalar keys %{$project->indicators()} %> &nbsp; <a href="/projects/<%= $project_id %>/metrics">See indicators &nbsp; <i class="fa fa-eye"></i></a></dd>
 		  <dt>Attributes</dt><dd><%= scalar keys %{$project->attributes()} %> &nbsp; <a href="/projects/<%= $project_id %>/attributes">See attributes &nbsp; <i class="fa fa-eye"></i></a></dd>
-		  <dt>Recs</dt><dd><%= scalar keys %{$project->recs()} %> &nbsp; <a href="/projects/<%= $project_id %>/recs">See recommendations &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Recs</dt><dd><%= scalar @{$project->recs() || []} %> &nbsp; <a href="/projects/<%= $project_id %>/recs">See recommendations &nbsp; <i class="fa fa-eye"></i></a></dd>
 		</dl>
               </div>
               <div class="col-sm-6">

@@ -84,7 +84,7 @@
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
 %   my $conf = $plugins->get_plugin($p)->get_conf();
                     <li class="list-group-item"><%= $p %><span class="pull-right"><a href="/documentation/plugins#<%= $p %>"><i class="fa fa-question-circle fa-lg"></i></a></span><br />
-                      <%== join( ' &nbsp; ', map { $icon_ability->($_, $p) } @{$conf->{'ability'}} ) %>
+                      <%== join( ' &nbsp; ', map { $icon_ability->($_, $p) } sort @{$conf->{'ability'}} ) %>
 		    </li>
 % }
 		  </ul>
@@ -144,7 +144,7 @@
                 <th width="10%">Severity</th>
                 <th width="70%">Description</th>
               </tr>
-% foreach my $item (sort @{$run->{'recs'}}) {
+% foreach my $item (sort @{$run->{'recs'} || []}) {
               <tr>
                 <td><a href="/documentation/recs.html#<%= $item->{'rid'} %>"><%= $item->{'rid'} %></a></td>
                 <td><%= $item->{'severity'} %></td>
