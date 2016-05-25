@@ -24,6 +24,7 @@ our @EXPORT_OK = qw(
                      get_list_plugins_viz
                      get_plugin
                      run_plugin
+                     run_post
                      test
                    );  
                      # get_list_data
@@ -36,7 +37,7 @@ our @EXPORT_OK = qw(
 
 my %plugins;
 
-# array of plugin ids ordered by type.
+# array of plugin ids ordered by type or ability.
 my %plugins_type;
 my %plugins_ability;
 
@@ -50,6 +51,7 @@ sub new {
 }
 
 
+# Read plugins from files in the lib/Alambic/Plugins directory.
 sub _read_plugins() { 
 
     # Clean hashes before reading files.
@@ -100,6 +102,13 @@ sub get_list_plugins_global() {
 }
 
 
+# Get a list of all plugins with their names.
+#
+# Returns a hash ref:
+# {
+#     'plugin1' => 'Plugin number 1',
+#     'plugin2' => 'Plugin number 2',
+# }
 sub get_names_all() {
     my @list = keys %plugins;
     my %list;
@@ -151,37 +160,6 @@ sub get_list_plugins_viz() {
     return $plugins_ability{'viz'} || [];
 }
 
-
-
-# sub get_list_data() {
-#     return $plugins_ability{'data'} || [];
-# }
-
-
-# sub get_list_metrics() {
-#     return $plugins_ability{'metrics'} || [];
-# }
-
-
-# sub get_list_figs() {    
-#     return $plugins_ability{'figs'} || [];
-# }
-
-
-# sub get_list_info() {    
-#     return $plugins_ability{'info'} || [];
-# }
-
-
-# sub get_list_recs() {    
-#     return $plugins_ability{'recs'} || [];
-# }
-
-
-# sub get_list_viz() {    
-#     return $plugins_ability{'viz'} || [];
-# }
-
 sub get_plugin($) {
     my ($self, $plugin_id) = @_;    
     return $plugins{$plugin_id};
@@ -189,7 +167,15 @@ sub get_plugin($) {
 
 sub run_plugin($$$) {
     my ($self, $project_id, $plugin_id, $conf) = @_;    
-    return $plugins{$plugin_id}->run_plugin($project_id, $conf);
+    my $ret = $plugins{$plugin_id}->run_plugin($project_id, $conf);    
+    return $ret;
+}
+
+sub run_post($$$) {
+    my ($self, $project_id, $plugin_id, $conf, $models) = @_; 
+
+    my $ret = $plugins{$plugin_id}->run_post($project_id, $conf, $models);
+    return { 'log' => $ret };
 }
 
 1;

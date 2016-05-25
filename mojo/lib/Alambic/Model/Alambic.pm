@@ -42,7 +42,7 @@ our @EXPORT_OK = qw(
                      run_project
                      run_plugins
                      run_qm
-                     run_post
+                     run_posts
                      run_globals
                      delete_project
                    );  
@@ -456,7 +456,7 @@ sub run_plugins($) {
 }
 
 
-# Run a full analysis on a project: plugins, qm, post plugins.
+# Compute indicators and populate the quality model.
 #
 # Params
 #  - id the project id.
@@ -466,8 +466,6 @@ sub run_plugins($) {
 #      "indicators" => {'ind1' => 'value1'},
 #      "attributes" => {'attr1' => 'value1'},
 #      "attributes_conf" => {'attr1' => 'value1'},
-#      "infos" => {'info1' => 'value1'},
-#      "recs" => ['rec1' => 'value1'],
 #      "log" => ['log entry'],
 #    }
 sub run_qm($) {
@@ -486,7 +484,7 @@ sub run_qm($) {
 }
 
 
-# Run a full analysis on a project: plugins, qm, post plugins.
+# Run all post plugins for the project.
 #
 # Params
 #  - id the project id.
@@ -500,7 +498,7 @@ sub run_qm($) {
 #      "recs" => ['rec1' => 'value1'],
 #      "log" => ['log entry'],
 #    }
-sub run_post($) {
+sub run_posts($) {
     my ($self, $project_id) = @_;
 
     my $time_start = time;
@@ -511,7 +509,7 @@ sub run_post($) {
     };
 
     my $project = &_get_project($project_id);
-    my $values = $project->run_post($models);
+    my $values = $project->run_posts($models);
 
     return $values;
 }

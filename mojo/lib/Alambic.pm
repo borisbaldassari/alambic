@@ -67,7 +67,16 @@ sub startup {
     # Partial runs are not recorded in the db and can only be viewed in the job log.
     $self->minion->add_task( run_plugin => sub {
         my ($job, $project_id, $plugin_id) = @_;
-        my $ret = $self->al->get_project($project_id)->run_plugin($plugin_id);
+	my $ret; 
+
+	my $plugin_conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
+	my $models = $self->app->al->get_models();
+
+	if ($plugin_conf->{'type'} =~ /^pre$/ ) {
+	    $ret = $self->al->get_project($project_id)->run_plugin($plugin_id);
+	} elsif ($plugin_conf->{'type'} =~ /^post$/ ) {
+	    $ret = $self->al->get_project($project_id)->run_post($plugin_id, $models);
+	} else { $ret->{'log'} = [ "Plugin ID [$plugin_id] is not recognised." ] }
         $job->finish($ret);
     } );
 
@@ -89,9 +98,9 @@ sub startup {
     
     # Add task to run post plugins
     # Partial runs are not recorded in the db and can only be viewed in the job log.
-    $self->minion->add_task( run_post => sub {
+    $self->minion->add_task( run_posts => sub {
         my ($job, $project_id) = @_;
-        my $ret = $self->al->run_post($project_id);
+        my $ret = $self->al->run_posts($project_id);
         $job->finish($ret);
     } );
     

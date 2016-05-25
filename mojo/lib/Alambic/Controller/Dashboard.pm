@@ -49,6 +49,8 @@ sub display_plugins {
 
     my $plugin_conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
     
+    print "# In Dashboard::display_plugins " . $project_id . ' ' . $page_id . ".\n";
+
     # Action depends on the type of file requested
     if ( grep( /$page_id/, keys %{$plugin_conf->{'provides_viz'}} ) ) {
 
@@ -68,6 +70,8 @@ sub display_plugins {
     } elsif ( grep( /$page_id/, keys %{$plugin_conf->{'provides_data'}} ) ) {
 
 	# If the page is a data, reply static file under 'projects/output'
+	print "# In Dashboard::display_plugins " 
+	    . '../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id;
 	$self->reply->static( '../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id );
 
     } else {

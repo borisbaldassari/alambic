@@ -391,7 +391,7 @@ sub projects_add_plugin_post {
 }
 
 
-# Edit project screen for Alambic admin.
+# Run project screen for Alambic admin.
 sub projects_run_plugin {
     my $self = shift;
     my $project_id = $self->param( 'pid' );
@@ -436,11 +436,11 @@ sub projects_run_qm {
 
 
 # Edit project screen for Alambic admin.
-sub projects_run_post {
+sub projects_run_posts {
     my $self = shift;
     my $project_id = $self->param( 'pid' );
 
-    my $job = $self->minion->enqueue( run_post => [ $project_id ] => { delay => 0 });
+    my $job = $self->minion->enqueue( run_posts => [ $project_id ] => { delay => 0 });
 
     my $msg = "Project run post plugins on project $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
     

@@ -199,11 +199,16 @@ sub recs() {
     return \@recs;
 }
 
+
+# Runs a pre-type plugin and returns result.
+#
+# Params:
+#   - $plugin_id the plugin id to execute.
 sub run_plugin($) {
     my ($self, $plugin_id) = @_;
 
     my $ret = $plugins_module->run_plugin($project_id, $plugin_id, $plugins{$plugin_id});
-
+    
     foreach my $info (sort keys %{$ret->{'info'}} ) {
 	$info{$info} = $ret->{'info'}{$info};
     }
@@ -219,25 +224,22 @@ sub run_plugin($) {
     return $ret;
 }
 
+
+# Runs all pre-type plugins and returns result.
 sub run_plugins() {
     my ($self) = @_;
 
     my @log;
 
-    foreach my $plugin_id (keys %plugins) {
+    my @pre_plugins = sort grep { 
+	$plugins_module->get_plugin($_)->get_conf->{'type'} =~ /^pre$/
+    } keys %plugins;
+    foreach my $plugin_id (@pre_plugins) {
 	my $ret = $plugins_module->run_plugin($project_id, $plugin_id, $plugins{$plugin_id});
-	foreach my $info (sort keys %{$ret->{'info'}} ) {
-	    $info{$info} = $ret->{'info'}{$info};
-	}
-
-	foreach my $metric (sort keys %{$ret->{'metrics'}} ) {
-	    $metrics{$metric} = $ret->{'metrics'}{$metric};
-	}
 	
-	foreach my $rec ( @{$ret->{'recs'}} ) {
-	    push( @recs, $rec );
-	}
-
+	foreach my $info (sort keys %{$ret->{'info'}} ) { $info{$info} = $ret->{'info'}{$info}; }
+	foreach my $metric (sort keys %{$ret->{'metrics'}} ) { $metrics{$metric} = $ret->{'metrics'}{$metric}; }
+	foreach my $rec ( @{$ret->{'recs'}} ) { push( @recs, $rec ); }
 	@log = (@log, @{$ret->{'log'}});
     }
 
@@ -248,7 +250,7 @@ sub run_plugins() {
 # Run a qm analysis: generate indicators and attributes for the project.
 #
 # Params:
-#   $models a ref to a Models.pm object
+#   - $models a ref to a Models.pm object
 sub run_qm($) {
     my $self = shift;
     my $models = shift;
@@ -262,7 +264,73 @@ sub run_qm($) {
 
 
 # Run all post plugins for this project
+#
+# Params:
+#   - $plugin_id the identifier of the post plugin to be executed
+#   - $models a ref to a Models.pm object
 sub run_post() {
+    my ($self, $plugin_id, $models) = @_;
+
+    my $ret;
+    my $main = {
+	"last_run" => $project_last_run,
+    };
+
+    # If plugin is a type post
+    my $project_data = {
+	'main' => $main,
+	'models' => $models,
+	'metrics' => \%metrics,
+	'attributes' => \%attributes,
+	'attributes_conf' => \%attributes_conf,
+	'plugins' => \%plugins,
+	'info' => \%info,
+	'recs' => \@recs,
+    };
+    $ret = $plugins_module->run_post($project_id, $plugin_id, $project_data, $models);
+
+    # Add retrieved values to the current project.
+    foreach my $info (sort keys %{$ret->{'info'}} ) { $info{$info} = $ret->{'info'}{$info}; }
+    foreach my $metric (sort keys %{$ret->{'metrics'}} ) { $metrics{$metric} = $ret->{'metrics'}{$metric}; }
+    foreach my $rec ( @{$ret->{'recs'}} ) { push( @recs, $rec ); }
+    
+    return $ret;
+
+}
+
+
+# Run all post plugins for this project
+#
+# Params:
+#   - $plugin_id the identifier of the post plugin to be executed
+#   - $models a ref to a Models.pm object
+sub run_posts() {
+    my ($self, $models) = @_;
+
+    my $ret;
+    my @log;
+
+    my $project_data = {
+	'models' => $models,
+	'metrics' => \%metrics,
+	'attributes' => \%attributes,
+	'attributes_conf' => \%attributes_conf,
+	'info' => \%info,
+	'recs' => \@recs,
+    };
+
+    my @post_plugins = sort grep { $plugins_module->get_plugin($_)->get_conf()->{'type'} =~ /^post$/ } keys %plugins;
+    foreach my $plugin_id (@post_plugins) {
+	my $ret = $plugins_module->run_post($project_id, $plugin_id, $project_data, $models);
+	
+	foreach my $info (sort keys %{$ret->{'info'}} ) { $info{$info} = $ret->{'info'}{$info}; }
+	foreach my $metric (sort keys %{$ret->{'metrics'}} ) { $metrics{$metric} = $ret->{'metrics'}{$metric}; }
+	foreach my $rec ( @{$ret->{'recs'}} ) { push( @recs, $rec ); }
+	@log = (@log, @{$ret->{'log'}});
+    }
+    $ret->{'log'} = \@log;
+    
+    return $ret;
 
 }
 
@@ -299,7 +367,8 @@ sub run_project($) {
     }
     
     # Run post plugins
-    my $post_data = $self->run_post();
+    my $post_data = $self->run_posts($models);
+    $ret{'log'} = [ @{$ret{'log'}}, @{$post_data->{'log'}} ];
     
     return \%ret;
 }

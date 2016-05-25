@@ -1,0 +1,57 @@
+---
+title: "Eclipse Project Report"
+author: "Alambic"
+output: pdf_document
+---
+
+```{r init, echo=FALSE, message=FALSE}
+project.id <- 'modeling.gendoc'
+plugin.id <- 'EclipseReport'
+file.main = paste("", project.id, "_main.csv", sep="")
+file.info = paste("", project.id, "_info.csv", sep="")
+file.metrics = paste("", project.id, "_metrics.csv", sep="")
+file.attributes = paste("", project.id, "_attributes.csv", sep="")
+file.recs = paste("", project.id, "_recs.csv", sep="")
+# output: tufte::tufte_handout
+
+library(knitr)
+
+knitr::opts_chunk$set(fig.path = paste( 'figures/', plugin.id, '/', project.id, '/', sep=""))
+#opts_knit$set(progress = TRUE, verbose = TRUE, self.contained=T)
+
+require(ggplot2)
+require(xtable)
+require(pander)
+
+main <- read.csv(file=file.main, header=T)
+info <- read.csv(file=file.info, header=T)
+metrics <- read.csv(file=file.metrics, header=T)
+attributes <- read.csv(file=file.attributes, header=T)
+recs <- read.csv(file=file.recs, header=T)
+project.name <- info[info$Mnemo == 'pmi_title',2]
+project.desc <- info[info$Mnemo == 'pmi_desc',2]
+#project.desc <- main[main$Mnemo == 'pmi_desc',2]
+run.last <- ''
+```
+
+Name: `r project.name` 
+
+Description: `r project.desc`
+
+Last analysis run on `r run.last`.
+
+# Project Information
+
+```{r info, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+panderOptions('table.split.table', Inf)
+set.caption( paste( "Information for project ", project.id, sep="" ) )
+pandoc.table(info, style = 'multiline', justify = c('left', 'left'))
+```
+
+# Issue Tracking System
+
+```{r plugins_its, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+panderOptions('table.split.table', Inf)
+set.caption( paste( "Information for project ", project.id, sep="" ) )
+pandoc.table(info, style = 'multiline', justify = c('left', 'left'))
+```
