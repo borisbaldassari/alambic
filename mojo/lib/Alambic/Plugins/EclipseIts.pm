@@ -32,7 +32,10 @@ my %conf = (
     "provides_info" => [
     ],
     "provides_data" => {
-	"metrics_its.json" => "Metrics for the ITS plugin (JSON).",
+	"metrics_its.json" => "Current metrics for the ITS plugin (JSON).",
+	"metrics_its.csv" => "Current metrics for the ITS plugin (CSV).",
+	"metrics_its_evol.json" => "Evolution metrics for the ITS plugin (JSON).",
+	"metrics_its_evol.csv" => "Evolution metrics for the ITS plugin (CSV).",
     },
     "provides_metrics" => {
         "CHANGED" => "ITS_CHANGED", 
@@ -136,6 +139,7 @@ sub _retrieve_data($$$) {
 	push( @log, "[Plugins::EclipseIts] Cannot find [$url].\n" ) ;
     } else {
 	$repofs->write_input( $project_id, "import_its.json", $content );
+	$repofs->write_output( $project_id, "import_its.json", $content );
     }
 
     $url = "http://dashboard.eclipse.org/data/json/" 
@@ -150,6 +154,7 @@ sub _retrieve_data($$$) {
 	push( @log, "[Plugins::EclipseIts] Cannot find [$url].\n" ) ;
     } else {
 	$repofs->write_input( $project_id, "import_its_evol.json", $content );
+	$repofs->write_output( $project_id, "import_its_evol.json", $content );
     }
 
     return \@log;
@@ -175,6 +180,16 @@ sub _compute_data($$$) {
         }
     }
 
+    # TODO Execute checks and fill recs.
+    if ($metrics_new->{'ITS_OPENED'} > 10) {
+	push( @recs, { 'rid' => 'ITS_CLOSE_BUGS', 
+		       'severity' => 1, 
+		       'desc' => 'There are ' . $metrics_new->{'ITS_OPENED'} 
+		       . ' issues still open. You could watch them and sort them out.' 
+	      } 
+	    );
+    }
+    
     # Write its metrics json file to disk.
     $repofs->write_output( $project_id, "metrics_its.json", encode_json($metrics_new) );
 
@@ -203,6 +218,7 @@ sub _compute_data($$$) {
 	$csv_out .= $metrics_evol->{'unixtime'}->[$id] . "\n";
     }
     $repofs->write_plugin( 'EclipseIts', $project_id . "_its_evol.csv", $csv_out );
+    $repofs->write_output( $project_id, "its_evol.csv", $csv_out );
 
     # Now execute the main R script.
     push( @log, "[Plugins::EclipseIts] Executing R main file." );

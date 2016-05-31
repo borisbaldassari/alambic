@@ -342,6 +342,14 @@ sub run_posts() {
 sub run_project($) {
     my ($self, $models) = @_;
 
+    # Initialise current data before new run.
+    %info = ();
+    %metrics = ();
+    %indicators = ();
+    %attributes = ();
+    %attributes_conf = ();
+    @recs = ();
+    
     my %ret;
 
     # Run plugins
@@ -369,7 +377,7 @@ sub run_project($) {
     # Run post plugins
     my $post_data = $self->run_posts($models);
     $ret{'log'} = [ @{$ret{'log'}}, @{$post_data->{'log'}} ];
-    
+
     return \%ret;
 }
 

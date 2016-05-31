@@ -233,9 +233,15 @@ sub _compute_data($) {
     if ( exists($raw_project->{'website_url'}->[0]->{'url'}) ) {
 	$info{"pmi_main_url"} = $raw_project->{'website_url'}->[0]->{'url'};
         $check->{'value'} = $info{"pmi_main_url"};
-        push( @{$check->{'results'}}, &_check_url($info{"pmi_main_url"}, 'Website') );
+        my $results = &_check_url($info{"pmi_main_url"}, 'Website');
+        push( @{$check->{'results'}}, $results );
+	if ($results !~ /^OK/) {
+	    push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Check the web site URL in PMI.' } );
+	}
+#	print "# In EclipsePmi::checks " . Dumper($results);
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for website_url.");
+	push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Fill in the web site URL in PMI.' } );
     }
     $ret_check->{'checks'}->{'website_url'} = $check;
     
@@ -246,9 +252,14 @@ sub _compute_data($) {
     if ( exists($raw_project->{'wiki_url'}->[0]->{'url'}) ) {
 	$info{"pmi_wiki_url"} = $raw_project->{'wiki_url'}->[0]->{'url'};
         $check->{'value'} = $info{"pmi_wiki_url"};
-        push( @{$check->{'results'}}, &_check_url($url, 'Wiki') );
+        my $results = &_check_url($url, 'Wiki');
+        push( @{$check->{'results'}}, $results );
+	if ($results !~ /^OK/) {
+	    push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Check the wiki URL in PMI.' } );
+	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for wiki_url.");
+	push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Fill in the wiki URL in PMI.' } );
     }
     $ret_check->{'checks'}->{'wiki_url'} = $check;
     
@@ -352,12 +363,17 @@ sub _compute_data($) {
     $check->{'results'} = [];
     $check->{'desc'} = 'Checks if the Dev ML URL can be fetched using a simple get query.';
     if ( ref($raw_project->{'dev_list'}) =~ m!HASH! ) {
-	$info{"mls_dev_url"} = $raw_project->{'mls_dev_url'}->[0]->{'url'};
+	$info{"mls_dev_url"} = $raw_project->{'dev_list'}->{'url'};
         $url = $raw_project->{'dev_list'}->{'url'};
         $check->{'value'} = $url;
-        push( @{$check->{'results'}}, &_check_url($url, 'Dev ML') );
+        my $results = &_check_url($url, 'Dev ML');
+        push( @{$check->{'results'}}, $results );
+	if ($results !~ /^OK/) {
+	    push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Check the Developer mailing list URL in PMI.' } );
+	}
     } else {
         push( @{$check->{'results'}}, 'Failed: no dev mailing list defined.' );
+	push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Fill in the Developer mailing list URL in PMI.' } );
     }
     $ret_check->{'checks'}->{'dev_list'} = $check;
     
@@ -463,11 +479,9 @@ sub _compute_data($) {
     $check->{'value'} = $proj_ci;
     $check->{'desc'} = "Sends a get request to the given CI URL and looks at the headers in the response (200, 404..). Also checks if the URL is really a Hudson instance (through a call to its API).";
     if ($proj_ci =~ m!\S+! && $ua->get($proj_ci)) {
-	$info{"pmi_ci_url"} = $url;
-	push( @{$check->{'results'}}, "OK. Fetched CI URL."); 
-        
+	push( @{$check->{'results'}}, "OK. Fetched CI URL.");         
         my $url = $proj_ci . '/api/json?depth=1';
-
+	$info{"pmi_ci_url"} = $proj_ci;
         my $json_str = $ua->get($url)->res->body;
         if ($json_str =~ m!^\s*{!) { 
             my $content_tmp = decode_json($json_str);
@@ -477,6 +491,7 @@ sub _compute_data($) {
                 push( @{$check->{'results'}}, "OK. CI URL is a Hudson instance. Title is [$name]");
             } else { 
                 push( @{$check->{'results'}}, 'Failed: CI URL is not the root of a Hudson instance.'); 
+		push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => "Check the Hudson CI engine URL in PMI. [$url] is not detected as the root of a Hudson instance." } );
             }
         } else {
             push( @{$check->{'results'}}, "Failed: could not decode Hudson JSON."); 
