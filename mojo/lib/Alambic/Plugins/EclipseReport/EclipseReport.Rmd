@@ -5,14 +5,9 @@ output: pdf_document
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
+# Main information
 project.id <- 'modeling.gendoc'
 plugin.id <- 'EclipseReport'
-file.main = paste("", project.id, "_main.csv", sep="")
-file.info = paste("", project.id, "_info.csv", sep="")
-file.metrics = paste("", project.id, "_metrics.csv", sep="")
-file.attributes = paste("", project.id, "_attributes.csv", sep="")
-file.recs = paste("", project.id, "_recs.csv", sep="")
-# output: tufte::tufte_handout
 
 library(knitr)
 
@@ -20,17 +15,31 @@ knitr::opts_chunk$set(fig.path = paste( 'figures/', plugin.id, '/', project.id, 
 #opts_knit$set(progress = TRUE, verbose = TRUE, self.contained=T)
 
 require(ggplot2)
+library(reshape2)
 require(xtable)
 require(pander)
 
+# Define file names
+
+# Main information files
+file.main <- paste("", project.id, "_main.csv", sep="")
+file.info <- paste("", project.id, "_info.csv", sep="")
+file.metrics <- paste("", project.id, "_metrics.csv", sep="")
+file.attributes <- paste("", project.id, "_attributes.csv", sep="")
+file.recs <- paste("", project.id, "_recs.csv", sep="")
+# ITS
+file.its.evol <- paste("../../../../projects/", project.id, '/output/', project.id, "_its_evol.csv", sep="")
+
+# Read files
 main <- read.csv(file=file.main, header=T)
 info <- read.csv(file=file.info, header=T)
 metrics <- read.csv(file=file.metrics, header=T)
 attributes <- read.csv(file=file.attributes, header=T)
 recs <- read.csv(file=file.recs, header=T)
+# ITS
+its.evol <- read.csv(file=file.its.evol, header=T)
 project.name <- info[info$Mnemo == 'pmi_title',2]
 project.desc <- info[info$Mnemo == 'pmi_desc',2]
-#project.desc <- main[main$Mnemo == 'pmi_desc',2]
 run.last <- ''
 ```
 
@@ -45,13 +54,46 @@ Last analysis run on `r run.last`.
 ```{r info, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
 panderOptions('table.split.table', Inf)
 set.caption( paste( "Information for project ", project.id, sep="" ) )
-pandoc.table(info, style = 'multiline', justify = c('left', 'left'))
+pandoc.table(main, style = 'multiline', justify = c('left', 'left'))
+```
+
+
+```{r plugins_its, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+panderOptions('table.split.table', Inf)
+set.caption( paste( "ITS metrics for project ", project.id, sep="" ) )
+pandoc.table(its, style = 'multiline', justify = c('left', 'left'))
 ```
 
 # Issue Tracking System
 
-```{r plugins_its, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
-panderOptions('table.split.table', Inf)
-set.caption( paste( "Information for project ", project.id, sep="" ) )
-pandoc.table(info, style = 'multiline', justify = c('left', 'left'))
+Ggplot: 
+
+```{r its_ggplot}
+my.data.long <- melt(evol[,c("unixtime", "opened", "closed")], id.vars="unixtime", value.name="value", variable.name="metric")
+my.data.long$time <- as.POSIXct(as.numeric(as.character(my.data.long$unixtime)), origin="1970-01-01")
+
+p <- ggplot(my.data.long, aes(x = time, y = value, color=metric)) + geom_line(size = .1)
+p
+```
+
+
+```{r dygraph, echo=FALSE, message=FALSE, eval=F}
+library(dygraphs)
+library(xts)
+
+#project.id <- 'tools.cdt'
+file.evol = paste("", project.id, "_its_evol.csv", sep="")
+evol <- read.csv(file=file.evol, header=T)
+evol <- evol[evol$changed != 0,]
+
+evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
+p <-dygraph( 
+        evol.xts[,c('changed')],
+        main = paste('Number of changed bugs for ', project.id, sep=''),
+        width = 800, height = 250 ) %>% 
+      dyAxis("x", drawGrid = FALSE) %>%
+      dySeries("changed", label = "Changed bugs") %>%
+#      dyOptions(colors = RColorBrewer::brewer.pal(3, "Set1")) %>%
+      dyRangeSelector()
+p
 ```
