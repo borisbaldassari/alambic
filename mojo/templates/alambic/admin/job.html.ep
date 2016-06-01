@@ -40,7 +40,7 @@
 
                 <p><b>ID</b> <%= $job_id %><br />
                 <b>Task</b> <%= $job_info->{'task'} %><br />
-                <b>Args</b> <%= join( ', ', @{$job_info->{'args'}} ) %><br />
+                <b>Args</b> <%= join( ', ', @{ $job_info->{'args'} || [] } ) %><br />
                 <b>State</b> <%= $job_info->{'state'} %><br />
                 <b>Created</b> <%= localtime($job_info->{'created'}) %><br />
                 <b>Started</b> <%= defined($job_info->{'started'}) ? "" . localtime($job_info->{'started'}) : "Never" %><br />
