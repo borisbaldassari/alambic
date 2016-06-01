@@ -55,17 +55,18 @@ sub get_conf() {
 
 # Run plugin: retrieves data + compute_data 
 sub run_post($$) {
-    my ($self, $project_id, $project, $models) = @_;
+    my ($self, $project_id, $conf) = @_;
 
     my @log;
-
+    print "# In EclipseReport::run_post " . Dumper($conf);
     # Write csv files for R report.
     my $repofs = Alambic::Model::RepoFS->new();
-
+    my $project = $conf->{'project'};
+    
     # Write main information for the project
     my $csv_out = "Mnemo,Value\n"; 
     $csv_out .= "last_run," . ( $project->{'main'}{'last_run'} || '' ) . "\n";
-    foreach my $p ( sort keys %{$project->{'plugins'}} ) {
+    foreach my $p ( sort keys %{$project->get_plugins()} ) {
 	$csv_out .= "plugin," . $p . "\n";
     }
     push( @log, "[Plugins::EclipseReport] Writing main csv file to plugins and output directories." );
@@ -74,8 +75,8 @@ sub run_post($$) {
 
     # Write info information for the project
     $csv_out = "Mnemo,Value\n";
-    foreach my $d (sort keys %{$project->{'info'}} ) {
-	$csv_out .= $d . "," . ( $project->{'info'}->{$d} || '' ) . "\n";
+    foreach my $d (sort keys %{$project->info()} ) {
+	$csv_out .= $d . "," . ( $project->info()->{$d} || '' ) . "\n";
     }
     push( @log, "[Plugins::EclipseReport] Writing info csv file to plugins and output directories." );
     $repofs->write_plugin( 'EclipseReport', $project_id . "_info.csv", $csv_out );
@@ -83,8 +84,8 @@ sub run_post($$) {
 
     # Write metrics information for the project
     $csv_out = "Mnemo,Value\n";
-    foreach my $m (sort keys %{$project->{'metrics'}} ) {
-	$csv_out .= $m . "," . $project->{'metrics'}->{$m} . "\n";
+    foreach my $m (sort keys %{$project->metrics()} ) {
+	$csv_out .= $m . "," . $project->metrics()->{$m} . "\n";
     }
     push( @log, "[Plugins::EclipseReport] Writing metrics csv file to plugins and output directories." );
     $repofs->write_plugin( 'EclipseReport', $project_id . "_metrics.csv", $csv_out );
@@ -92,8 +93,8 @@ sub run_post($$) {
 
     # Write attributes information for the project
     $csv_out = "Mnemo,Value\n";
-    foreach my $m (sort keys %{$project->{'attributes'}} ) {
-	$csv_out .= $m . "," . $project->{'attributes'}->{$m} . "\n";
+    foreach my $m (sort keys %{$project->attributes()} ) {
+	$csv_out .= $m . "," . $project->attributes()->{$m} . "\n";
     }
     push( @log, "[Plugins::EclipseReport] Writing attributes csv file to plugins and output directories." );
     $repofs->write_plugin( 'EclipseReport', $project_id . "_attributes.csv", $csv_out );
@@ -101,7 +102,7 @@ sub run_post($$) {
 
     # Write recs information for the project
     $csv_out = "Mnemo,Severity,Description\n";
-    foreach my $m (sort @{$project->{'recs'}} ) {
+    foreach my $m (sort @{$project->recs()} ) {
 	$csv_out .= $m->{'rid'} . "," . ( $m->{'severity'} || 0 )
 	. "," . ( $m->{'desc'} || '' ) . "\n";
     }
