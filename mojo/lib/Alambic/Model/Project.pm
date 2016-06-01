@@ -277,17 +277,12 @@ sub run_post() {
     };
 
     # If plugin is a type post
-    my $project_data = {
+    my $conf = {
 	'main' => $main,
+	'project' => $self,
 	'models' => $models,
-	'metrics' => \%metrics,
-	'attributes' => \%attributes,
-	'attributes_conf' => \%attributes_conf,
-	'plugins' => \%plugins,
-	'info' => \%info,
-	'recs' => \@recs,
     };
-    $ret = $plugins_module->run_post($project_id, $plugin_id, $project_data, $models);
+    $ret = $plugins_module->run_post($project_id, $plugin_id, $conf);
 
     # Add retrieved values to the current project.
     foreach my $info (sort keys %{$ret->{'info'}} ) { $info{$info} = $ret->{'info'}{$info}; }

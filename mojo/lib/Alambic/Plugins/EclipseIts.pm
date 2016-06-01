@@ -9,8 +9,6 @@ use Alambic::Tools::R;
 use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
 use Data::Dumper;
-#use File::Copy;
-#use File::Path qw(remove_tree);
 
 
 # Main configuration hash for the plugin
@@ -121,6 +119,7 @@ sub run_plugin($$) {
 }
 
 
+# Download json file from dashboard.eclipse.org
 sub _retrieve_data($$$) {
     my ($project_id, $project_grim, $repofs) = @_;
     
@@ -160,6 +159,9 @@ sub _retrieve_data($$$) {
     return \@log;
 }
 
+
+# Basically read the imported files and make the mapping to the 
+# new metric names.
 sub _compute_data($$$) {
     my ($project_id, $project_pmi, $repofs) = @_;
 
@@ -196,8 +198,8 @@ sub _compute_data($$$) {
     # Write static metrics file
     my @metrics = sort map {$conf{'provides_metrics'}{$_}} keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics) . "\n";
-
     $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
+    
     $repofs->write_plugin( 'EclipseIts', $project_id . "_its.csv", $csv_out );
     
     # Read evol metrics file
