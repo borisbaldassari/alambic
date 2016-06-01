@@ -1,0 +1,27 @@
+---
+output: html_document
+---
+
+```{r init, echo=FALSE, message=FALSE}
+library(dygraphs)
+library(xts)
+
+#project.id <- 'tools.cdt'
+file.evol = paste("", project.id, "_mls_evol.csv", sep="")
+evol <- read.csv(file=file.evol, header=T)
+evol <- evol[evol$sent != 0,]
+
+evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
+p <-dygraph( 
+        evol.xts[,c('sent', 'threads', 'sent_response')],
+        main = paste('Number of sent emails for ', project.id, sep=''),
+        width = 800, height = 250 ) %>% 
+      dyAxis("x", drawGrid = FALSE) %>%
+      dySeries("sent", label = "Sent emails") %>%
+      dySeries("threads", label = "Threads") %>%
+      dySeries("sent_response", label = "Sent response") %>%
+#      dyOptions(colors = RColorBrewer::brewer.pal(3, "Set1")) %>%
+      dyRangeSelector()
+p
+```
+

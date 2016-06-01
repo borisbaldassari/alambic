@@ -1,0 +1,63 @@
+---
+title: "Eclipse MLS visualisation"
+author:
+- name: "Boris Baldassari"
+  affiliation: Castalia Solutions
+output:
+  html_fragment:
+    toc: false
+    fig_caption: true
+    fig.width: 800
+    self_contained: false
+    lib_dir: libs
+    echo: false
+    dev: svg
+---
+
+```{r init, echo=FALSE, message=FALSE}
+project.id <- 'modeling.gendoc'
+plugin.id <- 'eclipse_mls'
+file.static = paste("", project.id, "_mls.csv", sep="")
+file.evol = paste("", project.id, "_mls_evol.csv", sep="")
+
+library(knitr)
+library(xts)
+library(reshape2)
+
+knitr::opts_chunk$set(fig.path = paste( 'figures/', plugin.id, '/', project.id, '/', sep=""))
+#opts_knit$set(progress = TRUE, verbose = TRUE, self.contained=T)
+
+require(ggplot2)
+require(xtable)
+
+metrics <- read.csv(file=file.static, header=T)
+evol <- read.csv(file=file.evol, header=T)
+url <- paste('http://dashboard.eclipse.org/data/json/', project.id, '-mls-prj-static.json', sep='');
+```
+
+## Eclipse Mailing List System
+
+### Metrics
+
+<p>
+```{r metrics_table, echo=FALSE, message=FALSE, results='asis'}
+t <- lapply(names(metrics), function(x) paste(x, ' <span class="badge">', metrics[[x]], '</span>, ', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</p>
+
+### Timeline
+
+<iframe src="/projects/figures/eclipse_mls/`r project.id`/mls_evol_summary.html" frameborder="0" style="width: 100%; height: 370px"></iframe>
+
+### Sent emails
+
+<div class="row">
+<div class="col-md-12">
+<iframe src="/projects/figures/eclipse_mls/`r project.id`/mls_evol_sent.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+</div></div>
+
+### People
+
+<iframe src="/projects/figures/eclipse_mls/`r project.id`/mls_evol_people.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
