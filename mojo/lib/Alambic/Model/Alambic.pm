@@ -71,7 +71,7 @@ sub new {
 	print "### ###################\n";
 	print "### &init( ! \n";
 	print "### ###################\n";
-	#&init();
+	&init();
     }
 	
     # Retrieve all metrics definition to initialise Models.pm

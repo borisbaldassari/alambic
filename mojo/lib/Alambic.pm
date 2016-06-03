@@ -145,7 +145,7 @@ sub startup {
     $r_admin_projects->get('/#pid/run')->to(action => 'projects_run');
     $r_admin_projects->get('/#pid/run/pre')->to(action => 'projects_run_pre');
     $r_admin_projects->get('/#pid/run/qm')->to(action => 'projects_run_qm');
-    $r_admin_projects->get('/#pid/run/post')->to(action => 'projects_run_post');
+    $r_admin_projects->get('/#pid/run/post')->to(action => 'projects_run_posts');
     $r_admin_projects->get('/#pid/del')->to(action => 'projects_del');    
     $r_admin_projects->get('/#pid/edit')->to(action => 'projects_edit');
     $r_admin_projects->post('/#pid/edit')->to(action => 'projects_edit_post');
