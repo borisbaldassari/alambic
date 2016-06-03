@@ -20,7 +20,7 @@
 %= include '/alambic/admin/admin_menu', current => '/admin/projects'
 
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-md-6">
 
 % my $plugins = app->al->get_plugins();
 % my $plugins_all = $plugins->get_names_all();
@@ -58,7 +58,7 @@
 		  <dt>Recs</dt><dd><%= scalar @{$project->recs() || []} %> &nbsp; <a href="/projects/<%= $project_id %>/recs">See recommendations &nbsp; <i class="fa fa-eye"></i></a></dd>
 		</dl>
               </div>
-              <div class="col-sm-6">
+              <div class="col-md-6">
                 <div class="list-group">
                   <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Return to projects</a>
                   <a class="list-group-item" href="/admin/projects/<%= $project_id %>/edit" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Edit project information</a>

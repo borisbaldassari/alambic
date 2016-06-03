@@ -30,7 +30,7 @@
 %     $metrics = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'metrics'}{$_} } sort keys %{$job_info->{'result'}{'metrics'}} ) . ".";
 %     $info = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'info'}{$_} } sort keys %{$job_info->{'result'}{'info'}} ) . ".";
 %     $attrs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'attrs'}{$_} } sort keys %{$job_info->{'result'}{'attrs'}} ) . "."; 
-%     $recs = join( "<br />", map { "<code>" . $_->{'rid'} . "</code> (severity " . $_->{'severity'} . ") " . $_->{'desc'} } sort @{$job_info->{'result'}{'recs'}} ) . ".";
+%     $recs = join( "<br />", map { "<code>" . $_->{'rid'} . "</code> (severity " . $_->{'severity'} . ") " . $_->{'desc'} } sort @{ $job_info->{'result'}{'recs'} || [] } ) . ".";
 %   }
 
             <div class="row">
