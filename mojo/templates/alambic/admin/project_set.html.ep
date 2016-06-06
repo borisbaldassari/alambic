@@ -9,8 +9,12 @@
 
 %= include 'alambic/admin/admin_menu', current => '/admin/projects'
 
+% if (defined($project_id)) {
             <form action="/admin/projects/<%= $project_id %>/edit" method="POST" class="form-horizontal" role="form">
 
+% } else {
+            <form action="/admin/projects/new" method="POST" class="form-horizontal" role="form">
+% }
               <div class="form-group">
                 <label for="id" class="control-label col-xs-2">Project ID</label>
                 <div class="col-xs-10">
