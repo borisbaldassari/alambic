@@ -1,6 +1,8 @@
 ---
 title: "Eclipse Project Report"
 author: "Alambic"
+header-includes:
+   - \usepackage{tabularx}
 output: pdf_document
 ---
 
@@ -18,6 +20,7 @@ require(ggplot2)
 library(reshape2)
 require(xtable)
 require(pander)
+require(stringi)
 require(ggthemes)
 
 # Read files
@@ -39,16 +42,38 @@ run.last <- ''
 
 Name: `r project.name` 
 
-Description: `r project.desc`
+Description: 
+
+> `r project.desc`
 
 Last analysis run on `r run.last`.
 
 # Project Information
 
+
+
+```{r ci_init, echo=F, eval=grepl('^http', info[info$Mnemo == 'pmi_ci_url', c('Value')]), results='asis', comment=NA, prompt=FALSE}
+r_ci <- "Continuous integration is setup and information is provided in the PMI. "
+cat(r_ci)
+```
+
+```{r ci_init_ifelse, echo=F, results='asis', comment=NA, prompt=FALSE}
+r_ci_if <- ifelse(
+  grepl('^http', info[info$Mnemo == 'pmi_ci_url', c('Value')]),
+  "Continuous integration is setup and information is provided in the PMI. ",
+  "Continuous integration is either not setup or not correctly set in the PMI."
+)
+#cat(ci_ok)
+```
+
+\begin{itemize}
+\item `r I(r_ci_if)`
+\end{itemize}
+
 ```{r info, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
 panderOptions('table.split.table', Inf)
 set.caption( paste( "Information for project ", project.id, sep="" ) )
-pandoc.table( main, style = 'multiline', justify = c('left', 'left') )
+pandoc.table( info, style = 'multiline', justify = c('left', 'left') )
 ```
 
 # Metrics
@@ -57,20 +82,23 @@ Alambic retrieved `r nrow(metrics)` metrics from xxx data sources:
 
 ```{r metrics, echo=F, message=FALSE, warnings=FALSE, results='asis'}
 panderOptions('table.split.table', Inf)
-set.caption( paste( "ITS metrics for project ", project.id, sep="" ) )
+set.caption( paste( "Metrics for project ", project.id, sep="" ) )
 pandoc.table(metrics, style = 'grid', justify = c('left', 'left'))
 ```
 
 # Recommendations
 
-`r nrow(metrics)` recommendations have been emitted for this project. 
+`r nrow(recs)` recommendations have been emitted for this project. 
+\begin{tabularx}{\linewidth}{ll}
+test & tes \\
+\end{tabularx}
 
 ```{r recs, echo=F, message=FALSE, warnings=FALSE, results='asis'}
-#\begin{tabularx}{\linewidth}{ll}
+#
 panderOptions('table.split.table', Inf)
 set.caption( paste( "Recommendations for project ", project.id, sep="" ) )
 pandoc.table(recs, style = 'multiline', justify = c('left', 'left', 'left'))
-#\end{tabularx}
+#
 ```
 
 

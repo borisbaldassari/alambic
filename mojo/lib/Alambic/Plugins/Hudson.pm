@@ -27,6 +27,8 @@ my %conf = (
     "params" => {
         "hudson_url" => "",
     },
+    "provides_info" => [
+    ],
     "provides_metrics" => {
         "JOBS" => "JOBS", 
         "JOBS_GREEN" => "JOBS_GREEN", 
@@ -41,6 +43,7 @@ my %conf = (
         'hudson_pie.rmd' => "hudson_pie.html",
     },
     "provides_recs" => [
+	"CI_FAILING_JOBS",
     ],
     "provides_viz" => {
         "hudson.html" => "Hudson CI",
@@ -95,8 +98,6 @@ sub _retrieve_data($) {
     my @log;
 
     my $url = $hudson_url . "/api/json?depth=2";
-    
-#    print "[Plugins::Hudson] Starting retrieval of data for [$project_id] url [$url].\n";
     push( @log, "[Plugins::Hudson] Starting retrieval of data for [$project_id] url [$url]." );
     
     # Fetch json file from the dashboard.eclipse.org
@@ -151,8 +152,7 @@ sub _compute_data($) {
 	}
 
 	my $job_last_success = $job->{'lastSuccessfulBuild'}{'timestamp'} || 0;
-#	print "Job: " . $date_1w_ms . " " . $job->{'lastSuccessfulBuild'}{'timestamp'} . 
-#	    " " . $job->{'color'} . "\n";
+
 	# If last successful build is more than 1W old, count it.
 	if ( $job_last_success < $date_1w_ms
 	    && $job->{'color'} =~ m!red! ) {

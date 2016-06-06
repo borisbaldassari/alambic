@@ -238,7 +238,6 @@ sub _compute_data($) {
 	if ($results !~ /^OK/) {
 	    push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Check the web site URL in PMI.' } );
 	}
-#	print "# In EclipsePmi::checks " . Dumper($results);
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for website_url.");
 	push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Fill in the web site URL in PMI.' } );

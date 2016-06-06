@@ -113,14 +113,14 @@ sub run_plugin($$) {
 # Download json file from dashboard.eclipse.org
 sub _retrieve_data($$$) {
     my ($project_id, $project_grim, $repofs) = @_;
-    
+
     my @log;
 
     my $url = "http://dashboard.eclipse.org/data/json/" 
             . $project_grim . "-mls-prj-static.json";
 
     push( @log, "[Plugins::EclipseMls] Starting retrieval of data for [$project_id] url [$url]." );
-    print "[Plugins::EclipseMls] Starting retrieval of data for [$project_id] url [$url].";
+
     push( @log, "[Plugins::EclipseMls] Retrieving static [$url] to input.\n" );
 
     # Fetch json file from the dashboard.eclipse.org
