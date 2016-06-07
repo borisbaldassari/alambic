@@ -161,7 +161,7 @@
 
 	    <h3>Wizards</h3>
 % my $wizards = app->al->get_wizards();
-% my $list = $wizards->get_names_all();
+% $list = $wizards->get_names_all();
 
 	    <p>These plugins create a new project pre-populated with various information and plugins. </p>
 
