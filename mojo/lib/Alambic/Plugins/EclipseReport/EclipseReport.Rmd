@@ -40,21 +40,19 @@ project.desc <- info[info$Mnemo == 'pmi_desc',2]
 run.last <- ''
 ```
 
+# Project Information
+
 Name: `r project.name` 
 
 Description: 
 
 > `r project.desc`
 
-Last analysis run on `r run.last`.
+Last analysis of project was run on `r run.last`. This report has been generated on `r Sys.time()`.
 
-# Project Information
-
-
-
-```{r ci_init, echo=F, eval=grepl('^http', info[info$Mnemo == 'pmi_ci_url', c('Value')]), results='asis', comment=NA, prompt=FALSE}
+```{r ci_init, echo=F, results='asis', comment=NA, prompt=FALSE, eval=grepl('^http', info[info$Mnemo == 'pmi_ci_url', c('Value')])}
 r_ci <- "Continuous integration is setup and information is provided in the PMI. "
-cat(r_ci)
+#cat(r_ci)
 ```
 
 ```{r ci_init_ifelse, echo=F, results='asis', comment=NA, prompt=FALSE}
@@ -70,15 +68,63 @@ r_ci_if <- ifelse(
 \item `r I(r_ci_if)`
 \end{itemize}
 
-```{r info, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
-panderOptions('table.split.table', Inf)
-set.caption( paste( "Information for project ", project.id, sep="" ) )
-pandoc.table( info, style = 'multiline', justify = c('left', 'left') )
+
+# Documentation
+
+```{r doc_init_ifelse, echo=F, results='asis', comment=NA, prompt=FALSE}
+r_doc_wiki <- ifelse(
+  grepl('^http', info[info$Mnemo == 'pmi_wiki_url', c('Value')]),
+  paste( "The project uses a wiki, located at ", info[info$Mnemo == 'pmi_wiki_url', c('Value')], ".", sep=""),
+  "The project either did not setup a wiki or forgot to fill the PMI entry."
+)
+#cat(ci_ok)
 ```
 
-# Metrics
+The main page of the project is located at `r info[info$Mnemo == 'pmi_main_url', c('Value')]`. 
+`r I(r_doc_wiki)`
 
-Alambic retrieved `r nrow(metrics)` metrics from xxx data sources: 
+
+
+# Issue Tracking System
+
+```{r its_init_ifelse, echo=F, results='asis', comment=NA, prompt=FALSE}
+r_its_query <- ifelse(
+  grepl('^http', info[info$Mnemo == 'pmi_ci_url', c('Value')]),
+  "Continuous integration is setup and information is provided in the PMI. ",
+  "Continuous integration is either not setup or not correctly set in the PMI."
+)
+#cat(ci_ok)
+```
+
+\begin{itemize}
+\item The project reference in Bugzilla (a.k.a. \textit{Product}) is `r info[info$Mnemo == 'pmi_bugzilla_product', c('Value')]`.
+\item The list of issues for the project can be found at `r info[info$Mnemo == 'pmi_bugzilla_query_url', c('Value')]`. 
+\item New issues on the project can be entered at `r info[info$Mnemo == 'pmi_bugzilla_create_url', c('Value')]`. 
+\end{itemize}
+
+At the time of analysis, there were `r metrics[metrics$Mnemo == 'ITS_OPENED', c('Value')]` opened issues, entered by `r metrics[metrics$Mnemo == 'ITS_OPENERS', c('Value')]` people, and `r metrics[metrics$Mnemo == 'ITS_CLOSED', c('Value')]` closed issues, fixed by `r metrics[metrics$Mnemo == 'ITS_CLOSERS', c('Value')]`.
+
+During last month, `r metrics[metrics$Mnemo == 'ITS_CLOSED_30', c('Value')]` issues have been closed (`r metrics[metrics$Mnemo == 'ITS_DIFF_NETCLOSED_30', c('Value')]` compared to last month) by `r metrics[metrics$Mnemo == 'ITS_CLOSERS_30', c('Value')]` people (`r metrics[metrics$Mnemo == 'ITS_DIFF_NETCLOSERS_30', c('Value')]` compared to last month).
+
+Measures have been retrieved from `r its.evol[1,c('date')]` up to `r tail(its.evol, 1)[c('date')]`. Here are a few stats:
+\begin{itemize}
+\item Month with most open bugs was `r its.evol[which(its.evol$opened == max(its.evol$openers)), c('date')]`.
+\end{itemize}
+
+
+```{r its_ggplot, echo=FALSE, fig.width=10, fig.height=4}
+my.data.long <- melt(its.evol[,c("unixtime", "opened", "closed")], id.vars="unixtime", value.name="value", variable.name="metric")
+my.data.long$time <- as.POSIXct(as.numeric(as.character(my.data.long$unixtime)), origin="1970-01-01")
+
+p <- ggplot(my.data.long, aes(x = time, y = value, color=metric)) + geom_line(size = .1) + theme_tufte()
+p
+```
+
+# Appendices
+
+## Metrics
+
+Alambic retrieved `r nrow(metrics)` metrics from the defined data sources: 
 
 ```{r metrics, echo=F, message=FALSE, warnings=FALSE, results='asis'}
 panderOptions('table.split.table', Inf)
@@ -86,7 +132,17 @@ set.caption( paste( "Metrics for project ", project.id, sep="" ) )
 pandoc.table(metrics, style = 'grid', justify = c('left', 'left'))
 ```
 
-# Recommendations
+## Attributes
+
+Alambic retrieved `r nrow(attributes)` attributes from the defined data sources: 
+
+```{r attributes, echo=F, message=FALSE, warnings=FALSE, results='asis'}
+panderOptions('table.split.table', Inf)
+set.caption( paste( "Quality attributes for project ", project.id, sep="" ) )
+pandoc.table(attributes, style = 'grid', justify = c('left', 'left'))
+```
+
+## Recommendations
 
 `r nrow(recs)` recommendations have been emitted for this project. 
 \begin{tabularx}{\linewidth}{ll}
@@ -101,21 +157,12 @@ pandoc.table(recs, style = 'multiline', justify = c('left', 'left', 'left'))
 #
 ```
 
+## Project metadata
 
-# Issue Tracking System
+This information is mostly retrieved from the Project Management Infrastructure repository. 
 
-Measures have been retrieved from `r its.evol[1,c('date')]` up to `r tail(its.evol, 1)[c('date')]`. Here are a few facts:
-\begin{itemize}
-\item Month with most open bugs was `r its.evol[which(its.evol$opened == max(its.evol$openers)), c('date')]`.
-\end{itemize}
-
-
-```{r its_ggplot, echo=FALSE, fig.width=10, fig.height=4}
-my.data.long <- melt(its.evol[,c("unixtime", "opened", "closed")], id.vars="unixtime", value.name="value", variable.name="metric")
-my.data.long$time <- as.POSIXct(as.numeric(as.character(my.data.long$unixtime)), origin="1970-01-01")
-
-p <- ggplot(my.data.long, aes(x = time, y = value, color=metric)) + geom_line(size = .1) + theme_tufte()
-p
+```{r info, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+panderOptions('table.split.table', Inf)
+set.caption( paste( "Information for project ", project.id, sep="" ) )
+pandoc.table( info, style = 'multiline', justify = c('left', 'left') )
 ```
-
-

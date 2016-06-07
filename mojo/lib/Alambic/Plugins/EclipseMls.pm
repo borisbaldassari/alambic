@@ -59,13 +59,16 @@ my %conf = (
         "THREADS" => "MLS_THREADS",
     },
     "provides_figs" => {
+	"mls_evol_summary.rmd" => "mls_evol_summary.html",
+	"mls_evol_people.rmd" => "mls_evol_people.html",
+	"mls_evol_sent.rmd" => "mls_evol_sent.html",
     },
     "provides_recs" => [
         "MLS_SENT",
-        "MLS_WATCH_BUGS",
+        "MLS_WATCH_ML",
     ],
     "provides_viz" => {
-        "eclipse_mls" => "Eclipse MLS",
+        "eclipse_mls.html" => "Eclipse MLS",
     },
 );
 
@@ -175,11 +178,11 @@ sub _compute_data($$$) {
     }
 
     # TODO Execute checks and fill recs.
-    if ($metrics_new->{'MLS_SENT'} > 10) {
+    if ($metrics_new->{'MLS_SENT'} < 10) {
 	push( @recs, { 'rid' => 'MLS_SENT', 
 		       'severity' => 1, 
-		       'desc' => 'There are ' . $metrics_new->{'MLS_SENT'} 
-		       . ' issues still open. You could watch them and sort them out.' 
+		       'desc' => 'There are only ' . $metrics_new->{'MLS_SENT'} 
+		       . ' mails sent in the archive. You should watch the mailing list and create some activity so users can get more information, see that the project is active, in order to attract new participants.' 
 	      } 
 	    );
     }
