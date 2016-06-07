@@ -302,30 +302,31 @@ sub run_post() {
 sub run_posts() {
     my ($self, $models) = @_;
 
-    my $ret;
+    my $ret_final;
     my @log;
 
-    my $project_data = {
+    my $main = {
+	"last_run" => $project_last_run,
+    };
+
+    my $conf = {
+	'main' => $main,
+	'project' => $self,
 	'models' => $models,
-	'metrics' => \%metrics,
-	'attributes' => \%attributes,
-	'attributes_conf' => \%attributes_conf,
-	'info' => \%info,
-	'recs' => \@recs,
     };
 
     my @post_plugins = sort grep { $plugins_module->get_plugin($_)->get_conf()->{'type'} =~ /^post$/ } keys %plugins;
     foreach my $plugin_id (@post_plugins) {
-	my $ret = $plugins_module->run_post($project_id, $plugin_id, $project_data, $models);
+	my $ret = $plugins_module->run_post($project_id, $plugin_id, $conf);
 	
 	foreach my $info (sort keys %{$ret->{'info'}} ) { $info{$info} = $ret->{'info'}{$info}; }
 	foreach my $metric (sort keys %{$ret->{'metrics'}} ) { $metrics{$metric} = $ret->{'metrics'}{$metric}; }
 	foreach my $rec ( @{$ret->{'recs'}} ) { push( @recs, $rec ); }
 	@log = (@log, @{$ret->{'log'}});
     }
-    $ret->{'log'} = \@log;
+    $ret_final->{'log'} = \@log;
     
-    return $ret;
+    return $ret_final;
 
 }
 

@@ -22,7 +22,7 @@
               <tr><td>Info</td><td align="right"><span class="badge"><%= scalar keys %{ $run->{'info'} || {} } %></span> &nbsp; <a href="/projects/<%= $project_id %>/info.json"><i class="fa fa-download fa-lg"></i></a></td></tr>
               <tr><td>Metrics</td><td align="right"><span class="badge"><%= scalar keys %{ $run->{'metrics'} || {} } %></span> &nbsp; <a href="/projects/<%= $project_id %>/metrics.json"><i class="fa fa-download fa-lg"></i></a></td></tr>
               <tr><td>Attributes</td><td align="right"><span class="badge"><%= scalar keys %{ $run->{'attributes'} || {} } %></span> &nbsp; <a href="/projects/<%= $project_id %>/attributes.json"><i class="fa fa-download fa-lg"></i></a></td></tr>
-              <tr><td>Recommendations</td><td align="right"><span class="badge"><%= scalar keys %{ $run->{'recs'} || {} } %></span> &nbsp; <a href="/projects/<%= $project_id %>/recs.json"><i class="fa fa-download fa-lg"></i></a></td></tr>
+              <tr><td>Recommendations</td><td align="right"><span class="badge"><%= scalar @{ $run->{'recs'} || [] } %></span> &nbsp; <a href="/projects/<%= $project_id %>/recs.json"><i class="fa fa-download fa-lg"></i></a></td></tr>
             </table>
 
 	    <h2 id="">Figures</h2>
