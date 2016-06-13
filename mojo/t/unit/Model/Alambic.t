@@ -57,8 +57,9 @@ ok( $project_name =~ m!^Tools CDT$!, 'Project retrieved by Alambic has correct n
 
 my $plugins = $alambic->get_plugins();
 my $plugins_list = $plugins->get_list_plugins_pre();
-my $pv = 2;
-ok( scalar @{$plugins_list} == $pv, "Plugins list has $pv entries." ) or diag explain $plugins_list;
+my $pv = 4;
+ok( scalar @{$plugins_list} == $pv, "Plugins pre list has $pv entries." ) or diag explain $plugins_list;
+ok( grep( /^Hudson$/, @{$plugins_list} ) == 1, "Plugins pre list has Hudson." ) or diag explain $plugins_list;
 
 my $projects_list = $alambic->get_projects_list();
 ok( $projects_list->{'tools.cdt'} =~ m!^Tools CDT$!, "Projects list contains Tools CDT." ) or diag explain $projects_list;
@@ -71,7 +72,7 @@ $alambic->add_project_plugin('tools.cdt', 'EclipsePmi');
 
 note("Run project from Alambic.");
 my $ret = $alambic->run_project('tools.cdt');
-ok( scalar(keys %$ret) == 7, "Adding run_project returns hash with 7 entries." ) or diag explain $ret;
+ok( scalar(keys %$ret) == 4, "Adding run_project returns hash with 4 entries." ) or diag explain $ret;
 diag explain keys %$ret;
 
 # Restore previous backup and make sure the created project is not there.
@@ -80,4 +81,4 @@ $project = $alambic->get_project('tools.cdt');
 is( $project, undef, "Get project tools.cdt returns undef after restore." );
 
 
-done_testing(24);
+done_testing(25);
