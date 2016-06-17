@@ -1,0 +1,26 @@
+---
+output: html_document
+---
+
+```{r init, echo=FALSE, message=FALSE}
+library(dygraphs)
+library(xts)
+
+#project.id <- 'tools.cdt'
+file.evol = paste("", project.id, "_scm_evol.csv", sep="")
+evol <- read.csv(file=file.evol, header=T)
+evol <- evol[evol$authors != 0,]
+
+evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
+p <-dygraph( 
+        evol.xts[,c('added_lines', 'removed_lines')],
+        main = paste('Number of added and removed lines for ', project.id, sep=''),
+        width = 800, height = 250 ) %>% 
+      dyAxis("x", drawGrid = FALSE) %>%
+      dySeries("added_lines", label = "Added lines") %>%
+      dySeries("removed_lines", label = "Removed lines") %>%
+#      dyOptions(colors = RColorBrewer::brewer.pal(3, "Set1")) %>%
+      dyRangeSelector()
+p
+```
+
