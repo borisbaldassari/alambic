@@ -3,12 +3,18 @@ title: "Eclipse Project Report"
 author: "Alambic"
 header-includes:
    - \usepackage{tabularx}
-output: pdf_document
+   - \usepackage{fontawesome}
+   - \usepackage{enumitem}
+output: 
+  pdf_document:
+    highlight: tango
+    latex_engine: xelatex
+    keep_tex: true
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
 # Main information
-project.id <- 'modeling.gendoc'
+project.id <- 'modeling.sirius'
 plugin.id <- 'EclipseReport'
 
 library(knitr)
@@ -23,26 +29,46 @@ require(pander)
 require(stringi)
 require(ggthemes)
 
+sanitize <- function(dirty) {
+  # Remove weird chars for latex
+  clean <- stri_replace_all_fixed(dirty, "\\", "\\\\")
+  clean <- stri_replace_all_fixed(clean, "_", "\\_")
+  clean <- stri_replace_all_fixed(clean, "$", "\\$")
+  clean <- stri_replace_all_fixed(clean, "^", "\\^")
+  # Remove HTML tags.
+  clean <- gsub("<.*?>", "", clean)
+  return(clean)
+}
+
 # Read files
 main <- read.csv(file=paste("", project.id, "_main.csv", sep=""), header=T)
 info <- read.csv(file=paste("", project.id, "_info.csv", sep=""), header=T)
 metrics <- read.csv(file=paste("", project.id, "_metrics.csv", sep=""), header=T)
 attributes <- read.csv(file=paste("", project.id, "_attributes.csv", sep=""), header=T)
-recs <- read.csv(file=paste("", project.id, "_recs.csv", sep=""), header=T)
+recs <- read.csv(file=paste("", project.id, "_recs.csv", sep=""), header=T, row.names=NULL)
 
+# Basic information about project
+project.name <- info[info$Mnemo == 'pmi_title',2]
+project.desc <- info[info$Mnemo == 'pmi_desc',2]
+run.last <- ''
+
+# PMI
+file.pmi.checks <- paste("../../../../projects/", project.id, '/output/', project.id, "_pmi_checks.csv", sep="")
+pmi.checks <- read.csv(file=file.pmi.checks, header=T, row.names=NULL)
 
 # ITS
 file.its.evol <- paste("../../../../projects/", project.id, '/output/', project.id, "_its_evol.csv", sep="")
 its.evol <- read.csv(file=file.its.evol, header=T)
 its.evol <- its.evol[its.evol$changed != 0,]
-project.name <- info[info$Mnemo == 'pmi_title',2]
-project.desc <- info[info$Mnemo == 'pmi_desc',2]
-run.last <- ''
+
 ```
 
 # Project Information
 
 Name: `r project.name` 
+
+\Large\faCheck qsdf
+\normalsize
 
 Description: 
 
@@ -56,9 +82,10 @@ r_ci <- "Continuous integration is setup and information is provided in the PMI.
 ```
 
 ```{r ci_init_ifelse, echo=F, results='asis', comment=NA, prompt=FALSE}
+info_c <- sanitize( info[info$Mnemo == 'pmi_ci_url', c('Value')] )
 r_ci_if <- ifelse(
-  grepl('^http', info[info$Mnemo == 'pmi_ci_url', c('Value')]),
-  "Continuous integration is setup and information is provided in the PMI. ",
+  grepl('^http', info_c),
+  paste( "Continuous integration is setup and information is provided in the PMI. URL is ", info_c, ".", sep=""),
   "Continuous integration is either not setup or not correctly set in the PMI."
 )
 #cat(ci_ok)
@@ -72,9 +99,10 @@ r_ci_if <- ifelse(
 # Documentation
 
 ```{r doc_init_ifelse, echo=F, results='asis', comment=NA, prompt=FALSE}
+info_c <- sanitize( info[info$Mnemo == 'pmi_wiki_url', c('Value')] )
 r_doc_wiki <- ifelse(
   grepl('^http', info[info$Mnemo == 'pmi_wiki_url', c('Value')]),
-  paste( "The project uses a wiki, located at ", info[info$Mnemo == 'pmi_wiki_url', c('Value')], ".", sep=""),
+  paste( "The project uses a wiki, located at ", info_c, ".", sep=""),
   "The project either did not setup a wiki or forgot to fill the PMI entry."
 )
 #cat(ci_ok)
@@ -84,10 +112,32 @@ The main page of the project is located at `r info[info$Mnemo == 'pmi_main_url',
 `r I(r_doc_wiki)`
 
 
+# Project Management Infrastructure
+
+This section retrieves metadata for the project from the Project Management Infrastructure. The URL.
+
+```{r pmi.checks, echo=F, message=FALSE, warnings=FALSE, results='asis', eval=T}
+panderOptions('table.split.table', Inf)
+set.caption( paste( "PMI Checks for project ", project.id, sep="" ) )
+pmi.checks.ok <- pmi.checks[grepl("^OK", pmi.checks$Results),]
+pmi.checks.nok <- pmi.checks[grepl("^Failed", pmi.checks$Results),]
+
+pmi.checks.clean <- t(apply( pmi.checks, 1, sanitize ))
+pmi.checks.list <- apply( pmi.checks.clean, 1, 
+                          function(x) paste( '\\begin{description}[align=left]\n',
+                                             '\\item [Description]', x[1], '',
+                                             '\\item[Value]', x[2], '', 
+                                             '\\item[Results]', x[3], '\n',
+                                             '\\end{description}\n', sep="") )
+pmi.checks.list <- paste( pmi.checks.list, sep="" )
+cat(pmi.checks.list)
+#pandoc.table(pmi.checks.clean, style = 'multiline', justify = c('left', 'left', 'left'))
+```
 
 # Issue Tracking System
 
 ```{r its_init_ifelse, echo=F, results='asis', comment=NA, prompt=FALSE}
+info_c <- sanitize( info[info$Mnemo == 'pmi_ci_url', c('Value')] )
 r_its_query <- ifelse(
   grepl('^http', info[info$Mnemo == 'pmi_ci_url', c('Value')]),
   "Continuous integration is setup and information is provided in the PMI. ",
@@ -97,9 +147,9 @@ r_its_query <- ifelse(
 ```
 
 \begin{itemize}
-\item The project reference in Bugzilla (a.k.a. \textit{Product}) is `r info[info$Mnemo == 'pmi_bugzilla_product', c('Value')]`.
-\item The list of issues for the project can be found at `r info[info$Mnemo == 'pmi_bugzilla_query_url', c('Value')]`. 
-\item New issues on the project can be entered at `r info[info$Mnemo == 'pmi_bugzilla_create_url', c('Value')]`. 
+\item The project reference in Bugzilla (a.k.a. \textit{Product}) is `r sanitize( info[info$Mnemo == 'pmi_bugzilla_product', c('Value')] )`.
+\item The list of issues for the project can be found at `r sanitize( info[info$Mnemo == 'pmi_bugzilla_query_url', c('Value')] )`. 
+\item New issues on the project can be entered at `r sanitize( info[info$Mnemo == 'pmi_bugzilla_create_url', c('Value')] )`. 
 \end{itemize}
 
 At the time of analysis, there were `r metrics[metrics$Mnemo == 'ITS_OPENED', c('Value')]` opened issues, entered by `r metrics[metrics$Mnemo == 'ITS_OPENERS', c('Value')]` people, and `r metrics[metrics$Mnemo == 'ITS_CLOSED', c('Value')]` closed issues, fixed by `r metrics[metrics$Mnemo == 'ITS_CLOSERS', c('Value')]`.
@@ -112,7 +162,7 @@ Measures have been retrieved from `r its.evol[1,c('date')]` up to `r tail(its.ev
 \end{itemize}
 
 
-```{r its_ggplot, echo=FALSE, fig.width=10, fig.height=4}
+```{r its_ggplot, echo=FALSE, fig.width=10, fig.height=4, eval=F}
 my.data.long <- melt(its.evol[,c("unixtime", "opened", "closed")], id.vars="unixtime", value.name="value", variable.name="metric")
 my.data.long$time <- as.POSIXct(as.numeric(as.character(my.data.long$unixtime)), origin="1970-01-01")
 
@@ -153,7 +203,7 @@ test & tes \\
 #
 panderOptions('table.split.table', Inf)
 set.caption( paste( "Recommendations for project ", project.id, sep="" ) )
-pandoc.table(recs, style = 'multiline', justify = c('left', 'left', 'left'))
+pandoc.table(recs, style = 'multiline', justify = c('left', 'left', 'left', 'left'))
 #
 ```
 
