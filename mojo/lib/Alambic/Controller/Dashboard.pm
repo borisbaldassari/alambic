@@ -13,7 +13,7 @@ sub display_summary {
     my $page_id = $self->param( 'page' ) || '';
     
     my $run = $self->app->al->get_project_last_run($project_id);
-    
+    print "# In Dashboard " . Dumper($run);
     # Prepare data for template.
     $self->stash(
 	project_id => $project_id,

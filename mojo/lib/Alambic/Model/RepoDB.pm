@@ -338,8 +338,6 @@ sub set_project_conf($$$$$) {
     my $is_active = shift || 0;
     my $plugins = shift;
 
-    print "# In RepoDB::set_project_conf " . Dumper($plugins);
-    
     my $plugins_json = encode_json($plugins);
     my $query = "INSERT INTO projects_conf VALUES (?, ?, ?, ?, ?) "
 	. "ON CONFLICT (id) DO UPDATE SET (name, description, is_active, plugins) "
@@ -511,7 +509,9 @@ sub get_project_last_run() {
     my %project;
     
     # Execute select in runs table.
-    my $results = $pg->db->query("SELECT * FROM projects_runs WHERE project_id=? ORDER BY id DESC LIMIT 1", ($id));
+    my $query = "SELECT * FROM projects_runs WHERE project_id=? ORDER BY id DESC LIMIT 1";
+#    print "# In RepoDB $query.\n";
+    my $results = $pg->db->query($query, ($id));
     while (my $next = $results->hash) {
 	$project{'id'} = $next->{'id'}; 
 	$project{'project_id'} = $next->{'project_id'}; 
@@ -522,7 +522,7 @@ sub get_project_last_run() {
 	$project{'indicators'} = decode_json( $next->{'indicators'} ); 
 	$project{'attributes'} = decode_json( $next->{'attributes'} ); 
 	$project{'attributes_conf'} = decode_json( $next->{'attributes_conf'} ); 
-	$project{'recs'} = decode_json($next->{'recs'} || '[]'); 
+	$project{'recs'} = decode_json( $next->{'recs'} || '[]' ); 
     }
     
     # Execute select in info table.
@@ -530,7 +530,8 @@ sub get_project_last_run() {
     while (my $next = $results->hash) {
 	$project{'info'} = decode_json( $next->{'info'} ); 
     }
-
+#    print "# In RepoDB $id " . Dumper(%project);
+    
     return \%project;
 }
 
