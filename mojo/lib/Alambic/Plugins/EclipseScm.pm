@@ -169,7 +169,7 @@ sub _compute_data($) {
     }
 
     # TODO Execute checks and fill recs.
-    if ($metrics_new->{'ITS_OPENED'} > 10) {
+    if ( ( $metrics_new->{'ITS_OPENED'} || '' ) > 10) {
 	push( @recs, { 'rid' => 'ITS_CLOSE_BUGS', 
 		       'severity' => 1, 
 		       'desc' => 'There are ' . $metrics_new->{'ITS_OPENED'} 
@@ -184,7 +184,7 @@ sub _compute_data($) {
     # Write static metrics file
     my @metrics = sort map {$conf{'provides_metrics'}{$_}} keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics) . "\n";
-    $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
+    $csv_out .= join( ',', map { $metrics_new->{$_} || '' } sort @metrics) . "\n";
     
     $repofs->write_plugin( 'EclipseIts', $project_id . "_its.csv", $csv_out );
     
@@ -195,15 +195,15 @@ sub _compute_data($) {
     # Create csv data for evol
     $csv_out = "date,id,authors,added_lines,removed_lines,commits,committers,repositories,unixtime\n";
     foreach my $id ( 0 .. (scalar(@{$metrics_evol->{'date'}}) -1 ) ) {
-	$csv_out .= $metrics_evol->{'date'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'id'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'authors'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'added_lines'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'removed_lines'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'commits'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'committers'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'repositories'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'unixtime'}->[$id] . "\n";
+	( $csv_out .= $metrics_evol->{'date'}->[$id] || '' ) . ',';
+	( $csv_out .= $metrics_evol->{'id'}->[$id] || '' ) . ',';
+	( $csv_out .= $metrics_evol->{'authors'}->[$id] || '' ) . ',';
+	( $csv_out .= $metrics_evol->{'added_lines'}->[$id] || '' ) . ',';
+	( $csv_out .= $metrics_evol->{'removed_lines'}->[$id] || '' ) . ',';
+	( $csv_out .= $metrics_evol->{'commits'}->[$id] || '' ) . ',';
+	( $csv_out .= $metrics_evol->{'committers'}->[$id] || '' ) . ',';
+	( $csv_out .= $metrics_evol->{'repositories'}->[$id] || '' ) . ',';
+	( $csv_out .= $metrics_evol->{'unixtime'}->[$id] || '' ) . "\n";
     }
     $repofs->write_plugin( 'EclipseIts', $project_id . "_scm_evol.csv", $csv_out );
     $repofs->write_output( $project_id, "scm_evol.csv", $csv_out );
