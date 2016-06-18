@@ -50,6 +50,7 @@ my %conf = (
     "provides_data" => {
         "pmi.json" => "The PMI file as returned by the Eclipse repository (JSON).",
         "pmi_checks.json" => "The list of PMI checks and their results (JSON).",
+        "pmi_checks.csv" => "The list of PMI checks and their results (CSV).",
     },
     "provides_metrics" => {
 	"PMI_ITS_INFO" => "PMI_ITS_INFO",
@@ -221,7 +222,7 @@ sub _compute_data($) {
     my $proj_name = $raw_project->{'title'};
     my $check;
     $check->{'value'} = $proj_name;
-    $check->{'result'} = ($proj_name !~ m!^\s*$!) ? 'OK' : 'Failed: no title defined.'; 
+    push( @{$check->{'results'}}, ($proj_name !~ m!^\s*$!) ? 'OK' : 'Failed: no title defined.' ); 
     $check->{'desc'} = 'Checks if a name is defined for the project: !~ m!^\s*$!';
     $ret_check->{'checks'}->{'title'} = $check;
     
@@ -533,6 +534,22 @@ sub _compute_data($) {
     # Write pmi checks json file to disk.
     push( @log, "[Plugins::EclipsePmi] Writing PMI checks json file to output dir." );
     $repofs->write_output( $project_id, "pmi_checks.json", encode_json($ret_check) );
+
+    # Write pmi checks csv file to disk.
+    push( @log, "[Plugins::EclipsePmi] Writing PMI checks csv file to output dir." );
+    my $ret_check_csv = "Description,Value,Results\n";
+    foreach my $l (sort keys %{$ret_check->{'checks'}}) {
+	my $desc = $ret_check->{'checks'}{$l}{'desc'};
+	$desc =~ s!,!!;
+	my $value = $ret_check->{'checks'}{$l}{'value'};
+	$value =~ s!,!!;
+	my $result = join( "\\\\", @{$ret_check->{'checks'}{$l}{'results'}});
+	$result =~ s!,!!;
+	$ret_check_csv .= $desc . ","
+	    . $value . "," . $result . "\n";
+    }
+    $repofs->write_output( $project_id, "pmi_checks.csv", $ret_check_csv );
+
 
     # Write pmi json file to disk.
     push( @log, "[Plugins::EclipsePmi] Writing updated PMI json file to output dir." );
