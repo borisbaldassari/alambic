@@ -15,7 +15,7 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-project.id <- "modeling.sirius"
+#project.id <- "modeling.sirius"
 plugin.id <- "PmdAnalysis"
 file.main = paste("", project.id, "_pmd_analysis_main.csv", sep="")
 file.violations = paste("", project.id, "_pmd_analysis_violations.csv", sep="")
@@ -24,9 +24,8 @@ file.files = paste("", project.id, "_pmd_analysis_files.csv", sep="")
 
 library(knitr)
 
-opts_chunk$set(fig.width=5, fig.height=5, echo=F,
-               fig.path = paste( 'figures/', sep=""))
-opts_knit$set(progress = TRUE, verbose = TRUE, self.contained=T)
+opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
+#opts_knit$set(progress = TRUE, verbose = TRUE, self.contained=T)
 
 require(ggplot2)
 require(xtable)
@@ -73,8 +72,8 @@ PMD raised a total of `r sum(pmd.main$NCC)` violations to checked rules, includi
   
 * `r sum(pmd.files$NCC_1)` with <span style="color: #CC0000">priority 1</span>,
 * `r sum(pmd.files$NCC_2)` with <span style="color: #DD5500">priority 2</span>,
-* `r sum(pmd.files$NCC_3)` with <span style="color: #EEAA00">priority 3</span>
-* `r sum(pmd.files$NCC_4)` with <span style="color: #FFCC66">priority 4</span>. </p>
+* `r sum(pmd.files$NCC_3)` with <span style="color: #EEAA00">priority 3</span>,
+* `r sum(pmd.files$NCC_4)` with <span style="color: #FFCC66">priority 4</span>.
 
 '''Rules''' can be considered as <em>coding practices</em>. They represent what the community believes to be right or wrong, althougth it heavily depends on your own context. In this very case:
     
@@ -84,30 +83,10 @@ PMD raised a total of `r sum(pmd.main$NCC)` violations to checked rules, includi
 
 </div><div class="col-sm-6">
 
-This plot shows the proportion of rules violated (<span class="label" style="background-color: #CC0000">NOK: red</span>) and clean (<span class="label" style="background-color: #325d88">OK: blue</span>). The lightness decreases with the priority (P1 -> p4).</p>
+This plot shows the proportion of rules violated (<span class="label" style="background-color: #CC0000">NOK: red</span>) and clean (<span class="label" style="background-color: #325d88">OK: blue</span>). The lightness decreases with the priority (P1 -> p4).
 
-```{r summary-pie-gvis, echo=FALSE, message=FALSE, results='asis'}
-suppressPackageStartupMessages(library(googleVis))
-options(gvis.plot.tag='chart')
+<iframe src="/projects/`r project.id`/PmdAnalysis/pmd_analysis_pie.html" frameborder="0" style="width: 100%; height: 320px"></iframe>
 
-pmd.rules.ok <- pmd.rules[,c(1,2)]
-pmd.rules.ok$Priority <- paste("P", pmd.rules$Priority, " OK", sep="")
-names(pmd.rules.ok) <- c("Rules", "Vol")
-
-pmd.rules.nok <- pmd.rules[,c(1,3)]
-pmd.rules.nok$Priority <- paste("P", pmd.rules$Priority, " NOK", sep="")
-names(pmd.rules.nok) <- c("Rules", "Vol")
-
-pmd.rules.sorted <- rbind(pmd.rules.ok, pmd.rules.nok)
-
-p <- gvisPieChart(pmd.rules.sorted, options = list(
-      title="Rules checked",
-      colors="['#325d88', '#5B7DA0', '#849EB8', '#ADBECF', '#CC0000', '#DD5500', '#EEAA00', '#FFCC66']",
-      width=500, height=350,
-      pieHole= 0.4))
-
-print(p, 'chart')
-```
 </div></div>
 
 -----
@@ -176,40 +155,9 @@ print(xtable(pmd.files.list.10,
 
 </div></div>
 
-```{r files-ncc1, dev='svg', fig.width=12, fig.height=7, dev.args=list(bg='transparent'), out.extra='class="img-responsive" width="100%"', eval=TRUE, warning=FALSE}
-
-pmd.files.list.50 <- head(pmd.files.list, n=30)
-
-pmd.files.ncc1 <- pmd.files.list.50[,c(1,2)]
-pmd.files.ncc1$Priority <- 1
-names(pmd.files.ncc1) <- c("File", "NCC", "Priority")
-
-pmd.files.ncc2 <- pmd.files.list.50[,c(1,3)]
-pmd.files.ncc2$Priority <- 2
-names(pmd.files.ncc2) <- c("File", "NCC", "Priority")
-
-pmd.files.ncc <- rbind(pmd.files.ncc1, pmd.files.ncc2)
-
-#myfiles <- gregexpr(pattern ='[/\\]', pmd.files.ncc$File)
-myfiles <- lapply(
-    X=as.vector(pmd.files.ncc$File),
-    FUN=function(x) tail(gregexpr(pattern ='/', text=x)[[1]], n=1)
-)
-
-pmd.files.ncc$File <- paste("...", substr(pmd.files.ncc$File, start=myfiles, stop=nchar(pmd.files.ncc$File)), sep="")
-rm(myfiles)
-
-ggplot(pmd.files.ncc, aes(x=reorder(File, -NCC), y=NCC, fill=factor(Priority))) +
-    geom_bar(stat="identity") +
-    scale_fill_manual(values=priority.colours) +
-    labs(fill='Priority') +
-    xlab("Files") +
-    ylab('Non-conformities') +
-    theme(
-        panel.background = element_rect(fill = "transparent",colour = NA),
-        plot.background = element_rect(fill = "white",colour = NA),
-        axis.text.x = element_text(angle=30, hjust=1, vjust=1, size=11))
-```
+<div class="row"><div class="col-lg-12">
+<img src="/projects/`r project.id`/PmdAnalysis/pmd_analysis_files_ncc1.svg" frameborder="0" style="width: 100%; height: 540px" />
+</div></div>
 
 <h4 id="improve-project-rules">Fixing rules to improve practices</h4>
 
@@ -220,24 +168,14 @@ myrules_list <- pmd.violations[pmd.violations$vol < 50 & ( pmd.violations$priori
 Another approache is to work on practices acquisition: <strong>select a few rules</strong> that you consider as really important, with <em>an actionable number of violations</em>, and <strong>fix them wherever they appear</strong>. The current analysis has `r nrow(myrules_list) ` rules with priority 1 or 2 that show less than 50 violations. The graphic below on the left shows the 5 top rules with a low number of violations and a priority with either 1 or 2. The table on the rigth provides the corresponding data.
 
 <div class="row"><div class="col-lg-6">
-```{r top_5_rules, dev='svg', fig.width=10, fig.height=7, dev.args=list(bg='transparent'), out.extra='class="img-responsive"'}
+
+<img src="/projects/`r project.id`/PmdAnalysis/pmd_analysis_top_5_rules.svg" frameborder="0" style="width: 100%; height: 370px" />
+
+</div><div class="col-lg-6">
+```{r top_5_rules_list, results='asis'}
 myrules <- pmd.violations[pmd.violations$priority == 1 | pmd.violations$priority == 2,c(1,2,4)]
 myrules5 <- head(myrules[order(myrules$vol),], n=5)
 
-ggplot(myrules5, aes(x=reorder(Mnemo, vol), y=vol, fill=factor(priority))) +
-    geom_bar(stat='identity') +
-    geom_text(aes(label=vol), vjust=-0.2, size=4) +
-    scale_fill_manual(values=priority.colours) +
-    labs(fill='Priority') +
-    xlab("") +
-    ylab('Non-conformities') +
-    theme(
-        panel.background = element_rect(fill = "transparent",colour = NA),
-        plot.background = element_rect(fill = "white",colour = NA),
-        axis.text.x = element_text(angle=30, hjust=1, vjust=1, size=12))
-```
-</div><div class="col-lg-6">
-```{r top_5_rules_list, results='asis'}
 print(xtable(myrules5,
             caption = 'High-priority rules with a low number of violations'), type="html",
     html.table.attributes='class="table table-striped"',

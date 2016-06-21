@@ -1,0 +1,45 @@
+require(ggplot2)
+
+variables <- commandArgs(trailingOnly=TRUE)
+project.id <- variables[1]
+plugin.id <- variables[2]
+
+priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
+
+project.id <- "modeling.sirius"
+file.files = paste("", project.id, "_pmd_analysis_files.csv", sep="")
+pmd.files <- read.csv(file=file.files, header=T)
+
+pmd.files.list <- pmd.files[pmd.files$NCC_1 > 0 | pmd.files$NCC_2 > 0,c("File", "NCC_1", "NCC_2")]
+pmd.files.list.50 <- head(pmd.files.list, n=30)
+
+pmd.files.ncc1 <- pmd.files.list.50[,c(1,2)]
+pmd.files.ncc1$Priority <- 1
+names(pmd.files.ncc1) <- c("File", "NCC", "Priority")
+
+pmd.files.ncc2 <- pmd.files.list.50[,c(1,3)]
+pmd.files.ncc2$Priority <- 2
+names(pmd.files.ncc2) <- c("File", "NCC", "Priority")
+
+pmd.files.ncc <- rbind(pmd.files.ncc1, pmd.files.ncc2)
+
+myfiles <- lapply(
+    X=as.vector(pmd.files.ncc$File),
+    FUN=function(x) tail(gregexpr(pattern ='/', text=x)[[1]], n=1)
+)
+myfiles.stop <- lapply( X=as.vector(pmd.files.ncc$File), FUN=function(x) nchar(x) )
+pmd.files.ncc$File <- paste("...", substr(pmd.files.ncc$File, start=myfiles, stop=myfiles.stop), sep="")
+
+svg("pmd_analysis_files_ncc1.svg", width=14, height=8)
+ggplot(pmd.files.ncc, aes(x=reorder(File, -NCC), y=NCC, fill=factor(Priority))) +
+    geom_bar(stat="identity") +
+    scale_fill_manual(values=priority.colours) +
+    labs(fill='Priority') +
+    xlab("Files") +
+    ylab('Non-conformities') +
+    theme(
+        panel.background = element_rect(fill = "transparent",colour = NA),
+        plot.background = element_rect(fill = "white",colour = NA),
+        axis.text.x = element_text(angle=30, hjust=1, vjust=1, size=11))
+dev.off()
+

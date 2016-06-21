@@ -35,7 +35,9 @@ my %conf = (
     "provides_metrics" => {
     },
     "provides_figs" => {
-        'its_evol_summary.rmd' => "its_evol_summary.html",
+	'pmd_analysis_pie.rmd' => 'pmd_analysis_pie.html',
+	'pmd_analysis_files_ncc1.r' => 'pmd_analysis_files_ncc1.svg',
+	'pmd_analysis_top_5_rules.r' => 'pmd_analysis_top_5_rules.svg',
     },
     "provides_recs" => [
         "PMD_CLOSE_BUGS",
@@ -267,6 +269,16 @@ sub _compute_data($$$) {
     push( @log, "[Plugins::EclipseScm] Executing R main file." );
     my $r = Alambic::Tools::R->new();
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'PmdAnalysis', $project_id, "pmd_analysis.Rmd" )} );
+
+    # And execute the figures R scripts.
+    foreach my $fig (sort keys %{$conf{'provides_figs'}}) {
+	push( @log, "[Plugins::PmdAnalysis] Executing R fig file [$fig]." );
+	if ($conf{'provides_figs'}{$fig} =~ /\.html$/) {
+	    @log = ( @log, @{$r->knit_rmarkdown_html( 'PmdAnalysis', $project_id, $fig )} );
+	} elsif ($conf{'provides_figs'}{$fig} =~ /\.svg$/) {
+	    @log = ( @log, @{$r->knit_rmarkdown_svg( 'PmdAnalysis', $project_id, $fig )} );
+	}
+    }
     
     return {
 	"recs" => \@recs,
