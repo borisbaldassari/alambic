@@ -1,5 +1,5 @@
 ---
-title: "PMD Analysis and Configuration"
+title: "PMD Analysis"
 author:
 - name: "Boris Baldassari"
   affiliation: Castalia Solutions
@@ -15,7 +15,7 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-#project.id <- "modeling.sirius"
+project.id <- "modeling.sirius"
 plugin.id <- "PmdAnalysis"
 file.main = paste("", project.id, "_pmd_analysis_main.csv", sep="")
 file.violations = paste("", project.id, "_pmd_analysis_violations.csv", sep="")
@@ -68,18 +68,18 @@ The version of PMD used is `r pmd.main$PMD.version[1]` and the PMD run was execu
 ### Quick Summary
 
 <div class="row"><div class="col-sm-6">
-PMD raised a total of `r sum(pmd.main$NCC)` violations to checked rules, including:
+PMD raised a total of ``r sum(pmd.main$NCC)`` violations to checked rules, including:
   
-* `r sum(pmd.files$NCC_1)` with <span style="color: #CC0000">priority 1</span>,
-* `r sum(pmd.files$NCC_2)` with <span style="color: #DD5500">priority 2</span>,
-* `r sum(pmd.files$NCC_3)` with <span style="color: #EEAA00">priority 3</span>,
-* `r sum(pmd.files$NCC_4)` with <span style="color: #FFCC66">priority 4</span>.
+* ``r sum(pmd.files$NCC_1)`` with <span style="color: #CC0000">priority 1</span>,
+* ``r sum(pmd.files$NCC_2)`` with <span style="color: #DD5500">priority 2</span>,
+* ``r sum(pmd.files$NCC_3)`` with <span style="color: #EEAA00">priority 3</span>,
+* ``r sum(pmd.files$NCC_4)`` with <span style="color: #FFCC66">priority 4</span>.
 
-'''Rules''' can be considered as <em>coding practices</em>. They represent what the community believes to be right or wrong, althougth it heavily depends on your own context. In this very case:
+**Rules** can be considered as *coding practices*. They represent what the community believes to be right or wrong, althougth it heavily depends on your own context. In this very case:
     
-* A total of `r sum(pmd.main$RULES)` rules have been checked.
-* The analysis found `r sum(pmd.main$RKO)` broken rules, and `r sum(pmd.main$ROK)` respected rules.
-* So the rate of <strong>acquired practices</strong> is `r round(sum(pmd.main$ROKR), digits=1)` %.
+* A total of ``r sum(pmd.main$RULES)`` rules have been checked.
+* The analysis found ``r sum(pmd.main$RKO)`` broken rules, and ``r sum(pmd.main$ROK)`` respected rules.
+* So the rate of **acquired practices** is ``r round(sum(pmd.main$ROKR), digits=1)`` %.
 
 </div><div class="col-sm-6">
 
@@ -93,15 +93,15 @@ This plot shows the proportion of rules violated (<span class="label" style="bac
 
 <h3 id="improve-project">Improving your project</h3>
 
-Once you have selected the right rules, and made sure you understand them, then you should strive to keep the number of violations low, or even null. For each violation, you should either <strong>fix it</strong> or <strong>acknowledge it</strong>. As you will see, there will always be cases where the rule is smart, but doesn't apply to a specific instance in your code -- because there is simply no bullet-proof generic truth. But once you know the rules, you know when to bend them, and it is ok: PMD allows you to <a href="http://pmd.sourceforge.net/suppressing.html">ignore or suppress the incriminated warnings</a> if you know what you are doing.
+Once you have selected the right rules, and made sure you understand them, then you should strive to keep the number of violations low, or even null. For each violation, you should either **fix it** or **acknowledge it**. As you will see, there will always be cases where the rule is smart, but doesn't apply to a specific instance in your code -- because there is simply no bullet-proof generic truth. But once you know the rules, you know when to bend them, and it is ok: PMD allows you to <a href="http://pmd.sourceforge.net/suppressing.html">ignore or suppress the incriminated warnings</a> if you know what you are doing.
 
 There are a few things to keep in mind when using PMD to improve your code:
 
 * Improve the rate of acquired practices.
 * Reduce the number of violations.
-* For rules that you want to apply, but that show too many violations, at least don't let them grow up.
+* For rules that you want to apply, but that show too many violations, at least do not let them grow up.
 
-From there, the next practical thing to do is either to!
+From there, the next practical thing to do is either to:
 
 * Work on files: select a few files that have a lot of violations, and fix all important violations (e.g. with priority 1 and 2).
 * Work on practices: select a few rules with a high priority and a low number of violations, so you can make sure that the corresponding practices are acquired. Then you should pay attention to not let them appear again.
@@ -121,15 +121,21 @@ pmd.files.ncc12.ncf <- nrow(pmd.files.ncc12)
 ```
 
 
+The table on the right shows the <em>10 top files with high-priority violations</em>. NCC P1 is the number of violations with priority 1 in the file, and NCC P2 is the number of violation with priority 2 in the file. Fixing them would be a good start. When you are over, re-run the analysis and fix the 10 next, until all high-priority violations are fixed.
+
+<div class="row"><div class="col-lg-12">
+
+<img src="/projects/`r project.id`/PmdAnalysis/pmd_analysis_files_ncc1.svg" frameborder="0" style="width: 100%; height: 600px" />
+
+</div></div>
+
 <div class="row"><div class="col-lg-5">
 
 You should start with files that have a lot of high-priority violations. The current analysis unveils:
 
-* `r pmd.files.ncc12.ncc ` violations with priority <span style="color: #CC0000">1</span> or <span style="color: #DD5500">2</span>, distributed in `r pmd.files.ncc12.ncf ` files. Those are further decomposed in:
-* `r pmd.files.ncc1.ncc ` violations with <span style="color: #CC0000">priority 1</span>, distributed in `r pmd.files.ncc1.ncf ` files, and 
-* `r pmd.files.ncc2.ncc ` violations with <span style="color: #DD5500">priority 2</span>, distributed in `r pmd.files.ncc2.ncf ` files.
-
-The table on the right shows the <em>10 top files with high-priority violations</em>. NCC P1 is the number of violations with priority 1 in the file, and NCC P2 is the number of violation with priority 2 in the file. Fixing them would be a good start. When you are over, re-run the analysis and fix the 10 next, until all high-priority violations are fixed.
+* ``r pmd.files.ncc12.ncc`` violations with priority <span style="color: #CC0000">1</span> or <span style="color: #DD5500">2</span>, distributed in ``r pmd.files.ncc12.ncf`` files. Those are further decomposed in:
+* ``r pmd.files.ncc1.ncc`` violations with <span style="color: #CC0000">priority 1</span>, distributed in ``r pmd.files.ncc1.ncf`` files, and 
+* ``r pmd.files.ncc2.ncc`` violations with <span style="color: #DD5500">priority 2</span>, distributed in ``r pmd.files.ncc2.ncf`` files.
 
 </div><div class="col-lg-7">
 
@@ -137,7 +143,7 @@ The table on the right shows the <em>10 top files with high-priority violations<
 pmd.files.list <- pmd.files[pmd.files$NCC_1 > 0 | pmd.files$NCC_2 > 0,c("File", "NCC_1", "NCC_2")]
 
 mystr <- as.character(pmd.files.list$File)
-pmd.files.list$File <- paste("...", substr(pmd.files.list[,1], start=nchar(mystr)-60, nchar(mystr)), sep="")
+pmd.files.list$File <- paste('. . ', substr(pmd.files.list[,1], start=nchar(mystr)-60, nchar(mystr)), sep="")
 rm(mystr)
 
 pmd.files.list$NCC_12 <- pmd.files.list$NCC_1 + pmd.files.list$NCC_2
@@ -155,17 +161,13 @@ print(xtable(pmd.files.list.10,
 
 </div></div>
 
-<div class="row"><div class="col-lg-12">
-<img src="/projects/`r project.id`/PmdAnalysis/pmd_analysis_files_ncc1.svg" frameborder="0" style="width: 100%; height: 540px" />
-</div></div>
-
 <h4 id="improve-project-rules">Fixing rules to improve practices</h4>
 
 ```{r  top_5_rules_compute}
 myrules_list <- pmd.violations[pmd.violations$vol < 50 & ( pmd.violations$priority == 1 | pmd.violations$priority == 2 ),c(1,2,4)]
 ```
 
-Another approache is to work on practices acquisition: <strong>select a few rules</strong> that you consider as really important, with <em>an actionable number of violations</em>, and <strong>fix them wherever they appear</strong>. The current analysis has `r nrow(myrules_list) ` rules with priority 1 or 2 that show less than 50 violations. The graphic below on the left shows the 5 top rules with a low number of violations and a priority with either 1 or 2. The table on the rigth provides the corresponding data.
+Another approache is to work on practices acquisition: **select a few rules** that you consider as really important, with <em>an actionable number of violations</em>, and <strong>fix them wherever they appear</strong>. The current analysis has ``r nrow(myrules_list)`` rules with priority 1 or 2 that show less than 50 violations. The graphic below on the left shows the 5 top rules with a low number of violations and a priority with either 1 or 2. The table on the rigth provides the corresponding data.
 
 <div class="row"><div class="col-lg-6">
 

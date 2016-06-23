@@ -38,6 +38,9 @@ my %conf = (
 	'pmd_analysis_pie.rmd' => 'pmd_analysis_pie.html',
 	'pmd_analysis_files_ncc1.r' => 'pmd_analysis_files_ncc1.svg',
 	'pmd_analysis_top_5_rules.r' => 'pmd_analysis_top_5_rules.svg',
+	'pmd_configuration_rulesets_repartition.r' => 'pmd_configuration_rulesets_repartition.svg',
+	'pmd_configuration_summary_pie.rmd' => 'pmd_configuration_summary_pie.html',
+	'pmd_configuration_violations_rules.r' => 'pmd_configuration_violations_rules.svg',
     },
     "provides_recs" => [
         "PMD_CLOSE_BUGS",
@@ -126,7 +129,6 @@ sub _compute_data($$$) {
     push( @log, "[Plugins::PmdAnalysis] Starting compute data for [$project_id]." );
 
     my $debug = 0;
-    my @data_files;
 
     # Reading rules from xml files.
     my $rules_def = &_read_pmd_rules();
@@ -174,8 +176,6 @@ sub _compute_data($$$) {
         $csv_out .= "$priority," . $ok . ", " . $nok . "\n";
     }    
 
-    push( @data_files, $project_id . "_pmd_analysis_rules.csv" );
-
     # Write rules to a csv file
     $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_rules.csv", $csv_out );
     $repofs->write_output( $project_id, "pmd_analysis_rules.csv", $csv_out );
@@ -218,12 +218,10 @@ sub _compute_data($$$) {
     $json_violations .= "}\n";
 
     # Write violations to JSON.
-    push(@data_files, $project_id . "_pmd_analysis_violations.json");
     $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_violations.json", $json_violations );
     $repofs->write_output( $project_id, "pmd_analysis_violations.json", $json_violations );
     
     # Write violations to CSV.
-    push( @data_files, $project_id . "_pmd_analysis_violations.csv" );
     $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_violations.csv", $csv_out );
     $repofs->write_output( $project_id, "pmd_analysis_violations.csv", $csv_out );
 
@@ -249,9 +247,39 @@ sub _compute_data($$$) {
     
     # Write files to a csv file
     push( @log, "Writing files to file [" . $project_id . "_pmd_analysis_files.csv].." );
-    push( @data_files, "_pmd_analysis_files.csv" );
     $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_files.csv", $csv_files_out );
     $repofs->write_output( $project_id, "pmd_analysis_files.csv", $csv_files_out );
+
+    # Compute violations by ruleset. Two formats are provided for different purposes.
+    my $csv_rulesets_out = "Ruleset,NCC_1,NCC_2,NCC_3,NCC_4\n";
+    my $csv_rulesets2_out = "ruleset,priority,ncc\n";
+    
+    # Compute number of violations by priority and by rulesets.
+    foreach my $ruleset (sort keys %rulesets) {
+        my $ncc_1 = $rulesets{$ruleset}{1} || 0;
+        my $ncc_2 = $rulesets{$ruleset}{2} || 0;
+        my $ncc_3 = $rulesets{$ruleset}{3} || 0;
+        my $ncc_4 = $rulesets{$ruleset}{4} || 0;
+        $csv_rulesets_out .= "$ruleset,$ncc_1,$ncc_2,$ncc_3,$ncc_4\n";
+    }
+    
+    # Summarise number of violations by priority by ruleset.
+    foreach my $ruleset (sort keys %rulesets) {
+        foreach my $priority (sort keys %{$rulesets{$ruleset}}) {
+            my $vol = $rulesets{$ruleset}{$priority};
+            $csv_rulesets2_out .= "$ruleset,$priority,$vol\n";
+        }
+    }
+    
+    # Write rulesets to CSV (first format).
+    push( @log, "Writing rulesets to file [" . $project_id . "_conf_rulesets.csv]." );
+    $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_rulesets.csv", $csv_rulesets_out );
+    $repofs->write_output( $project_id, "pmd_analysis_rulesets.csv", $csv_rulesets_out );
+    
+    # Write rulesets to CSV (second format).
+    push( @log, "Writing rulesets2 to file [" . $project_id . "_conf_rulesets2.csv]." );
+    $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_rulesets2.csv", $csv_rulesets2_out );
+    $repofs->write_output( $project_id, "pmd_analysis_rulesets2.csv", $csv_rulesets2_out );
 
     # Write a summary of the run.    
     my $total_rok = $vol_rules - $total_rko;
@@ -261,14 +289,16 @@ sub _compute_data($$$) {
     $csv_main_out .= "$pmd_version,$pmd_timestamp,,$total_ncc,$vol_rules,$total_rko,$total_rok,$total_rokr\n";
     
     push( @log, "Writing main pmd file [" . $project_id . "_pmd_analysis_main.csv].." );
-    push(@data_files, $project_id . "_pmd_analysis_main.csv");
     $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_main.csv", $csv_main_out );
     $repofs->write_output( $project_id, "pmd_analysis_main.csv", $csv_main_out );
 
     # Now execute the main R script.
-    push( @log, "[Plugins::EclipseScm] Executing R main file." );
+    push( @log, "[Plugins::EclipseScm] Executing R main file for PMD Analysis." );
     my $r = Alambic::Tools::R->new();
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'PmdAnalysis', $project_id, "pmd_analysis.Rmd" )} );
+
+    push( @log, "[Plugins::EclipseScm] Executing R main file for PMD Configuration." );
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'PmdAnalysis', $project_id, "pmd_configuration.Rmd" )} );
 
     # And execute the figures R scripts.
     foreach my $fig (sort keys %{$conf{'provides_figs'}}) {

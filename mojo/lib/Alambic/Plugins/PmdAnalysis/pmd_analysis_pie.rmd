@@ -24,7 +24,7 @@ pmd.rules.sorted <- rbind(pmd.rules.ok, pmd.rules.nok)
 p <- gvisPieChart(pmd.rules.sorted, options = list(
       title="Rules checked",
       colors="['#325d88', '#5B7DA0', '#849EB8', '#ADBECF', '#CC0000', '#DD5500', '#EEAA00', '#FFCC66']",
-      width=500, height=350,
+      width=500, height=310,
       pieHole= 0.4))
 
 print(p, 'chart')
