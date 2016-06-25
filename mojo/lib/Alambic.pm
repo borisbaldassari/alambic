@@ -120,10 +120,11 @@ sub startup {
     $r->get('/documentation/#id')->to( 'documentation#welcome' );
     
     # Dashboards
-    my $r_projects = $r->get('/projects')->to(controller => 'dashboard');
-    $r_projects->get('/#id')->to(action => 'display_summary');
-    $r_projects->get('/#id/#page')->to(action => 'display_project');
-    $r_projects->get('/#id/#plugin/#page')->to(action => 'display_plugins');
+    my $r_projects = $r->get('/projects')->to( controller => 'dashboard' );
+    $r_projects->get('/#id')->to( action => 'display_summary' );
+    $r_projects->get('/#id/#page')->to( action => 'display_project' );
+    $r_projects->get('/#id/#plugin/#page')->to( action => 'display_plugins' );
+    $r_projects->post('/#id/#plugin/#page')->to( action => 'display_plugins_post' );
 
     # JSON data for models 
     $r->get('/data/#page')->to( 'admin#data' );
@@ -159,12 +160,14 @@ sub startup {
     $r_admin->get('/models/import')->to( 'admin#models_import' );
     $r_admin->get('/models/init')->to( 'admin#models_init' );
     # my $r_admin_models = $r->get('/admin/models/')->to( controller => 'admin' );
-    
-    $r->get('/admin/plugins')->to( 'admin#plugins' );
-    $r->get('/admin/plugins_pre')->to( 'admin#plugins_pre' );
-    $r->get('/admin/plugins_post')->to( 'admin#plugins_post' );
-    $r->get('/admin/plugins_global')->to( 'admin#plugins_global' );
-    $r->get('/admin/plugins_wizards')->to( 'admin#plugins_wizards' );
+
+    # Plugins
+    $r_admin->get('/plugins')->to( action => 'plugins' );
+    $r_admin->get('/plugins_cdata')->to( action =>'plugins_cdata' );
+    $r_admin->get('/plugins_pre')->to( action =>'plugins_pre' );
+    $r_admin->get('/plugins_post')->to( action =>'plugins_post' );
+    $r_admin->get('/plugins_global')->to( action =>'plugins_global' );
+    $r_admin->get('/plugins_wizards')->to( action =>'plugins_wizards' );
     
     # Job management
     $r->get('/admin/jobs')->to( 'jobs#summary' );

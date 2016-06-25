@@ -51,6 +51,11 @@ sub display_plugins {
     
     print "# In Dashboard::display_plugins " . $project_id . ' ' . $page_id . ".\n";
 
+    if ($plugin_conf->{'type'} =~ m!^cdata$!) {
+	
+    }
+
+    
     # Action depends on the type of file requested
     if ( grep( /$page_id/, keys %{$plugin_conf->{'provides_viz'}} ) ) {
 
@@ -61,7 +66,7 @@ sub display_plugins {
 	    page_id => $page_id,
 	    );
 	$self->render( template => 'alambic/dashboard/plugins' );
-
+	
     } elsif ( grep( /$page_id(.html)?/, map {$plugin_conf->{'provides_figs'}{$_}} keys %{$plugin_conf->{'provides_figs'}} ) ) {
 	
 	# If the page is a fig, reply static file under 'projects/output'
@@ -81,6 +86,18 @@ sub display_plugins {
 
     }
 }
+
+
+# Manages custom data post requests
+sub display_plugins_post {
+    my $self = shift;
+
+    my $project_id = $self->param( 'id' );
+    my $plugin_id = $self->param( 'plugin' );
+    my $page_id = $self->param( 'page' ) || '';
+}
+
+
 
 sub _display_project_json($$) {
     my ($self, $project_id, $page_id) = @_;

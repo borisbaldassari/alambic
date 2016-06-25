@@ -80,6 +80,7 @@ sub run_plugin($$) {
     my ($self, $project_id, $conf) = @_;
 
     my %ret = (
+#	'cdata' => 
 	'metrics' => {},
 	'info' => {},
 	'recs' => {},
