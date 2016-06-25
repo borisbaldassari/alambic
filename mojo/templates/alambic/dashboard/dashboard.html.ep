@@ -8,6 +8,11 @@
 % my $plugins = app->al->get_plugins();
 % my $list = $plugins->get_names_all();
 % my $colours = ["#EBEBEB","#FFFF66","#CCF24D","#99E633","#66D91A","#33CC00"];
+% my %recs_txt = (
+%   1 => 'Low',
+%   2 => 'Medium',
+%   3 => 'High',
+% );
 
 <% my $comp_p = begin %>
  % my $value = shift || 0;
@@ -144,10 +149,10 @@
                 <th width="10%">Severity</th>
                 <th width="70%">Description</th>
               </tr>
-% foreach my $item (sort @{$run->{'recs'} || []}) {
+% foreach my $item (sort { $b->{'severity'} <=> $a->{'severity'} } @{$run->{'recs'} || []}) {
               <tr>
                 <td><a href="/documentation/recs.html#<%= $item->{'rid'} %>"><%= $item->{'rid'} %></a></td>
-                <td><%= $item->{'severity'} %></td>
+                <td><%= $recs_txt{ $item->{'severity'} } %></td>
                 <td><%= $item->{'desc'} %></td>
               </tr>
 % }
@@ -196,7 +201,7 @@
                 <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attr %></a></td>
                 <td><%== $models->get_attribute($attr)->{'description'}->[0] %></td>
                 <td><%= $attributes->{$attr} %></td>
-                <td></td>
+                <td><%= $attributes_conf->{$attr} %></td>
               </tr>
 % }
             </table>
@@ -263,7 +268,7 @@
 %     foreach my $pv (sort keys %{$plugin_viz}) {
               <tr id="viz_<%= $p %>">
 		<td><%= $p %></td>
-		<td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pv %>"><%= $plugin_name %></a></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pv %>"><%= $plugin_viz->{$pv} %></a></td>
 		<td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pv %>">/projects/<%= $project_id %>/<%= $p %>/<%= $pv %></a></td>
 	      </tr>
 %     }
