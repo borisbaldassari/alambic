@@ -10,6 +10,7 @@
                   <ul class="dropdown-menu" role="menu">
                     <li role="presentation"><a href="/admin/plugins">All plugins</a></li>
 		    <li role="separator" class="divider"></li>
+                    <li role="presentation"><a href="/admin/plugins_cdata">Custom data</a></li>
                     <li role="presentation"><a href="/admin/plugins_pre">Data sources</a></li>
                     <li role="presentation"><a href="/admin/plugins_post">Post plugins</a></li>
                     <li role="presentation"><a href="/admin/plugins_global">Global plugins</a></li>
