@@ -59,17 +59,20 @@
 		</dl>
               </div>
               <div class="col-md-6">
-                <div class="list-group">
-                  <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Return to projects</a>
-                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/edit" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Edit project information</a>
-                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run" role="button"><i class="fa fa-fw fa-rocket"></i> &nbsp; Run project full</a>
-                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/pre" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run pre plugins</a>
-                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/qm" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run quality model</a>
-                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/post" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run post plugins</a>
-                  <a class="list-group-item" href="/admin/projects/<%= $project_id %>/del" role="button"><i class="fa fa-fw fa-ban"></i> &nbsp; Delete project</a>
-                  <a class="list-group-item" href="/projects/<%= $project_id %>" role="button"><i class="fa fa-fw fa-dashboard"></i> &nbsp; Project dashboard</a>
+		<div class="panel panel-default">
+		  <div class="panel-heading"><h3 class="panel-title">Actions</h3></div>
+                  <div class="list-group">
+                    <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Return to projects</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/edit" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Edit project information</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run" role="button"><i class="fa fa-fw fa-rocket"></i> &nbsp; Run project full</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/pre" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run pre plugins</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/qm" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run quality model</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/post" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run post plugins</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/del" role="button"><i class="fa fa-fw fa-ban"></i> &nbsp; Delete project</a>
+                    <a class="list-group-item" href="/projects/<%= $project_id %>" role="button"><i class="fa fa-fw fa-dashboard"></i> &nbsp; Project dashboard</a>
+                  </div>
                 </div>
-
+		
               </div>
             </div>
 
