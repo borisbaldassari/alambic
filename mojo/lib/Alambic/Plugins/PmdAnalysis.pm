@@ -10,17 +10,21 @@ use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
 use Data::Dumper;
 use XML::LibXML;
+use File::Copy;
 use File::Basename;
+use Text::CSV;
 
 
 my %conf = (
     "id" => "PmdAnalysis",
     "name" => "PMD Analysis",
     "desc" => [
-	"Defines a pragmatic strategy to improve your code, based on the results of PMD.",
+	"This plugin summarises the output of a PMD run, provides hints to better understand and user it, and defines a pragmatic strategy to fix violations in an efficient way. It also provides guidance on how to configure PMD and select rules for a better, more focused analysis.",
+	"Please note that this plugin only reads the XML configuration and output files of a PMD run. One has to execute it on a regular basis &em; ideally in a continuous integration job &em; and provide the XML files URLs to the plugin.",
+	'Up-to-date documentation for the plugin is located on <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/PMD%20Analysis">the project wiki</a>.',
     ],
     "type" => "pre",
-    "ability" => [ 'metrics', 'recs', 'figs', 'viz' ],
+    "ability" => [ 'data', 'recs', 'figs', 'viz' ],
     "params" => {
         "url_pmd_xml" => "",
         "url_pmd_conf" => "",
@@ -30,7 +34,13 @@ my %conf = (
     "provides_info" => [
     ],
     "provides_data" => {
-	"metrics_pmd.json" => "Current metrics for the PMD plugin (JSON).",
+	"pmd_analysis_main_csv" => "Generic information about the project : PMD version, timestamp of analysis, number of non-conformities, number of rules checked, number of rules violated, number of clean rules, rate of acquired practices (CSV).",
+	"pmd_analysis_files.csv" => "Files: for each non-conform file, its name, total number of non-conformities, number of non-conformities for each priority, number of broken and clean rules, and the rate of acquired practices (CSV).",
+	"pmd_analysis_rules.csv" => "Rules: number of non-conformities for each category of rules and priority (CSV).",
+	"pmd_analysis_violations.csv" => "Violations: foreach violated rule, its priority, the ruleset it belongs to, and the volume of violations (CSV).",
+	"pmd_analysis_violations.json" => "Violations: foreach violated rule, its priority, the ruleset it belongs to, and the volume of violations (JSON).",
+	"pmd_analysis_rulesets.csv" => "Rulesets detected in analysis output, with number of violations for each priority, in long format (CSV).",
+	"pmd_analysis_rulesets2.csv" => "Rulesets detected in analysis output, with number of violations for each priority, in wide format (CSV).",
     },
     "provides_metrics" => {
     },
@@ -43,7 +53,9 @@ my %conf = (
 	'pmd_configuration_violations_rules.r' => 'pmd_configuration_violations_rules.svg',
     },
     "provides_recs" => [
-        "PMD_CLOSE_BUGS",
+        "PMD_RULE_DEL",
+        "PMD_FIX_RULE",
+        "PMD_FIX_FILE",
     ],
     "provides_viz" => {
         "pmd_analysis.html" => "PMD Analysis",
@@ -300,6 +312,64 @@ sub _compute_data($$$) {
     push( @log, "[Plugins::EclipseScm] Executing R main file for PMD Configuration." );
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'PmdAnalysis', $project_id, "pmd_configuration.Rmd" )} );
 
+    # Read the recommendations from scv file.
+    my $csv = Text::CSV->new({ sep_char => ',' , binary => 1, 
+			       quote_char => '"',
+			       auto_diag => 1}) 
+	or die "" . Text::CSV->error_diag ();
+
+    my $recs_top_10_s = $repofs->read_plugin("PmdAnalysis", $project_id . "_pmd_analysis_exclude_rules.csv");
+    my @lines = split( /\n/, $recs_top_10_s);
+    # First line is for headers.
+    shift(@lines);
+    foreach my $line (@lines) {
+	$csv->parse($line);
+	my @cols = $csv->fields(); 
+	push( @recs, { 'rid' => 'PMD_RULES_DEL', 
+                       'severity' => 2, 
+		       'src' => 'PmdAnalysis',
+                       'desc' => 'PMD rule ' . $cols[0] . ' has too many violations ('
+			   . $cols[2] . ') and a low priority (' . $cols[1] . '). This will discourage '
+			   . 'people to act on it, and produces unnecessary noise. The rule should be '
+			   . 'disabled for a more pragmatic use of PMD results.',
+	      });
+    }
+    
+    my $recs_top_5_rules_s = $repofs->read_plugin("PmdAnalysis", $project_id . "_pmd_analysis_top_5_rules.csv");
+    @lines = split( /\n/, $recs_top_5_rules_s);
+    # First line is for headers.
+    shift(@lines);
+    foreach my $line (@lines) {
+	$csv->parse($line);
+	my @cols = $csv->fields(); 
+	push( @recs, { 'rid' => 'PMD_FIX_RULES', 
+                       'severity' => 1, 
+		       'src' => 'PmdAnalysis',
+                       'desc' => 'PMD rule ' . $cols[0] . ' has only a few violations ('
+			   . $cols[2] . ') and a high priority (' . $cols[1] . '). It would be easy '
+			   . 'to work on this rule and the associated good practice, both for the '
+			   . 'project and for the team experience, and fix all violations associated to '
+			   . 'this rule.',
+	      });
+    }
+    
+    my $recs_top_10_files_s = $repofs->read_plugin("PmdAnalysis", $project_id . "_pmd_analysis_top_10_files.csv");
+    @lines = split( /\n/, $recs_top_10_files_s);
+    # First line is for headers.
+    shift(@lines);
+    foreach my $line (@lines) {
+	$csv->parse($line);
+	my @cols = $csv->fields(); 
+	push( @recs, { 'rid' => 'PMD_FIX_FILES', 
+                       'severity' => 1, 
+		       'src' => 'PmdAnalysis',
+                       'desc' => 'The file ' . $cols[0] . ' has only ' . $cols[1] 
+			   . ' P1 violations and ' . $cols[2] . ' P2 '
+			   . ' violations. It would be quite easy to fix these in one shot '
+			   . 'and seriously improve the file\'s quality.',
+	      });
+    }
+    
     # And execute the figures R scripts.
     foreach my $fig (sort keys %{$conf{'provides_figs'}}) {
 	push( @log, "[Plugins::PmdAnalysis] Executing R fig file [$fig]." );
