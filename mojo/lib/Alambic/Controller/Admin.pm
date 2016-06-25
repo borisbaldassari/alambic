@@ -477,6 +477,19 @@ sub plugins {
 
 #
 # Displays a list of plugins detected with information about them.
+# Only shows custom data plugins.
+#
+sub plugins_cdata {
+    my $self = shift;
+
+    # Render template 
+    $self->render( template => 'alambic/admin/plugins_cdata' );   
+
+}
+
+#
+# Displays a list of plugins detected with information about them.
+# Only shows pre plugins.
 #
 sub plugins_pre {
     my $self = shift;
@@ -488,6 +501,7 @@ sub plugins_pre {
 
 #
 # Displays a list of plugins detected with information about them.
+# Only shows post plugins.
 #
 sub plugins_post {
     my $self = shift;
@@ -499,6 +513,7 @@ sub plugins_post {
 
 #
 # Displays a list of plugins detected with information about them.
+# Only shows global plugins.
 #
 sub plugins_global {
     my $self = shift;
@@ -510,6 +525,7 @@ sub plugins_global {
 
 #
 # Displays a list of plugins detected with information about them.
+# Only shows wizards plugins.
 #
 sub plugins_wizards {
     my $self = shift;
