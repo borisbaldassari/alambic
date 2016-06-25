@@ -1,5 +1,10 @@
 % my $project_id = stash( 'project_id' );
 % my $recs = stash( 'recs' );
+% my %recs_txt = (
+%   1 => 'Low',
+%   2 => 'Medium',
+%   3 => 'High',
+% );
 
             <h1 class="al-h1"><small><%= $project_id %></small> Project Recommendations</h1>
             <br />
@@ -20,7 +25,7 @@
 % foreach my $item (sort @{$recs}) {
               <tr>
                 <td><a href="/documentation/recs.html#<%= $item->{'rid'} %>"><%= $item->{'rid'} %></a></td>
-                <td><%= $item->{'severity'} %></td>
+                <td><%= $recs_txt{ $item->{'severity'} } %></td>
                 <td><%= $item->{'desc'} %></td>
               </tr>
 % }
