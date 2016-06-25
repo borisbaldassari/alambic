@@ -3,7 +3,6 @@ package Alambic::Model::RepoFS;
 use warnings;
 use strict;
 
-use File::Copy;
 use File::Path qw( remove_tree );
 use POSIX;
 
@@ -51,13 +50,16 @@ sub read_input($$) {
 
     my $content;
     my $file = "projects/" . $project_id . "/input/" . $project_id . "_" . $file_name;
-    do { 
-        local $/;
-        open my $fh, '<', $file;
-        $content = <$fh>;
-        close $fh;
-    };
 
+    if (-e $file) {
+	do { 
+	    local $/;
+	    open my $fh, '<', $file;
+	    $content = <$fh>;
+	    close $fh;
+	};
+    }
+    
     return $content;
 }
 
@@ -85,12 +87,15 @@ sub read_output($$) {
 
     my $content;
     my $file = "projects/" . $project_id . "/output/" . $project_id . "_" . $file_name;
-    do { 
-        local $/;
-        open my $fh, '<', $file;
-        $content = <$fh>;
-        close $fh;
-    };
+    
+    if (-e $file) {
+	do { 
+	    local $/;
+	    open my $fh, '<', $file;
+	    $content = <$fh>;
+	    close $fh;
+	};
+    }
 
     return $content;
 }
@@ -110,14 +115,17 @@ sub read_plugin($$) {
     my ($self, $plugin_id, $file_name) = @_;
 
     my $content;
-    my $file = "lib/Alambic/Plugins/" . $plugin_id . "/" . $file_name;
-    do { 
-        local $/;
-        open my $fh, '<', $file;
-        $content = <$fh>;
-        close $fh;
-    };
 
+    my $file = "lib/Alambic/Plugins/" . $plugin_id . "/" . $file_name;
+    if (-e $file) {
+	do { 
+	    local $/;
+	    open my $fh, '<', $file;
+	    $content = <$fh>;
+	    close $fh;
+	};
+    } 
+    
     return $content;
 }
 
@@ -143,13 +151,16 @@ sub read_backup($$) {
 
     my $content;
     my $file = "backups/" . $file_name;
-    do { 
-        local $/;
-        open my $fh, '<', $file or return 0;
-        $content = <$fh>;
-        close $fh;
-    };
-
+    
+    if (-e $file) {
+	do { 
+	    local $/;
+	    open my $fh, '<', $file or return 0;
+	    $content = <$fh>;
+	    close $fh;
+	};
+    }
+    
     return $content;
 }
 
@@ -173,13 +184,16 @@ sub read_models($$) {
 
     my $content;
     my $file = "models/" . $type . "/" . $file_name;
-    do { 
-        local $/;
-        open my $fh, '<', $file or return 0;
-        $content = <$fh>;
-        close $fh;
-    };
-
+    
+    if (-e $file) {
+	do { 
+	    local $/;
+	    open my $fh, '<', $file or return 0;
+	    $content = <$fh>;
+	    close $fh;
+	};
+    }
+    
     return $content;
 }
 
