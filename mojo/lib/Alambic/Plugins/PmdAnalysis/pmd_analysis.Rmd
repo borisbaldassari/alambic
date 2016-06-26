@@ -15,20 +15,19 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-project.id <- "modeling.sirius"
+
+library(knitr)
+require(ggplot2)
+require(xtable)
+
+opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
+
+#project.id <- "modeling.sirius"
 plugin.id <- "PmdAnalysis"
 file.main = paste("", project.id, "_pmd_analysis_main.csv", sep="")
 file.violations = paste("", project.id, "_pmd_analysis_violations.csv", sep="")
 file.rules = paste("", project.id, "_pmd_analysis_rules.csv", sep="")
 file.files = paste("", project.id, "_pmd_analysis_files.csv", sep="")
-
-library(knitr)
-
-opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
-#opts_knit$set(progress = TRUE, verbose = TRUE, self.contained=T)
-
-require(ggplot2)
-require(xtable)
 
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 

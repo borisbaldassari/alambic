@@ -15,17 +15,16 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-project.id <- 'modeling.sirius'
 
 library(knitr)
-
-opts_chunk$set(fig.width=5, fig.height=5, echo=F, warning=F, message=F, fig.path = 'figures/')
-
 require(ggplot2)
 require(xtable)
 
+opts_chunk$set(fig.path = 'figures/')
+
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
+#project.id <- 'modeling.sirius'
 pmd.main <- read.csv(file=paste("", project.id, "_pmd_analysis_main.csv", sep=""), header=T)
 pmd.rules <- read.csv(file=paste("", project.id, "_pmd_analysis_rules.csv", sep=""), header=T)
 pmd.rulesets <- read.csv(file=paste("", project.id, "_pmd_analysis_rulesets2.csv", sep=""), header=T)
