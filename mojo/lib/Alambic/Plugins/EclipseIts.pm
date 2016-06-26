@@ -30,6 +30,7 @@ my %conf = (
     "provides_info" => [
     ],
     "provides_data" => {
+	"import_its.json" => "The original file of current metrics downloaded from the Eclipse dashboard server (JSON).",
 	"metrics_its.json" => "Current metrics for the ITS plugin (JSON).",
 	"metrics_its.csv" => "Current metrics for the ITS plugin (CSV).",
 	"metrics_its_evol.json" => "Evolution metrics for the ITS plugin (JSON).",
@@ -67,7 +68,6 @@ my %conf = (
         'its_evol_changed.rmd' => "its_evol_changed.html",
         'its_evol_opened.rmd' => "its_evol_opened.html",
         'its_evol_people.rmd' => "its_evol_people.html",
-        'its_evol_ggplot.rmd' => "its_evol_ggplot.html",
     },
     "provides_recs" => [
         "ITS_CLOSE_BUGS",
@@ -152,7 +152,7 @@ sub _retrieve_data($$$) {
 	push( @log, "[Plugins::EclipseIts] Cannot find [$url].\n" ) ;
     } else {
 	$repofs->write_input( $project_id, "import_its_evol.json", $content );
-	$repofs->write_output( $project_id, "import_its_evol.json", $content );
+	$repofs->write_output( $project_id, "metrics_its_evol.json", $content );
     }
 
     return \@log;
@@ -180,16 +180,6 @@ sub _compute_data($$$) {
             $metrics_new->{ $conf{'provides_metrics'}{uc($metric)} } = $metrics_old->{$metric};
         }
     }
-
-    # TODO Execute checks and fill recs.
-    if ($metrics_new->{'ITS_OPENED'} > 10) {
-	push( @recs, { 'rid' => 'ITS_CLOSE_BUGS', 
-		       'severity' => 1, 
-		       'desc' => 'There are ' . $metrics_new->{'ITS_OPENED'} 
-		       . ' issues still open. You could watch them and sort them out.' 
-	      } 
-	    );
-    }
     
     # Write its metrics json file to disk.
     $repofs->write_output( $project_id, "metrics_its.json", encode_json($metrics_new) );
@@ -200,6 +190,7 @@ sub _compute_data($$$) {
     $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
     
     $repofs->write_plugin( 'EclipseIts', $project_id . "_its.csv", $csv_out );
+    $repofs->write_output( $project_id, "metrics_its.csv", $csv_out );
     
     # Read evol metrics file
     $json = $repofs->read_input( $project_id, "import_its_evol.json" );
@@ -219,7 +210,7 @@ sub _compute_data($$$) {
 	$csv_out .= $metrics_evol->{'unixtime'}->[$id] . "\n";
     }
     $repofs->write_plugin( 'EclipseIts', $project_id . "_its_evol.csv", $csv_out );
-    $repofs->write_output( $project_id, "its_evol.csv", $csv_out );
+    $repofs->write_output( $project_id, "metrics_its_evol.csv", $csv_out );
 
     # Now execute the main R script.
     push( @log, "[Plugins::EclipseIts] Executing R main file." );
@@ -231,6 +222,38 @@ sub _compute_data($$$) {
     foreach my $fig (sort @figs) {
 	push( @log, "[Plugins::EclipseIts] Executing R fig file [$fig]." );
 	@log = ( @log, @{$r->knit_rmarkdown_html( 'EclipseIts', $project_id, $fig )} );
+    }
+
+    
+    # Execute checks and fill recs.
+
+    # Check number of open bugs.
+    # If there are at least twice as many opened bugs as closed bugs, raise an alert.
+    my $weeks = -4;
+    my $closed_old = $metrics_evol->{'closed'}->[$weeks];
+    my $opened_old = $metrics_evol->{'opened'}->[$weeks];
+    if ( $closed_old > ( 2 * $opened_old) ) {
+	push( @recs, { 'rid' => 'ITS_OPENED_BUGS', 
+		       'severity' => 1,
+		       'src' => 'EclipseIts',
+		       'desc' => 'During last year, there has been twice as many opened bugs (' 
+			   . $opened_old . ') as closed bugs (' . $closed_old . '). This may be ok '
+			   . 'if the activity has notably increased, but it could also reveal some '
+			   . 'instability or decrease in project quality.' 
+	      } 
+	    );
+    }
+    
+    # Check the number of closers.
+    if ($metrics_new->{'ITS_DIFF_NETCLOSERS_365'} < 0) {
+	push( @recs, { 'rid' => 'ITS_CLOSERS', 
+		       'severity' => 1,
+		       'src' => 'EclipseIts',
+		       'desc' => 'During past year, the number of people closing issues has '
+			   . ' fallen by ' . $metrics_new->{'ITS_DIFF_NETCLOSERS_365'}
+		           . '. This usually means a decrease in project diversity and activity.' 
+	      } 
+	    );
     }
     
     return {
