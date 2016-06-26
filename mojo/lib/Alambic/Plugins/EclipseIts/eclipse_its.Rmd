@@ -130,8 +130,8 @@ Evolution of opened and closed issues
 
 The visualisations used in this document rely on a number of flat CSV and JSON data files. You can download and play with them if you want to thereafter:
 
-* List of raw static metrics retrieved from the eclipse dashboard [ <a href="`r I(project.id)`_import_its.json">Download JSON</a> ]
-* List of computed static metrics for ITS [ <a href="`r I(project.id)`_metrics_its.csv">Download CSV</a> | <a href="`r I(project.id)`_metrics_its.json">Download JSON</a> ]
-* List of evolution metrics for ITS [ <a href="`r I(project.id)`_metrics_evol_its.csv">Download CSV</a> | <a href="`r I(project.id)`_metrics_evol_its.json">Download JSON</a> ]
+* List of raw static metrics retrieved from the eclipse dashboard [ <a href="import_its.json">Download JSON</a> ]
+* List of computed static metrics for ITS [ <a href="metrics_its.csv">Download CSV</a> | <a href="metrics_its.json">Download JSON</a> ]
+* List of evolution metrics for ITS [ <a href="metrics_evol_its.csv">Download CSV</a> | <a href="metrics_evol_its.json">Download JSON</a> ]
 
 
