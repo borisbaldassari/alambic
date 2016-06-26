@@ -9,6 +9,8 @@ library(xts)
 #project.id <- 'tools.cdt'
 file.evol = paste("", project.id, "_its_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
+evol[is.na(evol)] <- 0
+evol[is.na(evol)] <- 0
 evol <- evol[cumsum(abs(evol$changed + evol$changers + evol$closed 
                         + evol$closers + evol$opened + evol$openers 
                         + evol$trackers)) != 0,]

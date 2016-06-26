@@ -17,11 +17,11 @@ my %conf = (
     "name" => "Eclipse ITS",
     "desc" => [
 	'Eclipse ITS retrieves bug tracking system data from the Eclipse dashboard repository. This plugin will look for a file named project-its-prj-static.json on <a href="http://dashboard.eclipse.org/data/json/">the Eclipse dashboard</a>. This plugin is redundant with the EclipseGrimoire plugin',
-	'<code>project_grim</code> is the id used to identified the project in the PMI. Look for it in the URL of the project on <a href="http://projects.eclipse.org">http://projects.eclipse.org</a>.',
+	'<code>project_grim</code> is the id used to identify the project in the PMI. Look for it in the URL of the project on <a href="http://projects.eclipse.org">http://projects.eclipse.org</a>.',
 	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseIts">the project\'s wiki</a> for more information.',
     ],
     "type" => "pre",
-    "ability" => [ 'metrics', 'recs', 'figs', 'viz' ],
+    "ability" => [ 'metrics', 'data', 'recs', 'figs', 'viz' ],
     "params" => {
         "project_grim" => "",
     },
@@ -70,8 +70,8 @@ my %conf = (
         'its_evol_people.rmd' => "its_evol_people.html",
     },
     "provides_recs" => [
-        "ITS_CLOSE_BUGS",
-        "ITS_WATCH_BUGS",
+        "ITS_OPEN_BUGS",
+        "ITS_CLOSERS",
     ],
     "provides_viz" => {
         "eclipse_its.html" => "Eclipse ITS",
@@ -245,6 +245,7 @@ sub _compute_data($$$) {
     }
     
     # Check the number of closers.
+    # If there are less closers than last year, raise an alert.
     if ($metrics_new->{'ITS_DIFF_NETCLOSERS_365'} < 0) {
 	push( @recs, { 'rid' => 'ITS_CLOSERS', 
 		       'severity' => 1,
