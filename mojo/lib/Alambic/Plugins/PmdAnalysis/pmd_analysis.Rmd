@@ -217,9 +217,9 @@ Top 5 high-priority rules
 
 The visualisations used in this document rely on a number of flat CSV and JSON data files, that were extracted from the PMD XML results file. You can download and play with them if you want to thereafter:
 
-* Generic information about the project : PMD version, timestamp of analysis, number of non-conformities, number of rules checked, number of rules violated, number of clean rules, rate of acquired practices [ <a href="`r I(project.id)`_pmd_analysis_main.csv">Download CSV</a> ]
-* Rules: number of non-conformities for each category of rules and priority [ <a href="`r I(project.id)`_pmd_analysis_rules.csv">Download CSV</a> ]. 
-* Violations: foreach violated rule, its priority, the ruleset it belongs to, and the volume of violations [ <a href="`r I(project.id)`_pmd_analysis_violations.csv">Download CSV</a> ]
-* Files: for each non-conform file, its name, total number of non-conformities, number of non-conformities for each priority, number of broken and clean rules, and the rate of acquired practices [ <a href="`r I(project.id)`_pmd_analysis_files.csv">Download CSV</a> ]
-* Rulesets detected in the analysis output, with number of violations for each priority [ <a href="`r I(project.id)`_pmd_analysis_rulesets.csv">Download CSV (wide format)</a> | <a href="`r I(project.id)`_pmd_analysis_rulesets2.csv">Download CSV (long format)</a> ]
-* List of violated rules, with priority, ruleset and number of non-conformities [ <a href="`r I(project.id)`_pmd_analysis_violations.csv">Download CSV</a> | <a href="`r I(project.id)`_pmd_analysis_violations.json">Download JSON</a> ]
+* Generic information about the project : PMD version, timestamp of analysis, number of non-conformities, number of rules checked, number of rules violated, number of clean rules, rate of acquired practices [ <a href="pmd_analysis_main.csv">Download CSV</a> ]
+* Rules: number of non-conformities for each category of rules and priority [ <a href="pmd_analysis_rules.csv">Download CSV</a> ]. 
+* Violations: foreach violated rule, its priority, the ruleset it belongs to, and the volume of violations [ <a href="pmd_analysis_violations.csv">Download CSV</a> ]
+* Files: for each non-conform file, its name, total number of non-conformities, number of non-conformities for each priority, number of broken and clean rules, and the rate of acquired practices [ <a href="pmd_analysis_files.csv">Download CSV</a> ]
+* Rulesets detected in the analysis output, with number of violations for each priority [ <a href="pmd_analysis_rulesets.csv">Download CSV (wide format)</a> | <a href="pmd_analysis_rulesets2.csv">Download CSV (long format)</a> ]
+* List of violated rules, with priority, ruleset and number of non-conformities [ <a href="pmd_analysis_violations.csv">Download CSV</a> | <a href="pmd_analysis_violations.json">Download JSON</a> ]
