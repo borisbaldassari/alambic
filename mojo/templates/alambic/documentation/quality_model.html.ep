@@ -33,7 +33,7 @@ var myattrs = {};
 var mymetrics = {};
 
 // Load file for attributes.
-d3.json("/data/attributes_full.json", function(error, attrs) {
+d3.json("/models/attributes_full.json", function(error, attrs) {
   if (error) return console.warn(error);
 
   for (var i in attrs.children) {
@@ -43,7 +43,7 @@ d3.json("/data/attributes_full.json", function(error, attrs) {
 });
 
 // Load file for metrics.
-d3.json("/data/metrics_full.json", function(error, metrics) {
+d3.json("/models/metrics_full.json", function(error, metrics) {
   if (error) return console.warn(error);
   
   for (var i in metrics.children) {
@@ -52,7 +52,7 @@ d3.json("/data/metrics_full.json", function(error, metrics) {
   }
 });
 
-d3.json("/data/qm_full.json", function(error, qm) {
+d3.json("/models/qm_full.json", function(error, qm) {
   if (error) return console.warn(error);
 
   root = qm;

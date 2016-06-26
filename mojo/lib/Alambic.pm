@@ -127,7 +127,7 @@ sub startup {
     $r_projects->post('/#id/#plugin/#page')->to( action => 'display_plugins_post' );
 
     # JSON data for models 
-    $r->get('/data/#page')->to( 'admin#data' );
+    $r->get('/models/#page')->to( 'admin#data_models' );
     
     # Admin
     my $r_admin = $r->any('/admin')->to(controller => 'admin');
