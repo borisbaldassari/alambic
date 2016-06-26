@@ -15,7 +15,7 @@ sub summary {
 
 
 # JSON access for models data.
-sub data {
+sub data_models {
     my $self = shift;
     my $page = $self->param( 'page' );
     
