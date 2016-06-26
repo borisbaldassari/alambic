@@ -231,7 +231,7 @@ Top 5 high-priority rules
 
     <img src="http://server/projects/`r project.id`/PmdAnalysis/pmd_configuration_violations_rules.svg" frameborder="0" style="width: 100%; height: 600px" />
 
-The visualisations used in this document rely on a number of flat CSV data files, that were extracted from the PMD XML results file. You can download and play with them if you want to thereafter:
+The visualisations used in this document rely on a number of flat CSV and JSON data files, that were extracted from the PMD XML results file. You can download and play with them if you want to thereafter:
 
 * Generic information about the project : PMD version, timestamp of analysis, number of non-conformities, number of rules checked, number of rules violated, number of clean rules, rate of acquired practices [ <a href="`r I(project.id)`_pmd_analysis_main.csv">Download CSV</a> ]
 * Rules: number of non-conformities for each category of rules and priority [ <a href="`r I(project.id)`_pmd_analysis_rules.csv">Download CSV</a> ]. 
