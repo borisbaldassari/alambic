@@ -16,17 +16,24 @@ my %conf = (
     "name" => "Eclipse SCM",
     "desc" => [ 
 	"Retrieves configuration management data from the Eclipse dashboard repository. This plugin will look for a file named project-scm-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
+	'<code>project_grim</code> is the id used to identify the project in the PMI. Look for it in the URL of the project on <a href="http://projects.eclipse.org">http://projects.eclipse.org</a>.',
+	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseScm">the project\'s wiki</a> for more information.',
     ],
     "type" => "pre",
-    "ability" => [ 'metrics', 'recs', 'figs', 'viz' ],
+    "ability" => [ 'metrics', 'data', 'recs', 'figs', 'viz' ],
     "params" => {
-        "project_id" => "",
+        "project_grim" => "",
     },
     "provides_cdata" => [
     ],
     "provides_info" => [
     ],
     "provides_data" => {
+	"import_scm.json" => "The original file of current metrics downloaded from the Eclipse dashboard server (JSON).",
+	"metrics_scm.json" => "Current metrics for the SCM plugin (JSON).",
+	"metrics_scm.csv" => "Current metrics for the SCM plugin (CSV).",
+	"metrics_scm_evol.json" => "Evolution metrics for the SCM plugin (JSON).",
+	"metrics_scm_evol.csv" => "Evolution metrics for the SCM plugin (CSV).",
     },
     "provides_metrics" => {
         "AUTHORS" => "SCM_AUTHORS", 
@@ -65,7 +72,7 @@ my %conf = (
         "SCM_CLOSE_BUGS",
     ],
     "provides_viz" => {
-        "eclipse_scm" => "Eclipse SCM",
+        "eclipse_scm.html" => "Eclipse SCM",
     },
 
 );
@@ -117,7 +124,7 @@ sub _retrieve_data($) {
     my $url = "http://dashboard.eclipse.org/data/json/" 
             . $project_grim . "-scm-prj-static.json";
 
-    push( @log, "[Plugins::EclipseMls] Starting retrieval of data for [$project_id] url [$url]." );
+    push( @log, "[Plugins::EclipseScm] Starting retrieval of data for [$project_id] url [$url]." );
     
     # Fetch json file from the dashboard.eclipse.org
     my $ua = Mojo::UserAgent->new;
@@ -132,7 +139,7 @@ sub _retrieve_data($) {
     $url = "http://dashboard.eclipse.org/data/json/" 
             . $project_grim . "-scm-prj-evolutionary.json";
     
-    push( @log, "[Plugins::EclipseMls] Retrieving evol [$url] to input.\n" );
+    push( @log, "[Plugins::EclipseScm] Retrieving evol [$url] to input.\n" );
     
     # Fetch json file from the dashboard.eclipse.org
     $ua = Mojo::UserAgent->new;
@@ -141,13 +148,15 @@ sub _retrieve_data($) {
 	push( @log, "Cannot find [$url].\n" ) ;
     } else {
 	$repofs->write_input( $project_id, "import_scm_evol.json", $content );
-	$repofs->write_output( $project_id, "import_scm_evol.json", $content );
+	$repofs->write_output( $project_id, "metrics_scm_evol.json", $content );
     }
 
     return \@log;
 }
 
 
+# Basically read the imported files and make the mapping to the 
+# new metric names.
 sub _compute_data($) {
     my ($project_id, $project_pmi, $repofs) = @_;
 
@@ -158,8 +167,8 @@ sub _compute_data($) {
 
     my $metrics_new;
     
-    # Read data from its file in $data_input
-    my $json = $repofs->read_input( $project_id, "import_its.json" );
+    # Read data from scm file in $data_input
+    my $json = $repofs->read_input( $project_id, "import_scm.json" );
     my $metrics_old = decode_json($json);
 
     foreach my $metric (keys %{$metrics_old}) {
@@ -167,18 +176,8 @@ sub _compute_data($) {
             $metrics_new->{ $conf{'provides_metrics'}{uc($metric)} } = $metrics_old->{$metric};
         }
     }
-
-    # TODO Execute checks and fill recs.
-    if ( ( $metrics_new->{'ITS_OPENED'} || '' ) > 10) {
-	push( @recs, { 'rid' => 'ITS_CLOSE_BUGS', 
-		       'severity' => 1, 
-		       'desc' => 'There are ' . $metrics_new->{'ITS_OPENED'} 
-		       . ' issues still open. You could watch them and sort them out.' 
-	      } 
-	    );
-    }
     
-    # Write its metrics json file to disk.
+    # Write scm metrics json file to disk.
     $repofs->write_output( $project_id, "metrics_scm.json", encode_json($metrics_new) );
 
     # Write static metrics file
@@ -186,10 +185,11 @@ sub _compute_data($) {
     my $csv_out = join( ',', sort @metrics) . "\n";
     $csv_out .= join( ',', map { $metrics_new->{$_} || '' } sort @metrics) . "\n";
     
-    $repofs->write_plugin( 'EclipseIts', $project_id . "_its.csv", $csv_out );
+    $repofs->write_plugin( 'EclipseScm', $project_id . "_scm.csv", $csv_out );
+    $repofs->write_output( $project_id, "metrics_scm.csv", $csv_out );
     
     # Read evol metrics file
-    $json = $repofs->read_input( $project_id, "import_its_evol.json" );
+    $json = $repofs->read_input( $project_id, "import_scm_evol.json" );
     my $metrics_evol = decode_json($json);
 
     # Create csv data for evol
@@ -205,8 +205,8 @@ sub _compute_data($) {
 	$csv_out .= ( $metrics_evol->{'repositories'}->[$id] || '' ) . ',';
 	$csv_out .= ( $metrics_evol->{'unixtime'}->[$id] || '' ) . "\n";
     }
-    $repofs->write_plugin( 'EclipseIts', $project_id . "_scm_evol.csv", $csv_out );
-    $repofs->write_output( $project_id, "scm_evol.csv", $csv_out );
+    $repofs->write_plugin( 'EclipseScm', $project_id . "_scm_evol.csv", $csv_out );
+    $repofs->write_output( $project_id, "metrics_scm_evol.csv", $csv_out );
 
     # Now execute the main R script.
     push( @log, "[Plugins::EclipseScm] Executing R main file." );
@@ -219,7 +219,30 @@ sub _compute_data($) {
 	push( @log, "[Plugins::EclipseScm] Executing R fig file [$fig]." );
 	@log = ( @log, @{$r->knit_rmarkdown_html( 'EclipseScm', $project_id, $fig )} );
     }
+
     
+    # Execute checks and fill recs.
+    
+    # If less than 5 commits during last year, consider the project inactive.
+    if ( ( $metrics_new->{'SCM_COMMITS_365'} || 0 ) < 2 ) {
+	push( @recs, { 'rid' => 'SCM_LOW_ACTIVITY', 
+		       'severity' => 0,
+		       'src' => 'EclipseScm',
+		       'desc' => 'There have been only ' . $metrics_new->{'SCM_COMMITS_365'} 
+		       . ' commits during last year. The project is considered inactive.' 
+	      } 
+	    );
+    } elsif ( ( $metrics_new->{'SCM_COMMITS_365'} || 0 ) < 12 ) {
+	push( @recs, { 'rid' => 'SCM_LOW_ACTIVITY', 
+		       'severity' => 0,
+		       'src' => 'EclipseScm',
+		       'desc' => 'There have been only ' . $metrics_new->{'SCM_COMMITS_365'} 
+		       . ' commits during last year. The project has a very low activity.' 
+	      } 
+	      );
+	}
+
+
     return {
 	"metrics" => $metrics_new,
 	"recs" => \@recs,

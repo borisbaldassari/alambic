@@ -9,6 +9,7 @@ library(reshape2)
 #project.id <- 'tools.pdt'
 file.evol = paste("", project.id, "_scm_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
+evol[is.na(evol)] <- 0
 evol <- evol[cumsum(abs(evol$authors + evol$added_lines + evol$removed_lines 
                         + evol$commits + evol$committers + evol$repositories)) != 0,]
 
