@@ -35,7 +35,7 @@ evol <- read.csv(file=file.evol, header=T)
 
 ```
 
-## Eclipse Software Configuration Management (git)
+## Eclipse Software Configuration Management
 
 <br />
 
@@ -77,7 +77,9 @@ The evolution of ``r ncol(evol)`` metrics has been retrieved, spaning from ``r e
 
 The following plot uses [plotly services](http://plot.ly) to enable users to play with data itself, and its associated plot. Hover on the graph for more options.
 
-<iframe src="/projects/`r project.id`/EclipseScm/scm_evol_summary.html" frameborder="0" style="width: 100%; height: 720px"></iframe>
+<iframe src="/projects/`r project.id`/EclipseScm/scm_evol_summary.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
+
+<iframe src="/projects/`r project.id`/EclipseScm/scm_evol_summary_lines.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
 
 -----
 
@@ -131,9 +133,9 @@ Evolution of commits
 
 The visualisations used in this document rely on a number of flat CSV and JSON data files. You can download and play with them if you want to thereafter:
 
-* List of raw static metrics retrieved from the eclipse dashboard [ <a href="`r I(project.id)`_import_scm.json">Download JSON</a> ]
-* List of computed static metrics for SCM [ <a href="`r I(project.id)`_metrics_scm.csv">Download CSV</a> | <a href="`r I(project.id)`_metrics_scm.json">Download JSON</a> ]
-* List of evolution metrics for SCM [ <a href="`r I(project.id)`_metrics_evol_scm.csv">Download CSV</a> | <a href="`r I(project.id)`_metrics_evol_scm.json">Download JSON</a> ]
+* List of raw static metrics retrieved from the eclipse dashboard [ <a href="import_scm.json">Download JSON</a> ]
+* List of computed static metrics for SCM [ <a href="metrics_scm.csv">Download CSV</a> | <a href="metrics_scm.json">Download JSON</a> ]
+* List of evolution metrics for SCM [ <a href="metrics_evol_scm.csv">Download CSV</a> | <a href="metrics_evol_scm.json">Download JSON</a> ]
 
 
 
