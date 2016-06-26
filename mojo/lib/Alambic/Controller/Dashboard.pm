@@ -13,7 +13,7 @@ sub display_summary {
     my $page_id = $self->param( 'page' ) || '';
     
     my $run = $self->app->al->get_project_last_run($project_id);
-    print "# In Dashboard " . Dumper($run);
+#    print "# In Dashboard " . Dumper($run);
     # Prepare data for template.
     $self->stash(
 	project_id => $project_id,
@@ -49,7 +49,7 @@ sub display_plugins {
 
     my $plugin_conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
     
-    print "# In Dashboard::display_plugins " . $project_id . ' ' . $page_id . ".\n";
+#    print "# In Dashboard::display_plugins " . $project_id . ' ' . $page_id . ".\n";
 
     if ($plugin_conf->{'type'} =~ m!^cdata$!) {
 	
@@ -75,8 +75,6 @@ sub display_plugins {
     } elsif ( grep( /$page_id/, keys %{$plugin_conf->{'provides_data'}} ) ) {
 
 	# If the page is a data, reply static file under 'projects/output'
-	print "# In Dashboard::display_plugins " 
-	    . '../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id;
 	$self->reply->static( '../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id );
 
     } else {
@@ -131,6 +129,16 @@ sub _display_project_json($$) {
         
         my $metrics = $self->app->al->get_project_last_run($project_id)->{'metrics'};
         $self->render(json => $metrics);
+                
+    } elsif ($page_id =~ m!^cdata.json$!) {
+        
+        my $cdata = $self->app->al->get_project_last_run($project_id)->{'cdata'};
+        $self->render(json => $cdata);
+
+    } elsif ($page_id =~ m!^info.json$!) {
+        
+        my $info = $self->app->al->get_project_last_run($project_id)->{'info'};
+        $self->render(json => $info);
 
     } elsif ($page_id =~ m!^recs.json$!) {
 	
@@ -150,17 +158,16 @@ sub _display_project_html($$) {
     my ($self, $project_id, $page_id) = @_;
 
     my $run = $self->app->al->get_project_last_run($project_id);
+    $page_id =~ s!\.html$!!;
     
-    if ($page_id =~ m!^qm(\.html)?$!) {
+    if ($page_id =~ m!^qm$!) {
 
-        # Prepare data for template.
         $self->stash( project_id => $project_id );    
         
         $self->render(template => 'alambic/dashboard/qm');
 	
-    } elsif ($page_id =~ m!^data(\.html)?$!) {
+    } elsif ($page_id =~ m!^data$!) {
         
-        # Prepare data for template.
         $self->stash(
             project_id => $project_id,
 	    run => $run,
@@ -168,9 +175,8 @@ sub _display_project_html($$) {
         
         $self->render(template => 'alambic/dashboard/data'); 
 
-    } elsif ($page_id =~ m!^info(\.html)?$!) {
+    } elsif ($page_id =~ m!^info$!) {
         
-        # Prepare data for template.
         $self->stash(
             project_id => $project_id,
 	    run => $run,
@@ -178,12 +184,11 @@ sub _display_project_html($$) {
         
         $self->render(template => 'alambic/dashboard/info');
         
-    } elsif ($page_id =~ m!^metrics(\.html)?!) {
+    } elsif ($page_id =~ m!^metrics!) {
         
 	my $models = $self->app->al->get_models();
 	my $all = $self->param('all');
 	
-        # Prepare data for template.
         $self->stash(
             all => $all,
             project_id => $project_id,
@@ -193,25 +198,21 @@ sub _display_project_html($$) {
         
         $self->render(template => 'alambic/dashboard/metrics');
 
-    } elsif ($page_id =~ m!^attributes(\.html)?$!) {
-
-	my $models = $self->app->al->get_models();
+    } elsif ($page_id =~ m!^attributes$!) {
         
-        # Prepare data for template.
         $self->stash(
             project_id => $project_id,
 	    attributes => $run->{'attributes'},
 	    attributes_conf => $run->{'attributes_conf'},
-	    models => $models,
+	    models => $self->app->al->get_models(),
             );
         
         $self->render(template => 'alambic/dashboard/attributes');
         
-    } elsif ($page_id =~ m!^recs(\.html)?!) {
+    } elsif ($page_id =~ m!^recs!) {
         
         my $all = $self->param('all');
 
-        # Prepare data for template.
         $self->stash(
             project_id => $project_id,
 	    recs => $run->{'recs'},
@@ -219,14 +220,25 @@ sub _display_project_html($$) {
         
         $self->render(template => 'alambic/dashboard/recs');
         
-    } elsif ($page_id =~ m!^log(\.html)?$!) {
+    } elsif ($page_id =~ m!^log$!) {
         
-        # Prepare data for template.
         $self->stash(
             project_id => $project_id,
             );    
         
         $self->render(template => 'alambic/dashboard/log');
+        
+    } elsif ( grep( /$page_id/, keys $self->app->al->get_plugins()->get_names_all() ) ) {
+        
+        $self->stash(
+            project_id => $project_id,
+	    plugin_id => $page_id,
+	    run => $run,
+	    models => $self->app->al->get_models(),
+	    plugin => $self->app->al->get_plugins()->get_plugin($page_id),
+            );
+        
+        $self->render(template => 'alambic/dashboard/plugin');
         
     } else {
 	

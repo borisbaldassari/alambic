@@ -1,0 +1,190 @@
+% my $project_id = stash( 'project_id' );
+% my $plugin_id = stash( 'plugin_id' );
+% my $page_id = stash( 'page_id' );
+% my $run = stash( 'run' );
+% my $models = stash( 'models' );
+% my $plugin = stash( 'plugin' );
+% my %recs_txt = (
+%   1 => 'Low',
+%   2 => 'Medium',
+%   3 => 'High',
+% );
+
+% my $plugin_info = $plugin->get_conf()->{'provides_info'};
+% my @info = @$plugin_info;
+% my $run_info = $run->{'info'};
+
+% my $plugin_metrics = $plugin->get_conf()->{'provides_metrics'};
+% my @metrics = map { $plugin_metrics->{$_} } keys %$plugin_metrics;
+% my $run_metrics = $run->{'metrics'};
+% my $run_inds = $run->{'indicators'}; 
+% my $metrics_def = $models->get_metrics();
+
+% my $plugin_recs = $plugin->get_conf()->{'provides_recs'};
+% my @run_recs = grep { $_->{'src'} =~ /${plugin_id}/ } @{$run->{'recs'}};
+
+% my $plugin_viz = $plugin->get_conf()->{'provides_viz'};
+% my $run_viz = $run->{'viz'};
+
+% my $plugin_data = $plugin->get_conf()->{'provides_data'};
+% my $run_data = $run->{'data'};
+
+% my $plugin_figs = $plugin->get_conf()->{'provides_figs'};
+% my $run_figs = $run->{'figs'};
+
+            <h1 class="al-h1"><small><%= $project_id %></small> Plugin <%= $plugin_id %></h1>
+            <br />
+
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/data', project_id => $project_id
+
+            <br />
+	    
+	    <div class="row"><div class="col-sm-7">
+		<p>This page lists all the information, data, figures, visualisation retrieved by plugin <code><%= $plugin_id %></code> for project <code><%= $project_id %></code>.</p>
+		<p>From the plugin's documentation:</p>
+		<code><p><%== join( '</p><p>', @{$plugin->get_conf()->{'desc'}}) %></p></code>
+		<p>The plugin has generated
+		  <code><%= scalar @info %></code> information items,
+		  <code><%= scalar @metrics %></code> metrics,
+		  <code><%= scalar @run_recs %></code> recommendations,
+		  <code><%= scalar keys %$plugin_viz %></code> visualisation,
+		  <code><%= scalar keys %$plugin_data %></code> downloads, and
+		  <code><%= scalar keys %$plugin_figs %></code> figures. Last analysis was executed on <code><%= $run->{'run_time'} %></code>.</p>
+	      </div>
+	      <div class="col-sm-4">
+		<div class="panel panel-default">
+		  <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+		  <div class="list-group">
+		    <a href="#info" class="list-group-item">Information</a>
+		    <a href="#metrics" class="list-group-item">Metrics</a>
+		    <a href="#recs" class="list-group-item">Recommendations</a>
+		    <a href="#viz" class="list-group-item">Visualisation</a>
+		    <a href="#data" class="list-group-item">Downloads</a>
+		    <a href="#figs" class="list-group-item">Figures</a>
+		  </div>
+		</div>
+	    </div></div>
+
+	    <hr />
+
+	    <h3 id="info">Information</h3>
+            
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Name</th>
+                <th width="80%">Mnemo</th>
+              </tr>
+% foreach my $item (sort @info) {
+              <tr>
+                <td><%= $item %></td>
+                <td><%= $run_info->{$item} %></td>
+                <td></td>
+              </tr>
+% }
+            </table>
+
+	    <hr />
+
+	    <h3 id="metrics">Metrics</h3>
+            
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Name</th>
+                <th width="10%">Mnemo</th>
+                <th width="50%">Description</th>
+                <th width="10%">Value</th>
+                <th width="10%">Indicator</th>
+              </tr>
+% foreach my $item (sort @metrics) {
+              <tr>
+                <td><a href="/documentation/metrics.html#<%= $item %>"><%= $metrics_def->{$item}->{'name'} %></a></td>
+                <td><a href="/documentation/metrics.html#<%= $item %>"><%= $item %></a></td>
+                <td><%= $metrics_def->{$item}->{'description'}->[0] %></td>
+                <td><%= $run_metrics->{$item} %></td>
+                <td><%= $run_inds->{$item} %></td>
+              </tr>
+% }
+            </table>
+
+	    <hr />
+
+	    <h3 id="recs">Recommendations</h3>
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Type</th>
+                <th width="10%">Severity</th>
+                <th width="70%">Description</th>
+              </tr>
+% foreach my $pr (sort @run_recs) {
+              <tr>
+                <td><a href="/documentation/recs.html#<%= $pr %>"><%= $pr->{'rid'} %></a></td>
+                <td><%= $recs_txt{ $pr->{'severity'} } %></td>
+                <td><%= $pr->{'desc'} %></td>
+              </tr>
+% }
+            </table>
+
+	    <hr />
+
+	    <h3 id="viz">Visualisation</h3>
+            
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Script</th>
+                <th width="40%">Name</th>
+                <th width="40%">URL</th>
+              </tr>
+% foreach my $item (sort keys %$plugin_viz) {
+              <tr>
+		<td><%= $item %></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %>"><%= $plugin_viz->{$item} %></a></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %>">/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %></a></td>
+	      </tr>
+% }
+            </table>
+
+	    <hr />
+
+	    <h3 id="data">Downloads</h3>
+            
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Plugin</th>
+                <th width="40%">Name &ndash; Description</th>
+                <th width="40%">URL</th>
+              </tr>
+% foreach my $item (sort keys %$plugin_data) {
+              <tr>
+		<td><%= $item %></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %>"><%= $item %></a><br /><%= $plugin_data->{$item} %></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %>">/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %></a></td>
+	      </tr>
+% }
+            </table>
+
+	    <hr />
+
+	    <h3 id="figs">Figures</h3>
+            
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Script</th>
+                <th width="40%">Name</th>
+                <th width="40%">URL</th>
+              </tr>
+% foreach my $item (sort keys %$plugin_figs) {
+              <tr>
+		<td><%= $item %></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %>"><%= $item %></a><br /><%= $plugin_data->{$item} %></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %>">/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %></a></td>
+	      </tr>
+% }
+            </table>
+
+
+
+
+
+
+	    

@@ -22,7 +22,7 @@
                 <th width="10%">Severity</th>
                 <th width="70%">Description</th>
               </tr>
-% foreach my $item (sort @{$recs}) {
+% foreach my $item (sort { $b->{'severity'} <=> $a->{'severity'} } @{$recs}) {
               <tr>
                 <td><a href="/documentation/recs.html#<%= $item->{'rid'} %>"><%= $item->{'rid'} %></a></td>
                 <td><%= $recs_txt{ $item->{'severity'} } %></td>
