@@ -32,7 +32,7 @@
 % my @data_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_data()} ) } keys %$project_plugins;
 % my @figs_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_figs()} ) } keys %$project_plugins;
 % my ($data_vol, $figs_vol) = (0, 0); 
-% foreach my $dp (@data_plugins) { print Dumper($dp);
+% foreach my $dp (@data_plugins) { 
 %   $data_vol += scalar keys %{$plugins->get_plugin($dp)->get_conf()->{'provides_data'}};
 % }
 % foreach my $fp (@figs_plugins) {
