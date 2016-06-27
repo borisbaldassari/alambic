@@ -24,7 +24,7 @@
                   </ul>
                 </li>
                 <li role="presentation" class="dropdown">
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Plugins <span class="caret"></span></a>
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Visualisation <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
 % my $list_viz = $plugins->get_list_plugins_viz(); 
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
