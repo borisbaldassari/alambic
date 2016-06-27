@@ -19,8 +19,9 @@ sub welcome {
 	$self->render( template => 'alambic/documentation/quality_model' );
 
     } elsif ($in_doc =~ m!^plugins(.html)?$!) {
-
+	
 	# Render template for plugins
+        $self->stash( type => $self->param('type') );
 	$self->render( template => 'alambic/documentation/plugins' );
 
     } elsif ($in_doc =~ m!^data(.html)?$!) {
@@ -59,36 +60,11 @@ sub welcome {
 	# Render template for scales
 	$self->render( template => 'alambic/documentation/scales' );
 
-    } elsif ($in_doc =~ m!^scales_grimoire(.html)?$!) {
-
-	# Render template for grimoire scales
-	$self->render( template => 'alambic/documentation/scales_grimoire' );
-
-    } elsif ($in_doc =~ m!^scales_marketplace(.html)?$!) {
-
-	# Render template for marketplace scales
-	$self->render( template => 'alambic/documentation/scales_marketplace' );
-
-    } elsif ($in_doc =~ m!^scales_pmi(.html)?$!) {
-
-	# Render template for pmi scales
-	$self->render( template => 'alambic/documentation/scales_pmi' );
-
-    } elsif ($in_doc =~ m!^scales_rulechecking(.html)?$!) {
-
-	# Render template for rulechecking scales
-	$self->render( template => 'alambic/documentation/scales_rulechecking' );
-
-    } elsif ($in_doc =~ m!^scales_rulechecking(.html)?$!) {
-
-	# Render template for sonarqube scales
-	$self->render( template => 'alambic/documentation/scales_sonarqube' );
-
     } elsif ($in_doc =~ m!^rules(_(.+?))?(.html)?$!) {
 
 #        my %rules = %{$self->models->get_rules()};
 #        my %sources = %{$self->models->get_rules_sources()};
-#        my $source = $2 || "";
+#        my $source = $2 || ""; XXX
 
 	# Render template for metrics
 #        $self->stash( rules => \%rules, sources => \%sources, source => $source );
