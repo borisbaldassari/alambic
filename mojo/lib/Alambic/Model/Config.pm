@@ -54,12 +54,27 @@ sub get_name() {
     return $config{'name'};
 }
 
+sub set_name($) {
+    my $name = shift;
+    $config{'name'} = $name;
+}
+
 sub get_desc() {    
     return $config{'desc'};
 }
 
+sub set_desc($) {
+    my $desc = shift;
+    $config{'desc'} = $desc;
+}
+
 sub get_dir_projects() {    
     return $config{'dir_projects'};
+}
+
+sub set_dir_projects($) {
+    my $dir = shift;
+    $config{'dir_projects'} = $dir;
 }
 
 sub get_pg_minion() {    
