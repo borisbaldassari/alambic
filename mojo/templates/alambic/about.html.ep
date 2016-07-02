@@ -14,14 +14,12 @@
 
               </div>
               <div class="col-lg-4">
-		<div class="panel" style="border-color: #3E3F3A">
-		  <div class="panel-heading" style="border-color: #3E3F3A; background-color: #5884B3; color: #ffffff">Content</div>
+		<div class="panel panel-default">
+		  <div class="panel-heading">Content</div>
 		  <div class="list-group">
                     <a href="#about" class="list-group-item">About Alambic</a>
                     <a href="#mainfeatures" class="list-group-item">Main features</a>
-                    <a href="#acknowledgements" class="list-group-item">Acknowledgements</a>
                     <a href="#yourproject" class="list-group-item">What about <i>your</i> project?</a>
-                    <a href="#moreinfo" class="list-group-item">More information</a>
 		  </div>
 		</div>
 	      </div>
@@ -36,27 +34,32 @@
 
                 <h3 id="about">About Alambic</h3>
 
-                <p><a href="http://castalia.camp/alambic">Alambic</a> is an <b>open-source</b> project for <b>software development data analysis</b>. It is hosted at <a href="https://bitbucket.org/BorisBaldassari/alambic">BitBucket</a>.</p>
+                <p><a href="http://castalia.camp/alambic">Alambic</a> is an <b>open-source</b> framework and service for <b>software engineering data</b> analysis and management. It is hosted at <a href="https://bitbucket.org/BorisBaldassari/alambic">BitBucket</a>.</p>
 	    
 		<br />
 		
 		<div class="row">
-		  <div class="col-lg-3 text-center">
+		  <div class="col-lg-4 text-center">
+                    <a href="http://castalia.camp/alambic"><i class="fa fa-home fa-2x"></i><br />
+                      Project Home
+                    </a>
+		  </div>
+		  <div class="col-lg-2 text-center">
                     <a href="https://bitbucket.org/BorisBaldassari/alambic"><i class="fa fa-bitbucket fa-2x"></i><br />
                       Project Home
                     </a>
 		  </div>
-		  <div class="col-lg-3 text-center">
+		  <div class="col-lg-2 text-center">
                     <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?status=new&status=open"><i class="fa fa-bug fa-2x"></i><br />
                       Issues
                     </a>
 		  </div>
-		  <div class="col-lg-3 text-center">
+		  <div class="col-lg-2 text-center">
                     <a href="https://bitbucket.org/BorisBaldassari/alambic/src"><i class="fa fa-git fa-2x"></i><br />    
                       Source
                     </a>
 		  </div>
-		  <div class="col-lg-3 text-center">
+		  <div class="col-lg-2 text-center">
                     <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki"><i class="fa fa-question-circle fa-2x"></i><br />
                       Documentation
                     </a>
@@ -66,7 +69,7 @@
 		<br />
 		
                 <p>Basically Alambic uses plugins to <a href="/documentation/plugins.html">retrieve data from various tools and repositories</a> of the software development process, applies these values to a <a href="/documentation/quality_model.html">quality model</a> and generates a variety of graphs, numbers, and reports. Alambic also provides a <a href="/about.html#data">unified API</a> to retrieve this data.</p>
-                <p>The complete process is fully documented, from <a href="/documentation/attributes.html">quality attributes</a> to the <a href="/documentation/metrics.html">metrics</a> retrieved. Data sources include mailing lists, configuration management, issue tracking system, source code, and more. See the full list of data sources in the <a href="/documentation/plugins.html">Data sources section</a> of the documentation.</p>
+                <p>The complete process is fully documented, from <a href="/documentation/attributes.html">quality attributes</a> to the <a href="/documentation/metrics.html">metrics</a> retrieved. Data sources may include mailing lists, configuration management, issue tracking system, source code, and more. See the full list of data sources in the <a href="/documentation/plugins.html">Data sources section</a> of the documentation.</p>
 
                 <p>Alambic is a derivative of the <a href="http://dashboard.polarsys.org">PolarSys dashboard</a>. <a href="http://polarsys.org">PolarSys</a> is an Eclipse <a href="http://www.eclipse.org/org/workinggroups/">Industry Working Group</a> created by large industry players and by tools providers to collaborate on the creation and support of Open Source tools for the development of embedded systems. Members of PolarSys started working on a <a href="https://polarsys.org/wiki/Maturity_Assessment_WG">Maturity Assessment task force</a> back in 2013, to assess and help improve quality of projects entering the PolarSys umbrella.</p>
 
@@ -86,7 +89,7 @@
 		<ul>
 		  <li><b>Alambic helps you organise and understand your data</b> by building a <b>quality model</b> to quickly catch up with the things that matter to you. The quality model can be entirely customised, and almost any type of data source can be added through plugins.</li>
 		  <li><b>Alambic helps you share your data</b> by providing ready-to-use datasets, plots that can be exported to external web sites, and online tools to play with data. The process, metrics and quality attributes are self-documented.</li>
-		  <li><b>Alambic can be easily extended</b>: a <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs).  Examples of plugins ready to use include <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/PMD%20Analysis">PMD Results Analysis</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/StackOverflow">StackOverflow questions</a> and <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/PMI%20Checks">PMI Checks for Eclipse projects</a>.</li>
+		  <li><b>Alambic can be easily extended</b>: a <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs).  Examples of plugins ready to use include <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/PMD%20Analysis">PMD Results Analysis</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/StackOverflow">StackOverflow questions</a> and <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/PMI%20Checks">PMI Checks for Eclipse projects</a>.</li>
 		</ul>
 
               </div>
@@ -94,49 +97,14 @@
                 <div class="text-center" ><img src="/images/alambic_presentation_data.jpg" class="img-responsive" style="width: 800px;" /></div>
               </div>
             </div>
-
-	    
-            <hr />
-
-            <h3 id="acknowledgements">Acknowledgements </h3>
-                            
-            <p>Like many projects, Alambic has a huge debt of gratitude to all the software that made it possible. Among them:<p> 
-            <ul>
-	      <li><a href="http://perl.org">Perl</a>, its <a href="http://www.ctan.org">myriad of modules</a>, and the <a href="http://mojolicious.org">Mojolicious team</a>.</li>
-	      <li>The <a href="https://www.r-project.org">R project</a>, and its <a href="https://cran.r-project.org/">myriad of packages</a>. The guys at <a href="https://www.rstudio.com/">RStudio</a> have contributed a <a href="https://www.rstudio.com/products/rpackages/">lot of cool packages</a>, including <a href="http://ggplot2.org/">ggplot2<a/>, <a href="http://yihui.name/knitr/">knitr</a>, <a href="http://rmarkdown.rstudio.com/">markdown</a>.</a>.</li>
-	      <li><a href="http://plot.ly">Plot.ly</a> for their open-source contributions, including the <a href="https://plot.ly/r/">plotly R package</a> and the <a href="https://plot.ly/javascript/">javascript library</a>, and for their <a href="https://plot.ly/plot">free online service</a> for data exploration and visualisation, which rocks!</li>
-            </ul>
     
 
             <hr />
 
             <h3 id="yourproject">What about <i>your</i> project?</h3>
-        
-            <p>Any project willing to enter this dashboard is welcome. However, the analysis requires some information in order to compute indicators, questions and attributes of quality. Depending on <a href="/documentation/plugins.html">the plugins activated</a> on the project the following pieces of information might be needed:</p>
-            <ul>
-              <li>An entry in the PMI records: see <a href="http://projects.eclipse.org">projects.eclipse.org</a>.</li>
-              <li>A publicly available PMD results XML file and its associated XML configuration file.</li>
-	      <li>A registered tag on the StackOverflow wbe site.</li>
-	      <li>JSON files on the <a href="http://dashboard.eclipse.org/data/json">dashboard.eclipse.org</a> server.</li>
-              <li>A hudson instance for the continuous integration metrics. See <a href="http://hudson.eclipse.org">hudson.eclipse.org</a> for more information.</li>
-            </ul>
-            <p><strong>We're ready to help!</strong> Do not hesitate to <a href="/contact.html">get in touch with us</a> for any question about the process, or if you want to add your project to the dashboard.</p>
-
-            <hr />
-
-            <h3 id="moreinfo">More information</h3>
-
-            <p>The analysis process is self-documented; most of the information available is directly integrated into this very web site. You should check the <a href="/documentation">documentation</a> page first. The next place to go is the <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki">project's wiki</a>, which contains more in-depth documentation about the <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Install">install process</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins">plugins</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Admin">administration</a>, or <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Using%20autogenerated%20pictures">how to reuse pictures on external web sites</a>. </p>
-
-            <p>Since Alambic is a fork of the <a href="http://dashboard.polarsys.org/">PolarSys dashboard</a>, there is a lot of information (mostly historical by now, but still relevant) available on the <a href="https://polarsys.org/wiki/Maturity_Assessment_WG">PolarSys wiki</a>, since the project started there. From the beginning the PolarSys dashboard has been driven by the PolarSys members: the definition of the quality model, attributes, metrics has been discussed on the public mailing list, and the full retrieval and analysis process has received a common agreement on <a href="https://dev.eclipse.org/mailman/listinfo/polarsys-iwg">the mailing list</a>. The project and/or its features have also been presented a few times:
-            </p>
-              <ul>
-                <li>EclipseCon France 2015 Unconference (working session).</li>
-                <li>EclipseCon Europe 2014: <a href="https://www.eclipsecon.org/europe2014/session/assessing-project-quality-improvement-polarsys-maturity-assessment-initiative">https://www.eclipsecon.org/europe2014/session/assessing-project-quality-improvement-polarsys-maturity-assessment-initiative</a></li>
-                <li>EclipseCon Europe 2014 Unconference: <a href="https://polarsys.org/wiki/EclipseConEurope2014">https://polarsys.org/wiki/EclipseConEurope2014</a></li>
-		<li>EclipseCon France 2014 Unconference: <a href="https://wiki.eclipse.org/Eclipse_WG_Unconference_France_2014">https://wiki.eclipse.org/Eclipse_WG_Unconference_France_2014</a></li>
-                <li>EclipseCon France 2013: <a href="http://www.eclipsecon.org/france2013/sessions/software-quality-eclipse-way-and-beyond">http://www.eclipsecon.org/france2013/sessions/software-quality-eclipse-way-and-beyond</a></li>
-              </ul>
+            
+            <p>Any project willing to enter the dashboard is welcome. However, the analysis requires some information in order to compute indicators and attributes of quality. Depending on <a href="/documentation/plugins.html">the plugins activated</a> on the project some metrics may be empty.</p>
+            <p>Adding a project needs authentication. Please <a href="/contact.html">contact your Alambic administrator</a> for the next steps.</p>
 
             <br />
             <br />
