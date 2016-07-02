@@ -14,6 +14,35 @@ sub summary {
 }
 
 
+# Edit information about the instance
+sub edit {
+    my $self = shift;
+    
+    $self->stash(
+        name => $self->app->al->instance_name(),
+        desc => $self->app->al->instance_desc(),
+        );
+    $self->render( template => 'alambic/admin/instance_edit' );
+}
+
+
+# Edit information about the instance -- post
+sub edit_post {
+    my $self = shift;
+
+    # Gte values from form.
+    my $name = $self->param( 'name' );
+    my $desc = $self->param( 'desc' );
+    
+    print "# In Admin#edit_post $name \n$desc.\n";
+    $self->app->al->get_repo_db()->name($name);
+    $self->app->al->get_repo_db()->desc($desc);
+
+    $self->flash( msg => "Instance details have been saved." );
+    $self->redirect_to( '/admin/summary' );
+}
+
+
 # JSON access for models data.
 sub data_models {
     my $self = shift;
@@ -21,22 +50,22 @@ sub data_models {
     
     my $models = $self->app->al->get_models();
 
-    if ($page =~ m!^attributes.json$!) {
+    if ( $page =~ m!^attributes.json$! ) {
 	$self->render( json => $models->get_attributes() );
 
-    } elsif ($page =~ m!^attributes_full.json$!) {
+    } elsif ( $page =~ m!^attributes_full.json$! ) {
 	$self->render( json => $models->get_attributes_full() );
 
-    } elsif ($page =~ m!^metrics.json$!) {
+    } elsif ( $page =~ m!^metrics.json$! ) {
 	$self->render( json => $models->get_metrics() );
     
-    } elsif ($page =~ m!^metrics_full.json$!) {
+    } elsif ( $page =~ m!^metrics_full.json$! ) {
 	$self->render( json => $models->get_metrics_full() );
     
-    } elsif ($page =~ m!^qm.json$!) {
+    } elsif ( $page =~ m!^qm.json$! || $page =~ m!^quality_model.json$!) {
 	$self->render( json => $models->get_qm() );
     
-    } elsif ($page =~ m!^qm_full.json$!) {
+    } elsif ( $page =~ m!^qm_full.json$! || $page =~ m!^quality_model_full.json$! ) {
 	$self->render( json => $models->get_qm_full() );
 
     } else {

@@ -1,0 +1,36 @@
+
+% my $name = stash( 'name' );
+% my $desc = stash( 'desc' );
+
+            <h1 class="al-h1"><small>Administration</small> Edit instance information</h1>
+            <br />
+
+%= include 'alambic/admin/admin_menu', current => '/admin/summary'
+
+            <form action="/admin/edit" method="POST" class="form-horizontal" role="form">
+
+              <div class="form-group">
+                <label for="name" class="control-label col-xs-2">Name</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" name="name" id="name" value="<%== $name %>">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="desc" class="control-label col-xs-2">Description</label>
+                <div class="col-xs-10">
+		  <p>The description can include HTML characters and tags. It is displayed in the welcome page and helps people understand why this instance has been setup and its targeted audience.</p>
+                  <textarea type="text" class="form-control" name="desc" id="desc" style="border-color: #3E3F3A" rows="10" cols="78"><%= $desc %></textarea>
+                </div>
+              </div>
+
+              <br />
+              <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                  <input class="btn btn-primary" type="submit" value="Save">
+                  <input class="btn btn-default" type="button" value="Cancel" onclick="history.go(-1);" />
+                </div>
+              </div>
+
+            </form>
+
