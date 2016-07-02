@@ -23,15 +23,12 @@
 		<br />
 	      </div>
 	      <div class="col-sm-6">
-                <br />
                 <div class="list-group">
                   <a class="list-group-item" href="/admin/repo/backup" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Start a backup</a>
                 </div>
 
               </div>
-            </div>
-
-	    
+            </div>	    
                 
             <table class="table table-striped">
               <tr><th>File</th><th colspan="1">Actions</th></tr>

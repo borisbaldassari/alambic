@@ -25,11 +25,17 @@
 % my $fa_icon_m = app->al->is_db_m_ok ? "check-circle-o" : "exclamation-circle";
             <div class="row">
               <div class="col-md-6">
-		<p><b>Instance</b></p>
-		<p><%= app->al->instance_name() %></p>
-		<p><%== app->al->instance_desc() %></p>
+		<p><b>Instance name:</b> <%= app->al->instance_name() %></p>
+		<p><b>Description:</b><br />
+		<%== app->al->instance_desc() %></p>
 
 		<br />
+              </div>
+              <div class="col-sm-6">
+                <div class="list-group">
+                  <a class="list-group-item" href="/admin/edit" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Edit instance information</a>
+                </div>
+
               </div>
             </div>
 	      

@@ -24,7 +24,6 @@
 		<br />
 	      </div>
 	      <div class="col-sm-6">
-                <br />
                 <div class="list-group">
                   <a class="list-group-item" href="/admin/models/init" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Re-read models</a>
                   <a class="list-group-item" href="/admin/models/import" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Import JSON</a>
