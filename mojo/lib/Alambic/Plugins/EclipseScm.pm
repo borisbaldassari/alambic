@@ -16,13 +16,12 @@ my %conf = (
     "name" => "Eclipse SCM",
     "desc" => [ 
 	"Retrieves configuration management data from the Eclipse dashboard repository. This plugin will look for a file named project-scm-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
-	'<code>project_grim</code> is the id used to identify the project in the PMI. Look for it in the URL of the project on <a href="http://projects.eclipse.org">http://projects.eclipse.org</a>.',
 	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseScm">the project\'s wiki</a> for more information.',
     ],
     "type" => "pre",
     "ability" => [ 'metrics', 'data', 'recs', 'figs', 'viz' ],
     "params" => {
-        "project_grim" => "",
+        "project_grim" => "The project ID used to identify the project on the dashboard server. Note that it may be different from the id used in the PMI.",
     },
     "provides_cdata" => [
     ],

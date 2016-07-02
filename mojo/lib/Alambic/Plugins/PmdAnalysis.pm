@@ -26,8 +26,8 @@ my %conf = (
     "type" => "pre",
     "ability" => [ 'data', 'recs', 'figs', 'viz' ],
     "params" => {
-        "url_pmd_xml" => "",
-        "url_pmd_conf" => "",
+        "url_pmd_xml" => "The URL to the XML configuration file used to run PMD.",
+        "url_pmd_conf" => "The URL to the XML PMD results for the project.",
     },
     "provides_cdata" => [
     ],
