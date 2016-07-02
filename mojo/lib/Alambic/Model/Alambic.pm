@@ -3,7 +3,6 @@ package Alambic::Model::Alambic;
 use warnings;
 use strict;
 
-use Alambic::Model::Config;
 use Alambic::Model::Project;
 use Alambic::Model::RepoDB;
 use Alambic::Model::RepoFS;
@@ -59,8 +58,8 @@ my $models;
 sub new { 
     my ($class, $config_opt) = @_;
 
-    $config = Alambic::Model::Config->new($config_opt);
-    my $pg_alambic = $config->get_pg_alambic();
+    $config = $config_opt;
+    my $pg_alambic = $config->{'conf_pg_alambic'};
     $repodb = Alambic::Model::RepoDB->new($pg_alambic);
     $repofs = Alambic::Model::RepoFS->new();
     $plugins = Alambic::Model::Plugins->new();
@@ -110,10 +109,10 @@ sub instance_name($) {
     my ($self, $name) = @_;
     
     if (scalar @_ > 1) {
-	$config->set_name($name);
+	$repodb->name($name);
     }
 
-    return $config->get_name();
+    return $repodb->name();
 }
 
 # Get or set the instance description.
@@ -121,20 +120,20 @@ sub instance_desc($) {
     my ($self, $desc) = @_;
     
     if (scalar @_ > 1) {
-	$config->set_desc($desc);
+	$repodb->desc($desc);
     }
 
-    return $config->get_desc();
+    return $repodb->desc();
 }
 
 # Get the postgresql configuration for alambic.
 sub instance_pg_alambic() {
-    return $config->get_pg_alambic();
+    return $config->{'conf_pg_alambic'};
 }
 
 # Get the postgresql configuration for minion.
 sub instance_pg_minion() {
-    return $config->get_pg_minion();
+    return $config->{'conf_pg_minion'};
 }
 
 # Get boolean to check if the alambic db can be used.
@@ -144,7 +143,7 @@ sub is_db_ok() {
 
 # Get boolean to check if the minion db information is defined.
 sub is_db_m_ok() {
-    my $pg_minion = $config->get_pg_minion();
+    my $pg_minion = $config->{'conf_pg_minion'};
     return ( defined($pg_minion) && $pg_minion =~ m!^postgres! ) ? 1 : 0;
 }
 
@@ -431,6 +430,7 @@ sub run_project($) {
 #  - id the project id.
 # Returns
 #  - $ret = {
+#      "cdata" => [ {'author' => 'so', 'mesg' => 'value1'} ],
 #      "metrics" => {'metric1' => 'value1'},
 #      "indicators" => {'ind1' => 'value1'},
 #      "attributes" => {'attr1' => 'value1'},
