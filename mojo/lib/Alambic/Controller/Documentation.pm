@@ -10,7 +10,7 @@ sub welcome {
 
     # 'id' is the specific documentation page from url.
     my $in_doc = $self->param( 'id' ) || '';
-
+    
     my $repodb = $self->app->al->get_repo_db();
 
     if ($in_doc =~ m!^quality_model(.html)?$!) {
@@ -21,17 +21,13 @@ sub welcome {
     } elsif ($in_doc =~ m!^plugins(.html)?$!) {
 	
 	# Render template for plugins
-        $self->stash( type => $self->param('type') );
+        $self->stash( 
+	    type => $self->param('type'),
+	    );
 	$self->render( template => 'alambic/documentation/plugins' );
 
     } elsif ($in_doc =~ m!^data(.html)?$!) {
 
-#        my %attributes = %{$self->models->get_attributes()};
-
-        # TODO
-
-	# Render template for attributes
-#        $self->stash( attributes => \%attributes );
 	$self->render( template => 'alambic/documentation/data' );
 
     } elsif ($in_doc =~ m!^attributes(.html)?$!) {
@@ -40,7 +36,10 @@ sub welcome {
 	my $attributes = $models->get_attributes();
 
 	# Render template for attributes
-        $self->stash( attributes => $attributes );
+        $self->stash( 
+	    attributes => $attributes, 
+	    models => $models 
+	    );
 	$self->render( template => 'alambic/documentation/attributes' );
 
     } elsif ($in_doc =~ m!^metrics(_(\w+))?(.html)?$!) {
@@ -52,23 +51,13 @@ sub welcome {
         my $repos = $models->get_metrics_repos();
 
 	# Render template for metrics
-        $self->stash( metrics => $metrics, repos => $repos, repo => $repo );
+        $self->stash( 
+	    metrics => $metrics,
+	    models => $models,
+	    repos => $repos, 
+	    repo => $repo 
+	    );
 	$self->render( template => 'alambic/documentation/metrics' );
-
-    } elsif ($in_doc =~ m!^scales(.html)?$!) {
-
-	# Render template for scales
-	$self->render( template => 'alambic/documentation/scales' );
-
-    } elsif ($in_doc =~ m!^rules(_(.+?))?(.html)?$!) {
-
-#        my %rules = %{$self->models->get_rules()};
-#        my %sources = %{$self->models->get_rules_sources()};
-#        my $source = $2 || ""; XXX
-
-	# Render template for metrics
-#        $self->stash( rules => \%rules, sources => \%sources, source => $source );
-	$self->render( template => 'alambic/documentation/rules' );
 
     } elsif ($in_doc =~ m!^references(.html)?$!) {
 
