@@ -68,6 +68,7 @@
 	    <p>Plugins are organised into <i>types</i>, which define when they are executed and the information they have access to. </p>
 	    <ul>
 	      <li><b>Pre- plugins</b>, also known as <b>data source plugins</b>, are executed first. They usually retrieve information from a repository, and compute metrics and recommendations. </li>
+	      <li><b>Custom data plugins</b> provide information entered by users, like comments or surveys. As such the data they provide is not synchronised with project runs, altough they still provide the same type of output (metrics, downlaods, figures, etc.).</li>
 	      <li>When all pre- plugins are executed, Alambic computes the attributes and quality model and executes the <b>post- plugins</b>. These have access to all information, custom data, metrics, attributes and recommendations retrieved and computed by pre plugins, and are a good fit for project-level reports. </li>
 	      <li>When all projects have been executed, the <b>global plugins</b> are run. They have access to all information from all projects and are a good fit for installation-wide reports.</li>
 	    </ul>
@@ -84,8 +85,8 @@
               <div class="col-md-6">
                 <p><b>ID</b>: <%= $conf->{'id'} %></p>
 		<p><b>Abilities</b>: &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
-                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>                    
                 <p><b>Description</b>: <br /><%== join( '<br />', @{$conf->{'desc'}}) %></p>
+                <p><b>Parameters</b>: <ul><li><%== join( '</li><li>', map { '<b>' . $_ . '</b> ' . $conf->{'params'}{$_} } sort keys %{$conf->{'params'}} ) %></li></ul>
               </div>
               <div class="col-md-6">
                 <p><b>Information</b><br />
