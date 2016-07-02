@@ -25,7 +25,7 @@ my %conf = (
     "type" => "pre",
     "ability" => [ 'metrics', 'viz', 'figs', 'recs' ],
     "params" => {
-        "hudson_url" => "",
+        "hudson_url" => "The base URL for the Hudson instance. In other words, the URL one would point to to get the main page of the project's Hudson, with the list of jobs.",
     },
     "provides_info" => [
     ],
