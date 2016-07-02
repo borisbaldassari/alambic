@@ -130,18 +130,23 @@ sub startup {
     $r->get('/models/#page')->to( 'admin#data_models' );
     
     # Admin
-    my $r_admin = $r->any('/admin')->to(controller => 'admin');
+    my $r_admin = $r->any('/admin')->to(controller => 'admin');   
+    
+    $r_admin->get('/edit')->to( action => 'edit' );
+    $r_admin->post('/edit')->to( action => 'edit_post' );
     $r_admin->get('/summary')->to(action => 'summary');
     $r_admin->get('/projects')->to(action => 'projects');
     my $r_admin_projects = $r_admin->any('/projects')->to(controller => 'admin');
     $r_admin_projects->get('/new')->to(action => 'projects_new');
     $r_admin_projects->post('/new')->to(action => 'projects_new_post');
+
     # Wizards
     $r_admin_projects->get('/new/#wiz')->to(action => 'projects_wizards_new_init');
     $r_admin_projects->post('/new/#wiz')->to(action => 'projects_wizards_new_init_post');
     $r_admin_projects->get('/new/#wiz/#pid')->to(action => 'projects_wizards_new');
     $r_admin_projects->post('/new/#wiz/#pid')->to(action => 'projects_wizards_new_post');
-    # projects
+ 
+    # Projects
     $r_admin_projects->get('/#pid')->to(action => 'projects_show');
     $r_admin_projects->get('/#pid/run')->to(action => 'projects_run');
     $r_admin_projects->get('/#pid/run/pre')->to(action => 'projects_run_pre');
@@ -150,7 +155,6 @@ sub startup {
     $r_admin_projects->get('/#pid/del')->to(action => 'projects_del');    
     $r_admin_projects->get('/#pid/edit')->to(action => 'projects_edit');
     $r_admin_projects->post('/#pid/edit')->to(action => 'projects_edit_post');
-    
     $r_admin_projects->get('/#pid/setp/#plid')->to( action => 'projects_add_plugin' );
     $r_admin_projects->post('/#pid/setp/#plid')->to( action => 'projects_add_plugin_post' );
     $r_admin_projects->get('/#pid/runp/#plid')->to( action => 'projects_run_plugin' );
