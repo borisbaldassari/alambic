@@ -156,19 +156,11 @@ sub startup {
     $r_admin_projects->get('/#pid/runp/#plid')->to( action => 'projects_run_plugin' );
     $r_admin_projects->get('/#pid/delp/#plid')->to( action => 'projects_del_plugin' );
     
-    $r_admin->get('/models')->to( 'admin#models' );
-    $r_admin->get('/models/import')->to( 'admin#models_import' );
-    $r_admin->get('/models/init')->to( 'admin#models_init' );
+    $r_admin->get('/models')->to( action => 'models' );
+    $r_admin->get('/models/import')->to( action => 'models_import' );
+    $r_admin->get('/models/init')->to( action => 'models_init' );
     # my $r_admin_models = $r->get('/admin/models/')->to( controller => 'admin' );
 
-    # Plugins
-    $r_admin->get('/plugins')->to( action => 'plugins' );
-    $r_admin->get('/plugins_cdata')->to( action =>'plugins_cdata' );
-    $r_admin->get('/plugins_pre')->to( action =>'plugins_pre' );
-    $r_admin->get('/plugins_post')->to( action =>'plugins_post' );
-    $r_admin->get('/plugins_global')->to( action =>'plugins_global' );
-    $r_admin->get('/plugins_wizards')->to( action =>'plugins_wizards' );
-    
     # Job management
     $r->get('/admin/jobs')->to( 'jobs#summary' );
     $r->get('/admin/jobs/#id')->to( 'jobs#display' );
