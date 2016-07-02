@@ -31,7 +31,7 @@
  % if ($ability =~ m!metrics!) { $icon = "fa-tasks"; $name = "Metrics" }
  % elsif ($ability =~ m!figs!) { $icon = "fa-picture-o"; $name = "Figures" }
  % elsif ($ability =~ m!info!) { $icon = "fa-info-circle"; $name = "Information" }
- % elsif ($ability =~ m!data!) { $icon = "fa-download"; $name = "Data" }
+ % elsif ($ability =~ m!data!) { $icon = "fa-download"; $name = "Downloads" }
  % elsif ($ability =~ m!recs!) { $icon = "fa-map-signs"; $name = "Recommendations" }
  % elsif ($ability =~ m!viz!) { $icon = "fa-pie-chart"; $name = "Visualisation" }
  % else { $icon = "fa-question" }
@@ -274,7 +274,7 @@
 	    <div class="panel-group" id="accordion_data">
 	      <div class="panel panel-default">
 		<div class="panel-heading">
-		  <a data-toggle="collapse" data-parent="#accordion_data" href="#collapse_data">Data </a>
+		  <a data-toggle="collapse" data-parent="#accordion_data" href="#collapse_data">Downloads </a>
 		</div>
 		<div id="collapse_data" class="panel-collapse collapse">
 
