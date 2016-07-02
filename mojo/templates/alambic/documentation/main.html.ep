@@ -3,24 +3,11 @@
             <h1 class="al-h1"><small>Documentation</small> main page</h1>
             <br />
 
-            <p><a href="http://castalia.camp/alambic">Alambic</a> is an <b>open-source</b> project for <b>software development data analysis</b>. Its forge is hosted at <a href="https://bitbucket.org/BorisBaldassari/alambic">BitBucket</a>.</p>
+            <p><a href="http://castalia.camp/alambic">Alambic</a> is an <b>open-source</b> framework and service for <b>software engineering data</b> analysis and management. Alambic main page is <a href="http://castalia.camp/alambic">castalia.camp/alambic</a> and its forge is hosted at <a href="https://bitbucket.org/BorisBaldassari/alambic">BitBucket</a>.</p>
 
             <p>Basically Alambic uses plugins to <a href="/documentation/plugins.html">retrieve data from various tools and repositories</a> of the software development process, applies these values to a <a href="/documentation/quality_model.html">quality model</a> and generates a variety of graphs, numbers, and reports. Alambic also provides a <a href="/documentation/data.html">unified API</a> to retrieve this data.</p>
 
-            <div class="row">
-              <div class="col-lg-6">
-                <h3>Retrieval and analysis process</h3>
-
-                <p>Data is retrieved by executing <i>plugins</i>. Plugins first collect ( <i class="fa fa-download"></i> ) the data (i.e. make a call to the <code>retrieve</code> plugin method) and then optionnaly compute ( <i class="fa fa-cogs"></i> ) some metrics or visualisation objects (i.e. make a call to the <code>compute</code> plugin method). These temporary files are stored in <code><%= app->config->{'dir_input'} %></code>.</p>
-                <p>One can fetch data for all defined data source plugins of a project by executing its <code>retrieve</code> method ( <i class="fa fa-download"></i> ). Once all information has been retrieved it can be processed through the <code>compute</code> method ( <i class="fa fa-cogs"></i> ) to aggregate metrics on the quality model up to the root quality attributes. Files produced by plugins are also copied, and visualisations objects deployed on the dashboard during this step. The final files served to the user are stored in <code><%= app->config->{'dir_data'} %></code>.</p>
-                <p>Once the project has been successfully analysed results are displayed in the dashboard section. This section provides several pages to analyse the project's situation and zoom into the details when needed. The plugins tab enables the visualisation output of the installed plugins.</p>
-              </div>
-              <div class="col-lg-6">
-                <div class="text-center" ><img src="/images/alambic_presentation_data.jpg" class="img-responsive" style="width: 800px;" /></div>
-              </div>
-            </div>
-            
-            <hr />
+	    <hr />
 
             <h3>Local resources</h3>
 	    
@@ -29,64 +16,52 @@
 	    
 	    <div class="row">
 	      <div class="col-lg-4 text-center">
-                <a href="/documentation/data.html"><i class="fa fa-cloud-download fa-2x"></i><br />
-                  Data
-                </a>
+                <a href="/documentation/data.html"><i class="fa fa-cloud-download fa-2x"></i><br />Data</a>
 	      </div>
 	      <div class="col-lg-4 text-center">
-                <a href="/documentation/plugins.html"><i class="fa fa-plug fa-2x"></i><br />
-                  Plugins
-                </a>
+                <a href="/documentation/plugins.html"><i class="fa fa-plug fa-2x"></i><br />Plugins</a>
 	      </div>
 	      <div class="col-lg-4 text-center">
-                <a href="/documentation/quality_model.html"><i class="fa fa-sitemap fa-2x"></i><br />    
-                  Quality model
-                </a>
+                <a href="/documentation/references.html"><i class="fa fa-book fa-2x"></i><br />References</a>
 	      </div>
 	    </div>
-	    
 	    <br />
-	    <br />
-	    
 	    <div class="row">
 	      <div class="col-lg-4 text-center">
-                <a href="/documentation/attributes.html"><i class="fa fa-book fa-2x"></i><br />    
-                  Quality attributes
-                </a>
+                <a href="/documentation/metrics.html"><i class="fa fa-book fa-2x"></i><br />Metrics</a>
 	      </div>
 	      <div class="col-lg-4 text-center">
-                <a href="/documentation/questions.html"><i class="fa fa-book fa-2x"></i><br />
-                  Questions
-                </a>
+                <a href="/documentation/attributes.html"><i class="fa fa-book fa-2x"></i><br />Attributes</a>
 	      </div>
 	      <div class="col-lg-4 text-center">
-                <a href="/documentation/metrics.html"><i class="fa fa-book fa-2x"></i><br />
-                  Metrics
-                </a>
+                <a href="/documentation/quality_model.html"><i class="fa fa-sitemap fa-2x"></i><br />Quality model</a>
 	      </div>
 	    </div>
 	    
-	    <br />
+	    <hr />
 	    
-            <h3>Alambic resources</h3>
+            <h3>Online resources</h3>
 	    
 	    <br />
 	    
 	    <div class="row">
 	      <div class="col-lg-4 text-center">
-                <a href="https://bitbucket.org/BorisBaldassari/alambic"><i class="fa fa-bitbucket fa-2x"></i><br />
-                  Project Home
-                </a>
+                <a href="http://castalia.camp/alambic"><i class="fa fa-home fa-2x"></i><br />Project Home</a>
 	      </div>
 	      <div class="col-lg-4 text-center">
-                <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki"><i class="fa fa-question-circle fa-2x"></i><br />
-                  Documentation
-                </a>
+                <a href="https://bitbucket.org/BorisBaldassari/alambic"><i class="fa fa-bitbucket fa-2x"></i><br />Project Home</a>
+	      </div>
+	    </div>
+	    <br />
+	    <div class="row">
+	      <div class="col-lg-4 text-center">
+                <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?status=new&status=open"><i class="fa fa-bug fa-2x"></i><br />Issues</a>
 	      </div>
 	      <div class="col-lg-4 text-center">
-                <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?status=new&status=open"><i class="fa fa-bug fa-2x"></i><br />
-                  Issues
-                </a>
+                <a href="https://bitbucket.org/BorisBaldassari/alambic/src"><i class="fa fa-git fa-2x"></i><br />Source</a>
+	      </div>
+	      <div class="col-lg-4 text-center">
+                <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki"><i class="fa fa-question-circle fa-2x"></i><br />Documentation</a>
 	      </div>
 	    </div>
 	    
@@ -94,8 +69,20 @@
             
             <hr />
 	    
-	    <br />
-	    <br />
+            <div class="row">
+              <div class="col-lg-6">
+                <h3>Retrieval and analysis process</h3>
+
+                <p>Data is retrieved by executing <b>pre-plugins</b>. Plugins first collect the data and then optionnaly run checks and actions, then compute metrics or visualisation objects. Once all pre-plugins have been executed, the attributes are computed and the quality model is populated. </p>
+		<p>Then the <b>post-plugins</b> are executed, and have access to all data retrieved and computed by pre-plugins. Once the project has been successfully analysed results are displayed in the dashboard section. This section provides several pages to analyse the project's situation and zoom into the details when needed. The plugins tab displays the visualisation output of installed plugins.</p>
+		<p>Once all projects have been executed, <b>post-plugins</b> are executed. They have access to data, information, recommendations, metrics and attributes from all projects.</p>
+		<p></p>
+              </div>
+              <div class="col-lg-6">
+                <div class="text-center" ><img src="/images/alambic_presentation_data.jpg" class="img-responsive" style="width: 800px;" /></div>
+              </div>
+            </div>
+            
 	    <br />
 	    <br />
             
