@@ -54,8 +54,6 @@ my %conf = (
     "provides_metrics" => {
 	"PMI_ITS_INFO" => "PMI_ITS_INFO",
 	"PMI_SCM_INFO" => "PMI_SCM_INFO",
-        "PMI_OK" => "PMI_OK",
-        "PMI_NOK" => "PMI_NOK",
     },
     "provides_figs" => {
     },
@@ -185,8 +183,8 @@ sub _compute_data($) {
     my %metrics;
     my @recs;
     my @log;
-    my $check_ok;
-    my $check_nok;
+    my $checks_ok;
+    my $checks_nok;
 
     push( @log, "[Plugins::EclipsePmi] Starting compute data for [$project_id]." );
 
@@ -272,7 +270,7 @@ sub _compute_data($) {
     push( @{$check->{'results'}}, ($proj_name !~ m!^\s*$!) ? 'OK' : 'Failed: no title defined.' ); 
     $check->{'desc'} = 'Checks if a name is defined for the project: !~ m!^\s*$!';
     $ret_check->{'checks'}->{'title'} = $check;
-    if ($results !~ /^OK/) {
+    if ( $proj_name !~ m!^\s*$! ) {
 	push( @recs, { 'rid' => 'PMI_EMPTY_TITLE', 'severity' => 2, 'desc' => 'The title entry is empty in the PMI.' } );
     }
     
@@ -348,7 +346,7 @@ sub _compute_data($) {
         $url = $raw_project->{'download_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Download') );
-	if ($results !~ /^OK/) {
+	if ($check->{'results'}[-1] !~ /^OK/) {
 	    push( @recs, { 'rid' => 'PMI_NOK_DOWNLOAD', 'severity' => 3, 'desc' => 'The download URL [$url] cannot be retrieved in the PMI. People need it to download, use, and contribute to the project and should be correctly filled.' } );
 }
     } else {
@@ -366,7 +364,7 @@ sub _compute_data($) {
         $url = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Documentation') );
-	if ($results !~ /^OK/) {
+	if ($check->{'results'}[-1] !~ /^OK/) {
 	    push( @recs, { 'rid' => 'PMI_NOK_GETTING_STARTED', 'severity' => 1, 'desc' => 'The getting started URL [$url] cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled.' } );
 	}
     } else {
@@ -384,7 +382,7 @@ sub _compute_data($) {
         $url = $raw_project->{'documentation_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Documentation') );
-	if ($results !~ /^OK/) {
+	if ($check->{'results'}[-1] !~ /^OK/) {
 	    push( @recs, { 'rid' => 'PMI_NOK_DOC', 'severity' => 1, 'desc' => 'The documentation URL [$url] cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled.' } );
 	}
     } else {
@@ -402,7 +400,7 @@ sub _compute_data($) {
         $url = $raw_project->{'plan_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Plan') );
-	if ($results !~ /^OK/) {
+	if ($check->{'results'}[-1] !~ /^OK/) {
 	    push( @recs, { 'rid' => 'PMI_NOK_PLAN', 'severity' => 1, 'desc' => 'The plan document URL [$url] cannot be retrieved in the PMI. It helps people understand the roadmap of the project and should be correctly filled.' } );
 	}
     } else {
@@ -419,7 +417,7 @@ sub _compute_data($) {
         $url = $raw_project->{'proposal_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Proposal') );
-	if ($results !~ /^OK/) {
+	if ($check->{'results'}[-1] !~ /^OK/) {
 	    push( @recs, { 'rid' => 'PMI_NOK_PROPOSAL', 'severity' => 1, 'desc' => 'The proposal document URL [$url] cannot be retrieved in the PMI. It helps people understand the genesis of the project and should be correctly filled.' } );
 	}
     } else {
@@ -438,7 +436,7 @@ sub _compute_data($) {
         $check->{'value'} = $url;
         my $results = &_check_url($url, 'Dev ML');
         push( @{$check->{'results'}}, $results );
-	if ($results !~ /^OK/) {
+	if ($check->{'results'}[-1] !~ /^OK/) {
 	    push( @recs, { 'rid' => 'PMI_NOK_DEV_ML', 'severity' => 3, 'desc' => 'The developer mailing list URL [$url] in the PMI cannot be retrieved. It helps people know where to ask questions if they want to contribute.' } );
 	}
     } else {
@@ -487,7 +485,7 @@ sub _compute_data($) {
                 push( @{$check->{'results'}}, "Failed: no name defined on forum.")
             }
             push( @{$check->{'results'}}, &_check_url($url, "Forum [$name]") );
-	    if ($results !~ /^OK/) {
+	    if ($check->{'results'}[-1] !~ /^OK/) {
 		push( @recs, { 'rid' => 'PMI_NOK_USER_ML', 'severity' => 3, 'desc' => 'The user mailing list / forum URL [$url] in the PMI cannot be retrieved. It helps people know where to ask questions if they want to use the product and should be fixed.' } );
 	    }
         }
@@ -516,7 +514,7 @@ sub _compute_data($) {
                 push( @{$check->{'results'}}, "Failed. Source repo [$name] bad type [$type] or path [$path].");
             }
             push( @{$check->{'results'}}, &_check_url($url, "Source repo [$name]") );
-	    if ($results !~ /^OK/) {
+	    if ($check->{'results'}[-1] !~ /^OK/) {
 		push( @recs, { 'rid' => 'PMI_NOK_SCM', 'severity' => 3, 'desc' => 'The source repository URL [$url] in the PMI cannot be retrieved. People need it if they want to contribute to the product, and it should be fixed.' } );
 	    }
         }
@@ -543,7 +541,7 @@ sub _compute_data($) {
                 push( @{$check->{'results'}}, "Failed. Update site has no title.");
             }
             push( @{$check->{'results'}}, &_check_url($url, "Update site [$title]") );
-	    if ($results !~ /^OK/) {
+	    if ($check->{'results'}[-1] !~ /^OK/) {
 		push( @recs, { 'rid' => 'PMI_NOK_UPDATE', 'severity' => 3, 'desc' => 'The update site URL [$url] in the PMI cannot be retrieved. People need it if they want to use the product, and it should be fixed.' } );
 	    }
         }
@@ -573,7 +571,7 @@ sub _compute_data($) {
                 push( @{$check->{'results'}}, "OK. CI URL is a Hudson instance. Title is [$name]");
             } else { 
                 push( @{$check->{'results'}}, 'Failed: CI URL is not the root of a Hudson instance.'); 
-		push( @recs, { 'rid' => 'PMI_NOK_CI', 'severity' => 3, 'desc' => "The Hudson CI engine URL [$url] in the PMI is not detected as the root of a Hudson instance." } );
+		push( @recs, { 'rid' => 'PMI_NOK_CI', 'severity' => 3, 'desc' => "The Hudson CI engine URL [$proj_ci] in the PMI is not detected as the root of a Hudson instance." } );
             }
         } else {
             push( @{$check->{'results'}}, "Failed: could not decode Hudson JSON."); 
