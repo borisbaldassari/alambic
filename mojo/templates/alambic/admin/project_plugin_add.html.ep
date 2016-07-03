@@ -20,7 +20,8 @@
 %   if ($arg eq 'project_id') { $conf->{'params'}->{$arg} = $project; }
 %   if (defined($conf_project)) { $conf->{'params'}->{$arg} = $conf_project->{$arg}; }
                   <p><b><%= $arg %></b> (<span style="color: red">*</span>)</p>
-                  <p><input name="<%= $arg %>" type="text" value="<%= $conf->{'params'}->{$arg} %>"/></p>
+                  <p><input name="<%= $arg %>" type="text" value=""/></p>
+		  <p><%== $conf->{'params'}->{$arg} %></p>
 % }
 		  <br /><br />
 		  <input type="submit" value="Set data source" />
