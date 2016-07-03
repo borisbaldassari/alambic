@@ -60,8 +60,36 @@ my %conf = (
     "provides_figs" => {
     },
     "provides_recs" => [
-        "PMI_ENTRY_NOT_SET",
-        "PMI_ENTRY_WRONG",
+        "PMI_EMPTY_BUGZILLA_CREATE",
+        "PMI_NOK_BUGZILLA_CREATE", 
+        "PMI_EMPTY_BUGZILLA_QUERY", 
+        "PMI_NOK_BUGZILLA_QUERY", 
+        "PMI_EMPTY_TITLE", 
+        "PMI_NOK_WEB", 
+        "PMI_EMPTY_WEB", 
+        "PMI_NOK_WIKI", 
+        "PMI_EMPTY_WIKI", 
+        "PMI_NOK_DOWNLOAD", 
+        "PMI_EMPTY_DOWNLOAD", 
+        "PMI_NOK_GETTING_STARTED", 
+        "PMI_EMPTY_GETTING_STARTED", 
+        "PMI_NOK_DOC", 
+        "PMI_EMPTY_DOC", 
+        "PMI_NOK_PLAN", 
+        "PMI_EMPTY_PLAN", 
+        "PMI_NOK_PROPOSAL", 
+        "PMI_EMPTY_PROPOSAL", 
+        "PMI_NOK_DEV_ML", 
+        "PMI_EMPTY_DEV_ML", 
+        "PMI_NOK_USER_ML", 
+        "PMI_EMPTY_USER_ML", 
+        "PMI_NOK_SCM", 
+        "PMI_EMPTY_SCM", 
+        "PMI_NOK_UPDATE", 
+        "PMI_EMPTY_UPDATE", 
+        "PMI_NOK_CI", 
+        "PMI_EMPTY_CI", 
+        "PMI_EMPTY_REL", 
     ],
     "provides_viz" => {
         "pmi_checks" => "Eclipse PMI Checks",
@@ -157,6 +185,8 @@ sub _compute_data($) {
     my %metrics;
     my @recs;
     my @log;
+    my $check_ok;
+    my $check_nok;
 
     push( @log, "[Plugins::EclipsePmi] Starting compute data for [$project_id]." );
 
@@ -179,21 +209,39 @@ sub _compute_data($) {
     if (scalar @{$raw_project->{"bugzilla"}} > 0) {
 
         $info{"pmi_bugzilla_product"} = $raw_project->{"bugzilla"}->[0]->{"product"};
-        if ($info{"pmi_bugzilla_product"} =~ m!\S+!) { $pub_its_info++ };
+        if ($info{"pmi_bugzilla_product"} =~ m!\S+!) { 
+	    $pub_its_info++;
+	} else {
+	    push( @recs, { 'rid' => 'PMI_EMPTY_BUGZILLA_PRODUCT', 'severity' => 2, 'desc' => 'The Bugzilla product entry is empty in the PMI. People willing to enter a bug for the first time will look for it.' } );
+	}
 
         $info{"pmi_bugzilla_component"} = $raw_project->{"bugzilla"}->[0]->{"component"};
 	
         $info{"pmi_bugzilla_create_url"} = $raw_project->{"bugzilla"}->[0]->{"create_url"};
-        if ($info{"pmi_bugzilla_create_url"} =~ m!\S+!) { $pub_its_info++ };
+        if ($info{"pmi_bugzilla_create_url"} =~ m!\S+!) { 
+	    $pub_its_info++;
+	} else {
+	    push( @recs, { 'rid' => 'PMI_EMPTY_BUGZILLA_CREATE', 'severity' => 2, 'desc' => 'The Bugzilla URL entry to create a bug is empty in the PMI. People willing to enter a bug for the first time will look for it.' } );
+	}
+	
         if ($ua->head($info{"pmi_bugzilla_create_url"})) {
             $pub_its_info++; 
-        }
+        } else {
+	    push( @recs, { 'rid' => 'PMI_NOK_BUGZILLA_CREATE', 'severity' => 2, 'desc' => 'The Bugzilla URL [' . $info{"pmi_bugzilla_create_url"} . '] entry to create bug in the PMI cannot be accessed.' } );
+	}
 
         $info{"pmi_bugzilla_query_url"} = $raw_project->{"bugzilla"}->[0]->{"query_url"};
-        if ($info{"pmi_bugzilla_query_url"} =~ m!\S+!) { $pub_its_info++; }
+        if ($info{"pmi_bugzilla_query_url"} =~ m!\S+!) { 
+	    $pub_its_info++;
+	} else {
+	    push( @recs, { 'rid' => 'PMI_EMPTY_BUGZILLA_QUERY', 'severity' => 2, 'desc' => 'The Bugzilla URL entry to query bugs is empty in the PMI. People willing to search for a bug for the first time will look for it.' } );
+	}
+	
         if ($ua->head($info{"pmi_bugzilla_query_url"})) {
             $pub_its_info++;
-        }
+        } else {
+	    push( @recs, { 'rid' => 'PMI_NOK_BUGZILLA_QUERY', 'severity' => 2, 'desc' => 'The Bugzilla URL [' . $info{"pmi_bugzilla_query_url"} . '] to query bugs in the PMI cannot be accessed.' } );
+	}
     }	
     $metrics{"PMI_ITS_INFO"} = $pub_its_info;
 
@@ -224,6 +272,9 @@ sub _compute_data($) {
     push( @{$check->{'results'}}, ($proj_name !~ m!^\s*$!) ? 'OK' : 'Failed: no title defined.' ); 
     $check->{'desc'} = 'Checks if a name is defined for the project: !~ m!^\s*$!';
     $ret_check->{'checks'}->{'title'} = $check;
+    if ($results !~ /^OK/) {
+	push( @recs, { 'rid' => 'PMI_EMPTY_TITLE', 'severity' => 2, 'desc' => 'The title entry is empty in the PMI.' } );
+    }
     
     # Test Web site
     $check = {};
@@ -236,11 +287,11 @@ sub _compute_data($) {
         my $results = &_check_url($info{"pmi_main_url"}, 'Website');
         push( @{$check->{'results'}}, $results );
 	if ($results !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Check the web site URL in PMI.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_WEB', 'severity' => 3, 'desc' => 'The web site URL [$url] cannot be retrieved in the PMI. The URL should be checked.' } );
 	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for website_url.");
-	push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Fill in the web site URL in PMI.' } );
+	push( @recs, { 'rid' => 'PMI_EMPTY_WEB', 'severity' => 3, 'desc' => 'The web site URL is missing in the PMI.' } );
     }
     $ret_check->{'checks'}->{'website_url'} = $check;
     
@@ -254,11 +305,11 @@ sub _compute_data($) {
         my $results = &_check_url($url, 'Wiki');
         push( @{$check->{'results'}}, $results );
 	if ($results !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Check the wiki URL in PMI.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_WIKI', 'severity' => 3, 'desc' => 'The wiki URL [$url] in the PMI cannot be retrieved. It helps people understand and use the product and should be fixed.' } );
 	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for wiki_url.");
-	push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Fill in the wiki URL in PMI.' } );
+	push( @recs, { 'rid' => 'PMI_EMPTY_WIKI', 'severity' => 3, 'desc' => 'The wiki URL is missing in the PMI. It helps people understand and use the product and should be filled.' } );
     }
     $ret_check->{'checks'}->{'wiki_url'} = $check;
     
@@ -297,8 +348,12 @@ sub _compute_data($) {
         $url = $raw_project->{'download_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Download') );
+	if ($results !~ /^OK/) {
+	    push( @recs, { 'rid' => 'PMI_NOK_DOWNLOAD', 'severity' => 3, 'desc' => 'The download URL [$url] cannot be retrieved in the PMI. People need it to download, use, and contribute to the project and should be correctly filled.' } );
+}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for download_url.");
+	push( @recs, { 'rid' => 'PMI_EMPTY_DOWNLOAD', 'severity' => 3, 'desc' => 'The download URL is empty in the PMI. People need it to download, use, and contribute to the project and should be correctly filled.' } );
     }
     $ret_check->{'checks'}->{'download_url'} = $check;
     
@@ -311,8 +366,12 @@ sub _compute_data($) {
         $url = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Documentation') );
+	if ($results !~ /^OK/) {
+	    push( @recs, { 'rid' => 'PMI_NOK_GETTING_STARTED', 'severity' => 1, 'desc' => 'The getting started URL [$url] cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled.' } );
+	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for gettingstarted_url.");
+	push( @recs, { 'rid' => 'PMI_EMPTY_GETTING_STARTED', 'severity' => 1, 'desc' => 'The getting started URL is empty in the PMI. It helps people use, and contribute to, the project and should be correctly filled.' } );
     }
     $ret_check->{'checks'}->{'gettingstarted_url'} = $check;
     
@@ -325,8 +384,12 @@ sub _compute_data($) {
         $url = $raw_project->{'documentation_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Documentation') );
+	if ($results !~ /^OK/) {
+	    push( @recs, { 'rid' => 'PMI_NOK_DOC', 'severity' => 1, 'desc' => 'The documentation URL [$url] cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled.' } );
+	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for documentation_url.");
+	push( @recs, { 'rid' => 'PMI_EMPTY_DOC', 'severity' => 1, 'desc' => 'The documentation URL is empty in the PMI. It helps people use, and contribute to, the project and should be correctly filled.' } );
     }
     $ret_check->{'checks'}->{'documentation_url'} = $check;
     
@@ -339,8 +402,12 @@ sub _compute_data($) {
         $url = $raw_project->{'plan_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Plan') );
+	if ($results !~ /^OK/) {
+	    push( @recs, { 'rid' => 'PMI_NOK_PLAN', 'severity' => 1, 'desc' => 'The plan document URL [$url] cannot be retrieved in the PMI. It helps people understand the roadmap of the project and should be correctly filled.' } );
+	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for plan.");
+	push( @recs, { 'rid' => 'PMI_EMPTY_PLAN', 'severity' => 1, 'desc' => 'The plan document URL is empty in the PMI. It helps people understand the roadmap of the project and should be filled.' } );
     }
     $ret_check->{'checks'}->{'plan_url'} = $check;
     
@@ -352,8 +419,12 @@ sub _compute_data($) {
         $url = $raw_project->{'proposal_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Proposal') );
+	if ($results !~ /^OK/) {
+	    push( @recs, { 'rid' => 'PMI_NOK_PROPOSAL', 'severity' => 1, 'desc' => 'The proposal document URL [$url] cannot be retrieved in the PMI. It helps people understand the genesis of the project and should be correctly filled.' } );
+	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for proposal.");
+	push( @recs, { 'rid' => 'PMI_EMPTY_PROPOSAL', 'severity' => 1, 'desc' => 'The proposal document URL is empty in the PMI. It helps people understand the genesis of the project and should be filled.' } );
     }
     $ret_check->{'checks'}->{'proposal_url'} = $check;
     
@@ -368,18 +439,18 @@ sub _compute_data($) {
         my $results = &_check_url($url, 'Dev ML');
         push( @{$check->{'results'}}, $results );
 	if ($results !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Check the Developer mailing list URL in PMI.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_DEV_ML', 'severity' => 3, 'desc' => 'The developer mailing list URL [$url] in the PMI cannot be retrieved. It helps people know where to ask questions if they want to contribute.' } );
 	}
     } else {
         push( @{$check->{'results'}}, 'Failed: no dev mailing list defined.' );
-	push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => 'Fill in the Developer mailing list URL in PMI.' } );
+	push( @recs, { 'rid' => 'PMI_EMPTY_DEV_ML', 'severity' => 3, 'desc' => 'The developer mailing list URL is empty in the PMI. It helps people know where to ask questions if they want to contribute.' } );
     }
     $ret_check->{'checks'}->{'dev_list'} = $check;
     
     # Test mailing_lists
     $check = {};
     $check->{'results'} = [];
-    $check->{'desc'} = 'Checks if the Dev ML URL can be fetched using a simple get query.';
+    $check->{'desc'} = 'Checks if the Mailing lists URL can be fetched using a simple get query.';
     my @mls = @{$raw_project->{'mailing_lists'}};
     if (scalar @mls > 0) {
         foreach my $ml (@mls) {
@@ -416,9 +487,13 @@ sub _compute_data($) {
                 push( @{$check->{'results'}}, "Failed: no name defined on forum.")
             }
             push( @{$check->{'results'}}, &_check_url($url, "Forum [$name]") );
+	    if ($results !~ /^OK/) {
+		push( @recs, { 'rid' => 'PMI_NOK_USER_ML', 'severity' => 3, 'desc' => 'The user mailing list / forum URL [$url] in the PMI cannot be retrieved. It helps people know where to ask questions if they want to use the product and should be fixed.' } );
+	    }
         }
     } else {
         push( @{$check->{'results'}}, 'Failed: no forums defined.' );
+	push( @recs, { 'rid' => 'PMI_EMPTY_USER_ML', 'severity' => 3, 'desc' => 'The user mailing list URL is empty in the PMI. It helps people know where to ask questions if they want to use the product and should be filled.' } );
     }
     $ret_check->{'checks'}->{'forums'} = $check;
     
@@ -441,9 +516,13 @@ sub _compute_data($) {
                 push( @{$check->{'results'}}, "Failed. Source repo [$name] bad type [$type] or path [$path].");
             }
             push( @{$check->{'results'}}, &_check_url($url, "Source repo [$name]") );
+	    if ($results !~ /^OK/) {
+		push( @recs, { 'rid' => 'PMI_NOK_SCM', 'severity' => 3, 'desc' => 'The source repository URL [$url] in the PMI cannot be retrieved. People need it if they want to contribute to the product, and it should be fixed.' } );
+	    }
         }
     } else {
         push( @{$check->{'results'}}, 'Failed. No source repo defined.' );
+	push( @recs, { 'rid' => 'PMI_EMPTY_SCM', 'severity' => 3, 'desc' => 'The source repository URL is empty in the PMI. People need it if they want to contribute to the product, and it should be filled.' } );	
     }
     $ret_check->{'checks'}->{'source_repo'} = $check;
     
@@ -464,9 +543,13 @@ sub _compute_data($) {
                 push( @{$check->{'results'}}, "Failed. Update site has no title.");
             }
             push( @{$check->{'results'}}, &_check_url($url, "Update site [$title]") );
+	    if ($results !~ /^OK/) {
+		push( @recs, { 'rid' => 'PMI_NOK_UPDATE', 'severity' => 3, 'desc' => 'The update site URL [$url] in the PMI cannot be retrieved. People need it if they want to use the product, and it should be fixed.' } );
+	    }
         }
     } else {
         push( @{$check->{'results'}}, 'Failed. No update site defined.' );
+	push( @recs, { 'rid' => 'PMI_EMPTY_UPDATE', 'severity' => 3, 'desc' => 'The update site URL is empty in the PMI. People need it if they want to use the product, and it should be filled.' } );	
     }
     $ret_check->{'checks'}->{'update_sites'} = $check;
     
@@ -490,13 +573,14 @@ sub _compute_data($) {
                 push( @{$check->{'results'}}, "OK. CI URL is a Hudson instance. Title is [$name]");
             } else { 
                 push( @{$check->{'results'}}, 'Failed: CI URL is not the root of a Hudson instance.'); 
-		push( @recs, { 'rid' => 'PMI_NOK', 'severity' => 3, 'desc' => "Check the Hudson CI engine URL in PMI. [$url] is not detected as the root of a Hudson instance." } );
+		push( @recs, { 'rid' => 'PMI_NOK_CI', 'severity' => 3, 'desc' => "The Hudson CI engine URL [$url] in the PMI is not detected as the root of a Hudson instance." } );
             }
         } else {
             push( @{$check->{'results'}}, "Failed: could not decode Hudson JSON."); 
         }
     } else { 
         push( @{$check->{'results'}}, "Failed: could not get CI URL [$proj_ci]."); 
+	push( @recs, { 'rid' => 'PMI_EMPTY_CI', 'severity' => 3, 'desc' => 'The Hudson CI engine URL [$url] in the PMI is empty.' } );	
     }
     $ret_check->{'checks'}->{'build_url'} = $check;
     
@@ -524,9 +608,11 @@ sub _compute_data($) {
             }
         } else {
             push( @{$check->{'results'}}, 'Failed. No release defined.' );
+	    push( @recs, { 'rid' => 'PMI_EMPTY_REL', 'severity' => 2, 'desc' => 'There is no release defined in the PMI. Adding releases helps people evaluate the evolution and organisation of the project.' } );	
         }
     } else {
         push( @{$check->{'results'}}, 'Failed. No release defined.' );
+	    push( @recs, { 'rid' => 'PMI_EMPTY_REL', 'severity' => 2, 'desc' => 'There is no release defined in the PMI. Adding releases helps people evaluate the evolution and organisation of the project.' } );
     }
     $ret_check->{'checks'}->{'releases'} = $check;
 
@@ -553,6 +639,9 @@ sub _compute_data($) {
     # Write pmi json file to disk.
     push( @log, "[Plugins::EclipsePmi] Writing updated PMI json file to output dir." );
     $repofs->write_output( $project_id, "pmi.json", encode_json($raw_project) );
+
+    $metrics{'PMI_OK'} = $checks_ok;
+    $metrics{'PMI_NOK'} = $checks_nok;
 
     return {
 	"info" => \%info,
