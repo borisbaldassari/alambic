@@ -228,7 +228,7 @@ sub _display_project_html($$) {
         
         $self->render(template => 'alambic/dashboard/log');
         
-    } elsif ( grep( /$page_id/, keys $self->app->al->get_plugins()->get_names_all() ) ) {
+    } elsif ( grep( /$page_id/, keys %{$self->app->al->get_plugins()->get_names_all()} ) ) {
         
         $self->stash(
             project_id => $project_id,

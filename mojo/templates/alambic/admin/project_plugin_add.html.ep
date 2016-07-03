@@ -16,7 +16,7 @@
 		<br />
 
 		<form action="/admin/projects/<%= $project %>/setp/<%= $conf->{'id'} %>" method="POST">
-% foreach my $arg (keys %{$conf->{'params'}}) {
+% foreach my $arg (sort keys %{$conf->{'params'}}) {
 %   if ($arg eq 'project_id') { $conf->{'params'}->{$arg} = $project; }
 %   if (defined($conf_project)) { $conf->{'params'}->{$arg} = $conf_project->{$arg}; }
                   <p><b><%= $arg %></b> (<span style="color: red">*</span>)</p>

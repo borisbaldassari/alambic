@@ -101,7 +101,7 @@ sub knit_rmarkdown_inc($$$$) {
 	local $CWD = $r_dir;
 	# Create dir for figures.
 	if (! -d "figures/" ) {
-	    print "Creating directory [figures/].\n";
+#	    print "Creating directory [figures/].\n";
 	    mkdir "figures/";
 	}
 	
@@ -114,7 +114,7 @@ sub knit_rmarkdown_inc($$$$) {
 	$r_cmd .= "rmarkdown::render('${r_md}', output_format='html_fragment', output_file='$r_md_out')\"";
 	
 	push( @log, "[Tools::R] Exec [$r_cmd]." );
-	print "[Tools::R] Exec [$r_cmd].\n";
+#	print "[Tools::R] Exec [$r_cmd].\n";
 	my @out = `$r_cmd 2>&1`;
     }
     
@@ -171,7 +171,7 @@ sub knit_rmarkdown_pdf($$$$) {
 	local $CWD = $r_dir;
 	# Create dir for figures.
 	if (! -d "figures/" ) {
-	    print "Creating directory [figures/].\n";
+#	    print "Creating directory [figures/].\n";
 	    mkdir "figures/";
 	}
 	
@@ -183,7 +183,7 @@ sub knit_rmarkdown_pdf($$$$) {
 	}
 	$r_cmd .= "rmarkdown::render('${r_md}', output_file='$r_md_out')\"";
 	
-	print "[Tools::R] Exec [$r_cmd].";
+#	print "[Tools::R] Exec [$r_cmd].";
 	push( @log, "[Tools::R] Exec [$r_cmd]." );
 	my @out = `$r_cmd 2>&1`;
     }
