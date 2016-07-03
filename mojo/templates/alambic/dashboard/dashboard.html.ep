@@ -261,7 +261,7 @@
 		    </tr>
 % foreach my $item (sort { $b->{'severity'} <=> $a->{'severity'} } @{$run->{'recs'} || []}) {
 		      <tr>
-			<td><a href="/documentation/recs.html#<%= $item->{'rid'} %>"><%= $item->{'rid'} %></a></td>
+			<td><%= $item->{'rid'} %></td>
 			<td><%= $recs_txt{ $item->{'severity'} } %></td>
 			<td><%= $item->{'desc'} %></td>
 		      </tr>
