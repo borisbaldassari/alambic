@@ -63,11 +63,11 @@
 		    <p>The complete retrieval and analysis process is fully documented on this very web site. More detailed information on Alambic itself and the plugins can be found on the <a href="http://www.bitbucket.org/BorisBaldassari/alambic">project&apos;s wiki</a>.</p>
 		  </div>
                   <div class="list-group">
-                    <a href="documentation/plugins.html" class="list-group-item">Plugins (data sources, visualisation)</a>
-                    <a href="documentation/quality_model.html" class="list-group-item">The full quality model</a>
-                    <a href="documentation/attributes.html" class="list-group-item">Quality attributes definition</a>
-                    <a href="documentation/questions.html" class="list-group-item">Questions definition</a>
-                    <a href="documentation/metrics.html" class="list-group-item">Metrics definition</a>
+                    <a href="documentation/data.html" class="list-group-item">Data resources</a>
+                    <a href="documentation/plugins.html" class="list-group-item">Plugins</a>
+                    <a href="documentation/metrics.html" class="list-group-item">Metrics</a>
+                    <a href="documentation/attributes.html" class="list-group-item">Attributes</a>
+                    <a href="documentation/quality_model.html" class="list-group-item">Full quality model</a>
                     <a href="documentation/references.html" class="list-group-item">References</a>
                   </div>
                 </div>
