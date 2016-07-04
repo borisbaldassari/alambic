@@ -11,6 +11,7 @@ use Date::Parse;
 use Mojolicious::Controller;
 use Mojolicious::Renderer;
 use Data::Dumper;
+use Try::Tiny;
 
 # Main configuration hash for the plugin
 my %conf = (
@@ -125,7 +126,13 @@ sub run_plugin($$) {
 
     my $repofs = Alambic::Model::RepoFS->new();
 
-    $ret{'log'} = &_retrieve_data( $project_id, $project_pmi, $repofs );
+    my $ret_tmp = &_retrieve_data( $project_id, $project_pmi, $repofs );
+    print "# In EclipsePmi " . Dumper($ret_tmp);
+    if (not defined($ret_tmp)) {
+	return { 'log' => ['Could not fetch anything useful from PMI.'] };
+    } else {
+	$ret{'log'} = $ret_tmp;
+    }
     
     my $tmp_ret = &_compute_data( $project_id, $project_pmi, $repofs );
 
@@ -160,20 +167,30 @@ sub _retrieve_data($$$) {
     }
 
     # Check if we actually get some results.
-    my $pmi = decode_json($content);
-    my $custom_pmi;
-    if ( defined($pmi->{'projects'}{$project_pmi}) ) {
-        $custom_pmi = $pmi->{'projects'}{$project_pmi};
-    } else {
-        push( @log, "ERROR: Could not get [$url]!" );
-        return \@log unless defined $content;
-    }
-    $custom_pmi->{'pmi_url'} = $url;
-    
-    push( @log, "[Plugins::EclipsePmi] Writing PMI json file to input." );
-    $repofs->write_input( $project_id, "import_pmi.json", encode_json($custom_pmi) );
+    my $pmi;
+    try {
 
-    return \@log;
+	$pmi = decode_json($content);
+
+	my $custom_pmi;
+	if ( defined($pmi->{'projects'}{$project_pmi}) ) {
+	    $custom_pmi = $pmi->{'projects'}{$project_pmi};
+	} else {
+	    push( @log, "ERROR: Could not get [$url]!" );
+	    return \@log unless defined $content;
+	}
+	$custom_pmi->{'pmi_url'} = $url;
+	
+	push( @log, "[Plugins::EclipsePmi] Writing PMI json file to input." );
+	$repofs->write_input( $project_id, "import_pmi.json", encode_json($custom_pmi) );
+	
+	return \@log;
+
+    } catch {
+	push( @log, "[Plugins::EclipsePmi] Could not get anything useful from [$url]. Aborting." );	
+    };
+    
+    return undef; 
 }
 
 sub _compute_data($) {
@@ -624,9 +641,9 @@ sub _compute_data($) {
     foreach my $l (sort keys %{$ret_check->{'checks'}}) {
 	my $desc = $ret_check->{'checks'}{$l}{'desc'};
 	$desc =~ s!,!!;
-	my $value = $ret_check->{'checks'}{$l}{'value'};
+	my $value = $ret_check->{'checks'}{$l}{'value'} || '';
 	$value =~ s!,!!;
-	my $result = join( "\\\\", @{$ret_check->{'checks'}{$l}{'results'}});
+	my $result = join( "\\\\", @{$ret_check->{'checks'}{$l}{'results'}}) || '';
 	$result =~ s!,!!;
 	$ret_check_csv .= $desc . ","
 	    . $value . "," . $result . "\n";
