@@ -16,17 +16,19 @@ my %conf = (
     "name" => "Eclipse MLS",
     "desc" => [
 	'Retrieves mailing list data from the Eclipse dashboard repository. This plugin will look for a file named project-mls-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin',
+	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseMls">the project\'s wiki</a> for more information.',
     ],
     "type" => 'pre',
     "ability" => [ 'metrics', 'figs', 'viz' ],
     "params" => {
-        "project_grim" => "The ID used to identify the project on the dashboard server.",
+        "project_grim" => "The ID used to identify the project on the dashboard server. Note that it may be different from the id used in the PMI.",
     },
     "provides_cdata" => [
     ],
     "provides_info" => [
     ],
     "provides_data" => {
+	"import_mls.json" => "The original file of current metrics from the Eclipse dashboard server (JSON).",
 	"metrics_mls.json" => "Current metrics for the MLS plugin (JSON).",
 	"metrics_mls.csv" => "Current metrics for the MLS plugin (CSV).",
 	"metrics_mls_evol.json" => "Evolution metrics for the MLS plugin (JSON).",
@@ -124,8 +126,6 @@ sub _retrieve_data($$$) {
 
     push( @log, "[Plugins::EclipseMls] Starting retrieval of data for [$project_id] url [$url]." );
 
-    push( @log, "[Plugins::EclipseMls] Retrieving static [$url] to input.\n" );
-
     # Fetch json file from the dashboard.eclipse.org
     my $ua = Mojo::UserAgent->new;
     my $content = $ua->get($url)->res->body;
@@ -148,7 +148,7 @@ sub _retrieve_data($$$) {
 	push( @log, "[Plugins::EclipseMls] Cannot find [$url].\n" ) ;
     } else {
 	$repofs->write_input( $project_id, "import_mls_evol.json", $content );
-	$repofs->write_output( $project_id, "import_mls_evol.json", $content );
+	$repofs->write_output( $project_id, "metrics_mls_evol.json", $content );
     }
 
     return \@log;
@@ -176,16 +176,6 @@ sub _compute_data($$$) {
             $metrics_new->{ $conf{'provides_metrics'}{uc($metric)} } = $metrics_old->{$metric};
         }
     }
-
-    # TODO Execute checks and fill recs.
-    if ($metrics_new->{'MLS_SENT'} < 10) {
-	push( @recs, { 'rid' => 'MLS_SENT', 
-		       'severity' => 1, 
-		       'desc' => 'There are only ' . $metrics_new->{'MLS_SENT'} 
-		       . ' mails sent in the archive. You should watch the mailing list and create some activity so users can get more information, see that the project is active, in order to attract new participants.' 
-	      } 
-	    );
-    }
     
     # Write mls metrics json file to disk.
     $repofs->write_output( $project_id, "metrics_mls.json", encode_json($metrics_new) );
@@ -196,6 +186,7 @@ sub _compute_data($$$) {
     $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
     
     $repofs->write_plugin( 'EclipseMls', $project_id . "_mls.csv", $csv_out );
+    $repofs->write_output( $project_id, "metrics_mls.csv", $csv_out );
 
     # Read evol metrics file
     $json = $repofs->read_input( $project_id, "import_mls_evol.json" );
@@ -216,7 +207,7 @@ sub _compute_data($$$) {
 	$csv_out .= $metrics_evol->{'unixtime'}->[$id] . "\n";
     }
     $repofs->write_plugin( 'EclipseMls', $project_id . "_mls_evol.csv", $csv_out );
-    $repofs->write_output( $project_id, "mls_evol.csv", $csv_out );
+    $repofs->write_output( $project_id, "metrics_mls_evol.csv", $csv_out );
     
     # Now execute the main R script.
     push( @log, "[Plugins::EclipseMls] Executing R main file." );
@@ -228,6 +219,16 @@ sub _compute_data($$$) {
     foreach my $fig (sort @figs) {
 	push( @log, "[Plugins::EclipseMls] Executing R fig file [$fig]." );
 	@log = ( @log, @{$r->knit_rmarkdown_html( 'EclipseMls', $project_id, $fig )} );
+    }
+
+    # TODO Execute checks and fill recs.
+    if ($metrics_new->{'MLS_SENT'} < 10) {
+	push( @recs, { 'rid' => 'MLS_SENT', 
+		       'severity' => 1, 
+		       'desc' => 'There are only ' . $metrics_new->{'MLS_SENT'} 
+		       . ' mails sent in the archive. You should watch the mailing list and create some activity so users can get more information, see that the project is active, in order to attract new participants.' 
+	      } 
+	    );
     }
     
     return {
