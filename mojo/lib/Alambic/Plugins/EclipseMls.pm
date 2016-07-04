@@ -19,7 +19,7 @@ my %conf = (
 	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseMls">the project\'s wiki</a> for more information.',
     ],
     "type" => 'pre',
-    "ability" => [ 'metrics', 'figs', 'viz' ],
+    "ability" => [ 'metrics', 'data', 'recs', 'figs', 'viz' ],
     "params" => {
         "project_grim" => "The ID used to identify the project on the dashboard server. Note that it may be different from the id used in the PMI.",
     },
@@ -67,7 +67,6 @@ my %conf = (
     },
     "provides_recs" => [
         "MLS_SENT",
-        "MLS_WATCH_ML",
     ],
     "provides_viz" => {
         "eclipse_mls.html" => "Eclipse MLS",
