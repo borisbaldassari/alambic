@@ -10,7 +10,6 @@ use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
 use Data::Dumper;
 
-
 # Main configuration hash for the plugin
 my %conf = (
     "id" => "EclipseIts",
@@ -22,7 +21,7 @@ my %conf = (
     "type" => "pre",
     "ability" => [ 'metrics', 'data', 'recs', 'figs', 'viz' ],
     "params" => {
-        "project_grim" => "The project ID used to identify the project on the dashboard server. Note that it may be different from the id used in the PMI.",
+        "project_grim" => "The ID used to identify the project on the dashboard server. Note that it may be different from the id used in the PMI.",
     },
     "provides_cdata" => [
     ],

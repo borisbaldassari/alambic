@@ -80,7 +80,7 @@ The following plot uses [plotly services](http://plot.ly) to enable users to pla
 
 -----
 
-### Changed bugs
+### <a name="changed"></a>Changed bugs
 
 The following plot shows the evolution of the [number of updates](/documentation/metrics#ITS_CHANGED) on issues during the overall time range covered by the analysis. Updates include opening, closing, changing state or adding information to the issue and denotes the activity of the project on the issue tracking system.
 
@@ -92,7 +92,7 @@ The following plot shows the evolution of the [number of updates](/documentation
 
 -----
 
-### People
+### <a name="people"></a>People
 
 The following plot shows the evolution of [changers](/documentation/metrics#ITS_CHANGED), [openers](/documentation/metrics#ITS_OPENERS) and [closers](/documentation/metrics#ITS_CLOSERS) of issues during the overall time range covered by the analysis. 
 
@@ -100,7 +100,7 @@ The following plot shows the evolution of [changers](/documentation/metrics#ITS_
 
 -----
 
-### Opened vs Closed
+### <a name="opened-closed"></a>Opened vs Closed
 
 The following plot shows the evolution of the number of issues [opened](/documentation/metrics#ITS_OPENED) and [closed](/documentation/metrics#ITS_CLOSED) per week. These numbers are a good indicators both of the activity of the project on the issue tracking system and the diversity of its actors.
 
