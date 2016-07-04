@@ -20,7 +20,7 @@ my %conf = (
     "type" => 'pre',
     "ability" => [ 'metrics', 'figs', 'viz' ],
     "params" => {
-        "project_grim" => "The project ID used to identify the project on the dashboard server.",
+        "project_grim" => "The ID used to identify the project on the dashboard server.",
     },
     "provides_cdata" => [
     ],

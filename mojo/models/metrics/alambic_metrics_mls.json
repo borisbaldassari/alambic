@@ -1,0 +1,47 @@
+  {
+      "name": "Alambic Metrics for Mailing Lists",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "ML threads",
+        "mnemo": "MLS_THREADS",
+        "desc": [
+            "Number of threads (i.e. an email and its replies) dated during the last month in mailing list archives.",
+	        "Threads are identified using 'In-Reply-To' message headers. Developer mailing list is the list or lists considered as 'for developers' in the project documentation. The date used is the mailing list server date, as stamped in the message. Time range is measured as three calendar months period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included).",
+            "Note that developer communications are measured through the mailing list, and user communications are measured through the forums."
+        ],
+        "scale": [2,6,22,103]
+      },
+      {
+        "name": "ML sent responses",
+        "mnemo": "MLS_SENT_RESPONSE",
+        "desc": [
+            "Number of responses (i.e. replies in a thread) dated during the last month in mailing list archives.",
+	    "Threads are identified using 'In-Reply-To' message headers. Developer mailing list is the list or lists considered as 'for developers' in the project documentation. The date used is the mailing list server date, as stamped in the message. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included).",
+            "Note that developer communications are measured through the mailing list, and user communications are measured through the forums."
+        ],
+        "scale": [2,6,22,103]
+      },
+      {
+        "name": "ML posts",
+        "mnemo": "MLS_SENT_30",
+        "desc": [
+            "Number of messages dated during the last three months, in developer mailing list archives.",
+	    "Developer mailing list is the list or lists considered as 'for developers' in the project documentation. The date used is the mailing list server date, as stamped in the message. Time range is measured as three calendar months period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included).",
+            "Note that developer communications are measured through the mailing list, and user communications are measured through the forums."
+        ],
+        "scale": [2,6,22,103]
+      },
+      {
+        "name": "ML authors",
+        "mnemo": "MLS_SENDERS_30",
+        "desc": [
+            "Number of distinct senders for messages dated during the last three months, in developer mailing list archives. ",
+	        "Developer mailing list is the list or lists considered as 'for developers' in the project documentation. The date used is the mailing list server date, as stamped in the message. Time range is measured as three calendar months period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Distinct senders are those with distinct email addresses. Email addresses used are the strings found in 'From:' fields in messages.",
+            "Note that developer communications are measured through the mailing list, and user communications are measured through the forums."
+        ],
+        "scale": [1.5,3,7.5,26]
+      }
+
+    ]
+  }

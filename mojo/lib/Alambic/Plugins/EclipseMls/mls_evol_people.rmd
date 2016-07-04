@@ -6,7 +6,7 @@ output: html_document
 library(dygraphs)
 library(xts)
 
-project.id <- 'modeling.gendoc'
+#project.id <- 'modeling.gendoc'
 #project.id <- 'tools.cdt'
 file.evol = paste("", project.id, "_mls_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
