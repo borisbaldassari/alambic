@@ -15,24 +15,23 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-project.id <- 'modeling.sirius'
-plugin.id <- 'eclipse_mls'
-file.static = paste("", project.id, "_mls.csv", sep="")
-file.evol = paste("", project.id, "_mls_evol.csv", sep="")
 
 library(knitr)
 library(xts)
 library(reshape2)
-
-knitr::opts_chunk$set(fig.path = paste( 'figures/', plugin.id, '/', project.id, '/', sep=""))
-#opts_knit$set(progress = TRUE, verbose = TRUE, self.contained=T)
-
 require(ggplot2)
 require(xtable)
 
+knitr::opts_chunk$set(fig.path = 'figures/')
+
+#project.id <- 'modeling.sirius'
+plugin.id <- 'EclipseMls'
+file.static = paste("", project.id, "_mls.csv", sep="")
+file.evol = paste("", project.id, "_mls_evol.csv", sep="")
+
 metrics <- read.csv(file=file.static, header=T)
 evol <- read.csv(file=file.evol, header=T)
-url <- paste('http://dashboard.eclipse.org/data/json/', project.id, '-mls-prj-static.json', sep='');
+
 ```
 
 ## Eclipse Mailing List System

@@ -6,8 +6,7 @@ output: html_document
 library(dygraphs)
 library(xts)
 
-#project.id <- 'modeling.gendoc'
-#project.id <- 'tools.cdt'
+#project.id <- 'modeling.sirius'
 file.evol = paste("", project.id, "_mls_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 evol <- evol[cumsum(abs(evol$sent_response + evol$senders_init + evol$senders_response 
