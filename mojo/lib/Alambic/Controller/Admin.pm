@@ -94,6 +94,13 @@ sub models {
     $self->render( template => 'alambic/admin/models' );
 }
 
+# Models display screen for Alambic admin.
+sub users {
+    my $self = shift;
+
+    $self->render( template => 'alambic/admin/users' );
+}
+
 
 # Models import for Alambic admin.
 sub models_import {

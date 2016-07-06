@@ -171,6 +171,7 @@ sub startup {
     $r_admin->post('/edit')->to( action => 'edit_post' );
     $r_admin->get('/summary')->to(action => 'summary');
     $r_admin->get('/projects')->to(action => 'projects');
+    $r_admin->get('/users')->to(action => 'users');
     
     $r_admin->get('/models')->to( action => 'models' );
     $r_admin->get('/models/import')->to( action => 'models_import' );
