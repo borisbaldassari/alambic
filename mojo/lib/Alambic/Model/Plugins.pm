@@ -27,12 +27,6 @@ our @EXPORT_OK = qw(
                      run_post
                      test
                    );  
-                     # get_list_data
-                     # get_list_metrics
-                     # get_list_figs
-                     # get_list_info
-                     # get_list_recs
-                     # get_list_viz
 
 
 my %plugins;
