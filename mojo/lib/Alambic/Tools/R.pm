@@ -94,14 +94,13 @@ sub knit_rmarkdown_inc($$$$) {
     my $r_md = $r_file;
     $r_file =~ s/(.*)\..*+/$1/;
     my $r_md_out = "${r_file}.inc";
-    push( @log, "[Tools::R] Executing [$r_md] output to [$r_md_out]." );
 
     # Change the current working directory localy only.
     {
 	local $CWD = $r_dir;
 	# Create dir for figures.
 	if (! -d "figures/" ) {
-#	    print "Creating directory [figures/].\n";
+	    push( @log, "[Tools::R] Creating directory [figures/]." );
 	    mkdir "figures/";
 	}
 	
@@ -113,7 +112,7 @@ sub knit_rmarkdown_inc($$$$) {
 	}
 	$r_cmd .= "rmarkdown::render('${r_md}', output_format='html_fragment', output_file='$r_md_out')\"";
 	
-	push( @log, "[Tools::R] Exec [$r_cmd]." );
+	push( @log, "[Tools::R] Exec [$r_cmd] to [$r_md_out]." );
 #	print "[Tools::R] Exec [$r_cmd].\n";
 	my @out = `$r_cmd 2>&1`;
     }
@@ -136,7 +135,7 @@ sub knit_rmarkdown_inc($$$$) {
     my @files = glob qq(${files});
     foreach my $file (@files) {
 	my $ret = move($file, $dir_out_fig);
-	push( @log, "[Tools::R] Moved file from ${file} to $dir_out_fig. ret $ret." );
+#	push( @log, "[Tools::R] Moved file from ${file} to $dir_out_fig. ret $ret." );
     }
 
     return \@log;
@@ -207,7 +206,7 @@ sub knit_rmarkdown_pdf($$$$) {
     my @files = glob qq(${files});
     foreach my $file (@files) {
 	my $ret = move($file, $dir_out_fig);
-	push( @log, "[Tools::R] Moved file from ${file} to $dir_out_fig. ret $ret." );
+#	push( @log, "[Tools::R] Moved file from ${file} to $dir_out_fig. ret $ret." );
     }
 
     return \@log;
@@ -235,7 +234,6 @@ sub knit_rmarkdown_html($$$$) {
     my $r_md = $r_file;
     $r_file =~ s/(.*)\..*+/$1/;
     my $r_md_out = "${r_file}.html";
-    push( @log, "[Tools::R] Executing [$r_md] output to [$r_md_out]." );
 
     # Change the current working directory localy only.
     {
@@ -254,7 +252,7 @@ sub knit_rmarkdown_html($$$$) {
 	}
 	$r_cmd .= "rmarkdown::render('${r_md}', output_format='html_document', output_file='$r_md_out')\"";
 	
-	push( @log, "[Tools::R] Exec [$r_cmd]." );
+	push( @log, "[Tools::R] Exec [$r_cmd] output to [$r_md_out]." );
 	my @out = `$r_cmd 2>&1`;
     }
     
@@ -276,7 +274,7 @@ sub knit_rmarkdown_html($$$$) {
     my @files = glob qq(${files});
     foreach my $file (@files) {
 	my $ret = move($file, $dir_out_fig);
-	push( @log, "[Tools::R] Moved file from ${file} to $dir_out_fig. ret $ret." );
+#	push( @log, "[Tools::R] Moved file from ${file} to $dir_out_fig. ret $ret." );
     }
 
     return \@log;
@@ -304,7 +302,6 @@ sub knit_rmarkdown_svg($$$$) {
     my $r_md = $r_file;
     $r_file =~ s/(.*)\..*+/$1/;
     my $r_md_out = "${r_file}.svg";
-    push( @log, "[Tools::R] Executing [$r_md] output to [$r_md_out]." );
 
     # Change the current working directory localy only.
     {
@@ -317,7 +314,7 @@ sub knit_rmarkdown_svg($$$$) {
 	    $r_cmd .= " " . $params->{$key};
 	}
 	
-	push( @log, "[Tools::R] Exec [$r_cmd]." );
+	push( @log, "[Tools::R] Exec [$r_cmd] output to [$r_md_out]." );
 	my @out = `$r_cmd 2>&1`;
     }
     

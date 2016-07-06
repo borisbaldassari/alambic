@@ -307,11 +307,11 @@ sub _compute_data($$$) {
     $repofs->write_output( $project_id, "pmd_analysis_main.csv", $csv_main_out );
 
     # Now execute the main R script.
-    push( @log, "[Plugins::EclipseScm] Executing R main file for PMD Analysis." );
+    push( @log, "[Plugins::PmdAnalysis] Executing R main file for PMD Analysis." );
     my $r = Alambic::Tools::R->new();
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'PmdAnalysis', $project_id, "pmd_analysis.Rmd" )} );
 
-    push( @log, "[Plugins::EclipseScm] Executing R main file for PMD Configuration." );
+    push( @log, "[Plugins::PmdAnalysis] Executing R main file for PMD Configuration." );
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'PmdAnalysis', $project_id, "pmd_configuration.Rmd" )} );
 
     # Read the recommendations from scv file.
