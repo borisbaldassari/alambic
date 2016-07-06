@@ -11,7 +11,6 @@ use Date::Parse;
 use Mojolicious::Controller;
 use Mojolicious::Renderer;
 use Data::Dumper;
-use Try::Tiny;
 
 # Main configuration hash for the plugin
 my %conf = (
@@ -165,32 +164,30 @@ sub _retrieve_data($$$) {
         push( @log, "[Plugins::EclipsePmi] Using Eclipse PMI infra at [$url]." );
         $content = $ua->get($url)->res->body;
     }
+    print "### Content PMI " . Dumper($content) . ".\n";
 
     # Check if we actually get some results.
-    my $pmi;
-    try {
-
+    my $pmi; 
+    my $is_ok = 0;
+    print "[Plugins::EclipsePmi] Before TRY!";
+    eval {
 	$pmi = decode_json($content);
-
-	my $custom_pmi;
-	if ( defined($pmi->{'projects'}{$project_pmi}) ) {
-	    $custom_pmi = $pmi->{'projects'}{$project_pmi};
-	} else {
-	    push( @log, "ERROR: Could not get [$url]!" );
-	    return \@log unless defined $content;
-	}
-	$custom_pmi->{'pmi_url'} = $url;
-	
-	push( @log, "[Plugins::EclipsePmi] Writing PMI json file to input." );
-	$repofs->write_input( $project_id, "import_pmi.json", encode_json($custom_pmi) );
-	
-	return \@log;
-
-    } catch {
-	push( @log, "[Plugins::EclipsePmi] Could not get anything useful from [$url]. Aborting." );	
+	$is_ok = 1;
     };
+    return undef unless $is_ok;
     
-    return undef; 
+    my $custom_pmi;
+    if ( defined($pmi->{'projects'}{$project_pmi}) ) {
+	$custom_pmi = $pmi->{'projects'}{$project_pmi};
+    } else {
+	return undef unless defined $content;
+    }
+    $custom_pmi->{'pmi_url'} = $url;
+    
+    push( @log, "[Plugins::EclipsePmi] Writing PMI json file to input." );
+    $repofs->write_input( $project_id, "import_pmi.json", encode_json($custom_pmi) );
+    
+    return \@log;
 }
 
 sub _compute_data($) {
@@ -654,9 +651,6 @@ sub _compute_data($) {
     # Write pmi json file to disk.
     push( @log, "[Plugins::EclipsePmi] Writing updated PMI json file to output dir." );
     $repofs->write_output( $project_id, "pmi.json", encode_json($raw_project) );
-
-    $metrics{'PMI_OK'} = $checks_ok;
-    $metrics{'PMI_NOK'} = $checks_nok;
 
     return {
 	"info" => \%info,
