@@ -78,7 +78,7 @@
 	    </ul>
             <p>Two other types of plugins independent of project analysis are further defined:</p>
 	    <ul>
-	      <li><b>Custom data plugins</b> provide information entered by users, like comments or surveys. As such the data they provide is not synchronised with project runs, altough they still provide the same type of output (metrics, downlaods, figures, etc.).</li>
+	      <li><b>Custom data plugins</b> provide information entered by users, like comments or surveys. As such the data they provide is not synchronised with project runs, altough they still provide the same type of output (metrics, downloads, figures, etc.).</li>
 	      <li><b>Wizards</b> provide an easy way to setup a project with a predefined set of plugins. Wizards can execute code to initialise the plugins with the correct parameters and check consistency of entries.</li>
 	    </ul>
 	    <hr />
