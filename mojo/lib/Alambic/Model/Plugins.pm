@@ -173,7 +173,7 @@ sub run_plugin($$$) {
     foreach my $rec (@{$ret->{'recs'}}) {
 	$rec->{'src'} = $plugin_id;
     }
-    
+
     return $ret;
 }
 
