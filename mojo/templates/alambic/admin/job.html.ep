@@ -1,6 +1,6 @@
 % use Data::Dumper;
 
-            <h1 class="al-h1"><small>Administration</small> Alambic Repository</h1>
+            <h1 class="al-h1"><small>Administration</small> Jobs</h1>
             <br />
 
 % my $msg = flash( 'msg' );
