@@ -9,6 +9,7 @@ use Alambic::Model::RepoFS;
 use Alambic::Model::Plugins;
 use Alambic::Model::Wizards;
 use Alambic::Model::Models;
+use Alambic::Model::Users;
 
 use Mojo::JSON qw (decode_json encode_json);
 use Data::Dumper;
@@ -26,6 +27,7 @@ our @EXPORT_OK = qw(
                      instance_pg_minion
                      is_db_ok
                      is_db_m_ok
+                     users
                      get_plugins
                      get_models
                      get_repo_db
@@ -168,6 +170,24 @@ sub get_repo_db() {
 # Return the RepoDB.pm object for this instance.
 sub get_wizards() {
     return $wizards;
+}
+
+sub users() {
+    #    return $repodb->get_users();
+    my $users = {
+	'boris.baldassari' => {
+	    'name' => 'Boris Baldassari',
+	    'email' => 'boris.baldassari@gmail.com',
+	    'passwd' => 'boris098',
+	    'roles' => [ 'admin' ],
+	    'projects' => [ 'modeling.sirius' ],
+	    'notifs' => {
+		'modeling.sirius' => [ 'run_complete' ],
+	    },
+	},
+    };
+    
+    return Alambic::Model::Users->new($users);
 }
 
 

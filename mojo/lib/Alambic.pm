@@ -5,6 +5,8 @@ use Alambic::Model::Alambic;
 
 use Minion;
 use Data::Dumper;
+#use Mojolicious::Plugin::Authentication;
+
 
 has al => sub {
     my $self = shift;
@@ -33,6 +35,21 @@ sub startup {
     };
     
     $self->plugin( 'mail' => $conf_mail );
+
+    # $self->plugin(
+    # 	'authentication' => {
+    # 	    'autoload_user' => 1,
+    # 	    'session_key' => 'wickedapp',
+    # 	    'load_user' => sub { 
+    # 		my ($app, $uid) = @_;
+    # 		return 'Boris' if ( $_ =~ /boris.baldassari/ ); 
+    # 	    },
+    # 	    'validate_user' => sub { 
+    # 		my ($app, $username, $password, $extradata) = @_;
+    # 		return boris.baldassari;
+    # 	    },
+    # 	    'current_user_fn' => 'user', # compatibility with old code
+    # 	});
     
     # Set layout for pages.
     $self->defaults(layout => 'default');
@@ -115,6 +132,9 @@ sub startup {
     $r->get('/about.html')->to( template => 'alambic/about');
     $r->get('/contact.html')->to( template => 'alambic/contact');
     $r->post('/contact')->to( 'alambic#contact_post' );
+    $r->get('/login')->to( 'alambic#login' );
+    $r->post('/login')->to( 'alambic#login_post' );
+    $r->get('/logout')->to( 'alambic#logout' );
 
     # Documentation
     $r->get('/documentation/#id')->to( 'documentation#welcome' );
@@ -128,14 +148,34 @@ sub startup {
 
     # JSON data for models 
     $r->get('/models/#page')->to( 'admin#data_models' );
-    
+
+    ### Protected routes
+    $self->routes->add_condition(
+    	role => sub {
+    	    my ( $r, $c, $captures, $role ) = @_;
+
+    	    # Keep the weirdos out!
+    	    return undef
+    		if ( !exists( $c->session->{'session_user'} )
+    		     || not grep { $_ eq ${role} } @{$self->al->users->get_user($c->session->{'session_user'})->{'roles'}} );
+
+    	    # It's ok, we know him
+    	    return 1;
+    	}
+    	);
+
     # Admin
-    my $r_admin = $r->any('/admin')->to(controller => 'admin');   
+    my $r_admin = $r->any('/admin')->over( role => 'admin' )->to( controller => 'admin' );   
     
     $r_admin->get('/edit')->to( action => 'edit' );
     $r_admin->post('/edit')->to( action => 'edit_post' );
     $r_admin->get('/summary')->to(action => 'summary');
     $r_admin->get('/projects')->to(action => 'projects');
+    
+    $r_admin->get('/models')->to( action => 'models' );
+    $r_admin->get('/models/import')->to( action => 'models_import' );
+    $r_admin->get('/models/init')->to( action => 'models_init' );
+    
     my $r_admin_projects = $r_admin->any('/projects')->to(controller => 'admin');
     $r_admin_projects->get('/new')->to(action => 'projects_new');
     $r_admin_projects->post('/new')->to(action => 'projects_new_post');
@@ -145,7 +185,7 @@ sub startup {
     $r_admin_projects->post('/new/#wiz')->to(action => 'projects_wizards_new_init_post');
     $r_admin_projects->get('/new/#wiz/#pid')->to(action => 'projects_wizards_new');
     $r_admin_projects->post('/new/#wiz/#pid')->to(action => 'projects_wizards_new_post');
- 
+    
     # Projects
     $r_admin_projects->get('/#pid')->to(action => 'projects_show');
     $r_admin_projects->get('/#pid/run')->to(action => 'projects_run');
@@ -159,10 +199,6 @@ sub startup {
     $r_admin_projects->post('/#pid/setp/#plid')->to( action => 'projects_add_plugin_post' );
     $r_admin_projects->get('/#pid/runp/#plid')->to( action => 'projects_run_plugin' );
     $r_admin_projects->get('/#pid/delp/#plid')->to( action => 'projects_del_plugin' );
-    
-    $r_admin->get('/models')->to( action => 'models' );
-    $r_admin->get('/models/import')->to( action => 'models_import' );
-    $r_admin->get('/models/init')->to( action => 'models_init' );
     # my $r_admin_models = $r->get('/admin/models/')->to( controller => 'admin' );
 
     # Job management
@@ -175,7 +211,9 @@ sub startup {
     $r->get('/admin/repo/init')->to('repo#init');
     $r->get('/admin/repo/backup')->to('repo#backup');
     $r->get('/admin/repo/restore/#file')->to('repo#restore');
-
+ 
+    # Admin fallback when no auth
+    my $r_admin = $r->any('/admin/*')->to( 'alambic#failed' );   
     
 }
 
