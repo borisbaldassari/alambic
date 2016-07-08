@@ -105,12 +105,12 @@
                     <td><%== join( '<br />', map {$_} @{$job->{'args'}} ) %></td>
                     <td><i class="fa <%= $icon %> fa-lg"></i></td>
                     <td>
-                      <a href="/admin/jobs/<%= $job->{'id'} %>"><i class="fa fa-info-circle fa-lg"></i></a> &nbsp;
+                      <a href="/admin/jobs/<%= $job->{'id'} %>"><i class="fa fa-info-circle fa-fw"></i></a> &nbsp;
 %   if ($job->{'state'} !~ m!^active!) {
-                      <a href="/admin/jobs/<%= $job->{'id'} %>/run"><i class="fa fa-refresh fa-lg"></i></a> &nbsp;
+                      <a href="/admin/jobs/<%= $job->{'id'} %>/run"><i class="fa fa-refresh fa-fw"></i></a> &nbsp;
 %   }
 %   if ($job->{'state'} !~ m!^active!) {
-                      <a href="/admin/jobs/<%= $job->{'id'} %>/del"><i class="fa fa-ban fa-lg"></i></a> &nbsp;
+                      <a href="/admin/jobs/<%= $job->{'id'} %>/del"><i class="fa fa-ban fa-fw"></i></a> &nbsp;
 %   }
                     </td>
                   </tr>
@@ -137,9 +137,9 @@
                       <td><a href="/admin/projects/<%= $project_id %>"><%= $projects->{$project_id} %></a></td>
                       <td><%= $project->last_run() %></td>
                       <td><%= $project->active() %></td>
-                      <td width="1cm"><a href="/admin/projects/<%= $project_id %>"><i class="fa fa-eye fa-lg"></i></a></td>
-                      <td width="1cm"><a href="/admin/projects/<%= $project_id %>/run"><i class="fa fa-rocket fa-lg"></i></a></td>
-                      <td width="1cm"><a href="/admin/projects/<%= $project_id %>/del"><i class="fa fa-ban fa-lg"></i></a></td>
+                      <td width="1cm"><a href="/admin/projects/<%= $project_id %>"><i class="fa fa-eye fa-fw"></i></a></td>
+                      <td width="1cm"><a href="/admin/projects/<%= $project_id %>/run"><i class="fa fa-rocket fa-fw"></i></a></td>
+                      <td width="1cm"><a href="/admin/projects/<%= $project_id %>/del"><i class="fa fa-ban fa-fw"></i></a></td>
 		    </tr>
 % }
                   </table>

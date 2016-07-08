@@ -19,7 +19,6 @@
 
 % my $job_info = app->minion->backend->job_info($job_id);
 % my $log = ""; my $info = ""; my $metrics = ""; my $attrs = ""; my $recs = "";
-%# $log = ref($job_info->{'result'}) =~ /ARRAY/ ? $job_info->{'result'}{'log'} : $job_info->{'result'};
 % if ($job_info->{'state'} =~ m!^failed!) { $log = ref($job_info->{'result'}) =~ /ARRAY/ ? $job_info->{'result'}{'log'} : $job_info->{'result'} }
 % elsif ($job_info->{'state'} =~ m!^finished!) { 
 %     $log = defined($job_info->{'result'}) ?

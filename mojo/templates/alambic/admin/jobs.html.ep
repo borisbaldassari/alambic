@@ -46,12 +46,12 @@
                     <td><%= defined($job->{'finished'}) ? "" . localtime( $job->{'finished'} ) : "" %></td>
                     <td><%== join( '<br />', map {$_} @{$job->{'args'}} ) %></td>
                     <td>
-                      <a href="/admin/jobs/<%= $job->{'id'} %>"><i class="fa fa-lg fa-info-circle"></i></a> &nbsp;
+                      <a href="/admin/jobs/<%= $job->{'id'} %>"><i class="fa fa-fw fa-info-circle"></i></a> &nbsp;
 %   if ($job->{'state'} !~ m!^active!) {
-                      <a href="/admin/jobs/<%= $job->{'id'} %>/run"><i class="fa fa-lg fa-refresh"></i></a> &nbsp;
+                      <a href="/admin/jobs/<%= $job->{'id'} %>/run"><i class="fa fa-fw fa-refresh"></i></a> &nbsp;
 %   }
 %   if ($job->{'state'} !~ m!^active!) {
-                      <a href="/admin/jobs/<%= $job->{'id'} %>/del"><i class="fa fa-lg fa-ban"></i></a> &nbsp;
+                      <a href="/admin/jobs/<%= $job->{'id'} %>/del"><i class="fa fa-fw fa-ban"></i></a> &nbsp;
 %   }
                     </td>
                   </tr>
