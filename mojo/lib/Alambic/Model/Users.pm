@@ -23,7 +23,7 @@ my @roles = ( 'Admin', 'Project', 'Guest' );
 
 sub new { 
     my $class = shift;
-    my $users = shift;
+    my $users = shift || {};
     %users = %$users;
     
     return bless {}, $class;

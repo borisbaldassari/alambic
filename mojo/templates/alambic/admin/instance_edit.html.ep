@@ -20,7 +20,7 @@
                 <label for="desc" class="control-label col-xs-2">Description</label>
                 <div class="col-xs-10">
 		  <p>The description can include HTML characters and tags. It is displayed in the welcome page and helps people understand why this instance has been setup and its targeted audience.</p>
-                  <textarea type="text" class="form-control" name="desc" id="desc" style="border-color: #3E3F3A" rows="10" cols="78"><%= $desc %></textarea>
+                  <textarea type="text" class="form-control" name="desc" id="desc" rows="10" cols="78"><%= $desc %></textarea>
                 </div>
               </div>
 
