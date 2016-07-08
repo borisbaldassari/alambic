@@ -209,19 +209,19 @@ sub startup {
     # my $r_admin_models = $r->get('/admin/models/')->to( controller => 'admin' );
 
     # Job management
-    # XXX jobs must have auth
-    $r->get('/admin/jobs')->to( 'jobs#summary' );
-    $r->get('/admin/jobs/#id')->to( 'jobs#display' );
-    $r->get('/admin/jobs/#id/del')->to( 'jobs#delete' );
-    $r->get('/admin/jobs/#id/run')->to( 'jobs#redo' );
-    
-    $r->get('/admin/repo')->to('repo#summary');
-    $r->get('/admin/repo/init')->to('repo#init');
-    $r->get('/admin/repo/backup')->to('repo#backup');
-    $r->get('/admin/repo/restore/#file')->to('repo#restore');
+    $r_admin->get('/jobs')->to( 'jobs#summary' );
+    $r_admin->get('/jobs/#id')->to( 'jobs#display' );
+    $r_admin->get('/jobs/#id/del')->to( 'jobs#delete' );
+    $r_admin->get('/jobs/#id/run')->to( 'jobs#redo' );
+
+    # Database manipulations.
+    $r_admin->get('/repo')->to('repo#summary');
+    $r_admin->get('/repo/init')->to('repo#init');
+    $r_admin->get('/repo/backup')->to('repo#backup');
+    $r_admin->get('/repo/restore/#file')->to('repo#restore');
  
     # Admin fallback when no auth
-#    $r_admin = $r->any('/admin/*')->to( 'alambic#failed' );   
+    $r->any('/admin/*')->to( 'alambic#failed' );   
     
 }
 
