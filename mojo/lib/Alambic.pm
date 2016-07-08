@@ -5,7 +5,6 @@ use Alambic::Model::Alambic;
 
 use Minion;
 use Data::Dumper;
-#use Mojolicious::Plugin::Authentication;
 
 
 has al => sub {
@@ -25,7 +24,7 @@ sub startup {
     
     # Use application logger
     $self->log->info('Alambic v3.0 application started.');
-
+        
     my $conf_mail = {
 	from     => 'alambic@castalia.solutions',
 	encoding => 'base64',
@@ -33,34 +32,18 @@ sub startup {
 	how      => 'sendmail',
 	howargs  => [ '/usr/sbin/sendmail -t' ],
     };
-    
     $self->plugin( 'mail' => $conf_mail );
-
-    # $self->plugin(
-    # 	'authentication' => {
-    # 	    'autoload_user' => 1,
-    # 	    'session_key' => 'wickedapp',
-    # 	    'load_user' => sub { 
-    # 		my ($app, $uid) = @_;
-    # 		return 'Boris' if ( $_ =~ /boris.baldassari/ ); 
-    # 	    },
-    # 	    'validate_user' => sub { 
-    # 		my ($app, $username, $password, $extradata) = @_;
-    # 		return boris.baldassari;
-    # 	    },
-    # 	    'current_user_fn' => 'user', # compatibility with old code
-    # 	});
     
     # Set layout for pages.
     $self->defaults(layout => 'default');
     
-
-    # MINION management
-    # Use Minion for job queuing.
-    
     # Get config from alambic.conf
     my $config = $self->plugin('Config');
+
+    # Use Minion for job queuing.
     $self->plugin( Minion => {Pg => $config->{'conf_pg_minion'}} );
+
+    # MINION management
 
     # Set parameters.
     # Automatically remove jobs from queue after one day. 86400 is one day.
@@ -121,16 +104,26 @@ sub startup {
         $job->finish($ret);
     } );
     
-    
+
+
     # Router
     my $r = $self->routes;
-    
+	
+    # Install routes, that works only if the instance is not initialised.
+    if ( $self->app->al->instance_name() eq 'MyDBNameInit' ) {
+	print "### Executing Install procedure.\n";
+	$r->post('/install')->to( 'alambic#install_post' );
+	$r->any('/')->to( 'alambic#install' );
+	$r->any('*')->to( 'alambic#install' );
+	return;
+    }
+
     # Normal route to controller
-    $r->get('/')->to('alambic#welcome');
+    $r->get('/')->to( 'alambic#welcome' );
     
     # Simple pages
-    $r->get('/about.html')->to( template => 'alambic/about');
-    $r->get('/contact.html')->to( template => 'alambic/contact');
+    $r->get('/about')->to( template => 'alambic/about');
+    $r->get('/contact')->to( template => 'alambic/contact');
     $r->post('/contact')->to( 'alambic#contact_post' );
     $r->get('/login')->to( 'alambic#login' );
     $r->post('/login')->to( 'alambic#login_post' );

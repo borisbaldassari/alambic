@@ -69,11 +69,11 @@ sub new {
 
     # If the database is not initialised, then init it.
     if (not &is_db_ok()) { 
-	print "### ###################\n";
-	print "### &init( ! \n";
-	print "### ###################\n";
-	&init();
-    }
+    	print "### ###################\n";
+    	print "### Initialising DB!!! \n";
+    	print "### ###################\n";
+    	&init();
+    } 
 	
     # Retrieve all metrics definition to initialise Models.pm
     my $metrics = $repodb->get_metrics();

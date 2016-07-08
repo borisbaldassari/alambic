@@ -3,6 +3,43 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
 
+# Install screen for Alambic.
+sub install {
+    my $self = shift;
+    print "# In Controller::Alambic \n";
+	
+    # Render template "alambic/install.html.ep"
+    $self->render();
+}
+
+# Install screen for Alambic.
+sub install_post {
+    my $self = shift;
+    print "# In Controller::Alambic \n";
+
+    my $name = $self->param( 'name' );
+    my $desc = $self->param( 'desc' );
+    my $password = $self->param( 'password' );
+
+    # Set instance parameters
+    $self->app->al->get_repo_db()->name($name);
+    $self->app->al->get_repo_db()->desc($desc);
+
+    # Set administrator parameters.
+    my $email = $self->param( 'email' );
+    my $passwd = $self->param( 'passwd' );
+    
+    my $project = $self->app->al->set_user( 'administrator', 'Administrator', $email, 
+					    $passwd, ['Admin'], [], {} );
+    kill USR2 => getppid;
+    
+    $self->session( 'session_user' => 'administrator' );
+    $self->flash( msg => "The instance has been configured and user administrator has been created.<br />"
+		  . "You are now authenticated." );
+    $self->redirect_to( '/' );
+	
+}
+
 # Main screen for Alambic
 sub welcome {
     my $self = shift;
