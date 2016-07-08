@@ -126,7 +126,6 @@ sub run_plugin($$) {
     my $repofs = Alambic::Model::RepoFS->new();
 
     my $ret_tmp = &_retrieve_data( $project_id, $project_pmi, $repofs );
-    print "# In EclipsePmi " . Dumper($ret_tmp);
     if (not defined($ret_tmp)) {
 	return { 'log' => ['Could not fetch anything useful from PMI.'] };
     } else {
@@ -164,12 +163,10 @@ sub _retrieve_data($$$) {
         push( @log, "[Plugins::EclipsePmi] Using Eclipse PMI infra at [$url]." );
         $content = $ua->get($url)->res->body;
     }
-    print "### Content PMI " . Dumper($content) . ".\n";
 
     # Check if we actually get some results.
     my $pmi; 
     my $is_ok = 0;
-    print "[Plugins::EclipsePmi] Before TRY!";
     eval {
 	$pmi = decode_json($content);
 	$is_ok = 1;
@@ -212,47 +209,47 @@ sub _compute_data($) {
     my $raw_project = decode_json( $json ) or push( @log, "ERROR: Could not decode json: \n$json" );
 
     # Retrieve basic information about the project
-    $info{"pmi_title"} = $raw_project->{"title"};
-    $info{"pmi_desc"} = $raw_project->{"description"}->[0]->{"safe_value"};
-    $info{"pmi_id"} = $raw_project->{"id"}->[0]->{"value"};
+    $info{"PMI_TITLE"} = $raw_project->{"title"};
+    $info{"PMI_DESC"} = $raw_project->{"description"}->[0]->{"safe_value"};
+    $info{"PMI_ID"} = $raw_project->{"id"}->[0]->{"value"};
 
     # Retrieve information about Bugzilla
     my $pub_its_info = 0;
     if (scalar @{$raw_project->{"bugzilla"}} > 0) {
 
-        $info{"pmi_bugzilla_product"} = $raw_project->{"bugzilla"}->[0]->{"product"};
-        if ($info{"pmi_bugzilla_product"} =~ m!\S+!) { 
+        $info{"PMI_BUGZILLA_PRODUCT"} = $raw_project->{"bugzilla"}->[0]->{"product"};
+        if ($info{"PMI_BUGZILLA_PRODUCT"} =~ m!\S+!) { 
 	    $pub_its_info++;
 	} else {
 	    push( @recs, { 'rid' => 'PMI_EMPTY_BUGZILLA_PRODUCT', 'severity' => 2, 'desc' => 'The Bugzilla product entry is empty in the PMI. People willing to enter a bug for the first time will look for it.' } );
 	}
 
-        $info{"pmi_bugzilla_component"} = $raw_project->{"bugzilla"}->[0]->{"component"};
+        $info{"PMI_BUGZILLA_COMPONENT"} = $raw_project->{"bugzilla"}->[0]->{"component"};
 	
-        $info{"pmi_bugzilla_create_url"} = $raw_project->{"bugzilla"}->[0]->{"create_url"};
-        if ($info{"pmi_bugzilla_create_url"} =~ m!\S+!) { 
+        $info{"PMI_BUGZILLA_CREATE_URL"} = $raw_project->{"bugzilla"}->[0]->{"create_url"};
+        if ($info{"PMI_BUGZILLA_CREATE_URL"} =~ m!\S+!) { 
 	    $pub_its_info++;
 	} else {
 	    push( @recs, { 'rid' => 'PMI_EMPTY_BUGZILLA_CREATE', 'severity' => 2, 'desc' => 'The Bugzilla URL entry to create a bug is empty in the PMI. People willing to enter a bug for the first time will look for it.' } );
 	}
 	
-        if ($ua->head($info{"pmi_bugzilla_create_url"})) {
+        if ($ua->head($info{"PMI_BUGZILLA_CREATE_URL"})) {
             $pub_its_info++; 
         } else {
-	    push( @recs, { 'rid' => 'PMI_NOK_BUGZILLA_CREATE', 'severity' => 2, 'desc' => 'The Bugzilla URL [' . $info{"pmi_bugzilla_create_url"} . '] entry to create bug in the PMI cannot be accessed.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_BUGZILLA_CREATE', 'severity' => 2, 'desc' => 'The Bugzilla URL [' . $info{"PMI_BUGZILLA_CREATE_URL"} . '] entry to create bug in the PMI cannot be accessed.' } );
 	}
 
-        $info{"pmi_bugzilla_query_url"} = $raw_project->{"bugzilla"}->[0]->{"query_url"};
-        if ($info{"pmi_bugzilla_query_url"} =~ m!\S+!) { 
+        $info{"PMI_BUGZILLA_QUERY_URL"} = $raw_project->{"bugzilla"}->[0]->{"query_url"};
+        if ($info{"PMI_BUGZILLA_QUERY_URL"} =~ m!\S+!) { 
 	    $pub_its_info++;
 	} else {
 	    push( @recs, { 'rid' => 'PMI_EMPTY_BUGZILLA_QUERY', 'severity' => 2, 'desc' => 'The Bugzilla URL entry to query bugs is empty in the PMI. People willing to search for a bug for the first time will look for it.' } );
 	}
 	
-        if ($ua->head($info{"pmi_bugzilla_query_url"})) {
+        if ($ua->head($info{"PMI_BUGZILLA_QUERY_URL"})) {
             $pub_its_info++;
         } else {
-	    push( @recs, { 'rid' => 'PMI_NOK_BUGZILLA_QUERY', 'severity' => 2, 'desc' => 'The Bugzilla URL [' . $info{"pmi_bugzilla_query_url"} . '] to query bugs in the PMI cannot be accessed.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_BUGZILLA_QUERY', 'severity' => 2, 'desc' => 'The Bugzilla URL [' . $info{"PMI_BUGZILLA_QUERY_URL"} . '] to query bugs in the PMI cannot be accessed.' } );
 	}
     }	
     $metrics{"PMI_ITS_INFO"} = $pub_its_info;
@@ -260,7 +257,7 @@ sub _compute_data($) {
     # Retrieve information about source repos
     my $pub_scm_info = 0;
     if (scalar @{$raw_project->{"source_repo"}} > 0) {
-	if ($ua->head($info{"pmi_source_repo_url"})) {
+	if ($ua->head($info{"PMI_SOURCE_REPO_URL"})) {
 	    $pub_scm_info++;
 	}
 
@@ -294,9 +291,9 @@ sub _compute_data($) {
     $check->{'desc'} = 'Checks if the URL can be fetched using a simple get query.';
     my $url;
     if ( exists($raw_project->{'website_url'}->[0]->{'url'}) ) {
-	$info{"pmi_main_url"} = $raw_project->{'website_url'}->[0]->{'url'};
-        $check->{'value'} = $info{"pmi_main_url"};
-        my $results = &_check_url($info{"pmi_main_url"}, 'Website');
+	$info{"PMI_MAIN_URL"} = $raw_project->{'website_url'}->[0]->{'url'};
+        $check->{'value'} = $info{"PMI_MAIN_URL"};
+        my $results = &_check_url($info{"PMI_MAIN_URL"}, 'Website');
         push( @{$check->{'results'}}, $results );
 	if ($results !~ /^OK/) {
 	    push( @recs, { 'rid' => 'PMI_NOK_WEB', 'severity' => 3, 'desc' => 'The web site URL [$url] cannot be retrieved in the PMI. The URL should be checked.' } );
@@ -312,8 +309,8 @@ sub _compute_data($) {
     $check->{'results'} = [];
     $check->{'desc'} = "Sends a get request to the project wiki URL and looks at the headers in the response (200, 404..).";
     if ( exists($raw_project->{'wiki_url'}->[0]->{'url'}) ) {
-	$info{"pmi_wiki_url"} = $raw_project->{'wiki_url'}->[0]->{'url'};
-        $check->{'value'} = $info{"pmi_wiki_url"};
+	$info{"PMI_WIKI_URL"} = $raw_project->{'wiki_url'}->[0]->{'url'};
+        $check->{'value'} = $info{"PMI_WIKI_URL"};
         my $results = &_check_url($url, 'Wiki');
         push( @{$check->{'results'}}, $results );
 	if ($results !~ /^OK/) {
@@ -356,7 +353,7 @@ sub _compute_data($) {
     $check->{'results'} = [];
     $check->{'desc'} = 'Checks if the URL can be fetched using a simple get query.';
     if ( exists($raw_project->{'download_url'}->[0]->{'url'}) ) {
-	$info{"pmi_download_url"} = $raw_project->{'download_url'}->[0]->{'url'};
+	$info{"PMI_DOWNLOAD_URL"} = $raw_project->{'download_url'}->[0]->{'url'};
         $url = $raw_project->{'download_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Download') );
@@ -374,7 +371,7 @@ sub _compute_data($) {
     $check->{'results'} = [];
     $check->{'desc'} = 'Checks if the URL can be fetched using a simple get query.';
     if ( exists($raw_project->{'gettingstarted_url'}->[0]->{'url'}) ) {	
-	$info{"pmi_gettingstarted_url"} = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
+	$info{"PMI_GETTINGSTARTED_URL"} = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
         $url = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Documentation') );
@@ -392,7 +389,7 @@ sub _compute_data($) {
     $check->{'results'} = [];
     $check->{'desc'} = 'Checks if the URL can be fetched using a simple get query.';
     if ( exists($raw_project->{'documentation_url'}->[0]->{'url'}) ) {
-	$info{"pmi_documentation_url"} = $raw_project->{'documentation_url'}->[0]->{'url'};
+	$info{"PMI_DOCUMENTATION_URL"} = $raw_project->{'documentation_url'}->[0]->{'url'};
         $url = $raw_project->{'documentation_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Documentation') );
@@ -410,7 +407,7 @@ sub _compute_data($) {
     $check->{'results'} = [];
     $check->{'desc'} = 'Checks if the URL can be fetched using a simple get query.';
     if ( exists($raw_project->{'plan_url'}->[0]->{'url'}) ) {
-	$info{"pmi_plan_url"} = $raw_project->{'plan_url'}->[0]->{'url'};
+	$info{"PMI_PLAN_URL"} = $raw_project->{'plan_url'}->[0]->{'url'};
         $url = $raw_project->{'plan_url'}->[0]->{'url'};
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Plan') );
@@ -445,7 +442,7 @@ sub _compute_data($) {
     $check->{'results'} = [];
     $check->{'desc'} = 'Checks if the Dev ML URL can be fetched using a simple get query.';
     if ( ref($raw_project->{'dev_list'}) =~ m!HASH! ) {
-	$info{"mls_dev_url"} = $raw_project->{'dev_list'}->{'url'};
+	$info{"MLS_DEV_URL"} = $raw_project->{'dev_list'}->{'url'};
         $url = $raw_project->{'dev_list'}->{'url'};
         $check->{'value'} = $url;
         my $results = &_check_url($url, 'Dev ML');
@@ -491,7 +488,7 @@ sub _compute_data($) {
         foreach my $ml (@mls) {
             $url = $ml->{'url'};
             my $name = $ml->{'name'};
-	    $info{"mls_usr_url"} = $url;
+	    $info{"MLS_USR_URL"} = $url;
             $check->{'value'} = $url;
             if ($name =~ m!\S+!) {
                 push( @{$check->{'results'}}, "OK. Forum [$name] correctly defined." );
@@ -520,7 +517,7 @@ sub _compute_data($) {
             my $name = $ml->{'name'};
             my $path = $ml->{'path'};
             my $type = $ml->{'type'};
-	    $info{"pmi_scm_url"} = $url;
+	    $info{"PMI_SCM_URL"} = $url;
             $check->{'value'} = $url;
             if ($path =~ m!.+$! ) {
                 push( @{$check->{'results'}}, "OK. Source repo [$name] type [$type] path [$path]." );
@@ -548,7 +545,7 @@ sub _compute_data($) {
             $url = $us->{'url'};
             my $title = $us->{'title'};
             $check->{'value'} = $url;
-	    $info{"pmi_updatesite_url"} = $url;
+	    $info{"PMI_UPDATESITE_URL"} = $url;
             if ($title =~ m!\S+! ) {
                 push( @{$check->{'results'}}, "OK. Update site [$title] has title." );
             } else {
@@ -575,7 +572,7 @@ sub _compute_data($) {
     if ($proj_ci =~ m!\S+! && $ua->get($proj_ci)) {
 	push( @{$check->{'results'}}, "OK. Fetched CI URL.");         
         my $url = $proj_ci . '/api/json?depth=1';
-	$info{"pmi_ci_url"} = $proj_ci;
+	$info{"PMI_CI_URL"} = $proj_ci;
         my $json_str = $ua->get($url)->res->body;
         if ($json_str =~ m!^\s*{!) { 
             my $content_tmp = decode_json($json_str);
