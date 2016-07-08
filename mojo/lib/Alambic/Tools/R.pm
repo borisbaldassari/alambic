@@ -163,14 +163,13 @@ sub knit_rmarkdown_pdf($$$$) {
     my $r_md = $r_file;
     $r_file =~ s/(.*)\..*+/$1/;
     my $r_md_out = "${r_file}.pdf";
-    push( @log, "[Tools::R] Executing [$r_md] output to [$r_md_out]." );
 
     # Change the current working directory localy only.
     {
 	local $CWD = $r_dir;
 	# Create dir for figures.
 	if (! -d "figures/" ) {
-#	    print "Creating directory [figures/].\n";
+	    push( @log, "[Tools::R] Creating directory [figures/]." );
 	    mkdir "figures/";
 	}
 	
@@ -182,8 +181,7 @@ sub knit_rmarkdown_pdf($$$$) {
 	}
 	$r_cmd .= "rmarkdown::render('${r_md}', output_file='$r_md_out')\"";
 	
-#	print "[Tools::R] Exec [$r_cmd].";
-	push( @log, "[Tools::R] Exec [$r_cmd]." );
+	push( @log, "[Tools::R] Exec [$r_cmd] output to [$r_md_out]." );
 	my @out = `$r_cmd 2>&1`;
     }
     

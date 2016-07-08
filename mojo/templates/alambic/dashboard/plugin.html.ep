@@ -74,7 +74,7 @@
                 <th width="20%">Name</th>
                 <th width="80%">Value</th>
               </tr>
-% foreach my $item (sort keys %$run_info) {
+% foreach my $item (sort @info) {
               <tr>
                 <td><%= uc($item) %></td>
                 <td><%= $run_info->{$item} %></td>
