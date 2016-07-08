@@ -29,6 +29,7 @@ sub login_post() {
         $self->flash( msg => "You have been successfully authenticated as user $username." );
         $self->redirect_to( '/admin/summary' );
     } else {
+        $self->session( 'session_user' => $username );
         $self->flash( msg => "Wrong login/password. Sorry." );
         $self->redirect_to( '/login' );
     }

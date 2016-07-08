@@ -153,11 +153,12 @@ sub startup {
     $self->routes->add_condition(
     	role => sub {
     	    my ( $r, $c, $captures, $role ) = @_;
+	    my $user = $self->al->users->get_user($c->session->{'session_user'}) || {};
 
     	    # Keep the weirdos out!
     	    return undef
     		if ( !exists( $c->session->{'session_user'} )
-    		     || not grep { $_ eq ${role} } @{$self->al->users->get_user($c->session->{'session_user'})->{'roles'}} );
+    		     || not grep { $_ eq ${role} } @{$user->{'roles'}} );
 
     	    # It's ok, we know him
     	    return 1;
@@ -165,13 +166,18 @@ sub startup {
     	);
 
     # Admin
-    my $r_admin = $r->any('/admin')->over( role => 'admin' )->to( controller => 'admin' );   
+    my $r_admin = $r->any('/admin')->over( role => 'Admin' )->to( controller => 'admin' );   
     
     $r_admin->get('/edit')->to( action => 'edit' );
     $r_admin->post('/edit')->to( action => 'edit_post' );
     $r_admin->get('/summary')->to(action => 'summary');
     $r_admin->get('/projects')->to(action => 'projects');
     $r_admin->get('/users')->to(action => 'users');
+    $r_admin->get('/users/new')->to(action => 'users_new');
+    $r_admin->post('/users/new')->to(action => 'users_new_post');
+    $r_admin->get('/users/#uid')->to(action => 'users_edit');
+    $r_admin->post('/users/#uid')->to(action => 'users_edit_post');
+    $r_admin->get('/users/#uid/del')->to(action => 'users_del');
     
     $r_admin->get('/models')->to( action => 'models' );
     $r_admin->get('/models/import')->to( action => 'models_import' );
@@ -203,6 +209,7 @@ sub startup {
     # my $r_admin_models = $r->get('/admin/models/')->to( controller => 'admin' );
 
     # Job management
+    # XXX jobs must have auth
     $r->get('/admin/jobs')->to( 'jobs#summary' );
     $r->get('/admin/jobs/#id')->to( 'jobs#display' );
     $r->get('/admin/jobs/#id/del')->to( 'jobs#delete' );
@@ -214,7 +221,7 @@ sub startup {
     $r->get('/admin/repo/restore/#file')->to('repo#restore');
  
     # Admin fallback when no auth
-    my $r_admin = $r->any('/admin/*')->to( 'alambic#failed' );   
+#    $r_admin = $r->any('/admin/*')->to( 'alambic#failed' );   
     
 }
 

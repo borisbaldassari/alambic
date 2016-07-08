@@ -22,7 +22,7 @@
               </div>
               <div class="col-sm-6">
                 <div class="list-group">
-                  <a class="list-group-item" href="/admin/jobs/" role="button"><i class="fa fa-bars"></i> &nbsp; TODO Purge jobs</a>
+                  <a class="list-group-item" href="/admin/users/new" role="button"><i class="fa fa-fw fa-user-plus"></i> &nbsp; Add user</a>
                 </div>
               </div>
             </div>
@@ -30,15 +30,18 @@
 
             <br />
             <table class="table table-striped">
-              <tr><th>ID</th><th>Name</th><th>Email</th><th>Roles</th><th>Projects</th></tr>
+              <tr><th>ID</th><th>Name</th><th>Email</th><th>Roles</th><th>Projects</th><th>Actions</th></tr>
 % my $users = app->al->users->get_users();
-% foreach my $user (keys %$users) {
+% foreach my $user (sort keys %$users) {
                   <tr>
                     <td><%= $user %></td>
                     <td><%= $users->{$user}->{'name'} %></td>
                     <td><%= $users->{$user}->{'email'} %></td>
-                    <td><%= join( ', ', @{$users->{$user}->{'roles'}} ) %></td>
-                    <td><%= join( ', ', @{$users->{$user}->{'projects'}} ) %></td>
+                    <td><%= join( ', ', @{ $users->{$user}->{'roles'} || [] } ) %></td>
+                    <td><%= join( ', ', @{ $users->{$user}->{'projects'} || [] } ) %></td>
+                    <td>
+		      <a href="/admin/users/<%= $user %>"><i class="fa fa-fw fa-edit"></i></a> &nbsp;
+                      <a href="/admin/users/<%= $user %>/del"><i class="fa fa-fw fa-ban"></i></a> &nbsp;
                   </tr>
 % }
             </table>

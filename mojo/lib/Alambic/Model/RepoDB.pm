@@ -27,6 +27,9 @@ our @EXPORT_OK = qw(
                      get_attribute
                      get_attributes
                      set_attribute
+                     get_user
+                     get_users
+                     add_user
                      get_qm
                      set_qm                
                      set_project_conf
@@ -133,7 +136,7 @@ sub is_db_ok() {
     my $rows = $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->rows;
 
-    return $rows == 9 ? 1 : 0;
+    return $rows == 10 ? 1 : 0;
 }
 
 
@@ -281,6 +284,83 @@ sub set_attribute($) {
 	. "= (?, ?, ?)";
     my $ret = $pg->db->query( $query, ($mnemo, $name, $desc, $mnemo, $name, $desc) );
     
+    return $ret;
+}
+
+
+# Get all users from db
+sub get_users() {
+    my $results = $pg->db->query("SELECT * FROM users;");
+    my $ret;
+
+    # Process one row at a time
+    while (my $next = $results->hash) {
+	$ret->{$next->{'id'}} = $next;
+	$ret->{$next->{'id'}}->{'roles'} = decode_json( $next->{'roles'} );    
+	$ret->{$next->{'id'}}->{'projects'} = decode_json( $next->{'projects'} );    
+	$ret->{$next->{'id'}}->{'notifs'} = decode_json( $next->{'notifs'} );    
+    }
+
+    return $ret;
+}
+
+
+# Get a specific user from db
+sub get_user($) {
+    my $self = shift;
+    my $user = shift;
+    
+    my $results = $pg->db->query("SELECT * FROM users WHERE id=?;", $user);
+    my $ret;
+
+    # Process one row at a time
+    while (my $next = $results->hash) {
+	$ret->{$next->{'id'}} = $next;
+	$ret->{$next->{'id'}}->{'roles'} = decode_json( $next->{'roles'} );    
+	$ret->{$next->{'id'}}->{'projects'} = decode_json( $next->{'projects'} );    
+	$ret->{$next->{'id'}}->{'notifs'} = decode_json( $next->{'notifs'} );    
+    }
+
+    return $ret;
+}
+
+
+# Get a specific user from db
+sub add_user($$$$$$) {
+    my $self = shift;
+    my $id = shift;
+    my $name = shift;
+    my $email = shift;
+    my $passwd = shift;
+    my $roles = shift;
+    my $projects = shift;
+    my $notifs = shift;
+    
+    my $roles_json = encode_json($roles);
+    my $projects_json = encode_json($projects);
+    my $notifs_json = encode_json($notifs);
+    
+    my $query = "INSERT INTO users (id, name, email, passwd, roles, projects, notifs) VALUES "
+	. "(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO UPDATE SET "
+	. "(id, name, email, passwd, roles, projects, notifs) "
+	. "= (?, ?, ?, ?, ?, ?, ?)";
+    my $ret = $pg->db->query( $query, 
+			      ($id, $name, $email, $passwd, $roles_json, $projects_json, $notifs_json,
+			       $id, $name, $email, $passwd, $roles_json, $projects_json, $notifs_json) );
+
+    return $ret;
+}
+
+
+# Get a specific user from db
+sub del_user($$$$$$) {
+    my $self = shift;
+    my $uid = shift;
+    
+
+    # Remove project from table conf_projects
+    my $ret = $pg->db->query("DELETE FROM users WHERE id=?;", ($uid));
+
     return $ret;
 }
 
@@ -510,7 +590,7 @@ sub get_project_last_run() {
     
     # Execute select in runs table.
     my $query = "SELECT * FROM projects_runs WHERE project_id=? ORDER BY id DESC LIMIT 1";
-#    print "# In RepoDB $query.\n";
+
     my $results = $pg->db->query($query, ($id));
     while (my $next = $results->hash) {
 	$project{'id'} = $next->{'id'}; 
@@ -530,7 +610,6 @@ sub get_project_last_run() {
     while (my $next = $results->hash) {
 	$project{'info'} = decode_json( $next->{'info'} ); 
     }
-#    print "# In RepoDB $id " . Dumper(%project);
     
     return \%project;
 }
@@ -645,6 +724,7 @@ INSERT INTO conf VALUES ('name', 'MyDBNameInit');
 INSERT INTO conf VALUES ('desc', 'MyDBDescInit');
 -- 1 down
 DROP TABLE IF EXISTS conf;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS projects_conf;
 DROP TABLE IF EXISTS projects_runs;
 DROP TABLE IF EXISTS projects_info;
@@ -663,6 +743,7 @@ sub _db_query_create() {
 
     return "
 DROP TABLE IF EXISTS conf;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS projects_conf;
 DROP TABLE IF EXISTS projects_runs;
 DROP TABLE IF EXISTS projects_info;
@@ -675,6 +756,17 @@ CREATE TABLE IF NOT EXISTS conf (
     param TEXT NOT NULL, 
     val TEXT,
     PRIMARY KEY( param )
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id TEXT NOT NULL, 
+    name TEXT,
+    email TEXT,
+    passwd TEXT,
+    roles JSONB,
+    projects JSONB,
+    notifs JSONB,
+    PRIMARY KEY( id )
 );
 
 CREATE TABLE IF NOT EXISTS projects_conf (

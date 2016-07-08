@@ -5,6 +5,7 @@ use strict;
 
 use Mojo::JSON qw( decode_json encode_json );
 use Data::Dumper;
+use Crypt::PBKDF2;
 
 
 require Exporter;
@@ -18,6 +19,7 @@ our @EXPORT_OK = qw(
 
 
 my %users;
+my @roles = ( 'Admin', 'Project', 'Guest' );
 
 sub new { 
     my $class = shift;
@@ -31,25 +33,32 @@ sub validate_user($$$) {
     my $self = shift;
     my $uid = shift || "";
     my $passwd = shift || "";
-    
-    print "[Model::Users] validate_user trying uid [$uid] pass [$passwd].\n";
 
-    return $uid if ( exists $users{$uid}{'passwd'} && $users{$uid}{'passwd'} eq $passwd );
+    return $uid;
+
+    print "[Model::Users] Trying auth for $uid and $passwd.\n";
+    if ( exists $users{$uid}{'passwd'} ) {
+	my $hash = $users{$uid}{'passwd'};
+	print "[Model::Users] Hash is $hash.\n";
+	my $pbkdf2 = Crypt::PBKDF2->new;
+	if ($pbkdf2->validate($hash, $passwd)) {
+	    return $uid;
+	}
+    }
+    print "[Model::Users] Auth not ok for $uid and $passwd.\n";
     return undef;
 }
 
-sub is_user_authenticated {
-  my ($self, $user, $page) = @_;
+sub generate_passwd($) {
+    my $self = shift;
+    my $passwd = shift;
+    
+    print "[Model::Users] generate_passwd for [$passwd].\n";
+    my $pbkdf2 = Crypt::PBKDF2->new; 
+    my $hash = $pbkdf2->generate($passwd);
+    print "Hash is [$hash].\n";
 
-  if (not defined( $user )) { return undef }
-
-  # Success if user has the given page in its alambic rights.
-  if ( grep( /^${page}$/, @{$users{$user}{'alambic'}} ) ) {
-      return 1;
-  }
-
-  # Fail
-  return undef;
+    return $hash;
 }
 
 sub get_user($) {
@@ -61,6 +70,10 @@ sub get_user($) {
 
 sub get_users() {    
     return \%users;
+}
+
+sub get_roles() {    
+    return \@roles;
 }
 
 sub get_projects_for_user($) {

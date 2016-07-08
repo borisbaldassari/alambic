@@ -34,7 +34,6 @@ sub edit_post {
     my $name = $self->param( 'name' );
     my $desc = $self->param( 'desc' );
     
-    print "# In Admin#edit_post $name \n$desc.\n";
     $self->app->al->get_repo_db()->name($name);
     $self->app->al->get_repo_db()->desc($desc);
 
@@ -94,11 +93,101 @@ sub models {
     $self->render( template => 'alambic/admin/models' );
 }
 
-# Models display screen for Alambic admin.
+# Display list of users for Alambic admin.
 sub users {
     my $self = shift;
 
     $self->render( template => 'alambic/admin/users' );
+}
+
+# Add a user.
+sub users_new {
+    my $self = shift;
+
+    $self->render( template => 'alambic/admin/users_set' );
+}
+
+# Add a user -- POST.
+sub users_new_post {
+    my $self = shift;
+
+    my $id = $self->param( 'id' );
+    my $name = $self->param( 'name' );
+    my $email = $self->param( 'email' );
+    my $passwd = $self->param( 'passwd' );
+
+    my @roles;
+    foreach my $role (@{$self->app->al->users->get_roles()}) {
+	if ($self->param( 'roles_' . $role )) { push( @roles, $role ) }
+    }
+
+    my $projects = $self->param( 'projects' );
+    my $notifs = $self->param( 'notifs' );
+    
+    my $project = $self->app->al->set_user( $id, $name, $email, $passwd, \@roles, $projects, $notifs );
+
+
+    my $msg = "User $name ($id) has been created.";
+    $self->flash( msg => $msg );    
+    $self->redirect_to( '/admin/users' );
+}
+
+# Edit a user.
+sub users_edit {
+    my $self = shift;
+    my $uid = $self->param( 'uid' );
+
+    
+    my $user = $self->app->al->users->get_user($uid);
+    # Prepare data for template.
+    $self->stash(
+	user_id => $user->{'id'},
+	user_name => $user->{'name'},
+	user_email => $user->{'email'},
+	user_roles => $user->{'roles'},
+	user_projects => $user->{'projects'},
+	user_notifs => $user->{'notifs'},
+        );
+
+    $self->render( template => 'alambic/admin/users_set' );
+}
+
+# Edit a user -- POST.
+sub users_edit_post {
+    my $self = shift;
+
+    my $id = $self->param( 'id' );
+    my $name = $self->param( 'name' );
+    my $email = $self->param( 'email' );
+    my $passwd = $self->param( 'passwd' );
+
+    my @roles;
+    foreach my $role (@{$self->app->al->users->get_roles()}) {
+	if ($self->param( 'roles_' . $role )) { push( @roles, $role ) }
+    }
+    
+    my $projects = $self->param( 'projects' );
+    my $notifs = $self->param( 'notifs' );
+
+    my $project = $self->app->al->set_user( $id, $name, $email, $passwd, \@roles, $projects, $notifs );
+
+
+    my $msg = "User $name ($id) has been updated.";
+    $self->flash( msg => $msg );    
+    $self->redirect_to( '/admin/users' );
+}
+
+# Add a user.
+sub users_del {
+    my $self = shift;
+    
+    my $uid = $self->param( 'uid' );
+    
+    my $project = $self->app->al->del_user( $uid );
+    
+    my $msg = "User $uid has been deleted.";
+    $self->flash( msg => $msg );    
+    $self->redirect_to( '/admin/users' );
 }
 
 
@@ -263,8 +352,6 @@ sub projects_wizards_new_init_post {
 
     my $project_id = $self->param( 'project_id' );
 
-#    print "# In Admin::projects_wizard_new_init_post $project_id.\n";
-    
     my %args;
     my $conf_wizard = $self->app->al->get_wizards()->get_wizard($wizard)->get_conf();
     foreach my $param ( keys %{$conf_wizard->{'params'}} ) {

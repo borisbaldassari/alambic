@@ -173,21 +173,52 @@ sub get_wizards() {
 }
 
 sub users() {
-    #    return $repodb->get_users();
-    my $users = {
-	'boris.baldassari' => {
-	    'name' => 'Boris Baldassari',
-	    'email' => 'boris.baldassari@gmail.com',
-	    'passwd' => 'boris098',
-	    'roles' => [ 'admin' ],
-	    'projects' => [ 'modeling.sirius' ],
-	    'notifs' => {
-		'modeling.sirius' => [ 'run_complete' ],
-	    },
-	},
-    };
+
+    # my $users = {
+    # 	'boris.baldassari' => {
+    # 	    'name' => 'Boris Baldassari',
+    # 	    'email' => 'boris.baldassari@gmail.com',
+    # 	    'passwd' => 'boris098',
+    # 	    'roles' => [ 'admin' ],
+    # 	    'projects' => [ 'modeling.sirius' ],
+    # 	    'notifs' => {
+    # 		'modeling.sirius' => [ 'run_complete' ],
+    # 	    },
+    # 	},
+    # };
+    my $users = $repodb->get_users();
     
     return Alambic::Model::Users->new($users);
+}
+
+sub set_user($$$$$$$) {
+    my $self = shift;
+    my $id = shift;
+    my $name = shift;
+    my $email = shift;
+    my $passwd = shift;
+    my $roles = shift;
+    my $projects = shift;
+    my $notifs = shift;
+    
+    # If password not modified, then just keep the old one.
+    if ($passwd =~ /^$/ and exists $repodb->get_users()->{$id}) {
+	$passwd = $repodb->get_users()->{$id}{'passwd'};
+    } else {
+	my $users = Alambic::Model::Users->new({});
+	$passwd = $users->generate_passwd($passwd);
+    }
+
+    return $repodb->add_user($id, $name, $email, 
+			     $passwd, 
+			     $roles, $projects, $notifs);
+}
+
+sub del_user($) {
+    my $self = shift;
+    my $uid = shift;
+
+    my $users = $repodb->del_user($uid);
 }
 
 
