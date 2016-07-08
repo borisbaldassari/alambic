@@ -35,9 +35,11 @@
         </div>
 
         <ul class="nav navbar-top-links navbar-right">
-% my $user = session('session_user');
+% my $user_id = session('session_user') || '';
+% my $user = app->al->users->get_user($user_id);
+% my $user_name = defined($user) ? $user->{'name'} : $user_id;
 % if (defined($user)) { 
-          <li><%= app->al->users->get_user($user)->{'name'} %> &nbsp; <i class="fa fa-user fa-fw fa-lg"></i></li>
+          <li><%= $user_name %> &nbsp; <i class="fa fa-user fa-fw fa-lg"></i></li>
 <li><a href="/logout"><i class="fa fa-sign-out fa-fw fa-lg"></i></a></li>
 % } else {
           <li><a href="/login"><i class="fa fa-user fa-fw fa-lg"></i></a></li>
