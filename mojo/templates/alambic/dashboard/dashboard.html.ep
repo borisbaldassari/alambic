@@ -232,7 +232,7 @@
 		    </tr>
 % foreach my $attr (sort keys %{$attributes}) { 
 		    <tr>
-                      <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $models->get_attribute($attr)->{'name'} %></a></td>
+                      <td><a href="/documentation/attributes.html#<%= $attr %>"><%= defined($models->get_attribute($attr)) ? $models->get_attribute($attr)->{'name'} : $attr %></a></td>
                       <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attr %></a></td>
                       <td><%== $models->get_attribute($attr)->{'description'}->[0] %></td>
                       <td><%= $attributes->{$attr} %></td>

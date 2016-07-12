@@ -75,6 +75,20 @@ sub backup_db() {
 	$insert_statement .= "'" . $next->{'param'} . "', '" . $next->{'val'} . "');\n";
 	$sql_out .= $insert_statement;
     }
+    
+    $results = $pg->db->query("SELECT * FROM models_attributes");
+    while (my $next = $results->hash) {
+	my $insert_statement = qq{INSERT INTO models_attributes (mnemo, name, description)\n VALUES (};
+	$insert_statement .= "'" . $next->{'mnemo'} . "', '" . $next->{'name'} . "', '" . $next->{'description'} . "');\n";
+	$sql_out .= $insert_statement;
+    }
+    
+    $results = $pg->db->query("SELECT * FROM models_metrics");
+    while (my $next = $results->hash) {
+	my $insert_statement = qq{INSERT INTO models_metrics (mnemo, name, description, scale)\n VALUES (};
+	$insert_statement .= "'" . $next->{'mnemo'} . "', '" . $next->{'name'} . "', '" . $next->{'description'} . "', '" . $next->{'scale'} . "');\n";
+	$sql_out .= $insert_statement;
+    }
 
     $results = $pg->db->query("SELECT * FROM projects_conf");
     while (my $next = $results->hash) {
