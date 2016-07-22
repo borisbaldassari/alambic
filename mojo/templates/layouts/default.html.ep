@@ -6,24 +6,15 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title><%== app->al_config->get_title() %></title>
+    <title><%== app->al->instance_name() %></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-    <!-- Bootstrap Core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- MetisMenu CSS -->
     <link href="/css/plugins/metisMenu/metisMenu.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
     <link href="/css/sb-admin-2.css" rel="stylesheet">
-
-    <!-- Custom Fonts -->
     <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
-
-    <!-- Our CSS sheets -->
     <link rel="stylesheet" href="/css/default.css">
 
    <!-- script src="https://cdn.plot.ly/plotly-latest.min.js"></script -->
@@ -34,55 +25,58 @@
       <!-- Navigation -->
       <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
-          <!-- div class="navbar-inner" -->
-          <!-- div class="container" -->
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><span class="fa fa-flask"></span> &nbsp; <%== app->al_config->get_title() %> (&beta;eta)</a>
+          <a class="navbar-brand" href="/"><span class="fa fa-flask"></span> &nbsp; <%== app->al->instance_name() %> (&beta;eta)</a>
         </div>
 
         <ul class="nav navbar-top-links navbar-right">
-% my $user = session('session_user');
+% my $user_id = session('session_user') || '';
+% my $user = app->al->users->get_user($user_id);
+% my $user_name = defined($user) ? $user->{'name'} : $user_id;
 % if (defined($user)) { 
-          <li><%= $user %> &nbsp; <i class="fa fa-user fa-fw fa-lg"></i></li>
+          <li><%= $user_name %> &nbsp; <i class="fa fa-user fa-fw fa-lg"></i></li>
 <li><a href="/logout"><i class="fa fa-sign-out fa-fw fa-lg"></i></a></li>
 % } else {
           <li><a href="/login"><i class="fa fa-user fa-fw fa-lg"></i></a></li>
 % }
         </ul>
-      
-
+% my $url;
+% if ( $self->req->url =~ m!^/documentation/! ) {
+%   $url = 'doc';
+% } elsif ( $self->req->url =~ m!^/projects/! ) {
+%   $url = 'projects';
+% } else {
+%   $url = 'projects';
+% }
         <!-- /.navbar-header -->
         <div class="navbar-default sidebar" role="navigation">
           <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
               <li><a href="/"><i class="fa fa-home fa-fw" style="color: orange;"></i> Home</a></li>
               <li><a href="/about.html"><i class="fa fa-bullseye fa-fw" style="color: orange;"></i> About</a></li>
-              <li><a href="/documentation/main.html"><i class="fa fa-life-ring fa-fw" style="color: orange;"></i> Documentation<span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
+              <li<%== $url =~ m!^doc! ? ' class="active"' : '' %>><a href=""><i class="fa fa-life-ring fa-fw" style="color: orange;"></i> Documentation<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level<%= $self->req->url =~ m!^/documentation! ? ' active' : '' %>">
                   <li><a href="/documentation/main.html">Summary</a></li>
                   <li><a href="/documentation/data.html">Data</a></li>
                   <li><a href="/documentation/plugins.html">Plugins</a></li>
-                  <li><a href="/documentation/quality_model.html">Quality Model</a></li>
-                  <li><a href="/documentation/attributes.html">Attributes</a></li>
-                  <li><a href="/documentation/questions.html">Questions</a></li>
                   <li><a href="/documentation/metrics.html">Metrics</a></li>
-                  <!-- li><a href="/documentation/scales.html">Scales</a></li -->
-                  <!-- li><a href="/documentation/rules.html">Practices</a></li -->
+                  <li><a href="/documentation/attributes.html">Attributes</a></li>
+                  <li><a href="/documentation/quality_model.html">Quality Model</a></li>
                   <li><a href="/documentation/references.html">References</a></li>
               </ul></li>
-              <li class="active"><a href="/"><i class="fa fa-dashboard fa-fw" style="color: orange;"></i> Projects<span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level active">
-% my @list_projects = app->projects->list_active_projects();
-% my @projects = sort { app->projects->get_project_name_by_id($a) cmp app->projects->get_project_name_by_id($b) } @list_projects;
-% foreach my $project (@projects) {
-%     my $name = defined( app->projects->get_project_name_by_id($project) ) ? 
-%       app->projects->get_project_name_by_id($project) : $project;
-                  <li><a href="/projects/<%= $project %>.html"><%= $name %></a></li>
+              <li<%== $url =~ m!^projects! ? ' class="active"' : '' %>><a href=""><i class="fa fa-dashboard fa-fw" style="color: orange;"></i> Projects<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level<%= $self->req->url =~ m!^/projects! ? ' active' : '' %>">
+% my $projects = app->al->get_projects_list();
+% my @projects = sort { $projects->{$a} cmp $projects->{$b} } keys %$projects;
+% foreach my $project ( @projects ) {
+%   my $proj_full = app->al->get_project($project);
+%   next if (not $proj_full->active);
+                  <li><a href="/projects/<%= $project %>.html"><%= $projects->{$project} %></a></li>
 % }
               </ul></li>
               <li class="active"><a href="/admin/summary"><i class="fa fa-wrench fa-fw" style="color: orange;"></i> Admin panel</a></li>

@@ -1,0 +1,63 @@
+
+            <h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="alert alert-warning" role="alert">
+		  <h2>Hi! It seems this instance has not yet been setup.</h2>
+		  <p>As we are talking, the database has been initialised with tables and default values to let this instance run. This wizard will help you configure the instance, and you will be up and running in a matter of minutes.</p>
+                </div>
+              </div>
+            </div>
+	    
+	    <form action="/install" method="POST" class="form-horizontal" role="form">
+
+	      <h3>Instance parameters</h3>
+	      
+	      <p>An Alambic instance has a name and a description. </p>
+	      
+              <div class="form-group">
+                <label for="name" class="control-label col-xs-2">Name</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" name="name" id="name">
+                </div>
+              </div>
+	      
+              <div class="form-group">
+                <label for="desc" class="control-label col-xs-2">Description</label>
+                <div class="col-xs-10">
+		  <p>The description can include HTML characters and tags. It is displayed in the welcome page and helps people understand why this instance has been setup and its targeted audience.</p>
+                  <textarea type="text" class="form-control" name="desc" id="desc" rows="10" cols="78"></textarea>
+                </div>
+              </div>
+	      
+	      
+	      <h3>Users</h3>
+	      
+              <p>A new user <code>Administrator</code> will be created. Please set a password and a valid email address for this account.</p>
+
+              <div class="form-group">
+                <label for="email" class="control-label col-xs-2">Email</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" name="email" id="email">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="passwd" class="control-label col-xs-2">Password</label>
+                <div class="col-xs-10">
+                  <input type="password" class="form-control" name="passwd" id="passwd">
+                </div>
+              </div>
+	      
+              <br />
+              <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                  <input class="btn btn-primary" type="submit" value="&nbsp; Go! &nbsp;">
+                </div>
+              </div>
+	      
+            </form>
+
+	    
+	    

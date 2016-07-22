@@ -1,23 +1,38 @@
 package Alambic::Plugins::EclipseMls;
-use base 'Mojolicious::Plugin';
 
 use strict; 
 use warnings;
 
+use Alambic::Model::RepoFS;
+use Alambic::Tools::R;
+
 use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
 use Data::Dumper;
-use File::Copy;
-use File::Path qw(remove_tree);
 
 # Main configuration hash for the plugin
 my %conf = (
-    "id" => "eclipse_mls",
+    "id" => "EclipseMls",
     "name" => "Eclipse MLS",
-    "desc" => "Retrieves mailing list data from the Eclipse dashboard repository. This plugin will look for a file named project-mls-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
-    "ability" => [ "metrics", "viz", 'fig' ],
-    "requires" => {
-        "project_id" => "",
+    "desc" => [
+	'Retrieves mailing list data from the Eclipse dashboard repository. This plugin will look for a file named project-mls-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin',
+	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseMls">the project\'s wiki</a> for more information.',
+    ],
+    "type" => 'pre',
+    "ability" => [ 'metrics', 'data', 'recs', 'figs', 'viz' ],
+    "params" => {
+        "project_grim" => "The ID used to identify the project on the dashboard server. Note that it may be different from the id used in the PMI.",
+    },
+    "provides_cdata" => [
+    ],
+    "provides_info" => [
+    ],
+    "provides_data" => {
+	"import_mls.json" => "The original file of current metrics from the Eclipse dashboard server (JSON).",
+	"metrics_mls.json" => "Current metrics for the MLS plugin (JSON).",
+	"metrics_mls.csv" => "Current metrics for the MLS plugin (CSV).",
+	"metrics_mls_evol.json" => "Evolution metrics for the MLS plugin (JSON).",
+	"metrics_mls_evol.csv" => "Evolution metrics for the MLS plugin (CSV).",
     },
     "provides_metrics" => {
         "REPOSITORIES" => "MLS_REPOSITORIES", 
@@ -45,83 +60,94 @@ my %conf = (
         "SENT_RESPONSE" => "MLS_SENT_RESPONSE", 
         "THREADS" => "MLS_THREADS",
     },
-    "provides_files" => [
+    "provides_figs" => {
+	"mls_evol_summary.rmd" => "mls_evol_summary.html",
+	"mls_evol_people.rmd" => "mls_evol_people.html",
+	"mls_evol_sent.rmd" => "mls_evol_sent.html",
+    },
+    "provides_recs" => [
+        "MLS_SENT",
     ],
     "provides_viz" => {
-        "eclipse_mls" => "Eclipse MLS",
-    },
-    "provides_fig" => {
-        'mls_evol_summary.rmd' => "mls_evol_summary.html",
-        'mls_evol_sent.rmd' => "mls_evol_sent.html",
-        'mls_evol_people.rmd' => "mls_evol_people.html",
+        "eclipse_mls.html" => "Eclipse MLS",
     },
 );
 
-my $app;
 
-sub register {
-    my $self = shift;
-    $app = shift;
+# Constructor
+sub new {
+    my ($class) = @_;
     
+    return bless {}, $class;
 }
+
 
 sub get_conf() {
     return \%conf;
 }
 
-sub check_plugin() {
 
+# Run plugin: retrieves data + compute_data 
+sub run_plugin($$) {
+    my ($self, $project_id, $conf) = @_;
+    
+    my %ret = (
+	'metrics' => {},
+	'info' => {},
+	'recs' => [],
+	'log' => [],
+	);
+
+    my $repofs = Alambic::Model::RepoFS->new();
+
+    my $project_grim = $conf->{'project_grim'};
+
+    $ret{'log'} = &_retrieve_data( $project_id, $project_grim, $repofs );
+    
+    my $tmp_ret = &_compute_data( $project_id, $project_grim, $repofs );
+    
+    $ret{'metrics'} = $tmp_ret->{'metrics'};
+    $ret{'recs'} = $tmp_ret->{'recs'};
+    push( @{$ret{'log'}}, @{$tmp_ret->{'log'}} );
+    
+    return \%ret;
 }
 
-sub check_project() {
-    my $self = shift;
-    my $project_id = shift;
-
-    return [];
-}
 
 # Download json file from dashboard.eclipse.org
-sub retrieve_data($) {
-    my $self = shift;
-    my $project_id = shift;
-    
-    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
-    my $project_grim = $project_conf->{'project_id'};
-    
+sub _retrieve_data($$$) {
+    my ($project_id, $project_grim, $repofs) = @_;
+
     my @log;
 
     my $url = "http://dashboard.eclipse.org/data/json/" 
             . $project_grim . "-mls-prj-static.json";
 
-    my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_mls.json";
-    push( @log, "Retrieving [$url] to [$file_out].\n" );
-    
+    push( @log, "[Plugins::EclipseMls] Starting retrieval of data for [$project_id] url [$url]." );
+
     # Fetch json file from the dashboard.eclipse.org
     my $ua = Mojo::UserAgent->new;
     my $content = $ua->get($url)->res->body;
     if (length($content) < 10) { 
-	push( @log, "Cannot find [$url].\n" ) ;
+	push( @log, "[Plugins::EclipseMls] Cannot find [$url].\n" ) ;
     } else {
-	open my $fh, ">", $file_out;
-	print $fh $content;
-	close $fh;
+	$repofs->write_input( $project_id, "import_mls.json", $content );
+	$repofs->write_output( $project_id, "import_mls.json", $content );
     }
 
     $url = "http://dashboard.eclipse.org/data/json/" 
             . $project_grim . "-mls-prj-evolutionary.json";
     
-    $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_mls_evol.json";
-    push( @log, "Retrieving [$url] to [$file_out].\n" );
+    push( @log, "[Plugins::EclipseMls] Retrieving evol [$url] to input.\n" );
     
     # Fetch json file from the dashboard.eclipse.org
     $ua = Mojo::UserAgent->new;
     $content = $ua->get($url)->res->body;
     if (length($content) < 10) {
-	push( @log, "Cannot find [$url].\n" ) ;
+	push( @log, "[Plugins::EclipseMls] Cannot find [$url].\n" ) ;
     } else {
-	open my $fh, ">", $file_out;
-	print $fh $content;
-	close $fh;
+	$repofs->write_input( $project_id, "import_mls_evol.json", $content );
+	$repofs->write_output( $project_id, "metrics_mls_evol.json", $content );
     }
 
     return \@log;
@@ -130,22 +156,18 @@ sub retrieve_data($) {
 
 # Basically read the imported files and make the mapping to the 
 # new metric names.
-sub compute_data($) {
-    my $self = shift;
-    my $project_id = shift;
+sub _compute_data($$$) {
+    my ($project_id, $project_pmi, $repofs) = @_;
 
-    $app->log->info("[Plugins::EclipseMls] Starting compute data for [$project_id].");
+    my @recs;
+    my @log;
+
+    push( @log, "[Plugins::EclipseMls] Starting compute data for [$project_id]." );
 
     my $metrics_new;
 
-    my $file_in = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_mls.json";
-    my $json;
-    do { 
-        local $/;
-        open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
-        $json = <$fh>;
-        close $fh;
-    };
+    # Read data from mls file in $data_input
+    my $json = $repofs->read_input( $project_id, "import_mls.json" );
     my $metrics_old = decode_json($json);
 
     foreach my $metric (keys %{$metrics_old}) {
@@ -153,34 +175,20 @@ sub compute_data($) {
             $metrics_new->{ $conf{'provides_metrics'}{uc($metric)} } = $metrics_old->{$metric};
         }
     }
-
-    my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_metrics_mls.json";
-    my $json_content = encode_json($metrics_new);
-    do { 
-        local $/;
-        open my $fh, '>', $file_out or die "Could not open data file [$file_out].\n";
-        print $fh $json_content;
-        close $fh;
-    };
+    
+    # Write mls metrics json file to disk.
+    $repofs->write_output( $project_id, "metrics_mls.json", encode_json($metrics_new) );
 
     # Write static metrics file
     my @metrics = sort map {$conf{'provides_metrics'}{$_}} keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics) . "\n";
     $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
     
-    my $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/EclipseMls/" . $project_id . "_mls.csv";
-    open(my $fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
-    print $fh $csv_out;
-    close $fh;
-    
+    $repofs->write_plugin( 'EclipseMls', $project_id . "_mls.csv", $csv_out );
+    $repofs->write_output( $project_id, "metrics_mls.csv", $csv_out );
+
     # Read evol metrics file
-    $file_in = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_mls_evol.json";
-    do { 
-        local $/;
-        open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
-        $json = <$fh>;
-        close $fh;
-    };
+    $json = $repofs->read_input( $project_id, "import_mls_evol.json" );
     my $metrics_evol = decode_json($json);
 
     # Create csv data for evol
@@ -197,104 +205,36 @@ sub compute_data($) {
 	$csv_out .= $metrics_evol->{'senders'}->[$id] . ',';
 	$csv_out .= $metrics_evol->{'unixtime'}->[$id] . "\n";
     }
-
-    $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/EclipseMls/" . $project_id . "_mls_evol.csv";
-    open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
-    print $fh $csv_out;
-    close $fh;
+    $repofs->write_plugin( 'EclipseMls', $project_id . "_mls_evol.csv", $csv_out );
+    $repofs->write_output( $project_id, "metrics_mls_evol.csv", $csv_out );
     
     # Now execute the main R script.
-    my $r_dir = $app->home->rel_dir('lib') . "/Alambic/Plugins/EclipseMls/";
-    my $r_md = "EclipseMls.Rmd";
-    my $r_md_out = "${project_id}_eclipse_mls.inc";
+    push( @log, "[Plugins::EclipseMls] Executing R main file." );
+    my $r = Alambic::Tools::R->new();
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'EclipseMls', $project_id, 'eclipse_mls.Rmd' )} );
 
-    chdir $r_dir;
-    # Create dir for figures.
-    if (! -d "figures/" ) {
-        print "Creating directory [figures/].\n";
-        mkdir "figures/";
-    }
-    # Create dir for figures/eclipse_mls.
-    if (! -d "figures/eclipse_mls" ) {
-        print "Creating directory [figures/eclipse_mls].\n";
-        mkdir "figures/eclipse_mls";
-    }
-    # Create dir for figures/eclipse_mls/project_id.
-    if (! -d "figures/eclipse_mls/${project_id}" ) {
-        print "Creating directory [figures/eclipse_mls/${project_id}].\n";
-        mkdir "figures/eclipse_mls/${project_id}";
+    # And execute the figures R scripts.
+    my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
+    foreach my $fig (sort @figs) {
+	push( @log, "[Plugins::EclipseMls] Executing R fig file [$fig]." );
+	@log = ( @log, @{$r->knit_rmarkdown_html( 'EclipseMls', $project_id, $fig )} );
     }
 
-    $app->log->info( "Executing R script [$r_md] in [$r_dir] with [$project_id]." );
-    $app->log->info( "Result to be stored in [$r_md_out]." );
-
-    # to get r bin path.
-    my $r_cmd = "Rscript -e \"library(rmarkdown); " 
-        . "project.id <- '${project_id}'; plugin.id <- 'eclipse_mls'; "
-        . "rmarkdown::render('${r_md}', output_format='html_fragment', output_file='$r_md_out')\"";
-
-    $app->log->info( "Exec [$r_cmd]." );
-    my @out = `$r_cmd`;
-    print @out;
-
-    # Now move files to data/project
-    my $dir_out = $app->config->{'dir_input'} . "/" . $project_id . "/";
-
-    # Create dir for figures.
-    if (! -d "${dir_out}/figures/" ) {
-        print "Creating directory [${dir_out}/figures/].\n";
-        mkdir "${dir_out}/figures/";
-    }
-
-    move( "${r_md_out}", $dir_out );
-
-    # Create dir for figures.
-    my $dir_local_out = "figures/eclipse_mls/" . $project_id . '/';
-    print "DBG Checking dir_local_out $dir_local_out.\n";
-    if (! -d $dir_local_out ) {
-        print "Creating directory [${dir_local_out}].\n";
-        mkdir "${dir_local_out}";
+    # TODO Execute checks and fill recs.
+    if ($metrics_new->{'MLS_SENT'} < 10) {
+	push( @recs, { 'rid' => 'MLS_SENT', 
+		       'severity' => 1, 
+		       'desc' => 'There are only ' . $metrics_new->{'MLS_SENT'} 
+		       . ' mails sent in the archive. You should watch the mailing list and create some activity so users can get more information, see that the project is active, in order to attract new participants.' 
+	      } 
+	    );
     }
     
-    # Now execute R scripts for pictures.
-    foreach my $script (keys %{$conf{'provides_fig'}}) {
-	$r_md = $script;
-	$r_md_out = "figures/eclipse_mls/" . $project_id . '/' . $conf{'provides_fig'}{$script};
-	
-	$app->log->info( "Executing R fig script [$r_md] in [$r_dir] with [$project_id]." );
-	$app->log->info( "Result to be stored in [$r_md_out]." );
-	
-	# to get r bin path.
-	my $r_cmd = "Rscript -e \"library(rmarkdown); " 
-	    . "project.id <- '${project_id}'; "
-	    . "rmarkdown::render('${r_md}', output_format='html_document', output_file='$r_md_out')\"";
-	
-	$app->log->info( "Exec [$r_cmd]." );
-	my @out = `$r_cmd`;
-	#print @out;
-    }
-
-
-    # Move figures to data/project
-    my $dir_in_fig = "figures/eclipse_mls/". $project_id . '/';
-    my $dir_out_fig = $app->config->{'dir_input'} . "/" . $project_id . "/figures/eclipse_mls/";
-    if ( -e $dir_out_fig ) {
-        print "Target directory [$dir_out_fig] exists. Removing it.\n";
-        my $ret = remove_tree($dir_out_fig, {verbose => 1});
-    }
-    print "Creating directory [${dir_out_fig}].\n";
-    mkdir "${dir_out_fig}";
-    
-    my $files = ${dir_in_fig} . "*";
-    my @files = glob qq(${files});
-#    print "DBG Looking for files in [$files]: " . join(', ', @files) . "\n";
-    foreach my $file (@files) {
-	my $ret = move($file, $dir_out_fig);
-#	print "DBG Moved file from ${file} to $dir_out_fig. ret $ret.\n";
-	$app->log->info( "Moved files from ${file} to $dir_out_fig. ret $ret." );
-    }
-
-    return ["Copied " . scalar( keys %{$metrics_new} ) . " metrics."];
+    return {
+	"metrics" => $metrics_new,
+	"recs" => \@recs,
+	"log" => \@log,
+    };
 }
 
 

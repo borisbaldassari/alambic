@@ -1,59 +1,73 @@
 package Alambic::Controller::Repo;
-
 use Mojo::Base 'Mojolicious::Controller';
+
+use Alambic::Model::RepoFS;
 
 use Data::Dumper;
 
+# Main screen for Alambic repo admin.
+sub summary {
+    my $self = shift;
 
+    # Get list of backup files.
+    my @files_backup = <backups/*.*>;
+
+    $self->stash(
+        files_backup => \@files_backup,
+        );
+    $self->render( template => 'alambic/admin/repo' );
+}
+
+
+# Initalisation of DB for Alambic admin.
 sub init {
     my $self = shift;
 
-    # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
-        $self->redirect_to( '/login' );
-        return;
-    }
-
-    # Render template "alambic/repo/init.html.ep"
-    $self->render(template => 'alambic/repo/init');   
-
+    $self->app->al->init();
+    
+    my $msg = "Database has been initialised.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/summary' );
 }
 
-sub init_post {
+
+# Backup DB for Alambic admin.
+sub backup {
     my $self = shift;
 
-    # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
-        $self->redirect_to( '/login' );
-        return;
-    }
-
-    my $git_repo = $self->param( 'git_repo' );
-
-    # Initialise the Repo object with url.
-    $self->repo->init( $git_repo );
-
-    # Render template "alambic/repo/manage.html.ep"
+    my $sql = $self->app->al->backup();
+    my $repofs = Alambic::Model::RepoFS->new();
+    my $file_sql = $repofs->write_backup($sql);
+    
+    my $msg = "Database has been backed up in [$file_sql].";
+    
+    $self->flash( msg => $msg );
     $self->redirect_to( '/admin/repo' );
-
 }
 
-sub push() {
+
+# Restore DB for Alambic admin.
+sub restore {
     my $self = shift;
+    
+    my $file_sql = $self->param( 'file' );
 
-    # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
-        $self->redirect_to( '/login' );
-        return;
+    my $repofs = Alambic::Model::RepoFS->new();
+    my $sql = $repofs->read_backup($file_sql);
+
+    if (length($sql) < 10) {
+	$self->flash( msg => "Could not find SQL file. Database has NOT been restored." );
+	$self->redirect_to( '/admin/summary' );
     }
-
-    my $ret = $self->repo->push();
-    if ($ret !~ m!1!) {
-        $self->flash( msg => $ret );
-    }
-
-    # Render template "alambic/repo/manage.html.ep"
+    
+    $self->app->al->restore($sql);
+    
+    my $msg = "Database has been restored from [$file_sql].";
+    
+    $self->flash( msg => $msg );
     $self->redirect_to( '/admin/repo' );
 }
+
 
 1;

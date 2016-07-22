@@ -1,343 +1,590 @@
 package Alambic::Controller::Admin;
-
 use Mojo::Base 'Mojolicious::Controller';
 
+use Mojo::JSON qw( encode_json decode_json );
 use Data::Dumper;
 use File::stat;
 use Time::localtime;
 
-# This action will render a template
-sub welcome {
+# Main screen for Alambic admin.
+sub summary {
     my $self = shift;
     
-    # Render template for main admin section
     $self->render( template => 'alambic/admin/summary' );
 }
 
 
-sub read_files() {
+# Edit information about the instance
+sub edit {
     my $self = shift;
     
-    # Check that the connected user has the access rights for this
-    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authentified to read configuration files.' );
-        $self->redirect_to( '/login' );
-    }
-
-    my $files = $self->param( 'files' );
-    my $msg;
-
-    if ($files =~ m!models!) {
-        $self->models->read_all_files();
-        $msg = "All model files reread.";
-    } elsif ($files =~ m!projects!) {
-        $self->app->projects->read_all_files();
-        $msg = "All project files reread.";
-    } else {
-        $msg = "Could not understand command. Files not read.";
-    }
-
-    $self->render( template => 'alambic/admin/summary', msg => $msg );
+    $self->stash(
+        name => $self->app->al->instance_name(),
+        desc => $self->app->al->instance_desc(),
+        );
+    $self->render( template => 'alambic/admin/instance_edit' );
 }
 
 
-sub del_input_file() {
+# Edit information about the instance -- post
+sub edit_post {
     my $self = shift;
+
+    # Gte values from form.
+    my $name = $self->param( 'name' );
+    my $desc = $self->param( 'desc' );
     
-    my $project_id = $self->param( 'project' );
-    my $file = $self->param( 'file' );
+    $self->app->al->get_repo_db()->name($name);
+    $self->app->al->get_repo_db()->desc($desc);
 
-    # Check that the connected user has the access rights for this
-    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
-             $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authenticated to access project management.' );
-        $self->redirect_to( '/login' );
-        return;
-    }
-
-    my $ret = unlink($self->config->{'dir_input'} . '/' . $project_id . '/' . $file);
-    my $msg;
-    if ($ret == 1) {
-        $msg = "Deleted input file [$file].";
-    } else {
-        $msg = "ERROR: could not delete input file.";
-    }
-
-    $self->flash( msg => $msg );
-    $self->redirect_to( '/admin/project/' . $project_id );
+    $self->flash( msg => "Instance details have been saved." );
+    $self->redirect_to( '/admin/summary' );
 }
 
 
-sub del_data_file() {
+# JSON access for models data.
+sub data_models {
     my $self = shift;
+    my $page = $self->param( 'page' );
     
-    my $project_id = $self->param( 'project' );
-    my $file = $self->param( 'file' );
+    my $models = $self->app->al->get_models();
 
-    # Check that the connected user has the access rights for this
-    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
-             $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authenticated to access project management.' );
-        $self->redirect_to( '/login' );
-        return;
-    }
+    if ( $page =~ m!^attributes.json$! ) {
+	$self->render( json => $models->get_attributes() );
 
-    my $ret = unlink($self->config->{'dir_data'} . '/' . $project_id . '/' . $file);
-    my $msg;
-    if ($ret == 1) {
-        $msg = "Deleted data file [$file].";
+    } elsif ( $page =~ m!^attributes_full.json$! ) {
+	$self->render( json => $models->get_attributes_full() );
+
+    } elsif ( $page =~ m!^metrics.json$! ) {
+	$self->render( json => $models->get_metrics() );
+    
+    } elsif ( $page =~ m!^metrics_full.json$! ) {
+	$self->render( json => $models->get_metrics_full() );
+    
+    } elsif ( $page =~ m!^qm.json$! || $page =~ m!^quality_model.json$!) {
+	$self->render( json => $models->get_qm() );
+    
+    } elsif ( $page =~ m!^qm_full.json$! || $page =~ m!^quality_model_full.json$! ) {
+	$self->render( json => $models->get_qm_full() );
+
     } else {
-        $msg = "ERROR: could not delete data file.";
+	$self->render( json => {} );
     }
-
-    $self->flash( msg => $msg );
-    $self->redirect_to( '/admin/project/' . $project_id );
 }
 
-# Display a list of projects with information and action.
-sub projects_main {
+# Models display screen for Alambic admin.
+sub models {
     my $self = shift;
-    
-    # Check that the connected user has the access rights for this
-    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authenticated to access project management.' );
-        $self->redirect_to( '/login' );
-        return;
-    }
-             
-    my @list_projects = $self->app->projects->list_projects();
-    my %full_projects = $self->app->projects->get_all_projects();
 
+    my $models = $self->app->al->get_models();
+    
+    # Get list of metrics definition files.
+    my @files_metrics = <models/metrics/*.json>;
+    my @files_attributes = <models/attributes/*.json>;
+    my @files_qm = <models/qm/*.json>;
+
+    $self->stash(
+        files_metrics => \@files_metrics,
+        files_attributes => \@files_attributes,
+        files_qm => \@files_qm,
+	models => $models,
+        );
+    
+    $self->render( template => 'alambic/admin/models' );
+}
+
+# Display list of users for Alambic admin.
+sub users {
+    my $self = shift;
+
+    $self->render( template => 'alambic/admin/users' );
+}
+
+# Add a user.
+sub users_new {
+    my $self = shift;
+
+    $self->render( template => 'alambic/admin/users_set' );
+}
+
+# Add a user -- POST.
+sub users_new_post {
+    my $self = shift;
+
+    my $id = $self->param( 'id' );
+    my $name = $self->param( 'name' );
+    my $email = $self->param( 'email' );
+    my $passwd = $self->param( 'passwd' );
+
+    my @roles;
+    foreach my $role (@{$self->app->al->users->get_roles()}) {
+	if ($self->param( 'roles_' . $role )) { push( @roles, $role ) }
+    }
+
+    my $projects = $self->param( 'projects' );
+    my $notifs = $self->param( 'notifs' );
+    
+    my $project = $self->app->al->set_user( $id, $name, $email, $passwd, \@roles, $projects, $notifs );
+
+
+    my $msg = "User $name ($id) has been created.";
+    $self->flash( msg => $msg );    
+    $self->redirect_to( '/admin/users' );
+}
+
+# Edit a user.
+sub users_edit {
+    my $self = shift;
+    my $uid = $self->param( 'uid' );
+
+    
+    my $user = $self->app->al->users->get_user($uid);
     # Prepare data for template.
     $self->stash(
-        list_projects => \@list_projects,
-        full_projects => \%full_projects,
-        );    
+	user_id => $user->{'id'},
+	user_name => $user->{'name'},
+	user_email => $user->{'email'},
+	user_roles => $user->{'roles'},
+	user_projects => $user->{'projects'},
+	user_notifs => $user->{'notifs'},
+        );
+
+    $self->render( template => 'alambic/admin/users_set' );
+}
+
+# Edit a user -- POST.
+sub users_edit_post {
+    my $self = shift;
+
+    my $id = $self->param( 'id' );
+    my $name = $self->param( 'name' );
+    my $email = $self->param( 'email' );
+    my $passwd = $self->param( 'passwd' );
+
+    my @roles;
+    foreach my $role (@{$self->app->al->users->get_roles()}) {
+	if ($self->param( 'roles_' . $role )) { push( @roles, $role ) }
+    }
     
-    # Render template for projects admin section
+    my $projects = $self->param( 'projects' );
+    my $notifs = $self->param( 'notifs' );
+
+    my $project = $self->app->al->set_user( $id, $name, $email, $passwd, \@roles, $projects, $notifs );
+
+
+    my $msg = "User $name ($id) has been updated.";
+    $self->flash( msg => $msg );    
+    $self->redirect_to( '/admin/users' );
+}
+
+# Add a user.
+sub users_del {
+    my $self = shift;
+    
+    my $uid = $self->param( 'uid' );
+    
+    my $project = $self->app->al->del_user( $uid );
+    
+    my $msg = "User $uid has been deleted.";
+    $self->flash( msg => $msg );    
+    $self->redirect_to( '/admin/users' );
+}
+
+
+# Models import for Alambic admin.
+sub models_import {
+    my $self = shift;
+    my $file = $self->param( 'file' );
+    my $type = $self->param( 'type' ) || "metrics";
+    my $add = $self->param( 'add' ) || 1;
+    
+    my $repofs = Alambic::Model::RepoFS->new();
+    my $repodb = $self->app->al->get_repo_db();
+    
+    if ($type =~ m!^metrics$!) {
+	my $metrics = decode_json( $repofs->read_models('metrics', $file) );
+	
+	foreach my $metric ( @{$metrics->{'children'}} ) {
+	    $repodb->set_metric( $metric->{'mnemo'}, 
+				 $metric->{'name'}, 
+				 encode_json($metric->{'desc'}), 
+				 encode_json($metric->{'scale'}) );
+	}
+    } elsif ($type =~ m!^attributes$!) {
+	my $attributes = decode_json( $repofs->read_models('attributes', $file) );
+	
+	foreach my $attribute ( @{$attributes->{'children'}} ) {
+	    $repodb->set_attribute( $attribute->{'mnemo'}, 
+				    $attribute->{'name'}, 
+				    encode_json($attribute->{'desc'}) );
+	}
+    } elsif ($type =~ m!^qm$!) {
+	my $qm = decode_json( $repofs->read_models('qm', $file) );
+
+	$repodb->set_qm( "ALB_BASIC",
+			 "Alambic Quality Model", 
+			 encode_json($qm->{'children'}) );
+
+    } else {
+	print "DBG something went wrong.\n";
+    }
+
+    $self->app->al->get_models()->init_models(
+	$repodb->get_metrics(), 
+	$repodb->get_attributes(), 
+	$repodb->get_qm(), 
+	$self->app->al->get_plugins()->get_conf_all());
+    
+    my $msg = "File $file has been imported in the $type table.";
+    $self->flash( msg => $msg );    
+    $self->redirect_to( '/admin/models' );
+}
+
+# Models display screen for Alambic admin.
+sub models_init {
+    my $self = shift;
+    
+    my $repodb = $self->app->al->get_repo_db();
+    $self->app->al->get_models()->init_models(
+	$repodb->get_metrics(), 
+	$repodb->get_attributes(), 
+	$repodb->get_qm(), 
+	$self->app->al->get_plugins()->get_conf_all());
+    
+    my $msg = "Models have been re-read.";
+    $self->flash( msg => $msg );    
+    $self->redirect_to( '/admin/models' );
+}
+
+
+# Projects screen for Alambic admin.
+sub projects {
+    my $self = shift;
+    
     $self->render( template => 'alambic/admin/projects' );
 }
 
 
-#
-# Displays a list of plugins detected with information about them.
-#
-sub plugins {
+# Display specific project screen for Alambic admin.
+sub projects_show {
     my $self = shift;
-
-    # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/plugins' ) ) {
-        $self->redirect_to( '/login' );
-        return;
-    }
-
-    # Render template 
-    $self->render( template => 'alambic/admin/plugins' );   
-
-}
-
-
-#
-# Manage information about the Alambic git repository.
-#
-sub repo {
-    my $self = shift;
-
-    # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
-        $self->redirect_to( '/login' );
-        return;
-    }
-
-    # Render template "alambic/admin/repo.html.ep"
-    $self->render( template => 'alambic/admin/repo' );
-}
-
-# Display the form to add a project.
-sub project_add {
-    my $self = shift;
-    
-    my $from = $self->param( 'from' );
-    
-    # Check that the connected user has the access rights for this
-    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authenticated to add a project.' );
-        $self->redirect_to( '/login' );
-        return;
-    }
-
-    # Prepare data for template and render.
-    $self->stash( from => $from );
-    $self->render( template => 'alambic/admin/project_add' );
-}
-
-
-# Add a project (POST)
-sub project_add_post {
-    my $self = shift;
-    
-    my $project_id = $self->param( 'id' );
-    my $project_name = $self->param( 'name' );
-    my $project_active = $self->param( 'is_active' );
-
-    # Check that the connected user has the access rights for this
-    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authenticated to add a project.' );
-        $self->redirect_to( '/login' );
-        return;
-    }
-
-    # If fields are not filled, fail.
-    if (not defined($project_id) or not defined($project_name)
-        or $project_id =~ /^\s$/ or $project_name =~ /^\s$/) {
-        $self->flash( msg => "Failed to add project [$project_id]." );
-        $self->redirect_to( '/admin/projects' );
-        return;
-    }
-
-    $self->app->projects->add_project($project_id, $project_name, $project_active);
-
-    $self->flash( msg => "Project [$project_id] saved." );
-    $self->redirect_to( "/admin/project/$project_id" );
-}
-
-# Deletes a project
-sub project_del {
-    my $self = shift;
-
-    my $project_id = $self->param( 'id' );
-    
-    # Check that the connected user has the access rights for this
-    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authenticated to delete a project.' );
-        $self->redirect_to( '/login' );
-        return;
-    }
-
-    $self->app->projects->del_project($project_id);
-
-    $self->redirect_to( '/admin/projects' );
-}
-
-# Displays the summary of a project
-sub projects_id($) {
-    my $self = shift;
-
-    my $project_id = $self->param( 'id' );
-
-    # Check that the connected user has the access rights for this
-    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
-             $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => 'You must be authenticated to access project management.' );
-        $self->redirect_to( '/login' );
-        return;
-    }
+    my $project_id = $self->param( 'pid' );
 
     # Get list of files in input and data directories.
-    my $dir_projects = $self->config->{'dir_data'};
-    my @files_data = <${dir_projects}/${project_id}/*.*>;
-    my $dir_input = $self->config->{'dir_input'};
-    my @files_input = <${dir_input}/${project_id}/*.*>;
-    my %projects = $self->{app}->projects->get_all_projects();
+    my @files_input = <projects/${project_id}/input/*.*>;
+    my @files_output = <projects/${project_id}/output/*.*>;
     my %files_time;
 
+    # TODO get the list of runs for this project.
+    my $repodb = $self->app->al->get_repo_db();
+    my $runs = $repodb->get_project_all_runs($project_id);
+    
     # Retrieve last modification time on input files.
-    foreach my $file (@files_input, @files_data) { 
+    foreach my $file (@files_input, @files_output) { 
         $files_time{$file} = ctime( stat($file)->mtime );
     }
 
     # Prepare data for template.
     $self->stash(
         project_id => $project_id,
-        projects => \%projects,
-        files_data => \@files_data,
         files_input => \@files_input,
-        files_time =>\%files_time,
-        );    
+        files_output => \@files_output,
+        files_time => \%files_time,
+	project_runs => $runs,
+        );
     
-    # Render template for projects admin section
     $self->render( template => 'alambic/admin/project' );
 }
 
-sub users_main {
+
+# New project screen for Alambic admin.
+sub projects_new {
     my $self = shift;
+
+    $self->stash(
+        project_id => '',
+        project_name => '',
+	project_active => '',
+        );
     
-    # Check that the connected user has the access rights for this
-    unless ( $self->app->users->is_user_authenticated( $self->session->{'session_user'}, '/admin/users' ) ) {
-        $self->flash( msg => 'You must be authenticated to access users management.' );
-        $self->redirect_to( '/login' );
-        return;
-    }
-    
-    $self->render( template => 'alambic/admin/users' );
+    $self->render( template => 'alambic/admin/project_set' );
 }
 
-# Runs retrieval of data for all plugins of a project.
-sub project_retrieve_data {
+
+# New project screen for Alambic admin.
+sub projects_new_post {
     my $self = shift;
     
     my $project_id = $self->param( 'id' );
-    $self->app->log->info("[Controller::Admin] project_retrieve_data $project_id.");
+    my $project_name = $self->param( 'name' );
+    my $project_active = $self->param( 'is_active' );
     
-    # Check authenticated user.
-    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
-             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => "You must have rights on project $project_id to access this area." );
-        $self->redirect_to( '/login' );
-        return;
-    }
+    my $project = $self->app->al->create_project( $project_id, $project_name, '', $project_active );
 
-    # Enqueue job
-    my $job = $self->minion->enqueue(retrieve_project => [ $project_id ] => { delay => 0 });
-
-    $self->flash( msg => "Job [$job] has been queued." );
-    $self->redirect_to( "/admin/project/$project_id" );
-
+    my $msg = "Project '$project_name' ($project_id) has been created.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects' );
 }
 
-# Runs analysis for a project. Input data must have been updated first!
-sub project_analyse {
+
+# New project from wizard screen for Alambic admin.
+sub projects_wizards_new_init {
     my $self = shift;
-    my $project_id = $self->param( 'id' );
+    my $wizard = $self->param( 'wiz' );
 
-    $self->app->log->info("[Controller::Admin] project_analyse $project_id.");
+    # XXX check if wizard is in the list of wizards.
+    my $conf_wizard = $self->app->al->get_wizards()->get_wizard($wizard)->get_conf();
     
-    # Check authenticated user.
-    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
-             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => "You must have rights on project $project_id to access this area." );
-        $self->redirect_to( '/login' );
-        return;
-    }
+    $self->stash(
+        wizard_id => $wizard,
+	conf_wizard => $conf_wizard,
+        );
 
-    # Enqueue job
-    my $job = $self->minion->enqueue(analyse_project => [ $project_id ] => { delay => 0 });
-
-    $self->flash( msg => "Job [$job] has been queued." );
-    $self->redirect_to( "/admin/project/$project_id" );
-
+    $self->render( template => 'alambic/admin/project_set_wizard' );
 }
 
-# Runs retrieve_data and analyse for a project in a single command.
-sub project_run {
+
+# New project from wizard screen for Alambic admin.
+sub projects_wizards_new_init_post {
     my $self = shift;
-    my $project_id = $self->param( 'id' );
+    my $wizard = $self->param( 'wiz' );
 
-    $self->app->log->info("[Controller::Admin] project_analyse $project_id.");
+    my $project_id = $self->param( 'project_id' );
+
+    my %args;
+    my $conf_wizard = $self->app->al->get_wizards()->get_wizard($wizard)->get_conf();
+    foreach my $param ( keys %{$conf_wizard->{'params'}} ) {
+        $args{$param} = $self->param( $param );
+    }
     
-    # Check authenticated user.
-    unless ( $self->users->has_user_project($self->session->{'session_user'}, $project_id) || 
-             $self->users->is_user_authenticated($self->session->{'session_user'}, '/admin/projects' ) ) {
-        $self->flash( msg => "You must have rights on project $project_id to access this area." );
-        $self->redirect_to( '/login' );
-        return;
+    my $project = $self->app->al->create_project_from_wizard( $wizard, $project_id, \%args );
+
+    my $msg = "Project [$project_id] has been created.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( "/admin/projects/$project_id" );
+}
+
+
+# New project from wizard screen for Alambic admin.
+sub projects_wizards_new_check {
+    my $self = shift;
+    my $wizard = $self->param( 'wiz' );
+    my $project_id = $self->param( 'pid' );
+
+    # XXX check if wizard is in the list of wizards.
+    
+    $self->stash(
+        project_id => $project_id,
+        wizard => $wizard,
+        );
+
+    $self->render( template => 'alambic/wizards/$wizard' );
+}
+
+
+# New project from wizard screen for Alambic admin.
+sub projects_wizards_new_check_post {
+    my $self = shift;
+    
+    my $project_id = $self->param( 'id' );
+    my $project_name = $self->param( 'name' );
+    my $project_active = $self->param( 'is_active' );
+    
+    my $project = $self->app->al->create_project_from_wizard( $project_id, $project_name, '', $project_active );
+
+    my $msg = "Project '$project_name' ($project_id) has been created.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( "/admin/projects/$project_id" );
+}
+
+
+# Run project screen for Alambic admin.
+sub projects_run {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+
+    # Start minion job
+    my $job = $self->minion->enqueue( run_project => [ $project_id ] => { delay => 0 });
+#    my $project = $self->app->al->run_project( $project_id );
+
+    my $msg = "Project run for $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Delete project screen for Alambic admin.
+sub projects_del {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+
+    $self->app->al->delete_project($project_id);
+    my $msg = "Project $project_id has been deleted.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects' );
+}
+
+
+# Edit project screen for Alambic admin.
+sub projects_edit {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+
+    my $conf = $self->app->al->get_project($project_id);
+    my $project_name = $conf->name();
+    my $project_active = $conf->active();
+    my $project_desc = $conf->desc();
+    
+    $self->stash(
+        id => $project_id,
+        name => $project_name,
+	desc => $project_desc,
+	is_active => $project_active,
+        );
+    
+    # Render template for main admin section
+    $self->render( template => 'alambic/admin/project_set' );
+}
+
+
+# Edit project screen for Alambic admin (POST).
+sub projects_edit_post {
+    my $self = shift;
+    
+    my $project_id = $self->param( 'id' );
+    my $project_name = $self->param( 'name' );
+    my $project_desc = $self->param( 'desc' );
+    my $project_active = $self->param( 'is_active' );
+
+    my $project = $self->app->al->set_project($project_id, $project_name, 
+					      $project_desc, $project_active);
+	
+    my $msg = "Project '$project_name' ($project_id) has been updated.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Add plugin to project screen for Alambic admin.
+sub projects_add_plugin {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+    my $plugin_id = $self->param( 'plid' );
+    
+    # Prepare data for template.
+    my $conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
+    my $conf_project = $self->app->al->get_project($project_id)->get_plugins()->{$plugin_id};
+
+    $self->stash(
+        project => $project_id,
+        conf => $conf,
+	conf_project => $conf_project,
+        );
+    
+    # Render template for main admin section
+    $self->render( template => 'alambic/admin/project_plugin_add' );
+}
+
+
+# Add plugin to project screen for Alambic admin (POST).
+sub projects_add_plugin_post {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+    my $plugin_id = $self->param( 'plid' );
+    
+    my $conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
+
+    my %args;
+    foreach my $param ( keys %{$conf->{'params'}} ) {
+        $args{$param} = $self->param( $param );
     }
 
-    # Enqueue job
-    my $job = $self->minion->enqueue(run_project => [ $project_id ] => { delay => 0 });
+    $self->app->al->add_project_plugin($project_id, $plugin_id, \%args);
 
-    $self->flash( msg => "Job [$job] has been queued." );
-    $self->redirect_to( "/admin/project/$project_id" );
+    my $msg = "Plugin $plugin_id has been added to project $project_id.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
 }
+
+
+# Run project screen for Alambic admin.
+sub projects_run_plugin {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+    my $plugin_id = $self->param( 'plid' );
+
+    my $job = $self->minion->enqueue( run_plugin => [ $project_id, $plugin_id ] => { delay => 0 });
+#    $self->app->al->get_project($project_id)->run_plugin($plugin_id);
+
+    my $msg = "Plugin $plugin_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>] on project $project_id.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Edit project screen for Alambic admin.
+sub projects_run_pre {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+
+    my $job = $self->minion->enqueue( run_plugins => [ $project_id ] => { delay => 0 });
+
+    my $msg = "Project run Pre plugins on project $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Edit project screen for Alambic admin.
+sub projects_run_qm {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+
+    my $job = $self->minion->enqueue( run_qm => [ $project_id ] => { delay => 0 });
+
+    my $msg = "Project run QM on project $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Edit project screen for Alambic admin.
+sub projects_run_posts {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+
+    my $job = $self->minion->enqueue( run_posts => [ $project_id ] => { delay => 0 });
+
+    my $msg = "Project run post plugins on project $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+# Edit project screen for Alambic admin.
+sub projects_del_plugin {
+    my $self = shift;
+    my $project_id = $self->param( 'pid' );
+    my $plugin_id = $self->param( 'plid' );
+
+    $self->app->al->del_project_plugin($project_id, $plugin_id);
+
+    my $msg = "Plugin $plugin_id has been removed from project $project_id.";
+    
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
 
 1;

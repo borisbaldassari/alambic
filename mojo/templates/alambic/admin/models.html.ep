@@ -1,0 +1,95 @@
+% use File::Basename qw( fileparse );
+% use Data::Dumper;
+
+            <h1 class="al-h1"><small>Administration</small> Alambic Models</h1>
+            <br />
+
+% my $msg = flash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%= $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+%= include 'alambic/admin/admin_menu', current => '/admin/models'
+
+            <div class="row">
+              <div class="col-sm-6">
+		<p>Models include the definition of metrics, attributes, and the quality model itself.</p>
+		<br />
+	      </div>
+	      <div class="col-sm-6">
+                <div class="list-group">
+                  <a class="list-group-item" href="/admin/models/init" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Re-read models</a>
+                  <a class="list-group-item" href="/admin/models/import" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Import JSON</a>
+                </div>
+              </div>
+            </div>
+	      	    
+% my $metrics = $models->get_metrics();
+            <div class="row">	      
+              <div class="col-md-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Metrics</div>
+                  <div class="panel-body"><%= scalar( keys %$metrics ) %> metrics defined.</div>
+                  <table class="table table-striped">
+% foreach my $file (@$files_metrics) {
+%   my $file_short = fileparse($file);
+                    <tr>
+                      <td><%= $file_short %></td>
+		      <td align="right"><a href="/admin/models/import?file=<%= $file_short %>&type=metrics"><i class="fa fa-upload"></i></a></td>
+		    </tr>
+% }
+                  </table>	    
+		</div>
+		
+% my $attributes = $models->get_attributes();
+                <div class="panel panel-default">
+                  <div class="panel-heading">Attributes</div>
+                  <div class="panel-body"><%= scalar( keys %$attributes ) %> attributes defined.</div>
+                  <table class="table table-striped">
+% foreach my $file (@$files_attributes) {
+%   my $file_short = fileparse($file);
+                    <tr>
+                      <td><%= $file_short %></td>
+		      <td align="right"><a href="/admin/models/import?file=<%= $file_short %>&type=attributes"><i class="fa fa-upload"></i></a></td>
+		    </tr>
+% }
+                  </table>	    
+		</div>
+		
+% my $qm = $models->get_qm();
+                <div class="panel panel-default">
+                  <div class="panel-heading">Quality Model</div>
+                  <div class="panel-body">
+% if (defined($qm) && exists($qm->[0])) {
+		    Quality model defined, with [<%= $qm->[0]->{'mnemo'} %>] at its root.
+% } else {
+		    Quality model is NOT defined.
+% }
+		  </div>
+                  <table class="table table-striped">
+% foreach my $file (@$files_qm) {
+%   my $file_short = fileparse($file);
+                    <tr>
+                      <td><%= $file_short %></td>
+		      <td align="right"><a href="/admin/models/import?file=<%= $file_short %>&type=qm"><i class="fa fa-upload"></i></a></td>
+		    </tr>
+% }
+                  </table>	    
+		</div>
+
+		<div class="col-md-6">
+		</div>
+              </div>
+            </div>
+
+
+
+	    
+            

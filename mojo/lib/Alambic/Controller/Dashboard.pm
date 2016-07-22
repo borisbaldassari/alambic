@@ -1,161 +1,252 @@
 package Alambic::Controller::Dashboard;
-
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
 
 
-# This action will render a template
-sub display {
+# Main page for project dashboard.
+sub display_summary {
     my $self = shift;
 
-    $self->param( 'id' ) =~ m!^(.*?)(_(\w+))?(.html)?$!;
-
+    $self->param( 'id' ) =~ m!^(.*?)(\.html)?$!;
     my $project_id = $1;
-    my $page_id = $3 || "";
+    my $page_id = $self->param( 'page' ) || '';
+    
+    my $run = $self->app->al->get_project_last_run($project_id);
+#    print "# In Dashboard " . Dumper($run);
+    # Prepare data for template.
+    $self->stash(
+	project_id => $project_id,
+	run => $run,
+	);
+    
+    
+    $self->render(template => 'alambic/dashboard/dashboard');
+}
 
-    $self->app->log->info( "[Controller::Dashboards] Project [$project_id] [$page_id]." );
+# Main page for project dashboard.
+sub display_project {
+    my $self = shift;
 
+    my $project_id = $self->param( 'id' );
+    my $page_id = $self->param( 'page' ) || '';
+
+    if ($page_id =~ m!\.json$!) {
+	&_display_project_json($self, $project_id, $page_id);
+    } else {
+	&_display_project_html($self, $project_id, $page_id);
+    }
+
+}
+
+
+sub display_plugins {
+    my $self = shift;
+
+    my $project_id = $self->param( 'id' );
+    my $plugin_id = $self->param( 'plugin' );
+    my $page_id = $self->param( 'page' ) || '';
+
+    my $plugin_conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
+    
+#    print "# In Dashboard::display_plugins " . $project_id . ' ' . $page_id . ".\n";
+
+    if ($plugin_conf->{'type'} =~ m!^cdata$!) {
+	
+    }
+
+    
+    # Action depends on the type of file requested
+    if ( grep( /$page_id/, keys %{$plugin_conf->{'provides_viz'}} ) ) {
+
+	# If the page is a viz, render 'alambic/dashboard/plugins'
+	$self->stash(
+	    project_id => $project_id,
+	    plugin_id => $plugin_id,
+	    page_id => $page_id,
+	    );
+	$self->render( template => 'alambic/dashboard/plugins' );
+	
+    } elsif ( grep( /$page_id(.html)?/, map {$plugin_conf->{'provides_figs'}{$_}} keys %{$plugin_conf->{'provides_figs'}} ) ) {
+	
+	# If the page is a fig, reply static file under 'projects/output'
+	$self->reply->static( '../projects/' . $project_id . '/output/' . $page_id );
+
+    } elsif ( grep( /$page_id/, keys %{$plugin_conf->{'provides_data'}} ) ) {
+
+	# If the page is a data, reply static file under 'projects/output'
+	$self->reply->static( '../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id );
+
+    } else {
+
+	$self->flash( msg => "Cannot find [$project_id/$plugin_id/$page_id]." );
+	$self->redirect_to( '/projects/' . $project_id );
+
+    }
+}
+
+
+# Manages custom data post requests
+sub display_plugins_post {
+    my $self = shift;
+
+    my $project_id = $self->param( 'id' );
+    my $plugin_id = $self->param( 'plugin' );
+    my $page_id = $self->param( 'page' ) || '';
+}
+
+
+
+sub _display_project_json($$) {
+    my ($self, $project_id, $page_id) = @_;
+    
+    my $run = $self->app->al->get_project_last_run($project_id);
+    my $project = $self->app->al->get_project($project_id);
+    
+    if ($page_id =~ m!^qm.json$!) {
+
+	my $models = $self->app->al->get_models();
+	my $qm_ret = $project->get_qm($models->get_qm(), $models->get_attributes(), $models->get_metrics());
+	$self->render(json => $qm_ret);
+
+    } elsif ($page_id =~ m!^qm_full.json$!) {
+        		
+	my $models = $self->app->al->get_models();
+	my $qm_ret = $project->get_qm($models->get_qm(), $models->get_attributes(), $models->get_metrics());
+	my $qm_full = {
+	    "name" => "Alambic Full Quality Model",
+	    "version" => "" . localtime(),
+	    "children" => $qm_ret,
+	};
+        $self->render(json => $qm_full); 
+
+    } elsif ($page_id =~ m!^attributes.json$!) {
+	
+        my $attributes = $self->app->al->get_project_last_run($project_id)->{'attributes'};
+        $self->render(json => $attributes);
+                
+    } elsif ($page_id =~ m!^metrics.json$!) {
+        
+        my $metrics = $self->app->al->get_project_last_run($project_id)->{'metrics'};
+        $self->render(json => $metrics);
+                
+    } elsif ($page_id =~ m!^cdata.json$!) {
+        
+        my $cdata = $self->app->al->get_project_last_run($project_id)->{'cdata'};
+        $self->render(json => $cdata);
+
+    } elsif ($page_id =~ m!^info.json$!) {
+        
+        my $info = $self->app->al->get_project_last_run($project_id)->{'info'};
+        $self->render(json => $info);
+
+    } elsif ($page_id =~ m!^recs.json$!) {
+	
+        my $recs = $self->app->al->get_project_last_run($project_id)->{'recs'};
+        $self->render(json => $recs);
+        
+    } else {
+	
+	$self->flash( msg => "Cannot find [$project_id/$page_id]." );
+	$self->redirect_to( '/projects/' . $project_id );
+	
+    }
+
+}
+
+sub _display_project_html($$) {
+    my ($self, $project_id, $page_id) = @_;
+
+    my $run = $self->app->al->get_project_last_run($project_id);
+    $page_id =~ s!\.html$!!;
+    
     if ($page_id =~ m!^qm$!) {
 
-        # Prepare data for template.
+        $self->stash( project_id => $project_id );    
+        
+        $self->render(template => 'alambic/dashboard/qm');
+	
+    } elsif ($page_id =~ m!^data$!) {
+        
         $self->stash(
             project_id => $project_id,
-            );    
+	    run => $run,
+            );
         
-        # Render template "alambic/dashboard/qm.html.ep"
-        $self->render(template => 'alambic/dashboard/qm');   
+        $self->render(template => 'alambic/dashboard/data'); 
 
-    } elsif ($page_id =~ m!^attrs$!) {
+    } elsif ($page_id =~ m!^info$!) {
         
-        my %attributes = %{$self->models->get_attributes()};
-
-        # Prepare data for template.
         $self->stash(
-            attributes => \%attributes,
             project_id => $project_id,
-            project_attrs => $self->app->projects->get_project_attrs($project_id),
-            project_attrs_conf => $self->app->projects->get_project_attrs_conf($project_id),
-            project_attrs_last => $self->app->projects->get_project_attrs_last($project_id),
-            );    
+	    run => $run,
+            );
         
-        # Render template "alambic/dashboard/attributes.html.ep"
-        $self->render(template => 'alambic/dashboard/attributes');
-        
-    } elsif ($page_id =~ m!^questions$!) {
-        
-        my %questions = %{$self->models->get_questions()};
-
-        # Prepare data for template.
-        $self->stash(
-            questions => \%questions,
-            project_id => $project_id,
-            project_questions => $self->app->projects->get_project_questions($project_id),
-            project_questions_conf => $self->app->projects->get_project_questions_conf($project_id),
-            );    
-        
-        # Render template "alambic/dashboard/questions.html.ep"
-        $self->render(template => 'alambic/dashboard/questions');
+        $self->render(template => 'alambic/dashboard/info');
         
     } elsif ($page_id =~ m!^metrics!) {
         
-        my %metrics = %{$self->models->get_metrics()};
-        my $all = $self->param('all');
-
-        # Prepare data for template.
+	my $models = $self->app->al->get_models();
+	my $all = $self->param('all');
+	
         $self->stash(
             all => $all,
-            metrics => \%metrics,
             project_id => $project_id,
-            project_metrics => $self->app->projects->get_project_metrics($project_id),
-            project_metrics_last => $self->app->projects->get_project_metrics_last($project_id),
-            project_inds => $self->app->projects->get_project_indicators($project_id),
-            );    
-        
-        # Render template "alambic/dashboard/metrics.html.ep"
-        $self->render(template => 'alambic/dashboard/metrics');
-        
-    } elsif ($page_id =~ m!^practices$!) {
-        
-        my %rules = %{$self->models->get_rules()};
-
-        # Prepare data for template.
-        $self->stash(
-            rules => \%rules,
-            project_id => $project_id,
-            project_violations => $self->app->projects->get_project_violations($project_id),
-            );    
-        
-        # Render template "alambic/dashboard/practices.html.ep"
-        $self->render(template => 'alambic/dashboard/practices');
-        
-    } elsif ($page_id =~ m!^errors$!) {
-        
-        # Prepare data for template.
-        $self->stash(
-            project_id => $project_id,
-            project_errors => $self->app->projects->get_project_errors($project_id),
-            );    
-        
-        # Render template "alambic/dashboard/errors.html.ep"
-        $self->render(template => 'alambic/dashboard/errors');
-        
-    } elsif ($page_id =~ m!^cdata$!) {
-        
-        my %cds;
-        foreach my $cd ( keys %{$self->app->projects->get_project_info($project_id)->{'cdata'}} ) {
-            $cds{$cd} = $self->app->projects->get_project_cd_content($project_id, $cd);
-        }
-
-        # Prepare data for template.
-        $self->stash(
-            project_id => $project_id,
-            project_comments => $self->app->projects->get_project_comments($project_id),
-            project_cdata => \%cds,
-            );    
-        
-        # Render template "alambic/dashboard/errors.html.ep"
-        $self->render(template => 'alambic/dashboard/customdata');
-        
-    } elsif ($page_id =~ m!^plugins_(.+)$!) {
-
-        my $plugin_id = $1;
-        # Prepare data for template.
-        $self->stash(
-            project_id => $project_id,
-            plugin_id => $plugin_id,
+	    run => $run,
+	    models => $models,
             );
         
-        # Render template for plugins
-        $self->render(template => 'alambic/dashboard/plugins');
-        
-    } else {
-        
-        my %cds;
-#        my @cdata = keys %{$self->app->projects->get_project_info($project_id)->{'cdata'}};
-        foreach my $cd ( () ) {
-            $cds{$cd} = $self->app->projects->get_project_cd_content($project_id, $cd);
-        }
+        $self->render(template => 'alambic/dashboard/metrics');
 
-        # Prepare data for template.
+    } elsif ($page_id =~ m!^attributes$!) {
+        
         $self->stash(
-            attributes => $self->models->get_attributes(),
             project_id => $project_id,
-            project_attrs => $self->app->projects->get_project_attrs($project_id),
-            project_attrs_conf => $self->app->projects->get_project_attrs_conf($project_id),
-            project_attrs_last => $self->app->projects->get_project_attrs_last($project_id),
-            project_metrics => $self->app->projects->get_project_metrics($project_id),
-            project_metrics_last => $self->app->projects->get_project_metrics_last($project_id),
-            project_pmi => $self->app->projects->get_project_pmi($project_id),
-            project_comments => $self->app->projects->get_project_comments($project_id),
-            project_cdata => \%cds,
+	    attributes => $run->{'attributes'},
+	    attributes_conf => $run->{'attributes_conf'},
+	    models => $self->app->al->get_models(),
+            );
+        
+        $self->render(template => 'alambic/dashboard/attributes');
+        
+    } elsif ($page_id =~ m!^recs!) {
+        
+        my $all = $self->param('all');
+
+        $self->stash(
+            project_id => $project_id,
+	    recs => $run->{'recs'},
+            );
+        
+        $self->render(template => 'alambic/dashboard/recs');
+        
+    } elsif ($page_id =~ m!^log$!) {
+        
+        $self->stash(
+            project_id => $project_id,
             );    
         
-        # Render template "alambic/dashboard.html.ep"
-        $self->render(template => 'alambic/dashboard/dashboard');
+        $self->render(template => 'alambic/dashboard/log');
+        
+    } elsif ( grep( /$page_id/, keys %{$self->app->al->get_plugins()->get_names_all()} ) ) {
+        
+        $self->stash(
+            project_id => $project_id,
+	    plugin_id => $page_id,
+	    run => $run,
+	    models => $self->app->al->get_models(),
+	    plugin => $self->app->al->get_plugins()->get_plugin($page_id),
+            );
+        
+        $self->render(template => 'alambic/dashboard/plugin');
+        
+    } else {
+	
+	$self->reply->not_found;
 
     }
 
 }
+
 
 1;

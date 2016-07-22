@@ -1,0 +1,78 @@
+{
+    "name": "Alambic Metrics for Issue Tracking",
+    "version": "0.1",
+    "children": [
+	{
+            "name": "ITS issues opened lifetime",
+            "mnemo": "ITS_OPENED",
+            "desc": [
+		"Number of issues opened during the overall time range covered by the analysis.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Identities of openers are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
+            ],
+            "scale": [1,2,3,4]
+	},
+	{
+            "name": "ITS issue openers lifetime",
+            "mnemo": "ITS_OPENERS",
+            "desc": [
+		"Number of distinct identities opening tickets during the overall time range covered by the analysis.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Identities of openers are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
+            ],
+            "scale": [1,2,3,4]
+	},
+	{
+            "name": "ITS issues closed lifetime",
+            "mnemo": "ITS_CLOSED",
+            "desc": [
+		"Number of issues closed during the overall time range covered by the analysis.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Identities of openers are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
+            ],
+            "scale": [1,2,3,4]
+	},
+	{
+            "name": "ITS issue closers lifetime",
+            "mnemo": "ITS_CLOSERS",
+            "desc": [
+		"Number of distinct identities closing tickets during during the overall time range covered by the analysis.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Update means an operation on a ticket changing its state, or adding information. Opening and closing a ticket are considered as updates. Identities of updaters are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "ITS issues changed lifetime",
+            "mnemo": "ITS_CHANGED",
+            "desc": [
+		"Number of updates on issues during the overall time range covered by the analysis.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Update means an operation on a ticket changing its state, or adding information. Opening and closing a ticket are considered as updates. Identities of updaters are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "ITS issues changers lifetime",
+            "mnemo": "ITS_CHANGERS",
+            "desc": [
+		"Number of distinct identities updating tickets during the overall time range covered by the analysis.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Update means an operation on a ticket changing its state, or adding information. Opening and closing a ticket are considered as updates. Identities of updaters are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "ITS issues closed 1 month",
+            "mnemo": "ITS_CLOSED_30",
+            "desc": [
+		"Number of issues closed during the last month in the issue tracking system.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Opened means that the ticket information was submitted to the issue traking system for the first time for that ticket. Identities of openers are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included). Number of lines are those calculated at the end of the period of analysis."
+            ],
+            "scale": [1,2,3,4]
+	},
+	{
+            "name": "ITS issue closers 1 month",
+            "mnemo": "ITS_CLOSERS_30",
+            "desc": [
+		"Number of distinct identities closing tickets during the last month in the issue tracking system.",
+		"The subset of tickets considered from the issue tracking system are those specified in the project documentation, for example by specifying a tracker or a project name appearing in ticket data. Update means an operation on a ticket changing its state, or adding information. Opening and closing a ticket are considered as updates. Identities of updaters are the character strings found in the corresponding field in the ticket information. Time range is measured as a calendar month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            ],
+            "scale": [2,4,9.75,80]
+	}
+    ]
+}

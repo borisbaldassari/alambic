@@ -4,6 +4,9 @@ use base 'Mojolicious::Plugin';
 use strict; 
 use warnings;
 
+use Alambic::Model::RepoFS;
+use Alambic::Tools::R;
+
 use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
 use DateTime;
@@ -14,13 +17,18 @@ use File::Path qw(remove_tree);
 
 # Main configuration hash for the plugin
 my %conf = (
-    "id" => "hudson",
+    "id" => "Hudson",
     "name" => "Hudson CI",
-    "desc" => "Retrieves information from the Hudson continuous integration engine.",
-    "ability" => [ 'metrics', 'viz', 'fig' ],
-    "requires" => {
-        "hudson_url" => "",
+    "desc" => [ 
+	"Retrieves information from the Hudson continuous integration engine.",
+    ],
+    "type" => "pre",
+    "ability" => [ 'metrics', 'viz', 'figs', 'recs' ],
+    "params" => {
+        "hudson_url" => "The base URL for the Hudson instance. In other words, the URL one would point to to get the main page of the project's Hudson, with the list of jobs.",
     },
+    "provides_info" => [
+    ],
     "provides_metrics" => {
         "JOBS" => "JOBS", 
         "JOBS_GREEN" => "JOBS_GREEN", 
@@ -28,92 +36,95 @@ my %conf = (
         "JOBS_RED" => "JOBS_RED", 
         "JOBS_FAILED_1W" => "JOBS_FAILED_1W", # last build is failed for more than 1W old
     },
-    "provides_files" => [
-    ],
-    "provides_viz" => {
-        "hudson" => "Hudson",
+    "provides_data" => {
     },
-    "provides_fig" => {
+    "provides_figs" => {
         'hudson_hist.rmd' => "hudson_hist.html",
         'hudson_pie.rmd' => "hudson_pie.html",
     },
+    "provides_recs" => [
+	"CI_FAILING_JOBS",
+    ],
+    "provides_viz" => {
+        "hudson.html" => "Hudson CI",
+    },
 );
 
-my $app;
 
-sub register {
-    my $self = shift;
-    $app = shift;
+# Constructor
+sub new {
+    my ($class) = @_;
     
+    return bless {}, $class;
 }
 
 sub get_conf() {
     return \%conf;
 }
 
-sub check_plugin() {
 
+# Run plugin: retrieves data + compute_data 
+sub run_plugin($$) {
+    my ($self, $project_id, $conf) = @_;
+    
+    my %ret = (
+	'metrics' => {},
+	'info' => {},
+	'recs' => {},
+	'log' => [],
+	);
+
+    my $repofs = Alambic::Model::RepoFS->new();
+
+    my $hudson_url = $conf->{'hudson_url'};
+
+    $ret{'log'} = &_retrieve_data( $project_id, $hudson_url, $repofs );
+    
+    my $tmp_ret = &_compute_data( $project_id, $hudson_url, $repofs );
+    
+    $ret{'metrics'} = $tmp_ret->{'metrics'};
+    $ret{'recs'} = $tmp_ret->{'recs'};
+    push( @{$ret{'log'}}, @{$tmp_ret->{'log'}} );
+    
+    return \%ret;
 }
 
-sub check_project() {
-    my $self = shift;
+sub _retrieve_data($) {
     my $project_id = shift;
-
-    return [];
-}
-
-sub retrieve_data($) {
-    my $self = shift;
-    my $project_id = shift;
-
-    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
-    my $hudson_url = $project_conf->{'hudson_url'};
+    my $hudson_url = shift;
+    my $repofs = shift;
     
     my $hudson;
     my @log;
 
     my $url = $hudson_url . "/api/json?depth=2";
-    
-    print "[Plugins::Hudson] Starting retrieval of data for [$project_id] url [$url].\n";
-    $app->log->info("[Plugins::Hudson] Starting retrieval of data for [$project_id] url [$url].");
+    push( @log, "[Plugins::Hudson] Starting retrieval of data for [$project_id] url [$url]." );
     
     # Fetch json file from the dashboard.eclipse.org
     my $ua = Mojo::UserAgent->new;
     my $json = $ua->get($url)->res->body;
     if (length($json) < 10) {
-	push( @log, "Cannot find [$url].\n" ) ;
+	push( @log, "[Plugins::Hudson] Cannot find [$url].\n" ) ;
     } else {
-	$hudson = decode_json( $json );
+	$repofs->write_input( $project_id, "import_hudson.json", $json );
     }
-    
-    my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_hudson.json";
-    push( @log, "Retrieving [$url] to [$file_out].\n" );
-    open my $fh, ">", $file_out;
-    print $fh encode_json( $hudson );
-    close $fh;
 
     return \@log;
 }
 
-sub compute_data($) {
-    my $self = shift;
+sub _compute_data($) {
     my $project_id = shift;
+    my $hudson_url = shift;
+    my $repofs = shift;
 
-    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
-    my $hudson_url = $project_conf->{'hudson_url'};
-
-    $app->log->info("[Plugins::Hudson] Starting compute data for [$project_id].");
-
+    my @log;
     my %metrics;
+    my @recs;
 
-    my $file_in = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_hudson.json";
-    my $json;
-    do { 
-        local $/;
-        open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
-        $json = <$fh>;
-        close $fh;
-    };
+    push( @log, "[Plugins::Hudson] Starting compute data for [$project_id]." );
+
+    # Read data from file in $data_input
+    my $json = $repofs->read_input( $project_id, "import_hudson.json" );
     my $hudson = decode_json($json);
 
     $metrics{'JOBS'} = scalar @{$hudson->{'jobs'}};
@@ -127,9 +138,9 @@ sub compute_data($) {
     my $date_1w = DateTime->now()->subtract(days => 7);
     my $date_1w_ms = $date_1w->epoch() * 1000;
 
-    print "############################ \n";
-    print "# Date is $date_now and $date_1w.\n";
-    print "############################ \n";
+#    print "############################ \n";
+#    print "# Date is $date_now and $date_1w.\n";
+#    print "############################ \n";
     
     foreach my $job (@{$hudson->{'jobs'}}) {
 	if ($job->{'color'} =~ m!green!) { 
@@ -141,52 +152,41 @@ sub compute_data($) {
 	}
 
 	my $job_last_success = $job->{'lastSuccessfulBuild'}{'timestamp'} || 0;
-	print "Job: " . $date_1w_ms . " " . $job->{'lastSuccessfulBuild'}{'timestamp'} . 
-	    " " . $job->{'color'} . "\n";
+
 	# If last successful build is more than 1W old, count it.
 	if ( $job_last_success < $date_1w_ms
 	    && $job->{'color'} =~ m!red! ) {
 	    $metrics{'JOBS_FAILED_1W'}++;
+	    my $rec = {
+		"rid" => "CI_FAILING_JOBS",
+		"severity" => 3,
+		"desc" => "Job " . $job->{'name'} . " has been failing for more than 1 week. You should either disable it if it's not relevant anymore, or fix it.",
+	    };
+	    push( @recs, $rec );
 	}
     }
 
-    my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_metrics_hudson.json";
-    my $json_content = encode_json(\%metrics);
-    do { 
-        local $/;
-        open my $fh, '>', $file_out or die "Could not open data file [$file_out].\n";
-        print $fh $json_content;
-        close $fh;
-    };
+    # Write metrics json file to disk.
+    $repofs->write_output( $project_id, "metrics_hudson.json", encode_json(\%metrics) );
 
     # Write csv file for metrics
     my @metrics_csv = sort map {$conf{'provides_metrics'}{$_}} keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics_csv) . "\n";
     $csv_out .= join( ',', map { $metrics{$_} } sort @metrics_csv) . "\n";
-
-    my $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/Hudson/" . $project_id . "_hudson_metrics.csv";
-    print "Writing metrics to file [$file_csv].\n";
-    open(my $fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
-    print $fh $csv_out;
-    close $fh;
+    
+    $repofs->write_plugin( 'Hudson', $project_id . "_hudson_metrics.csv", $csv_out );
 
     # Write csv file for main information about hudson instance
     @metrics_csv = ('name', 'desc', 'jobs', 'url');
     $csv_out = join( ',', @metrics_csv) . "\n";
     my $node_desc = $hudson->{'nodeDescription'};
-    print "DBG node_desc [$node_desc].\n";
     $node_desc =~ s!"!\"!;
-    print "DBG node_desc after [$node_desc].\n";
     $csv_out .= $hudson->{'nodeName'} . ','
 	. '"' . $node_desc . '"' . ','
 	. $metrics{'JOBS'} . ','
 	. $hudson_url . "\n";
 
-    $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/Hudson/" . $project_id . "_hudson_main.csv";
-    print "Writing metrics to file [$file_csv].\n";
-    open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
-    print $fh $csv_out;
-    close $fh;
+    $repofs->write_plugin( 'Hudson', $project_id . "_hudson_main.csv", $csv_out );
     
     # Write csv file for jobs
     my @jobs_metrics = ('name', 'buildable', 'color', 
@@ -196,15 +196,12 @@ sub compute_data($) {
 			'next_build_number', 'health_report', 'url');
     $csv_out = join( ',', @jobs_metrics) . "\n";
     my $sep = ',';
-    print "Building jobs csv file.\n";
-    #    print Dumper(map {$_->{'name'}} @{$hudson->{'jobs'}});
 
     my @builds_metrics = ('time', 'name', 'result', 'id', 'number', 'duration', 'url');
     my $csv_out_builds = join( ',', @builds_metrics) . "\n";
 
     foreach my $job (@{$hudson->{'jobs'}}) {
 	my $name = $job->{'name'};
-	print "Building jobs csv file: $name.\n";
 	my $lb_id = $job->{'lastBuild'}->{'number'} || 0;
 	my $lb_time = $job->{'lastBuild'}->{'timestamp'} || 0;
 	my $lb_duration = $job->{'lastBuild'}->{'duration'} || 0;
@@ -252,98 +249,28 @@ sub compute_data($) {
     }
 
     # Write jobs csv file
-    $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/Hudson/" . $project_id . "_hudson_jobs.csv";
-    open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
-    print $fh $csv_out;
-    close $fh;
+    $repofs->write_plugin( 'Hudson', $project_id . "_hudson_jobs.csv", $csv_out );
 
     # Write builds csv file
-    $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/Hudson/" . $project_id . "_hudson_builds.csv";
-    open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
-    print $fh $csv_out_builds;
-    close $fh;
+    $repofs->write_plugin( 'Hudson', $project_id . "_hudson_builds.csv", $csv_out_builds );
     
     # Now execute the main R script.
-    my $r_dir = $app->home->rel_dir('lib') . "/Alambic/Plugins/Hudson/";
-    my $r_md = "Hudson.Rmd";
-    my $r_md_out = "${project_id}_hudson.inc";
-
-    chdir $r_dir;
-    # Create dir for figures.
-    if (! -d "figures/" ) {
-        print "Creating directory [figures/].\n";
-        mkdir "figures/";
-    }
-    # Create dir for figures/hudson.
-    if (! -d "figures/hudson" ) {
-        print "Creating directory [figures/hudson].\n";
-        mkdir "figures/hudson";
-    }
-    # Create dir for figures/hudson/project_id.
-    if (! -d "figures/hudson/${project_id}" ) {
-        print "Creating directory [figures/hudson/${project_id}].\n";
-        mkdir "figures/hudson/${project_id}";
-    }
-
-    $app->log->info( "Executing R script [$r_md] in [$r_dir] with [$project_id]." );
-    $app->log->info( "Result to be stored in [$r_md_out]." );
-
-    # to get r bin path.
-    my $r_cmd = "Rscript -e \"library(rmarkdown); " 
-        . "project.id <- '${project_id}'; plugin.id <- 'hudson'; "
-        . "rmarkdown::render('${r_md}', output_format='html_fragment', output_file='$r_md_out')\"";
-
-    $app->log->info( "Exec [$r_cmd]." );
-    my @out = `$r_cmd`;
-    print @out;
-
-    # Now move files to data/project
-    my $dir_out = $app->config->{'dir_input'} . "/" . $project_id . "/";
-    move( "${r_md_out}", $dir_out );
-
-    # Create dir for figures.
-    if (! -d "${dir_out}/figures/" ) {
-        print "Creating directory [${dir_out}/figures/].\n";
-        mkdir "${dir_out}/figures/";
+    push( @log, "[Plugins::Hudson] Executing R main file." );
+    my $r = Alambic::Tools::R->new();
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'Hudson', $project_id, 'hudson.Rmd' )} );
+    
+    # And execute the figures R scripts.
+    my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
+    foreach my $fig (sort @figs) {
+	push( @log, "[Plugins::Hudson] Executing R fig file [$fig]." );
+	@log = ( @log, @{$r->knit_rmarkdown_html( 'Hudson', $project_id, $fig )} );
     }
     
-    # Now execute R scripts for pictures.
-    foreach my $script (keys %{$conf{'provides_fig'}}) {
-	$r_md = $script;
-	$r_md_out = "figures/hudson/" . $project_id . '/' . $conf{'provides_fig'}{$script};
-	
-	$app->log->info( "Executing R fig script [$r_md] in [$r_dir] with [$project_id]." );
-	$app->log->info( "Result to be stored in [$r_md_out]." );
-	
-	# to get r bin path.
-	my $r_cmd = "Rscript -e \"library(rmarkdown); " 
-	    . "project.id <- '${project_id}'; "
-	    . "rmarkdown::render('${r_md}', output_format='html_document', output_file='$r_md_out')\"";
-	
-	$app->log->info( "Exec [$r_cmd]." );
-	my @out = `$r_cmd`;
-	#print @out;
-    }
-
-
-    # Move figures to data/project
-    my $dir_in_fig = "figures/hudson/". $project_id . '/';
-    my $dir_out_fig = $app->config->{'dir_input'} . "/" . $project_id . "/figures/hudson/";
-    if ( -e $dir_out_fig ) {
-        print "Target directory [$dir_out_fig] exists. Removing it.\n";
-        my $ret = remove_tree($dir_out_fig, {verbose => 1});
-    }
-    print "Creating directory [${dir_out_fig}].\n";
-    mkdir "${dir_out_fig}";
-    
-    my $files = ${dir_in_fig} . "*";
-    my @files = glob qq(${files});
-    foreach my $file (@files) {
-	my $ret = move($file, $dir_out_fig);
-	$app->log->info( "Moved files from ${file} to $dir_out_fig. ret $ret." );
-    }
-    
-    return ["Copied " . scalar( keys %metrics ) . " metrics."];
+    return {
+	"metrics" => \%metrics,
+	"recs" => \@recs,
+	"log" => \@log,
+    };
 }
 
 

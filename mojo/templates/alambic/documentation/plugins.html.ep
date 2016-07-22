@@ -1,9 +1,23 @@
 
+% my $type = stash( 'type' );
+% my $plugins = app->al->get_plugins();
+% my $pis_list = $plugins->get_names_all();
+% my $pis_list_pre = $plugins->get_list_plugins_pre();
+% my $pis_list_cdata = $plugins->get_list_plugins_cdata();
+% my $pis_list_post = $plugins->get_list_plugins_post();
+% my $pis_list_global = $plugins->get_list_plugins_global();
+% my $pis_list_wiz = app->al->get_wizards()->get_names_all();
+% my $projects = app->al->get_projects_list('true');
+% my @projects = keys %$projects;
+
 <% my $icon_ability = begin %>
  % my $ability = shift;
  % my $icon;
  % if ($ability =~ m!metrics!) { $icon = "fa-tasks" }
- % elsif ($ability =~ m!files!) { $icon = "fa-file-o" }
+ % elsif ($ability =~ m!figs!) { $icon = "fa-picture-o" }
+ % elsif ($ability =~ m!info!) { $icon = "fa-info" }
+ % elsif ($ability =~ m!data!) { $icon = "fa-download" }
+ % elsif ($ability =~ m!recs!) { $icon = "fa-map-signs" }
  % elsif ($ability =~ m!viz!) { $icon = "fa-pie-chart" }
  % else { $icon = "fa-question" }
   <a href="#" data-toggle="tooltip" title="<%= $ability %>"><i class="fa <%= $icon %>"></i> <%= $ability %></a>
@@ -12,64 +26,211 @@
             <h1 class="al-h1"><small>Documentation</small> Plugins</h1>
             <br />
 
-            <p>Plugins add new functionalities to Alambic. They most notably provide new data sources for projects, computing and visualisation features, and can be easily customised to fit specific needs.</p>
-            <p>A random project is selected from the list to demonstrate the figures and visualisation pages for each plugin.</p>
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+% my $if_main_active = $type =~ m!^$! ? ' class="active"' : '';
+                <li role="presentation"<%== $if_main_active %>><a href="plugins">All&nbsp; <span class="badge"><%= scalar keys %$pis_list %></span></a>
+                </li>
+% my $if_pre_active = $type =~ m!^pre$! ? ' class="active"' : '';
+                <li role="presentation"<%== $if_pre_active %>>
+                  <a href="plugins?type=pre">Data sources (pre)&nbsp; <span class="badge"><%= scalar @$pis_list_pre %></span></a>
+                </li>
+% my $if_post_active = $type =~ m!^post$! ? ' class="active"' : '';
+                <li role="presentation"<%== $if_post_active %>>
+                  <a href="plugins?type=post">Post&nbsp; <span class="badge"><%= scalar @$pis_list_post %></span></a>
+                </li>
+% my $if_global_active = $type =~ m!^global$! ? ' class="active"' : '';
+                <li role="presentation"<%== $if_global_active %>>
+                  <a href="plugins?type=global">Global&nbsp; <span class="badge"><%= scalar @$pis_list_global %></span></a>
+                </li>
+% my $if_cdata_active = $type =~ m!^cdata$! ? ' class="active"' : '';
+                <li role="presentation"<%== $if_cdata_active %>>
+                  <a href="plugins?type=cdata">Custom data&nbsp; <span class="badge"><%= scalar @$pis_list_cdata %></span></a>
+                </li>
+% my $if_wiz_active = $type =~ m!^wiz$! ? ' class="active"' : '';
+                <li role="presentation"<%== $if_cdata_active %>>
+                  <a href="plugins?type=wiz">Wizards&nbsp; <span class="badge"><%= scalar keys %$pis_list_wiz %></span></a>
+                </li>
+              </ul>
+            </div>
 
-            <h3>Automatic data source plugins</h3>
+% if ( not defined($type) ) {
+            <h3>All plugins</h3>
+% } else {
+	    <br />
+% }
+	    
+
+            <p>Plugins add new functionalities to Alambic. They most notably provide new data sources for projects, computing and visualisation features, and can be easily customised to fit specific needs. Each plugin provides a set of <i>abilities</i>, which are features they provide to the system:</p>
+	    <ul>
+	      <li><b>Information</b>: meta-data, pieces of information relevant to the project. Examples are the project's description and name, the URL of repositories, etc.</li>
+	      <li><b>Metrics</b>: meta-data, pieces of information relevant to the project. Examples are the project's description and name, the URL of repositories, etc.</li>
+	      <li><b>Figures</b>: meta-data, pieces of information relevant to the project. Examples are the project's description and name, the URL of repositories, etc.</li>
+	      <li><b>Downloads</b>: meta-data, pieces of information relevant to the project. Examples are the project's description and name, the URL of repositories, etc.</li>
+	      <li><b>Recommendations</b>: meta-data, pieces of information relevant to the project. Examples are the project's description and name, the URL of repositories, etc.</li>
+	      <li><b>Visualisations</b>: meta-data, pieces of information relevant to the project. Examples are the project's description and name, the URL of repositories, etc.</li>
+	    </ul>
+	    <p>Plugins are organised into <i>types</i>, which define when they are executed and the information they have access to. </p>
+	    <ul>
+	      <li><b>Pre- plugins</b>, also known as <b>data source plugins</b>, are executed first. They usually retrieve information from a repository, and compute metrics and recommendations. </li>
+	      <li>When all pre- plugins are executed, Alambic computes the attributes and quality model and executes the <b>post- plugins</b>. These have access to all information, custom data, metrics, attributes and recommendations retrieved and computed by pre plugins, and are a good fit for project-level reports. </li>
+	      <li>When all projects have been executed, the <b>global plugins</b> are run. They have access to all information from all projects and are a good fit for installation-wide reports.</li>
+	    </ul>
+            <p>Two other types of plugins independent of project analysis are further defined:</p>
+	    <ul>
+	      <li><b>Custom data plugins</b> provide information entered by users, like comments or surveys. As such the data they provide is not synchronised with project runs, altough they still provide the same type of output (metrics, downloads, figures, etc.).</li>
+	      <li><b>Wizards</b> provide an easy way to setup a project with a predefined set of plugins. Wizards can execute code to initialise the plugins with the correct parameters and check consistency of entries.</li>
+	    </ul>
+	    <hr />
+
+% if ( not defined($type) or $type =~ /^pre/ ) {
+            <h3>Data source plugins</h3>
             <br />
 
-            <ul class="list-group">
-% my $pis_list = al_plugins->get_list_pis();
-% my @projects = app->projects->list_active_projects();
-% my $project_id = defined( $projects[0] ) ? $projects[0] : 'project_id';
-% foreach my $pi (sort @{$pis_list}) {
-%   my $conf = al_plugins->get_plugin($pi)->get_conf();
-              <li class="list-group-item">
-                <p><b><%= $conf->{'name'} %></b> &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
-                <div class="row">
-                  <div class="col-md-6">
-                    <p><b>ID</b>: <%= $conf->{'id'} %></p>
-                    <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'requires'}} ) %></p>                    
-                    <p><b>Description</b>: <%= $conf->{'desc'} %></p>
-                  </div>
-                  <div class="col-md-6">
-                    <p><b>Provides metrics</b><br />
-                    <%= join( ', ', map { $conf->{'provides_metrics'}->{$_} } keys %{$conf->{'provides_metrics'}} ) %></p>
-                    <p><b>Provides files</b> <%= join( ', ', map { '*_' . $_ . '.json' } @{$conf->{'provides_files'}} ) %></p>
-                    <p><b>Provides viz</b> <br />
-                    <%== join( ', ', map { '<a href="/projects/' . $project_id . '_plugins_' . $pi . '.html">' . $conf->{'provides_viz'}->{$_} . '</a>' } keys %{$conf->{'provides_viz'}} ) %></p>
-                    <p><b>Provides figures</b> <br />
-                    <%== join( ', ', map { '<a href="/projects/figures/' . $pi . '/' . $project_id . '/' . $conf->{'provides_fig'}->{$_} . '">' . $conf->{'provides_fig'}->{$_} . '</a>' } keys %{$conf->{'provides_fig'}} ) %></p>
-                  </div>
-                </div>
-              </li>
-% }
-            </ul>
-
+%   foreach my $pi (sort @$pis_list_pre) {
+%     my $conf = $plugins->get_plugin($pi)->get_conf();
+            <h4 id="<%= $pi %>"><%= $conf->{'name'} %></h4>
+	    <div class="row">
+              <div class="col-md-6">
+                <p><b>ID</b>: <%= $conf->{'id'} %></p>
+		<p><b>Abilities</b>: &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
+                <p><b>Description</b>: <br /><%== join( '<br />', @{$conf->{'desc'}}) %></p>
+                <p><b>Parameters</b>: <ul><li><%== join( '</li><li>', map { '<b>' . $_ . '</b> ' . $conf->{'params'}{$_} } sort keys %{$conf->{'params'}} ) %></li></ul>
+              </div>
+              <div class="col-md-6">
+                <p><b>Information</b><br />
+                  <%== join( ', ', sort @{$conf->{'provides_info'}} ) %></p>
+                <p><b>Metrics</b><br />
+                  <%== join( ', ', map { '<a href="/documentation/metrics.html#' . $conf->{'provides_metrics'}->{$_} . '">' . $conf->{'provides_metrics'}->{$_} . "</a>" } sort keys %{$conf->{'provides_metrics'}} ) %></p>
+                <p><b>Figures</b><br />
+                  <%== join( ', ', map { $conf->{'provides_figs'}->{$_} } sort keys %{$conf->{'provides_figs'}} ) %></p>
+                <p><b>Downloads</b><br />
+                  <%== join( "<br />", , map { $_ . ': ' .  $conf->{'provides_data'}->{$_} } sort keys %{$conf->{'provides_data'}} ) %></p>
+                <p><b>Recommendations</b><br />
+                  <%= join( ', ', map { $_ } sort @{$conf->{'provides_recs'}} ) %></p>
+                <p><b>Visualisation</b> <br />
+                  <%== join( ', ', map { '' . $conf->{'provides_viz'}->{$_} . '' } sort keys %{$conf->{'provides_viz'}} ) %></p>
+              </div>
+            </div>
+%   }
             <hr />
+% }
 
-            <h3>Manual data sources plugins</h3>
+
+% if ( not defined($type) or $type =~ /^cdata/ ) {
+            <h3>Custom data plugins</h3>
             <br />
 
-            <ul class="list-group">
-% my $cds_list = al_plugins->get_list_cds();
-% foreach my $cd (sort @{$cds_list}) {
-%   my $conf = al_plugins->get_plugin($cd)->get_conf();
-              <li class="list-group-item">
-                <p><b><%= $conf->{'name'} %></b> &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
-                <div class="row">
-                  <div class="col-md-6">
-                    <p><b>ID</b>: <%= $conf->{'id'} %></p>
-                    <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'requires'}} ) %></p>                    
-                    <p><b>Description</b>: <%= $conf->{'desc'} %></p>
-                  </div>
-                  <div class="col-md-6">
-                    <p><b>Provides metrics</b><br />
-                    <%= join( ', ', @{$conf->{'provides_metrics'}} ) %></p>
-                    <p><b>Provides files</b> <%= join( ', ', map { '*_' . $_ . '.json' } @{$conf->{'provides_files'}} ) %></p>
-                  </div>
-                </div>
-              </li>
+%   foreach my $pi (sort @$pis_list_cdata) {
+%     my $conf = $plugins->get_plugin($pi)->get_conf();
+            <h4 id="<%= $pi %>"><%= $conf->{'name'} %></h4>
+	    <div class="row">
+              <div class="col-md-6">
+                <p><b>ID</b>: <%= $conf->{'id'} %></p>
+		<p><b>Abilities</b>: &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
+                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>                    
+                <p><b>Description</b>: <br /><%== join( '<br />', @{$conf->{'desc'}}) %></p>
+              </div>
+              <div class="col-md-6">
+                <p><b>Provides metrics</b><br />
+                  <%== join( ', ', map { '<a href="/documentation/metrics.html#' . $conf->{'provides_metrics'}->{$_} . '">' . $conf->{'provides_metrics'}->{$_} . "</a>" } sort keys %{$conf->{'provides_metrics'}} ) %></p>
+                <p><b>Provides figures</b><br />
+                  <%== join( ', ', map { '' . $conf->{'provides_figs'}->{$_} . '' } sort keys %{$conf->{'provides_figs'}} ) %></p>
+                <p><b>Provides data</b><br />
+                  <%== join( "<br />", , map { $_ . ': ' .  $conf->{'provides_data'}->{$_} } sort keys %{$conf->{'provides_data'}} ) %></p>
+                <p><b>Provides recommendations</b><br />
+                  <%= join( ', ', map { $_ } sort @{$conf->{'provides_recs'}} ) %></p>
+                <p><b>Provides viz</b> <br />
+                  <%== join( ', ', map { '' . $conf->{'provides_viz'}->{$_} . '' } sort keys %{$conf->{'provides_viz'}} ) %></p>
+              </div>
+            </div>
+%   }
+            <hr />
 % }
-            </ul>
+
+
+% if ( not defined($type) or $type =~ /^post/ ) {
+            <h3>Post plugins</h3>
+            <br />
+
+%   foreach my $pi (sort @$pis_list_post) {
+%     my $conf = $plugins->get_plugin($pi)->get_conf();
+            <h4 id="<%= $pi %>"><%= $conf->{'name'} %></h4>
+	    <div class="row">
+              <div class="col-md-6">
+                <p><b>ID</b>: <%= $conf->{'id'} %></p>
+		<p><b>Abilities</b>: &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
+                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>                    
+                <p><b>Description</b>: <br /><%== join( '<br />', @{$conf->{'desc'}}) %></p>
+              </div>
+              <div class="col-md-6">
+                <p><b>Provides metrics</b><br />
+                  <%== join( ', ', map { '<a href="/documentation/metrics.html#' . $conf->{'provides_metrics'}->{$_} . '">' . $conf->{'provides_metrics'}->{$_} . "</a>" } sort keys %{$conf->{'provides_metrics'}} ) %></p>
+                <p><b>Provides figures</b><br />
+                  <%== join( ', ', map { '' . $conf->{'provides_figs'}->{$_} . '' } sort keys %{$conf->{'provides_figs'}} ) %></p>
+                <p><b>Provides data</b><br />
+                  <%== join( "<br />", , map { $_ . ': ' .  $conf->{'provides_data'}->{$_} } sort keys %{$conf->{'provides_data'}} ) %></p>
+                <p><b>Provides recommendations</b><br />
+                  <%= join( ', ', map { $_ } sort @{$conf->{'provides_recs'}} ) %></p>
+                <p><b>Provides viz</b> <br />
+                  <%== join( ', ', map { '' . $conf->{'provides_viz'}->{$_} . '' } sort keys %{$conf->{'provides_viz'}} ) %></p>
+              </div>
+            </div>
+%   }
+            <hr />
+% }
+
+
+% if ( not defined($type) or $type =~ /^global/ ) {
+            <h3>Global plugins</h3>
+            <br />
+
+%   foreach my $pi (sort @$pis_list_global) {
+%     my $conf = $plugins->get_plugin($pi)->get_conf();
+            <h4 id="<%= $pi %>"><%= $conf->{'name'} %></h4>
+	    <div class="row">
+              <div class="col-md-6">
+                <p><b>ID</b>: <%= $conf->{'id'} %></p>
+		<p><b>Abilities</b>: &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
+                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>                    
+                <p><b>Description</b>: <br /><%== join( '<br />', @{$conf->{'desc'}}) %></p>
+              </div>
+              <div class="col-md-6">
+                <p><b>Provides metrics</b><br />
+                  <%== join( ', ', map { '<a href="/documentation/metrics.html#' . $conf->{'provides_metrics'}->{$_} . '">' . $conf->{'provides_metrics'}->{$_} . "</a>" } sort keys %{$conf->{'provides_metrics'}} ) %></p>
+                <p><b>Provides figures</b><br />
+                  <%== join( ', ', map { '' . $conf->{'provides_figs'}->{$_} . '' } sort keys %{$conf->{'provides_figs'}} ) %></p>
+                <p><b>Provides data</b><br />
+                  <%== join( "<br />", , map { $_ . ': ' .  $conf->{'provides_data'}->{$_} } sort keys %{$conf->{'provides_data'}} ) %></p>
+                <p><b>Provides recommendations</b><br />
+                  <%= join( ', ', map { $_ } sort @{$conf->{'provides_recs'}} ) %></p>
+                <p><b>Provides viz</b> <br />
+                  <%== join( ', ', map { '' . $conf->{'provides_viz'}->{$_} . '' } sort keys %{$conf->{'provides_viz'}} ) %></p>
+              </div>
+            </div>
+%   }
+            <hr />
+% }
+
+% if ( not defined($type) or $type =~ /^wiz/ ) {
+            <h3>Wizards</h3>
+            <br />
+
+%   foreach my $pi (sort keys %$pis_list_wiz) {
+%     my $conf = app->al->get_wizards()->get_wizard($pi)->get_conf();
+            <h4 id="<%= $pi %>"><%= $conf->{'name'} %></h4>
+	    <div class="row">
+              <div class="col-md-6">
+                <p><b>ID</b>: <%= $conf->{'id'} %></p>
+                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>                    
+                <p><b>Description</b>: <br /><%== join( '<br />', @{$conf->{'desc'}}) %></p>
+              </div>
+              <div class="col-md-6">
+                <p><b>Provides plugins</b><br />
+                  <%== join( ', ', map { '<a href="/documentation/plugins.html#' . $_ . '">' . $pis_list->{$_} . "</a>" } sort @{$conf->{'plugins'}} ) %></p>
+              </div>
+            </div>
+            <hr />
+%   }
+% }
 

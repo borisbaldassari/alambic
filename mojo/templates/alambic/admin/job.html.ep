@@ -1,5 +1,6 @@
+% use Data::Dumper;
 
-            <h1 class="al-h1"><small>Administration</small> Alambic Repository</h1>
+            <h1 class="al-h1"><small>Administration</small> Jobs</h1>
             <br />
 
 % my $msg = flash( 'msg' );
@@ -17,10 +18,18 @@
 %= include 'alambic/admin/admin_menu', current => '/admin/jobs'
 
 % my $job_info = app->minion->backend->job_info($job_id);
-% my $results = "";
-% if ($job_info->{'state'} =~ m!^failed!) { $results = $job_info->{'result'} }
+% my $log = ""; my $info = ""; my $metrics = ""; my $attrs = ""; my $recs = "";
+% if ($job_info->{'state'} =~ m!^failed!) { $log = ref($job_info->{'result'}) =~ /ARRAY/ ? $job_info->{'result'}{'log'} : $job_info->{'result'} }
 % elsif ($job_info->{'state'} =~ m!^finished!) { 
-%     $results = join( '<br />', @{$job_info->{'result'}} ) ;
+%     $log = defined($job_info->{'result'}) ?
+%              ( exists($job_info->{'result'}{'log'}) && ref($job_info->{'result'}{'log'}) =~ /ARRAY/ ?
+%                join( '<br />', @{$job_info->{'result'}{'log'}} ) :
+%                $job_info->{'result'}{'log'} ) :
+%              "No result found.";
+%     $metrics = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'metrics'}{$_} } sort keys %{$job_info->{'result'}{'metrics'}} ) . ".";
+%     $info = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'info'}{$_} } sort keys %{$job_info->{'result'}{'info'}} ) . ".";
+%     $attrs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'attrs'}{$_} } sort keys %{$job_info->{'result'}{'attrs'}} ) . "."; 
+%     $recs = join( "<br />", map { "<code>" . $_->{'rid'} . "</code> (severity " . $_->{'severity'} . ") " . $_->{'desc'} } sort @{ $job_info->{'result'}{'recs'} || [] } ) . ".";
 %   }
 
             <div class="row">
@@ -30,7 +39,7 @@
 
                 <p><b>ID</b> <%= $job_id %><br />
                 <b>Task</b> <%= $job_info->{'task'} %><br />
-                <b>Args</b> <%= join( ', ', @{$job_info->{'args'}} ) %><br />
+                <b>Args</b> <%= join( ', ', @{ $job_info->{'args'} || [] } ) %><br />
                 <b>State</b> <%= $job_info->{'state'} %><br />
                 <b>Created</b> <%= localtime($job_info->{'created'}) %><br />
                 <b>Started</b> <%= defined($job_info->{'started'}) ? "" . localtime($job_info->{'started'}) : "Never" %><br />
@@ -42,15 +51,31 @@
                 <br />
                 <div class="list-group">
                   <a class="list-group-item" href="/admin/jobs/" role="button"><i class="fa fa-bars"></i> &nbsp; Return to jobs</a>
-                  <a class="list-group-item" href="/admin/jobs/<%= $job_id %>/rec" role="button"><i class="fa fa-refresh"></i> &nbsp; Restart job</a>
+                  <a class="list-group-item" href="/admin/jobs/<%= $job_id %>/run" role="button"><i class="fa fa-refresh"></i> &nbsp; Restart job</a>
                   <a class="list-group-item" href="/admin/jobs/<%= $job_id %>/del" role="button"><i class="fa fa-ban"></i> &nbsp; Remove job</a>
                 </div>
 
               </div>
             </div>
 
-            <h3>Results</h3>
+            <h3>Log</h3>
 
-            <div class="well"><%== $results %></div>
+            <div class="well"><%== $log %></div>
+
+            <h3>Info</h3>
+
+            <div class="well"><%== $info %></div>
+
+            <h3>Metrics</h3>
+
+            <div class="well"><%== $metrics %></div>
+
+            <h3>Attributes</h3>
+
+            <div class="well"><%== $attrs %></div>
+
+            <h3>Recommendations</h3>
+
+            <div class="well"><%== $recs %></div>
 
             

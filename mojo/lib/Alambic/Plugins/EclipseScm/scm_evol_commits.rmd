@@ -6,10 +6,12 @@ output: html_document
 library(dygraphs)
 library(xts)
 
-#project.id <- 'tools.cdt'
+project.id <- 'modeling.sirius'
 file.evol = paste("", project.id, "_scm_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
-evol <- evol[evol$commits != 0,]
+evol[is.na(evol)] <- 0
+evol <- evol[cumsum(abs(evol$authors + evol$added_lines + evol$removed_lines 
+                        + evol$commits + evol$committers + evol$repositories)) != 0,]
 
 evol.xts <- xts(evol, order.by = as.POSIXct(evol$unixtime, origin="1970-01-01"))
 p <-dygraph(evol.xts[,c('commits')],

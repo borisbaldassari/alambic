@@ -1,0 +1,72 @@
+
+% my $user_id = stash( 'user_id' );
+% my $user_name = stash( 'user_name' );
+% my $user_email = stash( 'user_email' );
+% my $user_roles = stash( 'user_roles' );
+% my $user_projects = stash( 'user_projects' );
+% my $user_notifs = stash( 'user_notifs' );
+% my $roles = app->al->users->get_roles();
+
+            <h1 class="al-h1"><small>Administration</small> Add/Edit User</h1>
+            <br />
+
+%= include 'alambic/admin/admin_menu', current => '/admin/users'
+
+% if (defined($user_id)) {
+            <form action="/admin/users/<%= $user_id %>" method="POST" class="form-horizontal" role="form">
+
+% } else {
+            <form action="/admin/users/new" method="POST" class="form-horizontal" role="form">
+% }
+              <div class="form-group">
+                <label for="id" class="control-label col-xs-2">User ID</label>
+                <div class="col-xs-10">
+% if (defined($user_id)) {
+                  <input type="text" class="form-control" name="id" value="<%= $user_id %>" readonly>
+% } else {
+                  <input type="text" class="form-control" name="id">
+% }
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="name" class="control-label col-xs-2">Name</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" name="name" id="name" value="<%= $user_name %>">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email" class="control-label col-xs-2">Email</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" name="email" id="email" value="<%= $user_email %>">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="passwd" class="control-label col-xs-2">Password</label>
+                <div class="col-xs-10">
+                  <input type="password" class="form-control" name="passwd" id="passwd">
+                </div>
+              </div>
+	      
+              <div class="form-group">
+                <label for="roles" class="control-label col-xs-2">Roles</label>
+                <div class="col-xs-10">
+% foreach my $role (@$roles) {
+%   my $is_active = scalar grep( /$role/i, @$user_roles ) ? ' checked="checked"' : '';
+                  <input type="checkbox" name="roles_<%= $role %>"<%= $is_active %>><%= $role %><br />
+% }
+                </div>
+	      </div>
+
+              <br />
+              <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                  <input class="btn btn-primary" type="submit" value="Save">
+                  <input class="btn btn-default" type="button" value="Cancel" onclick="history.go(-1);" />
+                </div>
+              </div>
+
+            </form>
+

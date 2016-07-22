@@ -1,113 +1,159 @@
 package Alambic::Plugins::PmdAnalysis;
-use base 'Mojolicious::Plugin';
 
 use strict;
 use warnings;
 
+use Alambic::Model::RepoFS;
+use Alambic::Tools::R;
+
 use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
 use Data::Dumper;
-use File::Copy;
-use File::Path qw(remove_tree);
 use XML::LibXML;
+use File::Copy;
 use File::Basename;
+use Text::CSV;
 
 
 my %conf = (
-    "id" => "pmd_analysis",
+    "id" => "PmdAnalysis",
     "name" => "PMD Analysis",
-    "desc" => "Defines a pragmatic strategy to improve your code, based on the results of PMD.",
-    "ability" => [
-        "viz",
+    "desc" => [
+	"This plugin summarises the output of a PMD run, provides hints to better understand and user it, and defines a pragmatic strategy to fix violations in an efficient way. It also provides guidance on how to configure PMD and select rules for a better, more focused analysis.",
+	"Please note that this plugin only reads the XML configuration and output files of a PMD run. One has to execute it on a regular basis &em; ideally in a continuous integration job &em; and provide the XML files URLs to the plugin.",
+	'Up-to-date documentation for the plugin is located on <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/PMD%20Analysis">the project wiki</a>.',
     ],
-    "requires" => {
-        "bin_r" => "/usr/bin/R",
-        "url_pmd_xml" => "",
-        "url_pmd_conf" => "",
+    "type" => "pre",
+    "ability" => [ 'data', 'recs', 'figs', 'viz' ],
+    "params" => {
+        "url_pmd_xml" => "The URL to the XML configuration file used to run PMD.",
+        "url_pmd_conf" => "The URL to the XML PMD results for the project.",
+    },
+    "provides_cdata" => [
+    ],
+    "provides_info" => [
+    ],
+    "provides_data" => {
+	"import_pmd_analysis_conf.xml" => "The PMD configuration file retrieved for the analysis (XML).",
+	"import_pmd_analysis_results.xml" => "The PMD results file retrieved for the analysis (XML).",
+	"pmd_analysis_main_csv" => "Generic information about the project : PMD version, timestamp of analysis, number of non-conformities, number of rules checked, number of rules violated, number of clean rules, rate of acquired practices (CSV).",
+	"pmd_analysis_files.csv" => "Files: for each non-conform file, its name, total number of non-conformities, number of non-conformities for each priority, number of broken and clean rules, and the rate of acquired practices (CSV).",
+	"pmd_analysis_rules.csv" => "Rules: number of non-conformities for each category of rules and priority (CSV).",
+	"pmd_analysis_violations.csv" => "Violations: foreach violated rule, its priority, the ruleset it belongs to, and the volume of violations (CSV).",
+	"pmd_analysis_violations.json" => "Violations: foreach violated rule, its priority, the ruleset it belongs to, and the volume of violations (JSON).",
+	"pmd_analysis_rulesets.csv" => "Rulesets detected in analysis output, with number of violations for each priority, in long format (CSV).",
+	"pmd_analysis_rulesets2.csv" => "Rulesets detected in analysis output, with number of violations for each priority, in wide format (CSV).",
     },
     "provides_metrics" => {
     },
-    "provides_files" => [
+    "provides_figs" => {
+	'pmd_analysis_pie.rmd' => 'pmd_analysis_pie.html',
+	'pmd_analysis_files_ncc1.r' => 'pmd_analysis_files_ncc1.svg',
+	'pmd_analysis_top_5_rules.r' => 'pmd_analysis_top_5_rules.svg',
+	'pmd_configuration_rulesets_repartition.r' => 'pmd_configuration_rulesets_repartition.svg',
+	'pmd_configuration_summary_pie.rmd' => 'pmd_configuration_summary_pie.html',
+	'pmd_configuration_violations_rules.r' => 'pmd_configuration_violations_rules.svg',
+    },
+    "provides_recs" => [
+        "PMD_RULE_DEL",
+        "PMD_FIX_RULE",
+        "PMD_FIX_FILE",
     ],
     "provides_viz" => {
-        "pmd_analysis" => "PMD Analysis",
+        "pmd_analysis.html" => "PMD Analysis",
+        "pmd_configuration.html" => "PMD Configuration",
     },
 );
 
-my $pmd_rules = "/Alambic/Plugins/PmdAnalysis/rules/";
 
-my $app;
-
-sub register {
-    my $self = shift;
-    $app = shift;
-
+# Constructor
+sub new {
+    my ($class) = @_;
+    
+    return bless {}, $class;
 }
 
 sub get_conf() {
     return \%conf;
 }
 
-sub check_plugin() {
 
-}
-
-sub check_project() {
-
-}
-
-sub retrieve_data() {
-    my $self = shift;
-    my $project_id = shift;
-
-    $app->log->info("[Plugins::PmdAnalysis] Starting retrieve data for [$project_id].");
+# Run plugin: retrieves data + compute_data 
+sub run_plugin($$) {
+    my ($self, $project_id, $conf) = @_;
     
-    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
-    my $url_xml = $project_conf->{'url_pmd_xml'};
-    my $url_conf = $project_conf->{'url_pmd_conf'};
+    my %ret = (
+	'metrics' => {},
+	'info' => {},
+	'recs' => [],
+	'log' => [],
+	);
+
+    my $repofs = Alambic::Model::RepoFS->new();
+
+    my $url_xml = $conf->{'url_pmd_xml'};
+    my $url_conf = $conf->{'url_pmd_conf'};
+
+    $ret{'log'} = &_retrieve_data( $project_id, $url_xml, $url_conf, $repofs );
+    
+    my $tmp_ret = &_compute_data( $project_id, $repofs );
+    
+    $ret{'metrics'} = $tmp_ret->{'metrics'};
+    $ret{'recs'} = $tmp_ret->{'recs'};
+    push( @{$ret{'log'}}, @{$tmp_ret->{'log'}} );
+    
+    return \%ret;
+}
+
+sub _retrieve_data($$$$) {
+    my ($project_id, $url_xml, $url_conf, $repofs) = @_;
     
     my @log;
-    my $ua = Mojo::UserAgent->new;
 
-    my $content_xml = $ua->get($url_xml)->res->body;    
-    my $file_xml_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
-        . "_import_pmd_analysis_results.xml";
-    $app->log->info("[Plugins::PmdAnalysis] Writing XML results file to [$file_xml_out].");
-    open my $fh, ">", $file_xml_out;
-    print $fh $content_xml;
-    close $fh;
-    push( @log, "Retrieved PMD XML file from [$url_xml]. Lenght is " . length($content_xml) . ".");
+    push( @log, "[Plugins::PmdAnalysis] Starting retrieve data for [$project_id]." );
+    
+    my $ua = Mojo::UserAgent->new;
+    my $content_xml = $ua->get($url_xml)->res->body; 
+    if (length($content_xml) < 10) {
+	push( @log, "[Plugins::PmdAnalysis] Cannot find [$url_xml].\n" ) ;
+    } else {
+	push( @log, "[Plugins::PmdAnalysis] Writing XML results file." );
+	$repofs->write_input( $project_id, "import_pmd_analysis_results.xml", $content_xml );
+	$repofs->write_output( $project_id, "import_pmd_analysis_results.xml", $content_xml );
+    }
 
     my $content_conf = $ua->get($url_conf)->res->body;    
-    my $file_conf_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
-        . "_import_pmd_analysis_conf.xml";
-    $app->log->info("[Plugins::PmdAnalysis] Writing XML results file to [$file_conf_out].");
-    open $fh, ">", $file_conf_out;
-    print $fh $content_conf;
-    close $fh;
-    push( @log, "Retrieved PMD configuration file from [$url_conf]. Lenght is " . length($content_conf) . ".");
+    if (length($content_conf) < 10) {
+	push( @log, "[Plugins::PmdAnalysis] Cannot find [$url_xml].\n" ) ;
+    } else {
+	push( @log, "[Plugins::PmdAnalysis] Writing XML conf file." );
+	$repofs->write_input( $project_id, "import_pmd_analysis_conf.xml", $content_conf );
+	$repofs->write_output( $project_id, "import_pmd_analysis_conf.xml", $content_conf );
+    }
 
     return \@log;
 }
 
-sub compute_data() {
-    my $self = shift;
-    my $project_id = shift;
+sub _compute_data($$$) {
+    my ($project_id, $repofs) = @_;
 
-    $app->log->info("[Plugins::PmdAnalysis] Starting compute data for [$project_id].");
+    my @recs;
+    my @log;
+
+    push( @log, "[Plugins::PmdAnalysis] Starting compute data for [$project_id]." );
 
     my $debug = 0;
-    my @data_files;
-    my $dir_out = $app->config->{'dir_input'} . "/" . $project_id . "/";
 
-    # Reading rules from [$pmd_rules].
+    # Reading rules from xml files.
     my $rules_def = &_read_pmd_rules();
 
     # Reading configuration file for project.
-    my %rules = &_read_pmd_conf($project_id, $rules_def);
+    my $ret = &_read_pmd_conf($project_id, $rules_def);
+    my %rules = %{$ret->{'rules'}};
+    @log = ( @log, @{$ret->{'log'}} );
     
     my $vol_rules = scalar keys %rules;
-    $app->log->info( "Selected a total of [$vol_rules] rules." );
+    push( @log, "Selected a total of [$vol_rules] rules." );
 
     # Read violations from xml file
     my $total_ncc;
@@ -124,13 +170,6 @@ sub compute_data() {
         $rules{$rule}{'nok'} = 1;
         $total_ncc += $violations{ $rule }{ 'vol'};
     }
-    
-    # Will be used to set the name of generated files.
-    my $file_id = $app->home->rel_dir('lib') . "/Alambic/Plugins/PmdAnalysis/${project_id}_pmd";
-
-    # Write rules to a csv file
-    my $csv_name = $file_id . "_analysis_rules.csv";
-    $app->log->info( "Writing rules to file [$csv_name]." );
     
     # Compute the rate of broken rules for each priority.
     my %rules_ok;
@@ -151,11 +190,11 @@ sub compute_data() {
         $csv_out .= "$priority," . $ok . ", " . $nok . "\n";
     }    
 
-    push(@data_files, $csv_name);
-    open( FHCSV, ">$csv_name" ) or return [ "ERROR: Could not open $csv_name.\n" ];
-    print FHCSV $csv_out;
-    close FHCSV;
-
+    # Write rules to a csv file
+    $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_rules.csv", $csv_out );
+    $repofs->write_output( $project_id, "pmd_analysis_rules.csv", $csv_out );
+    push( @log, "Writing rules to file [" . $project_id . "_pmd_analysis_rules.csv]." );
+    
     # Compute number of broken rules.
     my $total_rko = scalar keys %violations;
 
@@ -193,21 +232,12 @@ sub compute_data() {
     $json_violations .= "}\n";
 
     # Write violations to JSON.
-    my $out_violations_name = $file_id . "_analysis_violations.json";
-    
-    push(@data_files, $out_violations_name);
-    open( FHV, ">$out_violations_name" ) or die "Could not open $out_violations_name.\n";
-    print FHV $json_violations;
-    close FHV;
+    $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_violations.json", $json_violations );
+    $repofs->write_output( $project_id, "pmd_analysis_violations.json", $json_violations );
     
     # Write violations to CSV.
-    $csv_name = $file_id . "_analysis_violations.csv";
-    $app->log->info( "Writing violations to file [$csv_name].." );
-    
-    push(@data_files, $csv_name);
-    open( FHCSV, ">$csv_name" ) or die "Could not open $csv_name.\n";
-    print FHCSV $csv_out;
-    close FHCSV;
+    $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_violations.csv", $csv_out );
+    $repofs->write_output( $project_id, "pmd_analysis_violations.csv", $csv_out );
 
     # Format and write number of violations by file.
     my $csv_files_out = "File,NCC,NCC_1,NCC_2,NCC_3,NCC_4,RKO,ROK,ROKR\n";
@@ -230,71 +260,132 @@ sub compute_data() {
     }
     
     # Write files to a csv file
-    $csv_name = $file_id . "_analysis_files.csv";
-    $app->log->info( "Writing files to file [$csv_name].." );
+    push( @log, "Writing files to file [" . $project_id . "_pmd_analysis_files.csv].." );
+    $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_files.csv", $csv_files_out );
+    $repofs->write_output( $project_id, "pmd_analysis_files.csv", $csv_files_out );
 
-    push(@data_files, $csv_name);
-    open( FHCSV, ">$csv_name" ) or die "Could not open $csv_name.\n";
-    print FHCSV $csv_files_out;
-    close FHCSV;
-
-    # Write a summary of the run.
-    $csv_name = $file_id . "_analysis_main.csv";
-    $app->log->info( "Writing main pmd file [$csv_name].." );
+    # Compute violations by ruleset. Two formats are provided for different purposes.
+    my $csv_rulesets_out = "Ruleset,NCC_1,NCC_2,NCC_3,NCC_4\n";
+    my $csv_rulesets2_out = "ruleset,priority,ncc\n";
     
+    # Compute number of violations by priority and by rulesets.
+    foreach my $ruleset (sort keys %rulesets) {
+        my $ncc_1 = $rulesets{$ruleset}{1} || 0;
+        my $ncc_2 = $rulesets{$ruleset}{2} || 0;
+        my $ncc_3 = $rulesets{$ruleset}{3} || 0;
+        my $ncc_4 = $rulesets{$ruleset}{4} || 0;
+        $csv_rulesets_out .= "$ruleset,$ncc_1,$ncc_2,$ncc_3,$ncc_4\n";
+    }
+    
+    # Summarise number of violations by priority by ruleset.
+    foreach my $ruleset (sort keys %rulesets) {
+        foreach my $priority (sort keys %{$rulesets{$ruleset}}) {
+            my $vol = $rulesets{$ruleset}{$priority};
+            $csv_rulesets2_out .= "$ruleset,$priority,$vol\n";
+        }
+    }
+    
+    # Write rulesets to CSV (first format).
+    push( @log, "Writing rulesets to file [" . $project_id . "_conf_rulesets.csv]." );
+    $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_rulesets.csv", $csv_rulesets_out );
+    $repofs->write_output( $project_id, "pmd_analysis_rulesets.csv", $csv_rulesets_out );
+    
+    # Write rulesets to CSV (second format).
+    push( @log, "Writing rulesets2 to file [" . $project_id . "_conf_rulesets2.csv]." );
+    $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_rulesets2.csv", $csv_rulesets2_out );
+    $repofs->write_output( $project_id, "pmd_analysis_rulesets2.csv", $csv_rulesets2_out );
+
+    # Write a summary of the run.    
     my $total_rok = $vol_rules - $total_rko;
     my $total_rokr = 100 * $total_rok / $vol_rules;
     
     my $csv_main_out = "PMD version,Timestamp,ConfFile,NCC,RULES,RKO,ROK,ROKR\n";
     $csv_main_out .= "$pmd_version,$pmd_timestamp,,$total_ncc,$vol_rules,$total_rko,$total_rok,$total_rokr\n";
     
-    push(@data_files, $csv_name);
-    open( FHCSV, ">$csv_name" ) or die "Could not open $csv_name.\n";
-    print FHCSV $csv_main_out;
-    close FHCSV;
+    push( @log, "Writing main pmd file [" . $project_id . "_pmd_analysis_main.csv].." );
+    $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_main.csv", $csv_main_out );
+    $repofs->write_output( $project_id, "pmd_analysis_main.csv", $csv_main_out );
 
-    my $r_dir = $app->home->rel_dir('lib') . "/Alambic/Plugins/PmdAnalysis/";
-    my $r_html = "PmdAnalysis.Rhtml";
-    my $r_html_out = "${project_id}_pmd_analysis.inc";
+    # Now execute the main R script.
+    push( @log, "[Plugins::PmdAnalysis] Executing R main file for PMD Analysis." );
+    my $r = Alambic::Tools::R->new();
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'PmdAnalysis', $project_id, "pmd_analysis.Rmd" )} );
 
-    chdir $r_dir;
-    $app->log->info( "Executing R script [$r_html] in [$r_dir] with [$project_id]." );
-    $app->log->info( "Result to be stored in [$r_html_out]." );
+    push( @log, "[Plugins::PmdAnalysis] Executing R main file for PMD Configuration." );
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'PmdAnalysis', $project_id, "pmd_configuration.Rmd" )} );
 
-    # TODO Use $app->projects->get_project_info($project_id)->{'ds'}->{'pmd_analysis'}->{'r_bin'};
-    # to get r bin path.
-    my $r_cmd = "Rscript -e \"library(knitr); " 
-        . "project.id <- '${project_id}'; plugin.id <- 'pmd_analysis'; "
-        . "knit('${r_html}', output='${r_html_out}')\"";
+    # Read the recommendations from scv file.
+    my $csv = Text::CSV->new({ sep_char => ',' , binary => 1, 
+			       quote_char => '"',
+			       auto_diag => 1}) 
+	or die "" . Text::CSV->error_diag ();
 
-    $app->log->info( "Exec [$r_cmd]." );
-    my @out = `$r_cmd`;
-    $app->log->debug( @out );
-
-    # Now move files to data/project
-    move( "${r_html_out}", $dir_out );
-    # Move all data files to target dir.
-    foreach my $file (@data_files) {
-        $app->log->info( "Moving $file to $dir_out." );
-        my $ret = move($file, $dir_out);
+    my $recs_top_10_s = $repofs->read_plugin("PmdAnalysis", $project_id . "_pmd_analysis_exclude_rules.csv");
+    my @lines = split( /\n/, $recs_top_10_s);
+    # First line is for headers.
+    shift(@lines);
+    foreach my $line (@lines) {
+	$csv->parse($line);
+	my @cols = $csv->fields(); 
+	push( @recs, { 'rid' => 'PMD_RULES_DEL', 
+                       'severity' => 2, 
+		       'src' => 'PmdAnalysis',
+                       'desc' => 'PMD rule ' . $cols[0] . ' has too many violations ('
+			   . $cols[2] . ') and a low priority (' . $cols[1] . '). This will discourage '
+			   . 'people to act on it, and produces unnecessary noise. The rule should be '
+			   . 'disabled for a more pragmatic use of PMD results.',
+	      });
     }
-
-    # Create dir for figures.
-    if (! -d "${dir_out}/figures/" ) {
-        $app->log->info( "Creating directory [${dir_out}/figures/]." );
-        mkdir "${dir_out}/figures/";
+    
+    my $recs_top_5_rules_s = $repofs->read_plugin("PmdAnalysis", $project_id . "_pmd_analysis_top_5_rules.csv");
+    @lines = split( /\n/, $recs_top_5_rules_s);
+    # First line is for headers.
+    shift(@lines);
+    foreach my $line (@lines) {
+	$csv->parse($line);
+	my @cols = $csv->fields(); 
+	push( @recs, { 'rid' => 'PMD_FIX_RULES', 
+                       'severity' => 1, 
+		       'src' => 'PmdAnalysis',
+                       'desc' => 'PMD rule ' . $cols[0] . ' has only a few violations ('
+			   . $cols[2] . ') and a high priority (' . $cols[1] . '). It would be easy '
+			   . 'to work on this rule and the associated good practice, both for the '
+			   . 'project and for the team experience, and fix all violations associated to '
+			   . 'this rule.',
+	      });
     }
-
-    # Now move figures to data/project
-    my $dir_out_fig = $dir_out . "/figures/pmd_analysis/";
-    if ( -e $dir_out_fig ) {
-        $app->log->info( "Target directory [$dir_out_fig] exists. Removing it." );
-        my $ret = remove_tree($dir_out_fig, {verbose => 1});
+    
+    my $recs_top_10_files_s = $repofs->read_plugin("PmdAnalysis", $project_id . "_pmd_analysis_top_10_files.csv");
+    @lines = split( /\n/, $recs_top_10_files_s);
+    # First line is for headers.
+    shift(@lines);
+    foreach my $line (@lines) {
+	$csv->parse($line);
+	my @cols = $csv->fields(); 
+	push( @recs, { 'rid' => 'PMD_FIX_FILES', 
+                       'severity' => 1, 
+		       'src' => 'PmdAnalysis',
+                       'desc' => 'The file ' . $cols[0] . ' has only ' . $cols[1] 
+			   . ' P1 violations and ' . $cols[2] . ' P2 '
+			   . ' violations. It would be quite easy to fix these in one shot '
+			   . 'and seriously improve the file\'s quality.',
+	      });
     }
-    my $ret = move('figures/pmd_analysis/' . $project_id . '/', $dir_out_fig);
-    $app->log->info( "Moved figures from ${r_dir}/figures to $dir_out_fig. ret $ret." );
-
-    return ["Done."];
+    
+    # And execute the figures R scripts.
+    foreach my $fig (sort keys %{$conf{'provides_figs'}}) {
+	push( @log, "[Plugins::PmdAnalysis] Executing R fig file [$fig]." );
+	if ($conf{'provides_figs'}{$fig} =~ /\.html$/) {
+	    @log = ( @log, @{$r->knit_rmarkdown_html( 'PmdAnalysis', $project_id, $fig )} );
+	} elsif ($conf{'provides_figs'}{$fig} =~ /\.svg$/) {
+	    @log = ( @log, @{$r->knit_rmarkdown_svg( 'PmdAnalysis', $project_id, $fig )} );
+	}
+    }
+    
+    return {
+	"recs" => \@recs,
+	"log" => \@log,
+    };
 }
 
 
@@ -306,8 +397,7 @@ sub _read_pmd_rules() {
 
     my %rules_def;
 
-    $pmd_rules = $app->home->rel_dir('lib') . $pmd_rules;
-    $app->log->info( "[PmdAnalysis] Reading rules definition from [$pmd_rules]." );
+    my $pmd_rules = "lib/Alambic/Plugins/PmdAnalysis/rules/";
 
     my @rules_files = <$pmd_rules/*.xml>;
     my $rules_vol = 0;
@@ -337,8 +427,6 @@ sub _read_pmd_rules() {
 	}
     }
 
-    $app->log->info( "[PmdAnalysis] Got [$rules_vol] rules." );
-
     return \%rules_def;    
 }
 
@@ -347,15 +435,15 @@ sub _read_pmd_rules() {
 # Read the XML file used for PMD configuration. Returns a hash of 
 # rules used for this run, providing some info about each rule.
 #
-sub _read_pmd_conf($) {
+sub _read_pmd_conf($$) {
     my $project_id = shift;
     my $rules_def = shift;
     
+    my @log;
     my $debug = 0;
     
-    my $pmd_conf = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
-        . "_import_pmd_analysis_conf.xml";
-    $app->log->info( "[PmdAnalysis] Reading PMD configuration from [$pmd_conf]." );
+    my $pmd_conf = "projects/" . $project_id . "/input/" . $project_id 
+        . "_import_pmd_analysis_conf.xml"; 
 
     # Read pmd xml results file.
     my $parser = XML::LibXML->new;
@@ -383,7 +471,7 @@ sub _read_pmd_conf($) {
 		@included_rules = keys %{ $rules_def->{ $ruleset_name } };   
 	    }
 	} else {
-	    $app->log->warn( "[PmdAnalysis] ERR could not parse rule ref [$rule_ref]." );
+	    push( @log, "[PmdAnalysis] ERR could not parse rule ref [$rule_ref]." );
 	}
 	
 	my @excluded_rules = $rule_child->getElementsByTagName("exclude");
@@ -403,10 +491,10 @@ sub _read_pmd_conf($) {
 	}
 	$vol_rules += $file_vol_rules;
 	
-	$app->log->info( "[PmdAnalysis] Imported [$file_vol_rules] rules from ruleset [$ruleset_name]." );
+	push( @log, "[PmdAnalysis] Imported [$file_vol_rules] rules from ruleset [$ruleset_name]." );
     }
 
-    return %rules;
+    return { 'rules' => \%rules, 'log' => \@log };
 }
 
 
@@ -426,7 +514,7 @@ sub _read_pmd_xml_files($) {
     
     my %ret;
 
-    my $pmd_xml = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id 
+    my $pmd_xml = "projects/" . $project_id . "/input/" . $project_id 
         . "_import_pmd_analysis_results.xml";
 
     if (not -e $pmd_xml) { print "### XML file does'nt exist!!\n" }
@@ -464,7 +552,7 @@ sub _read_pmd_xml_files($) {
         	$ret{'files'}{$file_name}{'pri'}{$pri}++;
         	$ret{'rulesets'}{$ruleset}{$pri}++;
             } else {
-        	$app->log->info( "[PmdAnalysis] WARN Could not find rule [$rule] from ruleset [$ruleset] in rules definition." );
+#        	$app->log->info( "[PmdAnalysis] WARN Could not find rule [$rule] from ruleset [$ruleset] in rules definition." );
             }
         }
 	

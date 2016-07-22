@@ -1,28 +1,48 @@
 
-            <h1 class="al-h1"><small>Administration</small> Users</h1>
+            <h1 class="al-h1"><small>Administration</small> Users management</h1>
             <br />
+
+% my $msg = flash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%= $msg %>
+                </div>
+              </div>
+            </div>
+% }
 
 %= include 'alambic/admin/admin_menu', current => '/admin/users'
 
-            <p>Users are associated to a (full) name, a password, and one or more realm permissions. There are two types of access rights: for the Alambic dashboard itself (access to the admin section) and for the projects (comments, analysis, etc.). The users and their associated rights are defined in the user configuration file located at <code><%= $config->{'file_users'} %></code>. </p>
-            <p>Users defined on the system as for now are:</p>
-            <br />
+            <div class="row">
+              <div class="col-sm-6">
+		<p>This is the list of users registered in Alambic. </p>
+              </div>
+              <div class="col-sm-6">
+                <div class="list-group">
+                  <a class="list-group-item" href="/admin/users/new" role="button"><i class="fa fa-fw fa-user-plus"></i> &nbsp; Add user</a>
+                </div>
+              </div>
+            </div>
 
+
+            <br />
             <table class="table table-striped">
-              <tr><th>Id</th><th>Name</th><th>Alambic rights</th><th>Projects</th></tr>
-% my $users = app->users->get_all_users();
-% foreach my $user (sort keys %{$users}) {
-%   my $al_rights = $users->{$user}{'alambic'} || [];
-                <tr>
-                  <td><%= $user %></td><td><b><%= $users->{$user}{'name'}  %></b></td>
-                  <td><%== join( '<br />', @{$al_rights} ) %></td>
-                  <td>
-%     foreach my $project (keys %{$users->{$user}{'projects'}}) { 
-                  <b><%= $project %></b> (<%= $users->{$user}{'projects'}{$project} %>)<br />
-%     }
-                  </td>
-                </tr>
+              <tr><th>ID</th><th>Name</th><th>Email</th><th>Roles</th><th>Projects</th><th>Actions</th></tr>
+% my $users = app->al->users->get_users();
+% foreach my $user (sort keys %$users) {
+                  <tr>
+                    <td><%= $user %></td>
+                    <td><%= $users->{$user}->{'name'} %></td>
+                    <td><%= $users->{$user}->{'email'} %></td>
+                    <td><%= join( ', ', @{ $users->{$user}->{'roles'} || [] } ) %></td>
+                    <td><%= join( ', ', @{ $users->{$user}->{'projects'} || [] } ) %></td>
+                    <td>
+		      <a href="/admin/users/<%= $user %>"><i class="fa fa-fw fa-edit"></i></a> &nbsp;
+                      <a href="/admin/users/<%= $user %>/del"><i class="fa fa-fw fa-ban"></i></a> &nbsp;
+                  </tr>
 % }
             </table>
             
-

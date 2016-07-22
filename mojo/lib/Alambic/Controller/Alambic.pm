@@ -3,7 +3,44 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
 
-# This action will render a template
+# Install screen for Alambic.
+sub install {
+    my $self = shift;
+    print "# In Controller::Alambic \n";
+	
+    # Render template "alambic/install.html.ep"
+    $self->render();
+}
+
+# Install screen for Alambic.
+sub install_post {
+    my $self = shift;
+    print "# In Controller::Alambic \n";
+
+    my $name = $self->param( 'name' );
+    my $desc = $self->param( 'desc' );
+    my $password = $self->param( 'password' );
+
+    # Set instance parameters
+    $self->app->al->get_repo_db()->name($name);
+    $self->app->al->get_repo_db()->desc($desc);
+
+    # Set administrator parameters.
+    my $email = $self->param( 'email' );
+    my $passwd = $self->param( 'passwd' );
+    
+    my $project = $self->app->al->set_user( 'administrator', 'Administrator', $email, 
+					    $passwd, ['Admin'], [], {} );
+    kill USR2 => getppid;
+    
+    $self->session( 'session_user' => 'administrator' );
+    $self->flash( msg => "The instance has been configured and user administrator has been created.<br />"
+		  . "You are now authenticated." );
+    $self->redirect_to( '/' );
+	
+}
+
+# Main screen for Alambic
 sub welcome {
     my $self = shift;
 
@@ -24,14 +61,31 @@ sub login_post() {
     my $password = $self->param( 'password' );
 
     # Check return value for login.
-    if ( $self->users->validate_user($username, $password) ) {
+    if ( $self->app->al->users()->validate_user($username, $password) ) {
         $self->session( 'session_user' => $username );
         $self->flash( msg => "You have been successfully authenticated as user $username." );
         $self->redirect_to( '/admin/summary' );
     } else {
+        $self->session( 'session_user' => $username );
         $self->flash( msg => "Wrong login/password. Sorry." );
         $self->redirect_to( '/login' );
     }
+}
+
+sub logout() {
+    my $self = shift;
+
+    delete $self->session->{session_user};
+
+    $self->redirect_to( '/' );
+}
+
+
+# Used when the user failed auth and asks for Admin.
+sub failed() {
+    my $self = shift;
+    
+    $self->render( template => 'alambic/failed' );
 }
 
 sub contact_post() {
@@ -57,55 +111,6 @@ sub contact_post() {
 
     $self->flash( msg => "Message has been sent. Thank you!" );
     $self->redirect_to( '/' );    
-}
-
-sub logout() {
-    my $self = shift;
-
-    delete $self->session->{session_user};
-
-    $self->redirect_to( '/' );
-}
-
-sub install {
-    my $self = shift;
-
-    # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
-        $self->redirect_to( '/login' );
-        return;
-    }
-
-    # Render template "alambic/admin/install.html.ep"
-    $self->render(template => 'alambic/admin/install');   
-
-}
-
-sub install_post {
-    my $self = shift;
-
-    # Check that the connected user has the access rights for this
-    if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/repo' ) ) {
-        $self->redirect_to( '/login' );
-        return;
-    }
-
-    my $title = $self->param( 'title' );
-    my $name = $self->param( 'name' );
-    my $desc = $self->param( 'desc' );
-    my $git_repo = $self->param( 'git_repo' );
-    my $pg_conf = $self->param( 'pg_conf' );
-
-    # Save new values for the current instance
-    $self->app->al_config->set_conf($title, $name, $desc, $pg_conf);
-
-    # Initialise the Repo object with url.
-    $self->repo->init( $git_repo );
-
-    # Render template "alambic/summary.html.ep" with a confirmation message.
-    $self->flash( msg => "New instance has been correctly initialised." );
-    $self->redirect_to( '/admin/summary' );
-
 }
 
 

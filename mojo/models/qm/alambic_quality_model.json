@@ -1,0 +1,127 @@
+{
+    "name": "Alambic Quality Model",
+    "version": "0.1",
+    "children": [
+        {
+            "mnemo": "QM_QUALITY",
+            "type": "attribute",
+            "active": "true",
+            "children": [
+                {
+                    "mnemo": "QM_ECOSYSTEM",
+                    "active": "true",
+                    "type": "attribute",
+                    "children": [
+                        {
+                            "mnemo": "QM_ACTIVITY",
+                            "active": "true",
+                            "type": "attribute",
+                            "children": [
+                                {
+                                    "mnemo": "MLS_SENT_30",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+				{
+				    "mnemo": "SCM_COMMITS_30",
+				    "type": "metric",
+				    "active": "true"
+				},
+				{
+				    "mnemo": "SCM_FILES",
+				    "type": "metric",
+				    "active": "true"
+				}
+			    ]
+			},
+                        {
+                            "mnemo": "QM_DIVERSITY",
+                            "type": "attribute",
+                            "active": "true",
+                            "children": [
+                                {
+                                    "mnemo": "MLS_SENDERS_30",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "SCM_AUTHORS_30",
+                                    "type": "metric",
+                                    "active": "true"
+                                }
+                            ]
+                        },
+                        {
+                            "mnemo": "QM_SUPPORT",
+                            "type": "attribute",
+                            "active": "true",
+                            "children": [
+                                {
+                                    "mnemo": "MLS_SENT_RESPONSE",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "MLS_THREADS",
+                                    "type": "metric",
+                                    "active": "true"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mnemo": "QM_PROCESS",
+                    "type": "attribute",
+                    "active": "true",
+                    "children": [
+                        {
+                            "mnemo": "QM_SCM",
+                            "type": "attribute",
+                            "active": "true",
+                            "children": [
+                                {
+                                    "mnemo": "PMI_SCM_INFO",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "SCM_COMMITS_30",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "SCM_AUTHORS_30",
+                                    "type": "metric",
+                                    "active": "true"
+                                }
+                            ]
+                        },
+                        {
+                            "mnemo": "QM_ITS",
+                            "type": "attribute",
+                            "active": "true",
+                            "children": [
+                                {
+                                    "mnemo": "PMI_ITS_INFO",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "ITS_CLOSED_30",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "ITS_CLOSERS_30",
+                                    "type": "metric",
+                                    "active": "true"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

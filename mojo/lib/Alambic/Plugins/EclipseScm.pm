@@ -1,23 +1,38 @@
 package Alambic::Plugins::EclipseScm;
-use base 'Mojolicious::Plugin';
 
 use strict; 
 use warnings;
 
+use Alambic::Model::RepoFS;
+use Alambic::Tools::R;
+
 use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
 use Data::Dumper;
-use File::Copy;
-use File::Path qw(remove_tree);
 
 # Main configuration hash for the plugin
 my %conf = (
-    "id" => "eclipse_scm",
+    "id" => "EclipseScm",
     "name" => "Eclipse SCM",
-    "desc" => "Retrieves configuration management data from the Eclipse dashboard repository. This plugin will look for a file named project-scm-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
-    "ability" => [ "metrics", "viz", "fig" ],
-    "requires" => {
-        "project_id" => "",
+    "desc" => [ 
+	"Retrieves configuration management data from the Eclipse dashboard repository. This plugin will look for a file named project-scm-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
+	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseScm">the project\'s wiki</a> for more information.',
+    ],
+    "type" => "pre",
+    "ability" => [ 'metrics', 'data', 'recs', 'figs', 'viz' ],
+    "params" => {
+        "project_grim" => "The project ID used to identify the project on the dashboard server. Note that it may be different from the id used in the PMI.",
+    },
+    "provides_cdata" => [
+    ],
+    "provides_info" => [
+    ],
+    "provides_data" => {
+	"import_scm.json" => "The original file of current metrics downloaded from the Eclipse dashboard server (JSON).",
+	"metrics_scm.json" => "Current metrics for the SCM plugin (JSON).",
+	"metrics_scm.csv" => "Current metrics for the SCM plugin (CSV).",
+	"metrics_scm_evol.json" => "Evolution metrics for the SCM plugin (JSON).",
+	"metrics_scm_evol.csv" => "Evolution metrics for the SCM plugin (CSV).",
     },
     "provides_metrics" => {
         "AUTHORS" => "SCM_AUTHORS", 
@@ -46,57 +61,70 @@ my %conf = (
         "FILES" => "SCM_FILES", 
         "REPOSITORIES" => "SCM_REPOSITORIES",
     },
-    "provides_files" => [
-    ],
-    "provides_viz" => {
-        "eclipse_scm" => "Eclipse SCM",
-    },
-    "provides_fig" => {
+    "provides_figs" => {
         'scm_evol_summary.rmd' => "scm_evol_summary.html",
+        'scm_evol_summary_lines.rmd' => "scm_evol_summary_lines.html",
         'scm_evol_lines.rmd' => "scm_evol_lines.html",
         'scm_evol_people.rmd' => "scm_evol_people.html",
         'scm_evol_commits.rmd' => "scm_evol_commits.html",
     },
+    "provides_recs" => [
+        "SCM_CLOSE_BUGS",
+    ],
+    "provides_viz" => {
+        "eclipse_scm.html" => "Eclipse SCM",
+    },
 
 );
 
-my $app;
 
-sub register {
-    my $self = shift;
-    $app = shift;
+# Constructor
+sub new {
+    my ($class) = @_;
     
+    return bless {}, $class;
 }
 
 sub get_conf() {
     return \%conf;
 }
 
-sub check_plugin() {
 
-}
-
-sub check_project() {
-    my $self = shift;
-    my $project_id = shift;
-
-    return [];
-}
-
-sub retrieve_data($) {
-    my $self = shift;
-    my $project_id = shift;
+# Run plugin: retrieves data + compute_data 
+sub run_plugin($$) {
+    my ($self, $project_id, $conf) = @_;
     
-    my $project_conf = $app->projects->get_project_info($project_id)->{'ds'}->{$self->get_conf->{'id'}};
-    my $project_grim = $project_conf->{'project_id'};
+    my %ret = (
+	'metrics' => {},
+	'info' => {},
+	'recs' => [],
+	'log' => [],
+	);
+
+    my $repofs = Alambic::Model::RepoFS->new();
+
+    my $project_grim = $conf->{'project_grim'};
+
+    $ret{'log'} = &_retrieve_data( $project_id, $project_grim, $repofs );
+    
+    my $tmp_ret = &_compute_data( $project_id, $project_grim, $repofs );
+    
+    $ret{'metrics'} = $tmp_ret->{'metrics'};
+    $ret{'recs'} = $tmp_ret->{'recs'};
+    push( @{$ret{'log'}}, @{$tmp_ret->{'log'}} );
+    
+    return \%ret;
+}
+
+sub _retrieve_data($) {
+    my ($project_id, $project_grim, $repofs) = @_;
     
     my @log;
 
     my $url = "http://dashboard.eclipse.org/data/json/" 
             . $project_grim . "-scm-prj-static.json";
 
-    my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_scm.json";
-    push( @log, "Retrieving [$url] to [$file_out].\n" );
+    push( @log, "[Plugins::EclipseScm] Starting retrieval of data for [$project_id] url [$url]." );
     
     # Fetch json file from the dashboard.eclipse.org
     my $ua = Mojo::UserAgent->new;
@@ -104,16 +132,14 @@ sub retrieve_data($) {
     if (length($content) < 10) { 
 	push( @log, "Cannot find [$url].\n" ) ;
     } else {
-	open my $fh, ">", $file_out;
-	print $fh $content;
-	close $fh;
+	$repofs->write_input( $project_id, "import_scm.json", $content );
+	$repofs->write_output( $project_id, "import_scm.json", $content );
     }
     
     $url = "http://dashboard.eclipse.org/data/json/" 
             . $project_grim . "-scm-prj-evolutionary.json";
     
-    $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_scm_evol.json";
-    push( @log, "Retrieving [$url] to [$file_out].\n" );
+    push( @log, "[Plugins::EclipseScm] Retrieving evol [$url] to input.\n" );
     
     # Fetch json file from the dashboard.eclipse.org
     $ua = Mojo::UserAgent->new;
@@ -121,31 +147,28 @@ sub retrieve_data($) {
     if (length($content) < 10) {
 	push( @log, "Cannot find [$url].\n" ) ;
     } else {
-	open my $fh, ">", $file_out;
-	print $fh $content;
-	close $fh;
+	$repofs->write_input( $project_id, "import_scm_evol.json", $content );
+	$repofs->write_output( $project_id, "metrics_scm_evol.json", $content );
     }
 
     return \@log;
 }
 
 
-sub compute_data($) {
-    my $self = shift;
-    my $project_id = shift;
+# Basically read the imported files and make the mapping to the 
+# new metric names.
+sub _compute_data($) {
+    my ($project_id, $project_pmi, $repofs) = @_;
 
-    $app->log->info("[Plugins::EclipseScm] Starting compute data for [$project_id].");
+    my @recs;
+    my @log;
+
+    push( @log, "[Plugins::EclipseScm] Starting compute data for [$project_id]." );
 
     my $metrics_new;
-
-    my $file_in = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_scm.json";
-    my $json;
-    do { 
-        local $/;
-        open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
-        $json = <$fh>;
-        close $fh;
-    };
+    
+    # Read data from scm file in $data_input
+    my $json = $repofs->read_input( $project_id, "import_scm.json" );
     my $metrics_old = decode_json($json);
 
     foreach my $metric (keys %{$metrics_old}) {
@@ -153,150 +176,78 @@ sub compute_data($) {
             $metrics_new->{ $conf{'provides_metrics'}{uc($metric)} } = $metrics_old->{$metric};
         }
     }
-
-    my $file_out = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_metrics_scm.json";
-    my $json_content = encode_json($metrics_new);
-    do { 
-        local $/;
-        open my $fh, '>', $file_out or die "Could not open data file [$file_out].\n";
-        print $fh $json_content;
-        close $fh;
-    };
+    
+    # Write scm metrics json file to disk.
+    $repofs->write_output( $project_id, "metrics_scm.json", encode_json($metrics_new) );
 
     # Write static metrics file
     my @metrics = sort map {$conf{'provides_metrics'}{$_}} keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics) . "\n";
-    $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
+    $csv_out .= join( ',', map { $metrics_new->{$_} || '' } sort @metrics) . "\n";
     
-    my $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/EclipseScm/" . $project_id . "_scm.csv";
-    open(my $fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
-    print $fh $csv_out;
-    close $fh;
+    $repofs->write_plugin( 'EclipseScm', $project_id . "_scm.csv", $csv_out );
+    $repofs->write_output( $project_id, "metrics_scm.csv", $csv_out );
     
     # Read evol metrics file
-    $file_in = $app->config->{'dir_input'} . "/" . $project_id . "/" . $project_id . "_import_scm_evol.json";
-    print "Reading file $file_in.\n";
-    do { 
-        local $/;
-        open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
-        $json = <$fh>;
-        close $fh;
-    };
+    $json = $repofs->read_input( $project_id, "import_scm_evol.json" );
     my $metrics_evol = decode_json($json);
-#    print Dumper($metrics_evol);
 
     # Create csv data for evol
     $csv_out = "date,id,authors,added_lines,removed_lines,commits,committers,repositories,unixtime\n";
     foreach my $id ( 0 .. (scalar(@{$metrics_evol->{'date'}}) -1 ) ) {
-	$csv_out .= $metrics_evol->{'date'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'id'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'authors'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'added_lines'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'removed_lines'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'commits'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'committers'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'repositories'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'unixtime'}->[$id] . "\n";
+	$csv_out .= ( $metrics_evol->{'date'}->[$id] || '' ) . ',';
+	$csv_out .= ( $metrics_evol->{'id'}->[$id] || '' ) . ',';
+	$csv_out .= ( $metrics_evol->{'authors'}->[$id] || '' ) . ',';
+	$csv_out .= ( $metrics_evol->{'added_lines'}->[$id] || '' ) . ',';
+	$csv_out .= ( $metrics_evol->{'removed_lines'}->[$id] || '' ) . ',';
+	$csv_out .= ( $metrics_evol->{'commits'}->[$id] || '' ) . ',';
+	$csv_out .= ( $metrics_evol->{'committers'}->[$id] || '' ) . ',';
+	$csv_out .= ( $metrics_evol->{'repositories'}->[$id] || '' ) . ',';
+	$csv_out .= ( $metrics_evol->{'unixtime'}->[$id] || '' ) . "\n";
     }
-
-    $file_csv = $app->home->rel_dir('lib') . "/Alambic/Plugins/EclipseScm/" . $project_id . "_scm_evol.csv";
-    open($fh, '>', $file_csv) or die "Could not open file '$file_csv' $!";
-    print $fh $csv_out;
-    close $fh;
+    $repofs->write_plugin( 'EclipseScm', $project_id . "_scm_evol.csv", $csv_out );
+    $repofs->write_output( $project_id, "metrics_scm_evol.csv", $csv_out );
 
     # Now execute the main R script.
-    my $r_dir = $app->home->rel_dir('lib') . "/Alambic/Plugins/EclipseScm/";
-    my $r_md = "EclipseScm.Rmd";
-    my $r_md_out = "${project_id}_eclipse_scm.inc";
+    push( @log, "[Plugins::EclipseScm] Executing R main file." );
+    my $r = Alambic::Tools::R->new();
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'EclipseScm', $project_id, 'eclipse_scm.Rmd' )} );
 
-    chdir $r_dir;
-    # Create dir for figures.
-    if (! -d "figures/" ) {
-        print "Creating directory [figures/].\n";
-        mkdir "figures/";
+    # And execute the figures R scripts.
+    my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
+    foreach my $fig (sort @figs) {
+	push( @log, "[Plugins::EclipseScm] Executing R fig file [$fig]." );
+	@log = ( @log, @{$r->knit_rmarkdown_html( 'EclipseScm', $project_id, $fig )} );
     }
-    # Create dir for figures/eclipse_scm.
-    if (! -d "figures/eclipse_scm" ) {
-        print "Creating directory [figures/eclipse_scm].\n";
-        mkdir "figures/eclipse_scm";
-    }
-    # Create dir for figures/eclipse_scm/project_id.
-    if (! -d "figures/eclipse_scm/${project_id}" ) {
-        print "Creating directory [figures/eclipse_scm/${project_id}].\n";
-        mkdir "figures/eclipse_scm/${project_id}";
-    }
+
     
-    $app->log->info( "Executing R script [$r_md] in [$r_dir] with [$project_id]." );
-    $app->log->info( "Result to be stored in [$r_md_out]." );
-
-    # to get r bin path.
-    my $r_cmd = "Rscript -e \"library(rmarkdown); " 
-        . "project.id <- '${project_id}'; plugin.id <- 'eclipse_scm'; "
-        . "rmarkdown::render('${r_md}', output_format='html_fragment', output_file='$r_md_out')\"";
-
-    $app->log->info( "Exec [$r_cmd]." );
-    my @out = `$r_cmd`;
-    print @out;
-
-    # Now move files to data/project
-    my $dir_out = $app->config->{'dir_input'} . "/" . $project_id . "/";
-
-    # Create dir for figures.
-    if (! -d "${dir_out}/figures/" ) {
-        print "Creating directory [${dir_out}/figures/].\n";
-        mkdir "${dir_out}/figures/";
-    }
-
-    move( "${r_md_out}", $dir_out );
-
-    # Create dir for figures.
-    my $dir_local_out = "figures/eclipse_scm/" . $project_id . '/';
-    print "DBG Checking dir_local_out $dir_local_out.\n";
-    if (! -d $dir_local_out ) {
-        print "Creating directory [${dir_local_out}].\n";
-        mkdir "${dir_local_out}";
-    }
+    # Execute checks and fill recs.
     
-    # Now execute R scripts for pictures.
-    foreach my $script (keys %{$conf{'provides_fig'}}) {
-	$r_md = $script;
-	$r_md_out = "figures/eclipse_scm/" . $project_id . '/' . $conf{'provides_fig'}{$script};
-	
-	$app->log->info( "Executing R fig script [$r_md] in [$r_dir] with [$project_id]." );
-	$app->log->info( "Result to be stored in [$r_md_out]." );
-	
-	# to get r bin path.
-	my $r_cmd = "Rscript -e \"library(rmarkdown); " 
-	    . "project.id <- '${project_id}'; "
-	    . "rmarkdown::render('${r_md}', output_format='html_document', output_file='$r_md_out')\"";
-	
-	$app->log->info( "Exec [$r_cmd]." );
-	my @out = `$r_cmd`;
-	#print @out;
-    }
+    # If less than 5 commits during last year, consider the project inactive.
+    if ( ( $metrics_new->{'SCM_COMMITS_365'} || 0 ) < 2 ) {
+	push( @recs, { 'rid' => 'SCM_LOW_ACTIVITY', 
+		       'severity' => 0,
+		       'src' => 'EclipseScm',
+		       'desc' => 'There have been only ' . $metrics_new->{'SCM_COMMITS_365'} 
+		       . ' commits during last year. The project is considered inactive.' 
+	      } 
+	    );
+    } elsif ( ( $metrics_new->{'SCM_COMMITS_365'} || 0 ) < 12 ) {
+	push( @recs, { 'rid' => 'SCM_LOW_ACTIVITY', 
+		       'severity' => 0,
+		       'src' => 'EclipseScm',
+		       'desc' => 'There have been only ' . $metrics_new->{'SCM_COMMITS_365'} 
+		       . ' commits during last year. The project has a very low activity.' 
+	      } 
+	      );
+	}
 
 
-    # Move figures to data/project
-    my $dir_in_fig = "figures/eclipse_scm/". $project_id . '/';
-    my $dir_out_fig = $app->config->{'dir_input'} . "/" . $project_id . "/figures/eclipse_scm/";
-    if ( -e $dir_out_fig ) {
-        print "Target directory [$dir_out_fig] exists. Removing it.\n";
-        my $ret = remove_tree($dir_out_fig, {verbose => 1});
-    }
-    print "Creating directory [${dir_out_fig}].\n";
-    mkdir "${dir_out_fig}";
-    
-    my $files = ${dir_in_fig} . "*";
-    my @files = glob qq(${files});
-#    print "DBG Looking for files in [$files]: " . join(', ', @files) . "\n";
-    foreach my $file (@files) {
-	my $ret = move($file, $dir_out_fig);
-#	print "DBG Moved file from ${file} to $dir_out_fig. ret $ret.\n";
-	$app->log->info( "Moved files from ${file} to $dir_out_fig. ret $ret." );
-    }
-
-
-    return ["Copied " . scalar ( keys %{$metrics_new} ) . " metrics."];
+    return {
+	"metrics" => $metrics_new,
+	"recs" => \@recs,
+	"log" => \@log,
+    };
 }
 
 

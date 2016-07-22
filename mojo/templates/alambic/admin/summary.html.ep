@@ -15,70 +15,147 @@
 % }
 
 %= include '/alambic/admin/admin_menu', current => '/admin/summary'
-                
-            <p><b>Instance</b> <br />
-              <%= app->al_config->get_name() %></p>
-            <p><b>Description</b> <br />
-              <%== app->al_config->get_desc() %></p>
-
-            <br />
-                
+% my $fa_icon; my $link_init = '';
+% if (app->al->is_db_ok) { 
+%   $fa_icon = '<i class="fa fa-check-circle-o fa-lg"></i>';
+% } else { 
+%   $fa_icon = '<a href="/admin/repo/init"><i class="fa fa-exclamation-circle fa-lg"></i></a>';
+%   $link_init = '<a href="/admin/repo/init">Init</a>';
+% }
+% my $fa_icon_m = app->al->is_db_m_ok ? "check-circle-o" : "exclamation-circle";
             <div class="row">
               <div class="col-md-6">
+		<p><b>Instance name:</b> <%= app->al->instance_name() %></p>
+		<p><b>Description:</b><br />
+		<%== app->al->instance_desc() %></p>
 
-% my $conf = app->config;
-                <div class="panel panel-default">
-                  <div class="panel-heading">Configuration</div>
-                  <table class="table table-striped">
-                    <tr><th>File</th><th>Path</th></tr>
-                    <tr><td>Dir conf</td><td><code><%= $conf->{'dir_conf'} %></code></td></tr>
-                    <tr><td>Dir models</td><td><code><%= $conf->{'dir_models'} %></code></td></tr>
-                    <tr><td>Dir rules</td><td><code><%= $conf->{'dir_rules'} %></code></td></tr>
-                    <tr><td>Dir input</td><td><code><%= $conf->{'dir_input'} %></code></td></tr>
-                    <tr><td>Dir data (projects)</td><td><code><%= $conf->{'dir_data'} %></code></td></tr>
-                  </table>
-                </div>
-                
-                <div class="panel panel-default">
-                  <div class="panel-heading">Models
-%     if ( defined( session->{'session_user'} ) && users->is_user_authenticated(session->{session_user}, '/admin') ) {
-                    <span class="pull-right"><a href="/admin/read_files/models"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</span>
-% }
-                  </div>
-% my %model = app->models->get_model_info;
-% my %attrs = app->models->get_attributes_info;
-% my %metrics = app->models->get_metrics_info;
-% my %questions = app->models->get_questions_info;
-
-                  <table class="table table-striped">
-                    <tr><th>Type</th><th>Name</th><th>Version</th></tr>
-                    <tr><td>Quality model</td><td><%= $model{'name'} %></td><td><%= $model{'version'} %></td></tr>
-                    <tr><td>Attributes</td><td><%= $attrs{'name'} %></td><td><%= $attrs{'version'} %></td></tr>
-                    <tr><td>Metrics</td><td><%= $metrics{'name'} %></td><td><%= $metrics{'version'} %></td></tr>
-                    <tr><td>Questions</td><td><%= $questions{'name'} %></td><td><%= $questions{'version'} %></td></tr>
-                  </table>
+		<br />
+              </div>
+              <div class="col-sm-6">
+                <div class="list-group">
+                  <a class="list-group-item" href="/admin/edit" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Edit instance information</a>
                 </div>
 
               </div>
-              <div class="col-md-6">
+            </div>
+	      
+            <div class="row">
+              <div class="col-lg-6">
+		
+                <div class="panel panel-default">
+                  <div class="panel-heading">Databases &nbsp; <span class="pull-right">[ <a href="/admin/repo">Go to page</a> ]</span></div>
+                  <table class="table table-striped">
+		    <tr><th width="40%">Database</th><th width="60%">Configuration</th></tr>
+		    <tr><td>Alambic database</td><td><%== $fa_icon %> &nbsp; <code><%= app->al->instance_pg_alambic() %></code><%== $link_init %></td></tr>
+		    <tr><td>Minion database</td><td><i class="fa fa-<%= $fa_icon_m %> fa-lg"></i> &nbsp; <code><%= app->al->instance_pg_minion() %></code></td></tr>
+                  </table>
+		</div>
+
+% my $models = app->al->get_models();
+% my $metrics = $models->get_metrics();
+% my $attributes = $models->get_attributes();
+% my $qm = $models->get_qm();
+                <div class="panel panel-default">
+                  <div class="panel-heading">Models &nbsp; <span class="pull-right">[ <a href="/admin/models">Go to page</a> ]</span></div>
+                  <table class="table table-striped">
+		    <tr>
+		      <th width="40%">Type</th>
+		      <th width="60%">Status</th>
+		    </tr>
+		    <tr>
+		      <td>Metrics</td>
+		      <td><code><%= scalar( keys %$metrics ) %></code> metrics defined. <a href="/documentation/metrics">Go to metrics</a>.</td>
+		    <tr>
+		      <td>Attributes</td>
+		      <td><code><%= scalar( keys %$attributes ) %></code> attributes defined. <a href="/documentation/attributes">Go to attributes</a>.</td>
+		    </tr>
+		    <tr>
+		      <td>Quality Model</td>
+		      <td>
+% if (defined($qm) && exists($qm->[0])) {
+		    Root is <code><%= $qm->[0]->{'mnemo'} %></code>. <a href="/documentation/quality_model">Go to quality model</a>.
+% } else {
+		    Quality model is NOT defined.
+% }
+		      </td>
+                  </table>
+		</div>
+		
+% my $stats = app->minion->stats;
+                <div class="panel panel-default">
+                  <div class="panel-heading">Jobs &nbsp; <span class="pull-right">[ <a href="/admin/jobs">Go to page</a> ]</span></div>
+		  <div class="panel-body"><p>There are currently <code><%= $stats->{active_jobs} %></code> active jobs, <code><%= $stats->{inactive_jobs} %></code> inactive jobs, <code><%= $stats->{active_workers} %></code> active workers, <code><%= $stats->{inactive_workers} %></code> inactive workers.</p></div>
+                  <table class="table table-striped">
+		    <tr>
+		      <th>ID</th>
+		      <th>Task</th>
+		      <th>Args</th>
+		      <th>Status</th>
+		      <th>Actions</th>
+		    </tr>
+% foreach my $job (@{app->minion->backend->list_jobs}) {
+%   my $icon = "fa-question"; my $results = "";
+%   if ($job->{'state'} =~ m!^active!) { $icon = "fa-spinner fa-spin"; }
+%   elsif ($job->{'state'} =~ m!^inactive!) { $icon = "fa-hourglass-o"; }
+%   elsif ($job->{'state'} =~ m!^failed!) { $icon = "fa-frown-o"; }
+%   elsif ($job->{'state'} =~ m!^finished!) { next; $icon = "fa-smile-o"; }
+                  <tr>
+                    <td><%= $job->{'id'} %></td>
+                    <td><%= $job->{'task'} %></td>
+                    <td><%== join( '<br />', map {$_} @{$job->{'args'}} ) %></td>
+                    <td><i class="fa <%= $icon %> fa-lg"></i></td>
+                    <td>
+                      <a href="/admin/jobs/<%= $job->{'id'} %>"><i class="fa fa-info-circle fa-fw"></i></a> &nbsp;
+%   if ($job->{'state'} !~ m!^active!) {
+                      <a href="/admin/jobs/<%= $job->{'id'} %>/run"><i class="fa fa-refresh fa-fw"></i></a> &nbsp;
+%   }
+%   if ($job->{'state'} !~ m!^active!) {
+                      <a href="/admin/jobs/<%= $job->{'id'} %>/del"><i class="fa fa-ban fa-fw"></i></a> &nbsp;
+%   }
+                    </td>
+                  </tr>
+% }
+                  </table>
+		</div>
+		
+              </div>
+              <div class="col-lg-6">
                 
                 <div class="panel panel-default">
-                  <div class="panel-heading">Projects
-%     if ( defined( session->{'session_user'} ) && users->is_user_authenticated(session->{session_user}, '/admin') ) {
-                    <span class="pull-right"><a href="/admin/read_files/projects"><span class="fa fa-upload"></span> &nbsp; Read files</a> from disk.</span>
-% }
-                  </div>
-% my @projects = app->projects->list_projects;
-                  
+                  <div class="panel-heading">Projects &nbsp; <span class="pull-right">[ <a href="/admin/projects">Go to page</a> ]</span></div>
                   <table class="table table-striped">
-                    <tr><th>Name</th></tr>
-% foreach my $project (sort @projects) {
-%     my $name = defined( app->projects->get_project_name_by_id($project) ) ? 
-%       app->projects->get_project_name_by_id($project) : $project;
-                    <tr><td><a href="/admin/project/<%= $project %>"><%= $name %></a></td></tr>
+		    <tr>
+		      <th width="40%">Name</th>
+		      <th width="40%">Last analysis</th>
+                      <th width="10%">Active</th>
+                      <th width="10%" colspan="3">Actions</th>
+		    </tr>
+% my $projects = app->al->get_projects_list();
+% foreach my $project_id (sort keys %$projects) {
+%   my $project = app->al->get_project($project_id);
+		    <tr>
+                      <td><a href="/admin/projects/<%= $project_id %>"><%= $projects->{$project_id} %></a></td>
+                      <td><%= $project->last_run() %></td>
+                      <td><%= $project->active() %></td>
+                      <td width="1cm"><a href="/admin/projects/<%= $project_id %>"><i class="fa fa-eye fa-fw"></i></a></td>
+                      <td width="1cm"><a href="/admin/projects/<%= $project_id %>/run"><i class="fa fa-rocket fa-fw"></i></a></td>
+                      <td width="1cm"><a href="/admin/projects/<%= $project_id %>/del"><i class="fa fa-ban fa-fw"></i></a></td>
+		    </tr>
 % }
                   </table>
                 </div>
               </div>
             </div>
+                
+            <div class="row">
+              <div class="col-md-6">
+                
 
+              </div>
+              <div class="col-md-6">
+              </div>
+            </div>
+
+
+	    
+                

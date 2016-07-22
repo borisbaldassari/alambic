@@ -1,0 +1,36 @@
+---
+output: html_document
+---
+
+```{r summary-pie-gvis, echo=FALSE, message=FALSE, results='asis'}
+require(ggplot2)
+suppressPackageStartupMessages(library(googleVis))
+options(gvis.plot.tag='chart')
+
+variables <- commandArgs(trailingOnly=TRUE)
+project.id <- variables[1]
+plugin.id <- variables[2]
+
+priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
+
+project.id <- 'modeling.sirius'
+pmd.rules <- read.csv(file=paste("", project.id, "_pmd_analysis_rules.csv", sep=""), header=T)
+
+pmd.rules.ok <- pmd.rules[,c(1,2)]
+pmd.rules.ok$Priority <- paste("P", pmd.rules$Priority, " OK", sep="")
+names(pmd.rules.ok) <- c("Rules", "Vol")
+
+pmd.rules.nok <- pmd.rules[,c(1,3)]
+pmd.rules.nok$Priority <- paste("P", pmd.rules$Priority, " NOK", sep="")
+names(pmd.rules.nok) <- c("Rules", "Vol")
+
+pmd.rules.sorted <- rbind(pmd.rules.ok, pmd.rules.nok)
+
+p <- gvisPieChart(pmd.rules.sorted, options = list(
+  title="Rules checked",
+  colors="['#325d88', '#5B7DA0', '#849EB8', '#ADBECF', '#CC0000', '#DD5500', '#EEAA00', '#FFCC66']",
+  width=500, height=310,
+  pieHole= 0.4))
+
+print(p, 'chart')
+```

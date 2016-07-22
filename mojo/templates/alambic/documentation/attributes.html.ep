@@ -2,13 +2,13 @@
             <h1 class="al-h1"><small>Documentation</small> Attributes</h1>
             <br />
 
-            <p>Attributes of quality represent our measurement goals for the given context. The first step when defining attributes is to gather quality requirements, in this case both for the Eclipse foundation and the PolarSys working group. These have been summarised <a href="https://polarsys.org/wiki/EclipseQualityRequirements">on a dedicated page of the wiki</a>. We relied on different standards and norms to formalise them: ISO 9126 and 250xx for the product, CMMi for the process, and open-source quality models for the community. </p><br />
+            <p>Attributes of quality represent our measurement goals and questions for the given context. Defining a custom quality model for your specific context is a foundational and highly recommended step in a quality assessment and improvement program, and to get the best out of Alambic. It is possible and much easier to rely on established standards and norms to formalise them, such as <a href="/documentation/references#ISO9126">ISO 9126</a> and <a href="/documentation/references#ISO250xx">ISO 250xx</a> for the product, <a href="/documentation/references#CMMi">CMMi</a> for the process, and open-source quality models for the community. </p><br />
         
             <ul class="list-group">
 % foreach my $attr (sort keys %{$attributes}) {
               <li class="list-group-item"><p id="<%= $attributes->{$attr}->{'mnemo'} %>"><strong><%= $attributes->{$attr}->{'name'} %></strong> ( <%= $attributes->{$attr}->{'mnemo'} %> )</p>
-%     foreach my $desc (@{$attributes->{$attr}->{'desc'}}) {
-                <p class="desc"><%= $desc %></p>
+%     foreach my $desc (@{$attributes->{$attr}->{'description'}}) {
+                <p class="desc"><%== $desc %></p>
 %     }
               </li>
 % }

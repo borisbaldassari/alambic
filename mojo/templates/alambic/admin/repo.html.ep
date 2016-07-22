@@ -1,3 +1,4 @@
+% use File::Basename qw( fileparse );
 
             <h1 class="al-h1"><small>Administration</small> Alambic Repository</h1>
             <br />
@@ -16,45 +17,31 @@
 
 %= include 'alambic/admin/admin_menu', current => '/admin/repo'
 
-            <p>All data, configuration and executable files in Alambic are stored under a configuration management system (git). This page lists info about the git repository used for this instance.</p>
-            <br />
-
-% if (not defined(repo->get_repo_url_push())) {
-            <p>Repo url is not defined. Do you want to <a href="/admin/repo/init">initialise one</a> now?</p>
-% } else {
-%     my $updates = app->repo->get_updates() || undef;
             <div class="row">
-              <div class="col-md-4">
-
-                <h3>Repository information</h3>
-                <br />
-
-                <p>Fetch url is <code><%= repo->get_repo_url_fetch %></code><br />
-                  Push url is <code><%= repo->get_repo_url_push %></code></p>
-                <p>There have been <code><%= scalar @{$updates} %></code> updates on the repository so far.</p>
-                <br />
-
-                <h3>Actions</h3>
-                <br />
-
-                <a class="btn btn-default" href="/admin/repo/init" role="button">Initialise new repository</a>
-                <a class="btn btn-default" href="/admin/repo/push" role="button">Take snapshot</a>
+              <div class="col-sm-6">
+		<p>All projects and configuration data is stored in a Postgres database.</p>
+		<br />
+	      </div>
+	      <div class="col-sm-6">
+                <div class="list-group">
+                  <a class="list-group-item" href="/admin/repo/backup" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Start a backup</a>
+                </div>
 
               </div>
-              <div class="col-md-1">
-              </div>
-              <div class="col-md-7">
-
-                <h3>Recent updates</h3>
-                <br />
+            </div>	    
                 
-                <table class="table table-striped">
-                  <tr><th>Message</th><th>id</th><th>Date</th></tr>
-%     foreach my $update (@{$updates}) {
-                  <tr><td><%= $update->{'message'} %></td><td><%= $update->{'id'} %></td><td><%= $update->{'attr'}->{'date'} %></td></tr>
-%     }
-                </table>
-              </div>
-            </div>
+            <table class="table table-striped">
+              <tr><th>File</th><th colspan="1">Actions</th></tr>
+% my $files = stash( 'files_backup' ) || [];
+% foreach my $file (@$files) {
+%   my $file_short = fileparse($file);
+              <tr>
+                <td><%= $file_short %></td><td><a href="/admin/repo/restore/<%= $file_short %>"><i class="fa fa-upload"></i></a></td>
+              </tr>
 % }
+            </table>
+
+
+
+	    
             

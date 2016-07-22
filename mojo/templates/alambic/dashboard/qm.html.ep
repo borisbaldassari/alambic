@@ -8,7 +8,7 @@
 
             <h3>The Quality model</h3>
             
-            <p>The quality model shows the complete hierarchy tree, from <a href="/documentation/attributes.html">quality attributes</a> to <a href="/documentation/questions.html">measurement concepts</a> (questions) and <a href="/documentation/metrics.html">metrics</a>. Following Basili's Goal-Question-Metric approach [<a href="/documentation/references.html#Basili1994">Basili1994</a>], the quality attributes (the 3 first columns) are goals for our measurement, concepts (4th col) are mapped to questions, and metrics (right col) are the base measures.</p>
+            <p>The quality model shows the complete hierarchy tree, from <a href="/documentation/attributes.html">quality attributes</a> to <a href="/documentation/metrics.html">metrics</a>. Following Basili's Goal-Question-Metric approach [<a href="/documentation/references.html#Basili1994">Basili1994</a>], the first left columns of quality attributes are considered goals for the measurement, last column of attributes is mapped to questions, and metrics (right col) are the base measures.</p>
 
             <div class="row">
               <div class="col-lg-7">
@@ -45,7 +45,7 @@ var myconcepts = {};
 var myvalues = new Object();
 
 // Load file for attributes.
-d3.json("/data/model_attributes.json", function(error, attrs) {
+d3.json("/data/attributes_full.json", function(error, attrs) {
   if (error) return console.warn(error);
 
   for (var i in attrs.children) {
@@ -54,18 +54,8 @@ d3.json("/data/model_attributes.json", function(error, attrs) {
   }
 });
 
-// Load file for concepts.
-d3.json("/data/model_questions.json", function(error, concepts) {
-  if (error) return console.warn(error);
-  
-  for (var i in concepts.children) {
-    if (!concepts.children.hasOwnProperty(i)) { continue; }
-    myconcepts[i] = concepts.children[i];
-  }
-});
-
 // Load file for metrics.
-d3.json("/data/model_metrics.json", function(error, metrics) {
+d3.json("/data/metrics_full.json", function(error, metrics) {
   if (error) return console.warn(error);
   
   for (var i in metrics.children) {
@@ -74,7 +64,7 @@ d3.json("/data/model_metrics.json", function(error, metrics) {
   }
 });
 
-d3.json("/data/<%= $project_id %>_qm.json", function(error, qm) {
+d3.json("/projects/<%= $project_id %>/qm_full.json", function(error, qm) {
   if (error) return console.warn(error);
 
   root = qm;
@@ -154,7 +144,7 @@ function update(source) {
   nodeUpdate.select("text")
       .style("fill-opacity", 1);
 
-  // Transition exiting nodes to the parent's new position. '
+  // Transition exiting nodes to the parent's new position.
   var nodeExit = node.exit().transition()
       .duration(duration)
       .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
@@ -170,7 +160,7 @@ function update(source) {
   var link = svg.selectAll("path.link")
       .data(links, function(d) { return d.target.id; });
 
-  // Enter any new links at the parent's previous position. '
+  // Enter any new links at the parent's previous position.
   link.enter().insert("path", "g")
       .attr("class", "link")
       .attr("d", function(d) {
@@ -183,7 +173,7 @@ function update(source) {
       .duration(duration)
       .attr("d", diagonal);
 
-  // Transition exiting nodes to the parent's new position. '
+  // Transition exiting nodes to the parent's new position.
   link.exit().transition()
       .duration(duration)
       .attr("d", function(d) {
@@ -205,13 +195,13 @@ function click(d) {
   var i = 0;
   var mynode;
 
-  // find element in our json files (metrics, concepts, attributes of quality).
+  // find element in our json files (metrics, attributes of quality).
   if (typeof d.type == "undefined") {
     alert("No type defined on node.");
   } else {
     if (d.type == "metric") {
       mynode = d;
-      mynode.description = mymetrics[d.mnemo]["desc"]; 
+      mynode.description = mymetrics[d.mnemo]["description"]; 
       mynode.name = mymetrics[d.mnemo]["name"]; 
       mynode.datasource = mymetrics[d.mnemo]["ds"]; 
       var mydiv = d3.select("div#details-box-project");
@@ -276,7 +266,7 @@ function click(d) {
       }
     } else if (d.type == "attribute") {
       mynode = d;
-      mynode.description = myattrs[d.mnemo]["desc"]; 
+      mynode.description = myattrs[d.mnemo]["description"]; 
       mynode.name = myattrs[d.mnemo]["name"]; 
 
       var mydiv = d3.select("div#details-box-project");

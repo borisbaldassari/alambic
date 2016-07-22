@@ -1,0 +1,102 @@
+  {
+    "name": "Alambic Metrics PMI",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "License identification",
+        "mnemo": "LIC_IDENT",
+        "desc": [
+            "Is there a list of the different licences used in the product?",
+            "This measure may use an external tool like Ninka (<a href=\"http://ninka.turingmachine.org/\">ninka.turingmachine.org</a>) to identify the licence of components used in the project. Another way would be to identify a file named LICENCES in the root folder."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "IP log code coverage",
+        "mnemo": "IP_LOG_COV",
+        "desc": [
+            "Percentage of contributions covered by an appropriate IP log.",
+	    "Eclipse foundation has a very strict <a href=\"https://www.eclipse.org/org/documents/Eclipse_IP_Policy.pdf\">IP policy</a> and this measure should always be 100%."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Project is on time for next milestone",
+        "mnemo": "PLAN_NEXT_MILESTONE",
+        "desc": [
+            "Is the project on time for the next milestone?"
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Number of milestones",
+        "mnemo": "PLAN_MILESTONES_VOL",
+        "desc": [
+            "The number of milestones that occured during the last five releases.",
+            "Milestones are retrieved from the PMI file and are counted whatever their target release is. Milestones are useful to assess the maturity of the release and improves predictability of the project's output, in terms of quality and time."
+        ],
+        "scale": [1,5,10,20]
+      },
+      {
+        "name": "Reviews success rate",
+        "mnemo": "PLAN_REVIEWS_SUCCESS_RATE",
+        "desc": [
+            "What is the percentage of successful reviews over the past 5 releases?",
+            "The reviews are retrieved from the project management infrastructure record, and are considered successful if the entry is equal to <mark>success</mark>. If there are less than 5 releases defined, the percentage is computed on these only."
+        ],
+        "scale": [20,40,60,80]
+      },
+      {
+        "name": "SCM information",
+        "mnemo": "PMI_SCM_INFO",
+        "desc": [
+            "Is the source_repo info correctly filled in the PMI records? ",
+            "The project management infrastructure file holds information about one or more source repositories. This test checks that at least one source repository is defined, and accessible."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "ITS information",
+        "mnemo": "PMI_ITS_INFO",
+        "desc": [
+            "Is the bugzilla info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about one or more bugzilla instances. This test checks that at least one bugzilla instance is defined, with a product identifier, a create_url to enter a new issue, and a query_url to fetch all the issues for the project."
+        ],
+        "scale": [2,3,4,5]
+      },
+      {
+        "name": "Number of favourites on the Marketplace",
+        "mnemo": "MKT_FAV",
+        "desc": [
+            "The number of favourites on the Eclipse Marketplace for the project.",
+            "This measure uses the MarketPlace REST API to retrieve the number of registered users who marked this project as a favourite. If the project is not registered on the Marketplace, the metric should be zero."
+        ],
+        "scale": [10,30,70,300]
+      },
+      {
+        "name": "Number of successfull installs on the Marketplace",
+        "mnemo": "MKT_INSTALL_SUCCESS_1M",
+        "desc": [
+            "The number of successful installs for the project as reported on the Marketplace during the last three months.",
+            "This measure uses the list of successful installs available on the Marketplace for every registered project. Here is <a href=\"http://marketplace.eclipse.org/content/eclipse-cdt-cc-development-tooling\">an example of log page</a>, metrics tab. If the project is not registered on the Marketplace, the metric should be zero."
+        ],
+        "scale": [100,500,1000,10000]
+      },
+      {
+        "name": "Number of downloads on update site",
+        "mnemo": "DL_UPDATE_SITE_1M",
+        "desc": [
+            "The number of downloads on the update site of the project during last three months. Is computed using successful and failed installs from marketplace."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Number of downloads on the web site",
+        "mnemo": "DL_REPO_1M",
+        "desc": [
+            "The number of downloads on the web site of the project (download page) during last three months. Example of download page (for CDT) : http://www.eclipse.org/downloads/ ."
+        ],
+        "scale": [1,2,3,4]
+      }
+    ]
+  }

@@ -1,0 +1,36 @@
+
+% my @all_jobs = sort { $b->{'id'} <=> $a->{'id'} } @{app->minion->backend->list_jobs};
+% my @project_jobs = grep {
+%    $_->{'task'} eq 'run_project' && $_->{'args'}[0] eq $project_id && $_->{'state'} eq 'finished'
+%   } @all_jobs;
+% my $job = $project_jobs[-1];
+
+            <h1 class="al-h1"><small><%= $project_id %></small> Analysis Log</h1>
+            <br />
+
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/log', project_id => $project_id
+
+            <br />
+
+            <p>Last analysis of the project was executed by job id <code><%= $job->{'id'} %></code>. The job was finished on <code><%= localtime($job->{'finished'}) %></code> and produced <code><%= scalar keys %{$job->{'result'}{'info'}} %></code> informations, <code><%= scalar keys %{$job->{'result'}{'metrics'}} %></code> metrics, <code><%= scalar keys %{$job->{'result'}{'attrs'}} %></code> attributes, and <code><%= scalar @{$job->{'result'}{'recs'} || []} %></code> recommendations.</p>
+            <br />
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th>Plugin</th><th>Message</th>
+              </tr>
+% foreach my $error (@{$job->{'result'}{'log'}}) {
+	      <tr>
+%   if ( $error =~ m!^ERROR(:\s*)?(.+)$! ) {
+                <td><span class="label label-danger">ERROR</span></td><td><%= $2 %></td>
+%   } elsif ( $error =~ m!^WARNING(:\s*)?(.+)$! ) {
+		<td><span class="label label-warning">WARNING</span></td><td><%= $2 %></td>
+%   } elsif ( $error =~ m!^(\[[^]]+\])(\s*)?(.+)$! ) {
+                <td><span class="label label-default"><%= $1 %></span></td><td><%= $3 %></td>
+%   } else {
+		<td></td><td><%= $error %>
+%   }
+              </tr>
+% }
+            </table>
+

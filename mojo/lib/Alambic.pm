@@ -1,283 +1,221 @@
 package Alambic;
-
 use Mojo::Base 'Mojolicious';
 
-use Alambic::Model::Config;
-use Alambic::Model::Models;
-use Alambic::Model::Projects;
-use Alambic::Model::Users;
-use Alambic::Model::Repo;
-use Alambic::Model::Plugins;
+use Alambic::Model::Alambic;
 
 use Minion;
-
 use Data::Dumper;
 
-use File::ChangeNotify;
 
-
-my $app;
-
-# has projects => sub { 
-#   state $projects = Alambic::Model::Projects->new($app);
-# };
-
-# has al_config => sub { 
-#   state $config = Alambic::Model::Config->new($app);
-# };
+has al => sub {
+    my $self = shift;
+    
+    # Get config from alambic.conf
+    my $config = $self->plugin('Config');
+    state $al = Alambic::Model::Alambic->new($config);
+};
 
 
 # This method will run once at server start
 sub startup {
-    $app = shift;
-
-    $app->secrets(['Secrets of Alambic']);
-
-    $app->log->level('debug');
-
-    # Use Config plugin for basic configuration
-    my $config = $app->plugin('Config');
-
+    my $self = shift;
+    
+    $self->secrets(['Secrets of Alambic']);
+    
+    # Use application logger
+    $self->log->info('Alambic v3.0 application started.');
+        
     my $conf_mail = {
-	from     => 'alambic@eclipse.castalia.camp',
+	from     => 'alambic@castalia.solutions',
 	encoding => 'base64',
 	type     => 'text/html',
 	how      => 'sendmail',
 	howargs  => [ '/usr/sbin/sendmail -t' ],
     };
+    $self->plugin( 'mail' => $conf_mail );
     
-    $app->plugin( 'mail' => $conf_mail );
+    # Set layout for pages.
+    $self->defaults(layout => 'default');
     
-    # Use application logger
-    $app->app->log->info('Alambic application started.');
+    # Get config from alambic.conf
+    my $config = $self->plugin('Config');
 
-    # Helpers definition
-    $app->plugin('Alambic::Model::Helpers');
-
-    my $watcher_data = File::ChangeNotify->instantiate_watcher
-        ( directories => [ $config->{'dir_data'} ],
-          filter      => qr/\.json$/,
-        );
-
-    my $watcher_conf = File::ChangeNotify->instantiate_watcher
-        ( directories => [ $config->{'dir_conf'} ],
-          filter      => qr/\.json$/,
-        );
-
-    # Repo holds information about the git repository used for this instance.
-    $app->helper( repo => sub { state $repo = Alambic::Model::Repo->new($app) } );
-    # Initialise repository object.
-    $app->repo->read_status();
-
-    # Load plugins for data plugins.
-    $app->helper( al_plugins => sub { state $plugins = Alambic::Model::Plugins->new($app) } );
-    # Initialise the plugins (read files).
-    $app->al_plugins->read_all_files();
-
-    # Users holds information about the users and authentication mecanism.
-    $app->helper( users => sub { state $users = Alambic::Model::Users->new($app) } );
-    # Initialise the mode (read files).
-    $app->users->read_all_files();
-
-    # Models holds information about the model: attributes, metrics, model hierarchy, etc.
-    $app->helper( models => sub { state $models = Alambic::Model::Models->new($app) } );
-    # Initialise the models (read files).
-    $app->models->read_all_files();
-
-    # project holds information about the projects.
-    $app->helper( projects => sub { 
-      state $project = Alambic::Model::Projects->new($app);
-      if ( my @events = $watcher_data->new_events() ) { 
-        $app->app->log->info( 'Change detected in data files.' );
-        foreach my $event (@events) { $app->app->log->info( "   Event " . $event->type . " [" . $event->path . "]" ); }
-        $project->read_all_files(); 
-      }
-      return $project;
-		} );
-
-    # al_config holds information about this Alambic instance.
-    $app->helper( al_config=> sub { 
-      state $config = Alambic::Model::Config->new($app);
-      if ( my @events = $watcher_conf->new_events() ) { 
-        $app->app->log->info( 'Change detected in config files.' );
-        foreach my $event (@events) { $app->app->log->info( "   Event " . $event->type . " [" . $event->path . "]" ); }
-        $config->read_files(); 
-        # Also update users in case of an update of the users conf file.
-        $app->users->read_all_files();
-      }
-      return $config;
-    } );
-
-    # Used to get project name from id
-    $app->helper( 
-        get_project_name_by_id => sub { 
-            my $app = shift;
-            my $id = shift || 0;
-            return $app->projects->get_project_name_by_id($id);
-        });
-    
-    # Set the default layout for pages.
-    if ( defined( $app->al_config->get_layout() ) ) {
-        $app->app->log->info('Using layout ' . $app->al_config->get_layout() . ' from configuration file.');
-        $app->defaults(layout => $app->al_config->get_layout());
-    } else {
-        $app->defaults(layout => 'default');
-    }
+    # Use Minion for job queuing.
+    $self->plugin( Minion => {Pg => $config->{'conf_pg_minion'}} );
 
     # MINION management
 
-    # Use Minion for job queuing.
-    $app->plugin( Minion => {Pg => $app->al_config->get_pg('conf_pg')} );
-
     # Set parameters.
     # Automatically remove jobs from queue after one day. 86400 is one day.
-    $app->minion->remove_after(86400);
+    $self->minion->remove_after(86400);
 
-    # Add task to retrieve ds data
-    $app->minion->add_task( retrieve_data_ds => sub {
-        my ($job, $ds, $project_id) = @_;
-        my $log_ref = $app->al_plugins->get_plugin($ds)->retrieve_data($project_id);
-        my @log = @{$log_ref};
-        $job->finish(\@log);
-    } );
-
-    # Add task to compute ds data
-    $app->minion->add_task( compute_data_ds => sub {
-        my ($job, $ds, $project_id) = @_;
-        my $log_ref = $app->al_plugins->get_plugin($ds)->compute_data($project_id);
-        my @log = @{$log_ref};
-        $job->finish(\@log);
-    } );
-    
-    # Add task to retrieve all data for a project
-    $app->minion->add_task( retrieve_project => sub {
-        my ($job, $project_id) = @_;
-        my $log_ref = $app->projects->retrieve_project_data($project_id);
-        my @log = @{$log_ref};
-        $job->finish(\@log);
+    # Add task to create a project with a wizard
+    $self->minion->add_task( add_project_wizard => sub {
+        my ($job, $wizard, $project_id) = @_;
+        my $ret = $self->al->create_project_from_wizard($wizard, $project_id);
+        $job->finish($ret);
     } );
     
     # Add task to compute all data for a project
-    $app->minion->add_task( analyse_project => sub {
+    $self->minion->add_task( run_project => sub {
         my ($job, $project_id) = @_;
-        my $log_ref = $app->projects->analyse_project($project_id);
-        my @log = @{$log_ref};
-        $job->finish(\@log);
+        my $ret = $self->al->run_project($project_id);
+        $job->finish($ret);
     } );
     
-    # Add task to run both retrieval and analysis for a project
-    $app->minion->add_task( run_project => sub {
+    # Add task to run a single plugin
+    # Partial runs are not recorded in the db and can only be viewed in the job log.
+    $self->minion->add_task( run_plugin => sub {
+        my ($job, $project_id, $plugin_id) = @_;
+	my $ret; 
+
+	my $plugin_conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
+	my $models = $self->app->al->get_models();
+
+	if ($plugin_conf->{'type'} =~ /^pre$/ ) {
+	    $ret = $self->al->get_project($project_id)->run_plugin($plugin_id);
+	} elsif ($plugin_conf->{'type'} =~ /^post$/ ) {
+	    $ret = $self->al->get_project($project_id)->run_post($plugin_id, $models);
+	} else { $ret->{'log'} = [ "Plugin ID [$plugin_id] is not recognised." ] }
+        $job->finish($ret);
+    } );
+
+    # Add task to run all plugins
+    # Partial runs are not recorded in the db and can only be viewed in the job log.
+    $self->minion->add_task( run_plugins => sub {
         my ($job, $project_id) = @_;
-        my $log_ref_retrieve = $app->projects->retrieve_project_data($project_id);
-        my $log_ref_analyse = $app->projects->analyse_project($project_id);
-        my @log = ( @{$log_ref_retrieve}, @{$log_ref_analyse} );
-        $job->finish(\@log);
+        my $ret = $self->al->run_plugins($project_id);
+        $job->finish($ret);
+    } );
+
+    # Add task to run qm analysis
+    # Partial runs are not recorded in the db and can only be viewed in the job log.
+    $self->minion->add_task( run_qm => sub {
+        my ($job, $project_id) = @_;
+        my $ret = $self->al->run_qm($project_id);
+        $job->finish($ret);
     } );
     
+    # Add task to run post plugins
+    # Partial runs are not recorded in the db and can only be viewed in the job log.
+    $self->minion->add_task( run_posts => sub {
+        my ($job, $project_id) = @_;
+        my $ret = $self->al->run_posts($project_id);
+        $job->finish($ret);
+    } );
+    
+
 
     # Router
-    my $r = $app->routes;
-    
+    my $r = $self->routes;
+	
+    # Install routes, that works only if the instance is not initialised.
+    if ( $self->app->al->instance_name() eq 'MyDBNameInit' ) {
+	print "### Executing Install procedure.\n";
+	$r->post('/install')->to( 'alambic#install_post' );
+	$r->any('/')->to( 'alambic#install' );
+	$r->any('*')->to( 'alambic#install' );
+	return;
+    }
+
     # Normal route to controller
-    $r->get('/')->to('alambic#welcome');
+    $r->get('/')->to( 'alambic#welcome' );
     
     # Simple pages
-    $r->get('/about.html')->to( template => 'alambic/about');
-    $r->get('/contact.html')->to( template => 'alambic/contact');
+    $r->get('/about')->to( template => 'alambic/about');
+    $r->get('/contact')->to( template => 'alambic/contact');
     $r->post('/contact')->to( 'alambic#contact_post' );
+    $r->get('/login')->to( 'alambic#login' );
+    $r->post('/login')->to( 'alambic#login_post' );
+    $r->get('/logout')->to( 'alambic#logout' );
 
-    # Data (quality_model.json, etc.).
-    $r->get('/data/#id')->to('data#download');
-    
     # Documentation
-    $r->get('/documentation/#id')->to('documentation#welcome');
-    $r->get('/documentation')->to('documentation#welcome');
-    
-    # Comments
-    $r->get('/comments/')->to('comments#welcome');
+    $r->get('/documentation/#id')->to( 'documentation#welcome' );
     
     # Dashboards
-    $r->get('/projects/#id')->to('dashboard#display');
-    # Figures
-    $r->get('/projects/figures/#plugin/#project/#fig')->to('figures#plugins');
-    
-    # Login form
-    $r->get('/login')->to('alambic#login');
-    $r->post('/login')->to('alambic#login_post');
-    $r->get('/logout')->to('alambic#logout');
+    my $r_projects = $r->get('/projects')->to( controller => 'dashboard' );
+    $r_projects->get('/#id')->to( action => 'display_summary' );
+    $r_projects->get('/#id/#page')->to( action => 'display_project' );
+    $r_projects->get('/#id/#plugin/#page')->to( action => 'display_plugins' );
+    $r_projects->post('/#id/#plugin/#page')->to( action => 'display_plugins_post' );
+
+    # JSON data for models 
+    $r->get('/models/#page')->to( 'admin#data_models' );
+
+    ### Protected routes
+    $self->routes->add_condition(
+    	role => sub {
+    	    my ( $r, $c, $captures, $role ) = @_;
+	    my $user = $self->al->users->get_user($c->session->{'session_user'}) || {};
+
+    	    # Keep the weirdos out!
+    	    return undef
+    		if ( !exists( $c->session->{'session_user'} )
+    		     || not grep { $_ eq ${role} } @{$user->{'roles'}} );
+
+    	    # It's ok, we know him
+    	    return 1;
+    	}
+    	);
 
     # Admin
-    $r->get('/admin/summary')->to( 'admin#welcome' );
-
-    # Install route (SCM)
-    $r->get('/admin/install')->to('alambic#install');
-    $r->post('/admin/install')->to('alambic#install_post');
+    my $r_admin = $r->any('/admin')->over( role => 'Admin' )->to( controller => 'admin' );   
     
+    $r_admin->get('/edit')->to( action => 'edit' );
+    $r_admin->post('/edit')->to( action => 'edit_post' );
+    $r_admin->get('/summary')->to(action => 'summary');
+    $r_admin->get('/projects')->to(action => 'projects');
+    $r_admin->get('/users')->to(action => 'users');
+    $r_admin->get('/users/new')->to(action => 'users_new');
+    $r_admin->post('/users/new')->to(action => 'users_new_post');
+    $r_admin->get('/users/#uid')->to(action => 'users_edit');
+    $r_admin->post('/users/#uid')->to(action => 'users_edit_post');
+    $r_admin->get('/users/#uid/del')->to(action => 'users_del');
+    
+    $r_admin->get('/models')->to( action => 'models' );
+    $r_admin->get('/models/import')->to( action => 'models_import' );
+    $r_admin->get('/models/init')->to( action => 'models_init' );
+    
+    my $r_admin_projects = $r_admin->any('/projects')->to(controller => 'admin');
+    $r_admin_projects->get('/new')->to(action => 'projects_new');
+    $r_admin_projects->post('/new')->to(action => 'projects_new_post');
+
+    # Wizards
+    $r_admin_projects->get('/new/#wiz')->to(action => 'projects_wizards_new_init');
+    $r_admin_projects->post('/new/#wiz')->to(action => 'projects_wizards_new_init_post');
+    $r_admin_projects->get('/new/#wiz/#pid')->to(action => 'projects_wizards_new');
+    $r_admin_projects->post('/new/#wiz/#pid')->to(action => 'projects_wizards_new_post');
+    
+    # Projects
+    $r_admin_projects->get('/#pid')->to(action => 'projects_show');
+    $r_admin_projects->get('/#pid/run')->to(action => 'projects_run');
+    $r_admin_projects->get('/#pid/run/pre')->to(action => 'projects_run_pre');
+    $r_admin_projects->get('/#pid/run/qm')->to(action => 'projects_run_qm');
+    $r_admin_projects->get('/#pid/run/post')->to(action => 'projects_run_posts');
+    $r_admin_projects->get('/#pid/del')->to(action => 'projects_del');    
+    $r_admin_projects->get('/#pid/edit')->to(action => 'projects_edit');
+    $r_admin_projects->post('/#pid/edit')->to(action => 'projects_edit_post');
+    $r_admin_projects->get('/#pid/setp/#plid')->to( action => 'projects_add_plugin' );
+    $r_admin_projects->post('/#pid/setp/#plid')->to( action => 'projects_add_plugin_post' );
+    $r_admin_projects->get('/#pid/runp/#plid')->to( action => 'projects_run_plugin' );
+    $r_admin_projects->get('/#pid/delp/#plid')->to( action => 'projects_del_plugin' );
+    # my $r_admin_models = $r->get('/admin/models/')->to( controller => 'admin' );
+
     # Job management
-    $r->get('/admin/jobs')->to( 'jobs#summary' );
-    $r->get('/admin/jobs/#id')->to( 'jobs#display' );
-    $r->get('/admin/jobs/#id/del')->to( 'jobs#delete' );
-    $r->get('/admin/jobs/#id/rec')->to( 'jobs#redo' );
+    $r_admin->get('/jobs')->to( 'jobs#summary' );
+    $r_admin->get('/jobs/#id')->to( 'jobs#display' );
+    $r_admin->get('/jobs/#id/del')->to( 'jobs#delete' );
+    $r_admin->get('/jobs/#id/run')->to( 'jobs#redo' );
 
-    # Admin - Repository
-    $r->get('/admin/repo')->to( 'admin#repo' );
-    $r->get('/admin/repo/init')->to( 'repo#init' );
-    $r->post('/admin/repo/init')->to( 'repo#init_post' );
-    $r->get('/admin/repo/manage')->to('repo#manage');
-    $r->get('/admin/repo/push')->to('repo#push');
-
-    # Admin - Data sources
-    $r->get('/admin/plugins')->to( 'admin#plugins' );
-
-    # Admin -- manage projects
-    $r->get('/admin/projects')->to( 'admin#projects_main' );
-    $r->get('/admin/projects/new')->to( 'admin#project_add' );
-    $r->post('/admin/projects/new')->to( 'admin#project_add_post' );
-    $r->get('/admin/project/#id/retrieve')->to( 'admin#project_retrieve_data' );
-    $r->get('/admin/project/#id/analyse')->to( 'admin#project_analyse' );
-    $r->get('/admin/project/#id/run')->to( 'admin#project_run' );
-    $r->get('/admin/project/#id/del')->to( 'admin#project_del' );
-    $r->get('/admin/project/#id')->to( 'admin#projects_id' );
-
-    # Admin - manage data source plugins
-    $r->get('/admin/project/#id/ds/#ds/new')->to( 'plugins#add_project' );
-    $r->post('/admin/project/#id/ds/#ds/new')->to( 'plugins#add_project_post' );
-    $r->get('/admin/project/#id/ds/#ds/check')->to( 'plugins#check_project' );
-    $r->get('/admin/project/#id/ds/#ds/retrieve')->to( 'plugins#project_retrieve_data' );
-    $r->get('/admin/project/#id/ds/#ds/compute')->to( 'plugins#project_compute_data' );
-#    $r->get('/admin/project/#id/ds/#ds/edit')->to( 'plugins#add_project' );
-    $r->get('/admin/project/#id/ds/#ds/del')->to( 'plugins#del_project' );
-
-    # Admin - manage custom data plugins.
-    # $id is the project
-    # $cd is the custom data plugin
-    $r->get('/admin/cdata')->to( 'custom_data#display' );
-    $r->get('/admin/cdata/#proj')->to( 'custom_data#display' );
-    $r->get('/admin/cdata/#proj/#cd/new')->to( 'custom_data#add_to_project' );
-    $r->get('/admin/cdata/#proj/#cd/show')->to( 'custom_data#show' );
-    $r->get('/admin/cdata/#proj/#cd/add')->to( 'custom_data#add' );
-    $r->post('/admin/cdata/#proj/#cd/add')->to( 'custom_data#add_post' );
-#    $r->get('/admin/cdata/#proj/#cd/compute')->to( 'custom_data#compute_data' );
-    $r->get('/admin/cdata/#proj/#cd/edit/:id')->to( 'custom_data#edit' );
-    $r->get('/admin/cdata/#proj/#cd/del/:id')->to( 'custom_data#del' );
-
-    # Admin - Users management
-    $r->get('/admin/users')->to( 'admin#users_main' );
-
-    # Admin - Utilities
-    $r->get('/admin/read_files/:files')->to( 'admin#read_files' );
-    $r->get('/admin/del_input_file/#project/#file')->to( 'admin#del_input_file' );
-    $r->get('/admin/del_data_file/#project/#file')->to( 'admin#del_data_file' );
-
-    # Admin - Comments
-    $r->get('/admin/comments')->to( 'comments#welcome' );
-    $r->get('/admin/comments/#project')->to( 'comments#welcome' );
-    $r->get('/admin/comments/#project/a')->to( 'comments#welcome', act => 'a' );
-    $r->get('/admin/comments/#project/:act/:com')->to( 'comments#welcome' );
-    $r->post('/admin/comments/#project/a')->to( 'comments#add_post' );
-    $r->post('/admin/comments/#project/e/:com')->to( 'comments#edit_post' );
-    $r->post('/admin/comments/#project/d/:com')->to( 'comments#delete_post' );
-
+    # Database manipulations.
+    $r_admin->get('/repo')->to('repo#summary');
+    $r_admin->get('/repo/init')->to('repo#init');
+    $r_admin->get('/repo/backup')->to('repo#backup');
+    $r_admin->get('/repo/restore/#file')->to('repo#restore');
+ 
+    # Admin fallback when no auth
+    $r->any('/admin/*')->to( 'alambic#failed' );   
+    
 }
 
 1;
