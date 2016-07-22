@@ -74,6 +74,8 @@
 % my $projects = app->al->get_projects_list();
 % my @projects = sort { $projects->{$a} cmp $projects->{$b} } keys %$projects;
 % foreach my $project ( @projects ) {
+%   my $proj_full = app->al->get_project($project);
+%   next if (not $proj_full->active);
                   <li><a href="/projects/<%= $project %>.html"><%= $projects->{$project} %></a></li>
 % }
               </ul></li>
