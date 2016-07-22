@@ -51,7 +51,7 @@
 % } elsif ( $self->req->url =~ m!^/projects/! ) {
 %   $url = 'projects';
 % } else {
-%   $url = 'none';
+%   $url = 'projects';
 % }
         <!-- /.navbar-header -->
         <div class="navbar-default sidebar" role="navigation">
