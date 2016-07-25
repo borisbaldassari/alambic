@@ -24,7 +24,7 @@ require(xtable)
 
 knitr::opts_chunk$set(fig.path = 'figures/')
 
-project.id <- 'modeling.sirius'
+#project.id <- 'modeling.sirius'
 plugin.id <- 'EclipseScm'
 file.static = paste("", project.id, "_scm.csv", sep="")
 file.evol = paste("", project.id, "_scm_evol.csv", sep="")
