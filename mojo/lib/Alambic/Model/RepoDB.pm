@@ -123,7 +123,7 @@ sub is_db_ok() {
     my $rows = $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->rows;
 
-    return $rows == 10 ? 1 : 0;
+    return $rows >= 9 ? 1 : 0;
 }
 
 

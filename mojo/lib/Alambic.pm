@@ -213,6 +213,7 @@ sub startup {
     $r_admin->get('/repo/backup')->to('repo#backup');
     $r_admin->get('/repo/restore/#file')->to('repo#restore');
     $r_admin->get('/repo/dl/#file')->to('repo#dl');
+    $r_admin->get('/repo/del_backup/#file')->to('repo#delete');
  
     # Admin fallback when no auth
     $r->any('/admin/*')->to( 'alambic#failed' );   
