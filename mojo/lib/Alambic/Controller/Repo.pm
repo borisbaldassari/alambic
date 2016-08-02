@@ -47,6 +47,17 @@ sub backup {
 }
 
 
+# Download SQL backup file.
+sub dl {
+    my $self = shift;
+    
+    my $file_sql = $self->param( 'file' );
+
+    # If the page is a fig, reply static file under 'backups/'
+    $self->reply->static( '../backups/' . $file_sql );
+}
+
+
 # Restore DB for Alambic admin.
 sub restore {
     my $self = shift;
