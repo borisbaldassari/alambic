@@ -68,48 +68,21 @@ sub backup_db() {
     my ($self) = @_;
     
     my $sql_out = &_db_query_create();
-    
-    my $results = $pg->db->query("SELECT * FROM conf");
-    while (my $next = $results->hash) {
-	my $insert_statement = qq{INSERT INTO conf (param, val)\n VALUES (};
-	$insert_statement .= "'" . $next->{'param'} . "', '" . $next->{'val'} . "');\n";
-	$sql_out .= $insert_statement;
-    }
-    
-    $results = $pg->db->query("SELECT * FROM models_attributes");
-    while (my $next = $results->hash) {
-	my $insert_statement = qq{INSERT INTO models_attributes (mnemo, name, description)\n VALUES (};
-	$insert_statement .= "'" . $next->{'mnemo'} . "', '" . $next->{'name'} . "', '" . $next->{'description'} . "');\n";
-	$sql_out .= $insert_statement;
-    }
-    
-    $results = $pg->db->query("SELECT * FROM models_metrics");
-    while (my $next = $results->hash) {
-	my $insert_statement = qq{INSERT INTO models_metrics (mnemo, name, description, scale)\n VALUES (};
-	$insert_statement .= "'" . $next->{'mnemo'} . "', '" . $next->{'name'} . "', '" . $next->{'description'} . "', '" . $next->{'scale'} . "');\n";
-	$sql_out .= $insert_statement;
-    }
-
-    $results = $pg->db->query("SELECT * FROM projects_conf");
-    while (my $next = $results->hash) {
-	my $insert_statement = qq{INSERT INTO projects_conf (id, name, description, is_active, plugins)\n VALUES (};
-	$insert_statement .= "'" . $next->{'id'} . "', '" . $next->{'name'} . "', '"
-	. $next->{'description'} . "', '" . $next->{'is_active'} . "', '"
-	. $next->{'plugins'} . "');\n";
-	$sql_out .= $insert_statement;
-    }
-    
-    $results = $pg->db->query("SELECT * FROM projects_runs");
-    my $fields = "id, project_id, run_time, run_delay, run_user, metrics, indicators, "
-	. "attributes, attributes_conf, recs";
-    while (my $next = $results->hash) {
-	my $insert_statement = qq{INSERT INTO projects ($fields)\n VALUES (};
-	$insert_statement .= "'" . $next->{'id'} . "', '" . $next->{'project_id'} . "', '"
-	. $next->{'run_time'} . "', '" . $next->{'run_delay'} . "', '"
-	. $next->{'run_user'} . "', '" . $next->{'metrics'} . "', '"
-	. $next->{'indicators'} . "', '" . $next->{'attributes'} . "', '"
-	. $next->{'attributes_conf'} . "', '". $next->{'recs'} . "');\n";
-	$sql_out .= $insert_statement;
+	print "################################\n";
+   
+    my @tables = ( 'conf', 'users', 
+		   'models_attributes', 'models_metrics', 'models_qms', 
+		   'projects_cdata', 'projects_conf', 'projects_info', 'projects_runs' );
+ 
+    foreach my $table (@tables) {
+	my $results = $pg->db->query("SELECT * FROM $table");
+	while (my $next = $results->hash) {
+	    my @cols = sort keys %{$next};
+	    my @values_orig = map { my $v = $next->{$_}; $v =~ s/'/''/g; "" . $v . "" } @cols;
+	    my $insert_statement = "INSERT INTO $table (" . join(', ', @cols) . ")\n VALUES ('";
+	    $insert_statement .= join( '\', \'', @values_orig) . "');\n";
+	    $sql_out .= $insert_statement;
+	}
     }
 
     return $sql_out;
