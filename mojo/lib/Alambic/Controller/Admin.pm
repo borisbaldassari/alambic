@@ -21,6 +21,7 @@ sub edit {
     $self->stash(
         name => $self->app->al->instance_name(),
         desc => $self->app->al->instance_desc(),
+        gt => $self->app->al->get_repo_db()->conf()->{'google_tracking'},
         );
     $self->render( template => 'alambic/admin/instance_edit' );
 }
@@ -30,12 +31,15 @@ sub edit {
 sub edit_post {
     my $self = shift;
 
-    # Gte values from form.
+    # Get values from form.
     my $name = $self->param( 'name' );
     my $desc = $self->param( 'desc' );
+    my $gt = $self->param( 'google-tracking' );
     
     $self->app->al->get_repo_db()->name($name);
     $self->app->al->get_repo_db()->desc($desc);
+    print "# in admin:edit_post [$gt].\n";
+    $self->app->al->get_repo_db()->conf('google-tracking', $gt);
 
     $self->flash( msg => "Instance details have been saved." );
     $self->redirect_to( '/admin/summary' );

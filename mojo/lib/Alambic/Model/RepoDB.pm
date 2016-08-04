@@ -19,6 +19,7 @@ our @EXPORT_OK = qw(
                      is_db_ok
                      name
                      desc
+                     conf
                      get_info
                      get_metric
                      get_metrics
@@ -157,6 +158,27 @@ sub desc($) {
     }
     
     return $ret;
+}
+
+
+# Get or set the Alambic instance configuration, exposed as a hash.
+sub conf($$$) {
+    my ($self, $param, $value) = @_;
+
+    if (scalar @_ > 1) {
+	my $query = "INSERT INTO conf (param, val) VALUES "
+	    . "(?, ?) ON CONFLICT (param) DO UPDATE SET (param, val) "
+	    . "= (?, ?)";
+	my $ret = $pg->db->query( $query, ($param, $value, $param, $value) );
+    } 
+
+    my %conf;
+    my $results = $pg->db->query("SELECT * FROM conf;");
+    while (my $next = $results->hash) {
+	$conf{ $next->{'param'} } = $next->{'val'};
+    }
+        
+    return \%conf;
 }
 
 
