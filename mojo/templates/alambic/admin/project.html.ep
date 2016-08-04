@@ -166,7 +166,7 @@
 % foreach my $file (@{stash( 'files_input' )}) {
 %   my $file_short = fileparse($file);
                   <tr>
-                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><a href="/admin/del_input_file/<%= $project . '/' . $file_short %>"><i class="fa fa-ban"></i></a></td>
+                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><a href="/admin/projects/<%= $project->get_id() . '/del_input_file/' . $file_short %>"><i class="fa fa-ban"></i></a></td>
                   </tr>
 % }
                 </table>
@@ -181,7 +181,7 @@
 % foreach my $file (@{stash( 'files_output' )}) {
 %   my $file_short = fileparse($file);
                   <tr>
-                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><a href="/admin/del_data_file/<%= $project . '/' . $file_short %>"><i class="fa fa-ban"></i></a></td>
+                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><a href="/admin/projects/<%= $project->get_id() . '/del_output_file/' . $file_short %>"><i class="fa fa-ban"></i></a></td>
                   </tr>
 % }
                 </table>

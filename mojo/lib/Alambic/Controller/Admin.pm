@@ -588,4 +588,44 @@ sub projects_del_plugin {
 }
 
 
+sub del_input_file() {
+    my $self = shift;
+    
+    my $project_id = $self->param( 'pid' );
+    my $file = $self->param( 'file' );
+
+    my $ret = unlink( 'projects/' . $project_id . '/input/' . $file );
+    my $msg;
+    if ($ret == 1) {
+        $msg = "Deleted input file [$file].";
+    } else {
+        $msg = "ERROR: could not delete input file.";
+    }
+
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+sub del_output_file() {
+    my $self = shift;
+    
+    my $project_id = $self->param( 'pid' );
+    my $file = $self->param( 'file' );
+
+    my $ret = unlink( 'projects/' . $project_id . '/output/' . $file );
+    my $msg;
+    if ($ret == 1) {
+        $msg = "Deleted output file [$file].";
+    } else {
+        $msg = "ERROR: could not delete output file.";
+    }
+
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+
+
 1;

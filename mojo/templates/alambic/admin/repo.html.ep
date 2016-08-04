@@ -31,12 +31,15 @@
             </div>	    
                 
             <table class="table table-striped">
-              <tr><th>File</th><th colspan="1">Actions</th></tr>
+              <tr><th>File</th><th>Restore</th><th>Download</th><th>Delete</th></tr>
 % my $files = stash( 'files_backup' ) || [];
 % foreach my $file (@$files) {
 %   my $file_short = fileparse($file);
               <tr>
-                <td><%= $file_short %></td><td><a href="/admin/repo/restore/<%= $file_short %>"><i class="fa fa-upload"></i></a></td>
+                <td><%= $file_short %></td>
+		<td width="1cm"><a href="/admin/repo/restore/<%= $file_short %>"> <i class="fa fa-upload"></i></a> </td>
+		<td width="1cm"><a href="/admin/repo/dl/<%= $file_short %>"><i class="fa fa-download"></i></a></td>
+                <td width="1cm"><a href="/admin/repo/del_backup/<%= $file_short %>"><i class="fa fa-ban"></i></a></td>
               </tr>
 % }
             </table>
