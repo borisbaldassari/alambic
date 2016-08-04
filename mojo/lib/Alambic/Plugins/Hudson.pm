@@ -186,7 +186,7 @@ sub _compute_data($) {
     @metrics_csv = ('name', 'desc', 'jobs', 'url');
     $csv_out = join( ',', @metrics_csv) . "\n";
     $csv->combine( ( $hudson->{'nodeName'}, $hudson->{'nodeDescription'}, $metrics{'JOBS'}, $hudson_url ) );
-    $csv_out .= $csv->string();
+    $csv_out .= $csv->string() . "\n";
 
     $repofs->write_plugin( 'Hudson', $project_id . "_hudson_main.csv", $csv_out );
     
