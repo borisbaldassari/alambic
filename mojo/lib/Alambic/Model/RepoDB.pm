@@ -5,7 +5,6 @@ use strict;
 
 use Mojo::Pg;
 use Mojo::JSON qw( decode_json encode_json );
-#use File::Copy;
 use Data::Dumper;
 
 require Exporter;
@@ -123,7 +122,7 @@ sub is_db_ok() {
     my $rows = $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->rows;
 
-    return $rows >= 9 ? 1 : 0;
+    return $rows == 10 ? 1 : 0;
 }
 
 
