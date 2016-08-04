@@ -81,7 +81,7 @@
 	      <dt>ID</dt><dd><%= $project_id %></dd>
 	      <dt>Name</dt><dd><%= $project->name() %></dd>
               <dt>Description</dt><dd><%== $project->desc() %></dd>
-	      <dt>Last analysis</dt><dd><%= $run->{'run_time'} %></dd>
+	      <dt>Last analysis</dt><dd>Executed on <code><%= $run->{'run_time'} %></code> by <code><%= $run->{'run_user'} %></code>, took <code><%= $run->{'run_delay'} %></code> seconds.</dd>
             </dl>
 	    
 	    <br />
