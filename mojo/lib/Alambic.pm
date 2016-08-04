@@ -199,6 +199,8 @@ sub startup {
     $r_admin_projects->post('/#pid/setp/#plid')->to( action => 'projects_add_plugin_post' );
     $r_admin_projects->get('/#pid/runp/#plid')->to( action => 'projects_run_plugin' );
     $r_admin_projects->get('/#pid/delp/#plid')->to( action => 'projects_del_plugin' );
+    $r_admin_projects->get('/#pid/del_input_file/#file')->to( 'admin#del_input_file' );
+    $r_admin_projects->get('/#pid/del_output_file/#file')->to( 'admin#del_output_file' );
     # my $r_admin_models = $r->get('/admin/models/')->to( controller => 'admin' );
 
     # Job management
