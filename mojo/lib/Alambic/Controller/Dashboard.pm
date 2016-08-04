@@ -24,7 +24,7 @@ sub display_summary {
     $self->render(template => 'alambic/dashboard/dashboard');
 }
 
-# Main page for project dashboard.
+# Secondary pages for project dashboard.
 sub display_project {
     my $self = shift;
 
@@ -35,6 +35,23 @@ sub display_project {
 	&_display_project_json($self, $project_id, $page_id);
     } else {
 	&_display_project_html($self, $project_id, $page_id);
+    }
+
+}
+
+# Main page for project history.
+sub display_history {
+    my $self = shift;
+
+    my $project_id = $self->param( 'id' );
+    my $plugin_id = $self->param( 'plugin' );
+    my $build_id = $self->param( 'build' );
+    my $page_id = $self->param( 'page' ) || '';
+
+    if ($page_id =~ m!\.json$!) {
+	&_display_project_history_json($self, $project_id, $plugin_id, $build_id, $page_id);
+    } else {
+	&_display_project_history_html($self, $project_id, $plugin_id, $build_id, $page_id);
     }
 
 }
@@ -166,6 +183,22 @@ sub _display_project_html($$) {
         
         $self->render(template => 'alambic/dashboard/qm');
 	
+    } elsif ($page_id =~ m!^history$!) {
+
+	my %runs;
+	my $runs_info = $self->app->al->get_repo_db->get_project_all_runs($project_id);
+	foreach my $run_ (@{$runs_info}) {
+	    print "# " . $run_->{'id'} . ".\n";
+	    $runs{ $run_->{'id'} } = $self->app->al->get_repo_db->get_project_run($project_id, $run_->{'id'});
+	}
+
+        $self->stash(
+            project_id => $project_id,
+	    runs => \%runs,
+            );
+        
+        $self->render(template => 'alambic/dashboard/history'); 
+
     } elsif ($page_id =~ m!^data$!) {
         
         $self->stash(
@@ -242,6 +275,97 @@ sub _display_project_html($$) {
         
     } else {
 	
+	$self->reply->not_found;
+
+    }
+
+}
+
+
+sub _display_project_history_json($$$$) {
+    my ($self, $project_id, $plugin_id, $build_id, $page_id) = @_;
+    
+    my $run = $self->app->al->get_project_run($project_id, $build_id);
+    my $project = $self->app->al->get_project($project_id);
+    
+    if ($page_id =~ m!^attributes.json$!) {
+	
+        my $attributes = $run->{'attributes'};
+        $self->render(json => $attributes);
+                
+    } elsif ($page_id =~ m!^metrics.json$!) {
+        
+        my $metrics = $run->{'metrics'};
+        $self->render(json => $metrics);
+                
+    } elsif ($page_id =~ m!^cdata.json$!) {
+        
+        my $cdata = $run->{'cdata'};
+        $self->render(json => $cdata);
+
+    } elsif ($page_id =~ m!^info.json$!) {
+        
+        my $info = $run->{'info'};
+        $self->render(json => $info);
+
+    } elsif ($page_id =~ m!^recs.json$!) {
+	
+        my $recs = $run->{'recs'};
+        $self->render(json => $recs);
+        
+    } else {
+	
+	$self->flash( msg => "Cannot find [/$project_id/history/$build_id/$page_id]." );
+	$self->redirect_to( '/projects/' . $project_id . "/history" );
+	
+    }
+
+}
+
+sub _display_project_history_html($$$$) {
+    my ($self, $project_id, $plugin_id, $build_id, $page_id) = @_;
+
+    my $run = $self->app->al->get_project_run($project_id, $build_id);
+    $page_id =~ s!\.html$!!;
+    
+    if ($page_id =~ m!^metrics!) {
+        
+	my $models = $self->app->al->get_models();
+	my $all = $self->param('all');
+	
+        $self->stash(
+            all => $all,
+            project_id => $project_id,
+	    run => $run,
+	    models => $models,
+            );
+        
+        $self->render(template => 'alambic/dashboard/history_metrics');
+
+    } elsif ($page_id =~ m!^attributes$!) {
+        
+        $self->stash(
+            project_id => $project_id,
+	    attributes => $run->{'attributes'},
+	    attributes_conf => $run->{'attributes_conf'},
+	    models => $self->app->al->get_models(),
+            );
+        
+        $self->render(template => 'alambic/dashboard/history_attributes');
+        
+    } elsif ($page_id =~ m!^recs!) {
+        
+        my $all = $self->param('all');
+
+        $self->stash(
+            project_id => $project_id,
+	    recs => $run->{'recs'},
+            );
+        
+        $self->render(template => 'alambic/dashboard/history_recs');
+        
+    } else {
+
 	$self->reply->not_found;
 
     }
