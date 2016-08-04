@@ -406,9 +406,10 @@ sub projects_run {
     my $self = shift;
     my $project_id = $self->param( 'pid' );
 
+    my $user = $self->session('session_user');
+    
     # Start minion job
-    my $job = $self->minion->enqueue( run_project => [ $project_id ] => { delay => 0 });
-#    my $project = $self->app->al->run_project( $project_id );
+    my $job = $self->minion->enqueue( run_project => [ $project_id, $user ] => { delay => 0 });
 
     my $msg = "Project run for $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
     

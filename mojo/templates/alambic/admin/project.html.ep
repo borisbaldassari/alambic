@@ -44,8 +44,9 @@
                   <dt>Name</dt><dd><%= $project->name() %></dd>
                   <dt>Description</dt><dd><%== $project->desc() %></dd>
 		  <dt>Is active</dt><dd><%= $project->active() ? 'Yes' : 'No' %></dd>
-		  <dt>Last run</dt><dd><%= $project->last_run() || "Never" %><br />
-		  Please note that only a full run will store data in the database. Partial runs (plugin, pre, qm, post) will have their results only displayed in the job.</dd>
+		  <dt>Last run</dt><dd>Executed on <code><%= $project->last_run() || "Never" %></code><br />
+		    By <code><%= $runs->[-1]->{'run_user'} || 'Unknown' %></code>, took <code><%= $runs->[-1]->{'run_delay'} || 0 %></code> seconds.<br />
+		    Please note that only a full run will store data in the database. Partial runs (plugin, pre, qm, post) will have their results only displayed in the job.</dd>
 		</dl>
 		<hr />
                 <dl class="dl-horizontal">

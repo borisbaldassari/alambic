@@ -58,8 +58,8 @@ sub startup {
     
     # Add task to compute all data for a project
     $self->minion->add_task( run_project => sub {
-        my ($job, $project_id) = @_;
-        my $ret = $self->al->run_project($project_id);
+        my ($job, $project_id, $user) = @_;
+        my $ret = $self->al->run_project($project_id, $user);
         $job->finish($ret);
     } );
     

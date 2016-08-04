@@ -13,6 +13,7 @@ use Alambic::Model::Users;
 
 use Mojo::JSON qw (decode_json encode_json);
 use Data::Dumper;
+use DateTime;
 use POSIX;
 
 require Exporter;
@@ -451,17 +452,21 @@ sub get_project_run($$) {
 #      "log" => ['log entry'],
 #    }
 sub run_project($) {
-    my ($self, $project_id) = @_;
+    my ($self, $project_id, $user) = @_;
 
-    my $time_start = time;
+    my $time_start = DateTime->now();
+    my $time_start_epoch = $time_start->epoch();
     my $run = {
-	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
+	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start_epoch) ),
 	'delay' => 0,
-	'user' => 'none',
+	'user' => $user || 'unknown',
     };
 
     my $project = &_get_project($project_id);
     my $values = $project->run_project($models);
+    my $time_finished = DateTime->now();
+    my $delay = $time_finished - $time_start;
+    $run->{'delay'} = $delay->in_units('seconds');
     
     my $ret = $repodb->add_project_run($project_id, $run,
 			     $values->{'info'}, 
@@ -493,13 +498,6 @@ sub run_project($) {
 sub run_plugins($) {
     my ($self, $project_id) = @_;
 
-    my $time_start = time;
-    my $run = {
-	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
-	'delay' => 0,
-	'user' => 'none',
-    };
-
     my $project = &_get_project($project_id);
     my $values = $project->run_plugins();
 
@@ -522,15 +520,9 @@ sub run_plugins($) {
 sub run_qm($) {
     my ($self, $project_id) = @_;
 
-    my $time_start = time;
-    my $run = {
-	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
-	'delay' => 0,
-	'user' => 'none',
-    };
-
     my $project = &_get_project($project_id);
     my $values = $project->run_qm($models);
+
     return $values;
 }
 
@@ -551,13 +543,6 @@ sub run_qm($) {
 #    }
 sub run_posts($) {
     my ($self, $project_id) = @_;
-
-    my $time_start = time;
-    my $run = {
-	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
-	'delay' => 0,
-	'user' => 'none',
-    };
 
     my $project = &_get_project($project_id);
     my $values = $project->run_posts($models);
