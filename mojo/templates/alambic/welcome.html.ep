@@ -47,7 +47,7 @@
 %   my $proj_full = app->al->get_project($project);
 %   next if (not $proj_full->active);
 		    <tr>
-                      <td><a href="/admin/projects/<%= $project %>"><%= $projects->{$project} %></a></td>
+                      <td><a href="/projects/<%= $project %>"><%= $projects->{$project} %></a></td>
                       <td><%= $proj_full->last_run() %></td>
 		    </tr>
 % }
