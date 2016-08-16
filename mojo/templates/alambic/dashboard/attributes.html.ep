@@ -10,7 +10,7 @@
 %= include 'alambic/dashboard/dashboard_menu', current => '/projects/attrs', project_id => $project_id
             <br />
 
-            <p>This table lists all attributes computed from the plugin's data.</p>
+            <p>This table lists all attributes computed from plugin data, according to the <a href="/projects/<%= $project_id %>/qm.html">quality model structure</a>.</p>
             <br />
 
             <table class="table table-striped table-condensed table-hover">

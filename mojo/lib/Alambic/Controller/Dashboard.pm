@@ -13,8 +13,7 @@ sub display_summary {
     my $page_id = $self->param( 'page' ) || '';
     
     my $run = $self->app->al->get_project_last_run($project_id);
-#    print "# In Dashboard " . Dumper($run);
-    # Prepare data for template.
+
     $self->stash(
 	project_id => $project_id,
 	run => $run,
@@ -286,17 +285,26 @@ sub _display_project_history_json($$$$) {
     my ($self, $project_id, $plugin_id, $build_id, $page_id) = @_;
     
     my $run = $self->app->al->get_project_run($project_id, $build_id);
-    my $project = $self->app->al->get_project($project_id);
     
     if ($page_id =~ m!^attributes.json$!) {
 	
         my $attributes = $run->{'attributes'};
         $self->render(json => $attributes);
                 
+    } elsif ($page_id =~ m!^attributes_conf.json$!) {
+        
+        my $attributes = $run->{'attributes_conf'};
+        $self->render(json => $attributes);
+                
     } elsif ($page_id =~ m!^metrics.json$!) {
         
         my $metrics = $run->{'metrics'};
         $self->render(json => $metrics);
+                
+    } elsif ($page_id =~ m!^indicators.json$!) {
+        
+        my $inds = $run->{'indicators'};
+        $self->render(json => $inds);
                 
     } elsif ($page_id =~ m!^cdata.json$!) {
         
@@ -340,7 +348,7 @@ sub _display_project_history_html($$$$) {
 	    models => $models,
             );
         
-        $self->render(template => 'alambic/dashboard/history_metrics');
+        $self->render(template => 'alambic/dashboard/metrics');
 
     } elsif ($page_id =~ m!^attributes$!) {
         
@@ -351,7 +359,7 @@ sub _display_project_history_html($$$$) {
 	    models => $self->app->al->get_models(),
             );
         
-        $self->render(template => 'alambic/dashboard/history_attributes');
+        $self->render(template => 'alambic/dashboard/attributes');
         
     } elsif ($page_id =~ m!^recs!) {
         
@@ -362,7 +370,7 @@ sub _display_project_history_html($$$$) {
 	    recs => $run->{'recs'},
             );
         
-        $self->render(template => 'alambic/dashboard/history_recs');
+        $self->render(template => 'alambic/dashboard/recs');
         
     } else {
 

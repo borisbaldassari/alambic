@@ -16,6 +16,7 @@
 % } else {
             <p>This table lists all retrieved metrics that are active, i.e. they are defined in the quality model and they have a value filled in. Maybe you want to <a href="/projects/<%= $project_id %>/metrics.html?all=true">display all available metrics</a>?</p>
 % }
+	    <p>Showing data for run <code><%= $run->{'id'} %></code>, executed on <code><%= $run->{'run_time'} %></code>.</p>
             <br />
 
             <table class="table table-striped table-condensed table-hover">
