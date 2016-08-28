@@ -38,13 +38,6 @@
   <span data-toggle="tooltip" data-placement="top" title="<%= $name %>"><i class="fa <%= $icon %>"></i></span>
  <% end %>
 
- <% my $attribute = begin %>
- % my $attr = shift;
-%#                      <div class="progress">
-%#                        <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project->attributes()->{'QM_QUALITY'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= comp_c( $project_attrs->{$attr} ) %>; width: <%= &comp_p( $project_attrs->{$attr} ) %>%;"><%= $project_attrs->{$attr} %> / 5</div>
-%#                      </div>
-<% end %>
-		      
             <h1 class="al-h1"><small><%= $project_id %></small> Summary</h1>
             <br />
 	    

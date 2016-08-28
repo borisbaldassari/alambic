@@ -7,7 +7,7 @@
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation"<%== ( $current =~ m!^/projects/summary$! ) ? ' class="active"' : '' %>><a href="/projects/<%= $project_id %>.html">Summary</a></li>
                 <li role="presentation"<%== ( $current =~ m!^/projects/qm$! ) ? ' class="active"' : '' %>><a href="/projects/<%= $project_id %>/qm.html">QM</a></li>
-                <li role="presentation" class="dropdown">
+                <li role="presentation"<%== ( $current =~ m!^/projects/data$! ) ? ' class="active"' : '' %> class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Data <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
                     <li role="presentation"><a href="/projects/<%= $project_id %>/data">All data</a></li>
