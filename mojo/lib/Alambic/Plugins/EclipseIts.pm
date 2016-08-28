@@ -230,11 +230,11 @@ sub _compute_data($$$) {
     my $weeks = -4;
     my $closed_old = $metrics_evol->{'closed'}->[$weeks];
     my $opened_old = $metrics_evol->{'opened'}->[$weeks];
-    if ( $closed_old > ( 2 * $opened_old) ) {
+    if ( $closed_old < ( 2 * $opened_old) ) {
 	push( @recs, { 'rid' => 'ITS_OPENED_BUGS', 
 		       'severity' => 1,
 		       'src' => 'EclipseIts',
-		       'desc' => 'During last year, there has been twice as many opened bugs (' 
+		       'desc' => 'During last 4 weeks, there has been twice as many opened bugs (' 
 			   . $opened_old . ') as closed bugs (' . $closed_old . '). This may be ok '
 			   . 'if the activity has notably increased, but it could also reveal some '
 			   . 'instability or decrease in project quality.' 
