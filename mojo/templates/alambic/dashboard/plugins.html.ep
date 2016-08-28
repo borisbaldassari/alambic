@@ -6,7 +6,7 @@
             <h1 class="al-h1"><small><%= $project_id %></small> Plugin <%= $plugin_id %></h1>
             <br />
 
-%= include 'alambic/dashboard/dashboard_menu', current => '/projects/data', project_id => $project_id
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/viz', project_id => $project_id
 
             <br />
 % my $plugin_template = app->home->rel_file("templates/alambic/plugins/" . $page_id . ".html.ep");

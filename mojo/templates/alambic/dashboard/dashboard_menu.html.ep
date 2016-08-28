@@ -23,7 +23,7 @@
 % }
                   </ul>
                 </li>
-                <li role="presentation" class="dropdown">
+                <li role="presentation"<%== ( $current =~ m!^/projects/viz$! ) ? ' class="active"' : '' %> class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Visualisation <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
 % my $list_viz = $plugins->get_list_plugins_viz(); 
