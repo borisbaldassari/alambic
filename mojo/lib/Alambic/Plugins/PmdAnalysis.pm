@@ -26,8 +26,8 @@ my %conf = (
     "type" => "pre",
     "ability" => [ 'data', 'recs', 'figs', 'viz' ],
     "params" => {
-        "url_pmd_xml" => "The URL to the XML PMD results for the project.",
-        "url_pmd_conf" => "The URL to the XML configuration file used to run PMD.",
+        "url_pmd_xml" => "The URL to the XML configuration file used to run PMD.",
+        "url_pmd_conf" => "The URL to the XML PMD results for the project.",
     },
     "provides_cdata" => [
     ],
@@ -36,7 +36,7 @@ my %conf = (
     "provides_data" => {
 	"import_pmd_analysis_conf.xml" => "The PMD configuration file retrieved for the analysis (XML).",
 	"import_pmd_analysis_results.xml" => "The PMD results file retrieved for the analysis (XML).",
-	"pmd_analysis_main_csv" => "Generic information about the project : PMD version, timestamp of analysis, number of non-conformities, number of rules checked, number of rules violated, number of clean rules, rate of acquired practices (CSV).",
+	"pmd_analysis_main.csv" => "Generic information about the project : PMD version, timestamp of analysis, number of non-conformities, number of rules checked, number of rules violated, number of clean rules, rate of acquired practices (CSV).",
 	"pmd_analysis_files.csv" => "Files: for each non-conform file, its name, total number of non-conformities, number of non-conformities for each priority, number of broken and clean rules, and the rate of acquired practices (CSV).",
 	"pmd_analysis_rules.csv" => "Rules: number of non-conformities for each category of rules and priority (CSV).",
 	"pmd_analysis_violations.csv" => "Violations: foreach violated rule, its priority, the ruleset it belongs to, and the volume of violations (CSV).",
