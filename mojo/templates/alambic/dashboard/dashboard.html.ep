@@ -260,6 +260,7 @@
                       <th width="70%">Description</th>
 		    </tr>
 % foreach my $item (sort { $b->{'severity'} <=> $a->{'severity'} } @{$run->{'recs'} || []}) {
+%   next if ( $item->{'severity'} != 3 ); 
 		      <tr>
 			<td><%= $item->{'rid'} %></td>
 			<td><%= $recs_txt{ $item->{'severity'} } %></td>
