@@ -74,12 +74,15 @@ sub run_plugin($$) {
 	'log' => [],
 	);
 
+    # Create RepoFS object for writing and reading files on FS.
     my $repofs = Alambic::Model::RepoFS->new();
 
     my $hudson_url = $conf->{'hudson_url'};
 
+    # Retrieve and store data from the remote repository.
     $ret{'log'} = &_retrieve_data( $project_id, $hudson_url, $repofs );
     
+    # Analyse retrieved data, generate info, metrics, plots and visualisation.
     my $tmp_ret = &_compute_data( $project_id, $hudson_url, $repofs );
     
     $ret{'metrics'} = $tmp_ret->{'metrics'};
@@ -233,7 +236,6 @@ sub _compute_data($) {
 
 	# Now read all builds.
 	foreach my $build (@{$job->{'builds'}}) {
-#            print Dumper($build);
 	    my $time = $build->{'timestamp'};
 	    my $name = $build->{'fullDisplayName'};
 	    my $result = $build->{'result'} || 'UNKNOWN';

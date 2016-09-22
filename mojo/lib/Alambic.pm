@@ -138,6 +138,7 @@ sub startup {
     $r_projects->get('/#id/#page')->to( action => 'display_project' );
     $r_projects->get('/#id/#plugin/#page')->to( action => 'display_plugins' );
     $r_projects->post('/#id/#plugin/#page')->to( action => 'display_plugins_post' );
+    $r_projects->get('/#id/#plugin/figures/#page')->to( action => 'display_figures' );
 
     # JSON data for models 
     $r->get('/models/#page')->to( 'admin#data_models' );
