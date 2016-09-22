@@ -130,6 +130,7 @@
 		  <div class="panel-heading">Plugins</div>
 		  <ul class="list-group">
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   next if not ( grep( /^$p$/, $plugins->get_list_plugins_pre() ) );
 %   my $conf = $plugins->get_plugin($p)->get_conf();
                     <li class="list-group-item"><%= $plugins_list->{$p} %>
 		      <span class="pull-right">

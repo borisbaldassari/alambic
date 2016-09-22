@@ -17,9 +17,12 @@
                     <li role="presentation"><a href="/projects/<%= $project_id %>/attributes">Attributes</a></li>
                     <li role="presentation"><a href="/projects/<%= $project_id %>/recs">Recommendations</a></l>
 		    <li role="separator" class="divider"></li>
+% my $list_pre = $plugins->get_list_plugins_pre(); 
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
-%   my $plugin_name = exists($list->{$p}) ? $list->{$p} : "Unknown";
+%   if (grep( /$p/, @$list_pre )) {
+%     my $plugin_name = exists($list->{$p}) ? $list->{$p} : "Unknown";
                     <li role="presentation"><a href="/projects/<%= $project_id %>/<%= $p %>"><%= $plugin_name %></a></li>
+%   }
 % }
                   </ul>
                 </li>
