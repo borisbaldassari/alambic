@@ -21,10 +21,10 @@ require('xtable')
 
 opts_chunk$set(echo=F, message=F, warning=F, fig.path = 'figures/')
 
-project.id <- 'modeling.sirius'
-project.tag <- 'eclipse-sirius'
-date.now <- '2016-03-17T15:38:55'
-date.before <- '2011-03-17T15:38:55'
+# project.id <- 'modeling.sirius'
+# project.tag <- 'eclipse-sirius'
+# date.now <- '2016-03-17T15:38:55'
+#date.before <- '2011-03-17T15:38:55'
 
 file.csv = paste(project.id, '_so.csv', sep="")
 
@@ -61,18 +61,18 @@ rm(project.xts.updates)
 
 ## StackOverflow Questions
 
-  <p>This section shows information about SO posts concerning the tag `r project.tag` during the last 5 years (i.e. from <code>`r date.before`</code>). </p>
+  <p>This section shows information about SO posts concerning the tag ``r project.tag`` during the last 5 years (i.e.&nbsp;from <code>`r date.before`</code>). </p>
 
   <h3>Quick Summary</h3>
 
   <ul>
-  <li>There is a total of `r nrow(project)` questions and `r vol.posts` posts related to `r project.tag`.</li>
-  <li>Posts analysed span from `r question.first` to `r question.last`.</li>
-  <li>Last activity registered was on `r question.last.update`.</li>
-  <li>`r vol.questions.answered` of them (`r paste(answer.rate, '%', sep="")`) have an accepted answered.</li>
-  <li>`r vol.questions.answered.notaccepted` actually have answers but none of them is accepted.</li>
-  <li>`r vol.questions.notanswered` have no answer at all.</li>
-  <li>There is an average of `r answer.mean` answers to questions.</li>
+  <li>There is a total of ``r nrow(project)`` questions and ``r vol.posts`` posts related to ``r project.tag``.</li>
+  <li>Posts analysed span from ``r question.first`` to ``r question.last``.</li>
+  <li>Last activity registered was on ``r question.last.update``.</li>
+  <li>``r vol.questions.answered`` of them (``r paste(answer.rate, '%', sep="")``) have an accepted answered.</li>
+  <li>``r vol.questions.answered.notaccepted`` actually have answers but none of them is accepted.</li>
+  <li>``r vol.questions.notanswered`` have no answer at all.</li>
+  <li>There is an average of ``r answer.mean`` answers to questions.</li>
   </ul>
 
   <p>The wordcloud on the right details frequent words used in the question titles. The size and colour of the words depend on their number of appearances in questions. It shows what are the concerns and issues of people when dealing with the project.</p>
@@ -147,9 +147,9 @@ vol.questions.noanswer.scored <- nrow(questions.noanswer)
 
 <div class="row"><div class="col-lg-6">
 
-  <p>There are `r vol.questions.unanswered` questions without an accepted answer, including `r vol.questions.noanswer.scored` with a score superior or equal to 1. The following table lists the top ten questions that had no accepted answer, sorted by number of views.</p>
+  <p>There are `r vol.questions.unanswered` questions without an accepted answer, including ``r vol.questions.noanswer.scored`` with a score superior or equal to 1. The following table lists the top ten questions that had no accepted answer, sorted by number of views.</p>
 
-  <p>The plot on the left shows the number of questions related to `r project.id` across the years. Questions with an accepted answer are plotted in <span class="label" style="background-color: #325d88">blue</span>, while questions without an accepted answer are plotted in <span class="label" style="background-color: #d9534f">red</span>.</p>
+  <p>The plot on the left shows the number of questions related to ``r project.id`` across the years. Questions with an accepted answer are plotted in <span class="label" style="background-color: #325d88">blue</span>, while questions without an accepted answer are plotted in <span class="label" style="background-color: #d9534f">red</span>.</p>
 
  </div><div class="col-lg-6">
 
@@ -216,7 +216,7 @@ rm(questions.noanswer, questions.noanswer.table)
 
 ### History of `r I(project.id)` questions
 
-  <p>The following graphic shows the number of questions concerning  `r project.id`, from `r question.first` to `r question.last`. The size of bubbles show the score they got by SO users. </p>
+  <p>The following graphic shows the number of questions concerning  ``r project.id``, from ``r question.first`` to ``r question.last``. The size of bubbles show the score they got by SO users. </p>
 
 ```{r blob-so-plot, dev='svg', fig.width=20, fig.height=12, dev.args=list(bg='transparent'), out.extra='class="img-responsive"'}
 p <- ggplot(project, aes(x=c.date, y=answer_count, fill=factor(!is_answered))) +
