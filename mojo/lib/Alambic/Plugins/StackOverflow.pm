@@ -43,7 +43,7 @@ my %conf = (
         "SO_FIX_RULE",
     ],
     "provides_viz" => {
-        "stack_overflow" => "Stack Overflow",
+        "stack_overflow.html" => "Stack Overflow",
     },
 );
 
@@ -80,7 +80,7 @@ sub run_plugin($$) {
     $ret{'log'} = &_retrieve_data( $project_id, $so_keyword, $repofs );
 
     # Analyse retrieved data, generate info, metrics, plots and visualisation.
-    my $tmp_ret = &_compute_data( $project_id, $repofs );
+    my $tmp_ret = &_compute_data( $project_id, $so_keyword, $repofs );
     
     $ret{'metrics'} = $tmp_ret->{'metrics'};
     $ret{'recs'} = $tmp_ret->{'recs'};
@@ -124,8 +124,12 @@ sub _retrieve_data() {
         $content_json = $ua->get($url_question)->res->body;
         
         # Decode the json we got and add items to our set.
-        my $content = decode_json( $content_json );
-        
+	if (length($content_json) < 10) {
+	    push( @log, "[Plugins::Hudson] Cannot find [$url_question]." ) ;
+	    return [ "[Plugins::Hudson] Cannot find [$url_question]." ];
+	} 
+	my $content = decode_json( $content_json );
+	        
         foreach my $item ( @{$content->{'items'} } ) {
             $final_json{'items'}{ $item->{'question_id'} } = $item;
         }
@@ -157,7 +161,7 @@ sub _retrieve_data() {
 }
 
 sub _compute_data() {
-    my ( $project_id, $repofs ) = @_;
+    my ( $project_id, $so_keyword, $repofs ) = @_;
 
     my %metrics;
     my @recs;
@@ -191,11 +195,18 @@ sub _compute_data() {
     # Write that to csv in plugins folder (for R treatment) and output (for download).
     $repofs->write_plugin( 'StackOverflow', $project_id . "_so.csv", $csv_out );
     $repofs->write_output( $project_id, "so.csv", $csv_out );
+
+    # Prepare hash of parameters for R exection.
+    my %params = (
+	"project.tag" => $so_keyword,
+	"date.now" => $date_now,
+	"date.before" => $date_before_ok,
+	);
     
     # Now execute the main R script.
     push( @log, "[Plugins::StackOverflow] Executing R main file." );
     my $r = Alambic::Tools::R->new();
-    @log = ( @log, @{$r->knit_rmarkdown_inc( 'StackOverflow', $project_id, 'stack_overflow.Rmd' )} );    
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'StackOverflow', $project_id, 'stack_overflow.Rmd', \%params )} );    
     
     return {
 	"metrics" => \%metrics,
