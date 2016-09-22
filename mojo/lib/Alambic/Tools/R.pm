@@ -108,7 +108,7 @@ sub knit_rmarkdown_inc($$$$) {
 	my $r_cmd = "Rscript -e \"library(rmarkdown); ";
 	$r_cmd .= "project.id <- '${project_id}'; plugin.id <- '$plugin_id'; ";
 	foreach my $key (keys %{$params}) {
-	    $r_cmd .= $key . " <- " . $params->{$key};
+	    $r_cmd .= $key . " <- '" . $params->{$key} . "'; ";
 	}
 	$r_cmd .= "rmarkdown::render('${r_md}', output_format='html_fragment', output_file='$r_md_out')\"";
 	
