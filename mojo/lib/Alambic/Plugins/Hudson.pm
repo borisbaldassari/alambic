@@ -214,7 +214,7 @@ sub _compute_data($) {
 	my $lsb_id = $job->{'lastSuccessfulBuild'}->{'number'} || 0;
 	my $lsb_time = $job->{'lastSuccessfulBuild'}->{'timestamp'} || 0;
 	my $lsb_duration = $job->{'lastSuccessfulBuild'}->{'duration'} || 0;
-	my $hr_score = $job->{'healthReport'}[0]{'score'};
+	my $hr_score = $job->{'healthReport'}[0]{'score'} || 0;
 	$csv_out .= $name . $sep
 	    . $job->{'buildable'} . $sep
 	    . $job->{'color'} . $sep
