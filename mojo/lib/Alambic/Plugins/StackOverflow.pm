@@ -40,7 +40,7 @@ my %conf = (
 	"SO_ANSWER_RATE_5Y" => "SO_ANSWER_RATE_5Y",
  	"SO_VOTES_VOL_5Y" => "SO_VOTES_VOL_5Y",
  	"SO_VIEWS_VOL_5Y" => "SO_VIEWS_VOL_5Y",
-	"SO_PEOPLE_5Y" => "SO_PEOPLE_5Y",
+	"SO_ASKERS_5Y" => "SO_ASKERS_5Y",
     },
     "provides_figs" => {
     },
@@ -194,16 +194,17 @@ sub _compute_data() {
         my $views_count = $content->{'items'}->{$id}->{'view_count'};
 	$views += $views_count;
         my $score = $content->{'items'}->{$id}->{'score'};
-	$votes =+ $score;
+	$votes += $score;
         my $creation_date = $content->{'items'}->{$id}->{'creation_date'};
         my $last_activity_date = $content->{'items'}->{$id}->{'last_activity_date'};
         my $answer_count = $content->{'items'}->{$id}->{'answer_count'};
-	$answers =+ $answer_count;
+	$answers += $answer_count;
         my $is_answered = $content->{'items'}->{$id}->{'is_answered'};
         my $title = $content->{'items'}->{$id}->{'title'};
         $title =~ s!,!!g;
-	print "Owner is " . Dumper($content->{'items'}->{$id}->{'owner'});
-        $people{ $content->{'items'}->{$id}->{'owner'}{'user_id'} }++;
+
+	my $user = $content->{'items'}->{$id}->{'owner'}{'user_id'} || 'does_not_exist';
+        $people{ $user }++;
         
         $csv_out .= "$id,$views_count,$score,$creation_date,$last_activity_date,$answer_count,$is_answered,$title\n";
     }
@@ -214,10 +215,10 @@ sub _compute_data() {
     # Compute metrics
     $metrics{'SO_QUESTIONS_VOL_5Y'} = $questions;
     $metrics{'SO_ANSWERS_VOL_5Y'} = $answers;
-    $metrics{'SO_ANSWER_RATE_5Y'} = printf( "%.1f ", ( $answers / $questions ) );
+    $metrics{'SO_ANSWER_RATE_5Y'} = sprintf( "%.2f", ( $answers / $questions ) );
     $metrics{'SO_VOTES_VOL_5Y'} = $votes;
     $metrics{'SO_VIEWS_VOL_5Y'} = $views;
-    $metrics{'SO_PEOPLE_5Y'} = scalar keys %people;
+    $metrics{'SO_ASKERS_5Y'} = scalar keys %people;
     
     # Prepare hash of parameters for R exection.
     my %params = (

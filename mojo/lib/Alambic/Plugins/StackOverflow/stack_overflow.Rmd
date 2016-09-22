@@ -61,7 +61,7 @@ rm(project.xts.updates)
 
 ## StackOverflow Questions
 
-  <p>This section shows information about SO posts concerning the tag ``r project.tag`` during the last 5 years (i.e.&nbsp;from <code>`r date.before`</code>). </p>
+  <p>This section shows information about SO posts concerning the tag ``r project.tag`` during the last 5 years (i.e.&nbsp;from <code>`r date.before`</code> to <code>`r date.before`</code>). The list of questions for this tag can be browsed on the [Stack Overflow web site](https://stackoverflow.com/questions/tagged/`r project.tag`).</p>
 
   <h3>Quick Summary</h3>
 
