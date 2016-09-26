@@ -35,7 +35,7 @@ my %conf = (
     "provides_recs" => [
     ],
     "provides_viz" => {
-#        "EclipseReport.pdf" => "Project Report",
+        "EclipseReport.pdf" => "Project Report",
     },
 );
 

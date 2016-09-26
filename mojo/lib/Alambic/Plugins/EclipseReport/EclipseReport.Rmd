@@ -14,7 +14,7 @@ output:
 
 ```{r init, echo=FALSE, message=FALSE}
 # Main information
-project.id <- 'modeling.sirius'
+project.id <- 'tools.cdt'
 plugin.id <- 'EclipseReport'
 
 library(knitr)
@@ -57,7 +57,7 @@ file.pmi.checks <- paste("../../../../projects/", project.id, '/output/', projec
 pmi.checks <- read.csv(file=file.pmi.checks, header=T, row.names=NULL)
 
 # ITS
-file.its.evol <- paste("../../../../projects/", project.id, '/output/', project.id, "_its_evol.csv", sep="")
+file.its.evol <- paste("../../../../projects/", project.id, '/output/', project.id, "_metrics_its_evol.csv", sep="")
 its.evol <- read.csv(file=file.its.evol, header=T)
 its.evol <- its.evol[its.evol$changed != 0,]
 
