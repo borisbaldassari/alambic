@@ -188,7 +188,7 @@ sub knit_rmarkdown_pdf($$$$) {
     my $file_in = $r_dir . "/" . $r_md_out;
     my $dir_in_fig = $r_dir . '/figures/';
     my $dir_out = "projects/" . $project_id . "/output/";
-    my $file_out = $dir_out . $project_id . "_" . $r_md_out;
+    my $file_out = $dir_out . $r_md_out;
     my $dir_out_fig = $dir_out . '/figures/';
     move( $file_in, $file_out );
     push( @log, "[Tools::R] Moved file from ${file_in} to $dir_out." );
