@@ -4,10 +4,10 @@ use warnings;
 use strict;
 
 use Data::Dumper;
+use Text::CSV;
 
 use Alambic::Model::Plugins;
-#use Alambic::Model::Analysis;
-#use Alambic::Model::Config;
+use Alambic::Model::RepoFS;
 
 require Exporter;
 our @ISA = qw(Exporter);
@@ -230,10 +230,12 @@ sub run_plugins() {
     my ($self) = @_;
 
     my @log;
-
-    my @pre_plugins = sort grep { 
-	$plugins_module->get_plugin($_)->get_conf->{'type'} =~ /^pre$/
-    } keys %plugins;
+    
+    my $list = $plugins_module->get_list_plugins_pre(); 
+#print "# Project::run_plugins Plugin list is " . Dumper($list);
+#print "# Project::run_plugins Plugin list is " . Dumper(keys %plugins);
+    my @pre_plugins = sort grep ( $plugins{$_}, @$list );
+#print "# Project::run_plugins final Plugin list is " . Dumper(@pre_plugins);
     foreach my $plugin_id (@pre_plugins) {
 	my $ret = $plugins_module->run_plugin($project_id, $plugin_id, $plugins{$plugin_id});
 	
@@ -263,7 +265,7 @@ sub run_qm($) {
 }
 
 
-# Run all post plugins for this project
+# Run a single post plugin for this project
 #
 # Params:
 #   - $plugin_id the identifier of the post plugin to be executed
@@ -369,6 +371,26 @@ sub run_project($) {
 	    }
 	}
     }
+
+    # Create a CSV file with all metrics
+    my $csv = Text::CSV->new( { binary => 1, eol => "\n" } );
+    my $csv_out;
+    my $metrics = $models->get_metrics();
+    my @metrics; #print Dumper($metrics);
+    foreach my $metric (keys %$metrics) {
+	my $desc = join( ' ', @{$metrics->{$metric}{'description'}} );
+	my @metrics = (
+	    $metrics->{$metric}{'mnemo'},
+	    $metrics->{$metric}{'name'},
+	    $desc,
+	    );
+	$csv->combine( @metrics );
+	$csv_out .= $csv->string()
+    };
+
+    # Create RepoFS object for writing and reading files on FS.
+    my $repofs = Alambic::Model::RepoFS->new();
+    $repofs->write_output( $project_id, "metrics_ref.csv", $csv_out );
     
     # Run post plugins
     my $post_data = $self->run_posts($models);
