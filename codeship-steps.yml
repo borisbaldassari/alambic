@@ -1,0 +1,5 @@
+
+- name: alambic_run
+  service: app
+  command: echo bar
+  
