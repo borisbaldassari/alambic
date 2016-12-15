@@ -1,0 +1,5 @@
+app:
+  build:
+    image: boris/centos_test2
+    path: resources/docker
+    docerkfile_path: Buildfile_postgresql2
