@@ -2,4 +2,4 @@ app:
   build:
     image: boris/centos_test2
     path: resources/docker
-    dockerfile: Buildfile_postgresql2
+    dockerfile: Dockerfile_postgresql2
