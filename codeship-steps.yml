@@ -1,5 +1,13 @@
 
 - name: alambic_run
   service: app
-  command: echo bar
+  command: bundle exec perl -v
   
+- type: serial
+  steps:
+    - name: dockerhub_push
+      service: app
+      type: push
+      image_name: bbaldassari/centos_test
+      registry: https://index.docker.io/v1/
+
