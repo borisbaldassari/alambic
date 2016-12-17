@@ -140,10 +140,6 @@ sub _compute_data($) {
     my $date_now = DateTime->now();
     my $date_1w = DateTime->now()->subtract(days => 7);
     my $date_1w_ms = $date_1w->epoch() * 1000;
-
-#    print "############################ \n";
-#    print "# Date is $date_now and $date_1w.\n";
-#    print "############################ \n";
     
     foreach my $job (@{$hudson->{'jobs'}}) {
 	if ($job->{'color'} =~ m!green!) { 

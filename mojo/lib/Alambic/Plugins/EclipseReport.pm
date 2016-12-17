@@ -58,7 +58,6 @@ sub run_post($$) {
     my ($self, $project_id, $conf) = @_;
 
     my @log;
-    print "# In EclipseReport::run_post " . Dumper($conf);
     # Write csv files for R report.
     my $repofs = Alambic::Model::RepoFS->new();
     my $project = $conf->{'project'};
@@ -102,9 +101,10 @@ sub run_post($$) {
 
     # Write recs information for the project
     $csv_out = "Mnemo,Severity,Description\n";
+    print "# EclipseReport " . Dumper($project->recs());
     foreach my $m (sort @{$project->recs()} ) {
 	$csv_out .= $m->{'rid'} . "," . ( $m->{'severity'} || 0 )
-	. "," . ( $m->{'desc'} || '' ) . "\n";
+	. ",\"" . ( $m->{'desc'} || '' ) . "\"\n";
     }
     push( @log, "[Plugins::EclipseReport] Writing recs csv file to plugins and output directories." );
     $repofs->write_plugin( 'EclipseReport', $project_id . "_recs.csv", $csv_out );

@@ -203,7 +203,7 @@ test & tes \\
 #
 panderOptions('table.split.table', Inf)
 set.caption( paste( "Recommendations for project ", project.id, sep="" ) )
-pandoc.table(recs, style = 'multiline', justify = c('left', 'left', 'left', 'left'))
+pandoc.table(recs, style = 'multiline', justify = c('left', 'left', 'left'))
 #
 ```
 
