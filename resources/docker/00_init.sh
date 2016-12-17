@@ -14,8 +14,4 @@ su - alambic -c 'cpanm Test::More inc::latest Net::IDN::Encode Mojolicious XML::
 
 su - alambic -c 'POSTGRES_HOME=/usr/pgsql-9.5 cpanm Mojo::Pg'
 
-su - alambic -c 'PGPASSWORD=pass4alambic psql -h postgres < psql_init.sql'
-
-su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git'
-
 
