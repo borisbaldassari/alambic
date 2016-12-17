@@ -13,7 +13,11 @@ RUN mkdir /var/run/sshd
 RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N '' 
 
 # Install needed applications
-RUN yum install -y passwd perl-CPAN gcc make bzip2 git libxml2-dev openssl-dev
+RUN yum install -y passwd perl-CPAN gcc make bzip2 git libxml2-devel openssl openssl-devel; yum clean all
+
+# Install postgresql 9.5 client
+RUN rpm -Uvh https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86_64/pgdg-centos95-9.5-3.noarch.rpm
+RUN yum install -y postgresql95 postgresql95-devel
 
 # Run script for alambic user, perlbrew and all mojo stuff
 COPY 00_init.sh /root/

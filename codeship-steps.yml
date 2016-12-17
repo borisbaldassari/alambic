@@ -2,9 +2,6 @@
   
 - type: serial
   steps:
-    - name: alambic_run
-      service: alambic
-      command: /bin/bash
     - name: alambic_push
       service: alambic
       type: push
