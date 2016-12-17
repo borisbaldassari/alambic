@@ -21,8 +21,12 @@ RUN yum install -y postgresql95 postgresql95-devel
 
 # Run script for alambic user, perlbrew and all mojo stuff
 COPY 00_init.sh /root/
+COPY psql_init.sql /home/alambic/
 RUN chmod +x /root/00_init.sh
 RUN /root/00_init.sh
+
+COPY alambic.conf /home/alambic/alambic/mojo/
+RUN hypnotoad script/alambic
 
 ENTRYPOINT ["/usr/sbin/sshd", "-D"]
 

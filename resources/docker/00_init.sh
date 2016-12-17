@@ -16,5 +16,5 @@ su - alambic -c 'POSTGRES_HOME=/usr/pgsql-9.5 cpanm  Mojo::Pg'
 
 su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git'
 
-
+su - alambic -c 'PGPASSWORD=pass4alambic psql -h postgres < psql_init.sql'
 
