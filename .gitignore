@@ -1,0 +1,5 @@
+*.csv
+mojo/projects/*
+*~
+codeship.aes
+*.Rhistory
