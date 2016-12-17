@@ -3,10 +3,10 @@
 - type: serial
   steps:
     - name: alambic_run
-      service: app
+      service: alambic
       command: /bin/bash
     - name: alambic_push
-      service: app
+      service: alambic
       type: push
       image_name: bbaldassari/centos_test
       registry: https://index.docker.io/v1/
