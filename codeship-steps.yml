@@ -1,13 +1,7 @@
-version: '2'
-services:
-  alambic:
-    image: bbaldassari/alambic
-    ports: 
-    - "3000:3000"
-    links: 
-    - postgres
-  postgres:
-    image: postgres:9.5
-    environment:
-        POSTGRES_PASSWORD: pass4alambic
-        POSTGRES_USER: alambic
+
+- name: alambic_run
+  service: alambic
+  command: bundle exec /bin/bash
+- name: postgres_run
+  service: postgres
+  command: echo "bar"
