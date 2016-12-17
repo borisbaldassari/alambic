@@ -19,16 +19,24 @@ RUN yum install -y passwd perl-CPAN gcc make bzip2 git libxml2-devel openssl ope
 RUN rpm -Uvh https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86_64/pgdg-centos95-9.5-3.noarch.rpm
 RUN yum install -y postgresql95 postgresql95-devel
 
+
+# Create user alambic, password passpass
+RUN adduser alambic && \
+    echo passpass | passwd alambic --stdin
+
+
 # Run script for alambic user, perlbrew and all mojo stuff
 COPY 00_init.sh /root/00_init.sh
-COPY psql_init.sql /home/alambic/psql_init.sql
-RUN chmod +x /root/00_init.sh
-RUN /root/00_init.sh
+RUN chmod +x /root/00_init.sh 
+RUN sh /root/00_init.sh
 
-#COPY 01_alambic.sh /home/alambic/01_alambic.sh
-#COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
-#RUN chmod +x /home/alambic/01_alambic.sh
-#RUN /home/alambic/01_alambic.sh
+COPY 01_alambic.sh /home/alambic/01_alambic.sh
+COPY psql_init.sql /home/alambic/psql_init.sql
+
+RUN chmod +x /home/alambic/01_alambic.sh
+RUN /home/alambic/01_alambic.sh
+
+COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
 
 #COPY alambic.conf /home/alambic/alambic/mojo/
 #RUN hypnotoad script/alambic

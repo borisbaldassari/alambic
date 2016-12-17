@@ -1,8 +1,4 @@
 
-# Create user alambic, password passpass
-adduser alambic
-echo passpass | passwd alambic --stdin
-
 su - alambic -c '\curl -L https://install.perlbrew.pl | bash'
 echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~alambic/.bashrc
 su - alambic -c 'perlbrew install-cpanm'
