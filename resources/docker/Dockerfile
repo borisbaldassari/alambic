@@ -20,8 +20,8 @@ RUN rpm -Uvh https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86
 RUN yum install -y postgresql95 postgresql95-devel
 
 # Run script for alambic user, perlbrew and all mojo stuff
-COPY 00_init.sh /root/
-COPY psql_init.sql /home/alambic/
+COPY 00_init.sh /root/00_init.sh
+COPY psql_init.sql /home/alambic/psql_init.sql
 RUN chmod +x /root/00_init.sh
 RUN /root/00_init.sh
 
