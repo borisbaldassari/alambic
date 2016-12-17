@@ -1,0 +1,12 @@
+
+FROM boris/alambic
+MAINTAINER Boris boris.baldassari@castalia.solutions
+
+EXPOSE 3000
+
+#COPY alambic.conf /home/alambic/alambic/mojo/
+#RUN hypnotoad script/alambic
+
+ENTRYPOINT ["/usr/sbin/sshd", "-D"]
+
+
