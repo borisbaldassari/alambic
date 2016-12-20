@@ -27,18 +27,14 @@ RUN adduser alambic && \
 
 # Run script for alambic user, perlbrew and all mojo stuff
 COPY 00_init.sh /root/00_init.sh
+COPY 01_alambic.sh /root/01_alambic.sh
 RUN chmod +x /root/00_init.sh 
 RUN sh /root/00_init.sh
 
-COPY 01_alambic.sh /home/alambic/01_alambic.sh
-COPY psql_init.sql /home/alambic/psql_init.sql
+#USER alambic
+RUN su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git'
+#COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
 
-RUN chmod +x /home/alambic/01_alambic.sh
-RUN /home/alambic/01_alambic.sh
-
-COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
-
-#COPY alambic.conf /home/alambic/alambic/mojo/
 #RUN hypnotoad script/alambic
 
 ENTRYPOINT ["/usr/sbin/sshd", "-D"]
