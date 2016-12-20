@@ -1,7 +1,7 @@
 version: '2'
 services:
   alambic:
-    image: bbaldassari/alambic
+    image: boris/alambic
     ports: 
     - "3000:3000"
     links: 

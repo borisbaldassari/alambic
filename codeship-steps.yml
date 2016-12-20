@@ -1,7 +1,7 @@
 
 - name: alambic_run
   service: alambic
-  command: bundle exec /bin/bash
+  command: /usr/sbin/sshd -D
 - name: postgres_run
   service: postgres
   command: echo "bar"
