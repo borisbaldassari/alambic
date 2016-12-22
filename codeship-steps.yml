@@ -1,7 +1,7 @@
 
 - name: alambic_run
   service: alambic
-  command: /usr/sbin/sshd -D
+  command: echo "foo"
 - name: postgres_run
   service: postgres
   command: echo "bar"
