@@ -168,7 +168,7 @@ sub get_repo_db() {
     return $repodb;
 }
 
-# Return the RepoDB.pm object for this instance.
+# Return the Wizards.pm object for this instance.
 sub get_wizards() {
     return $wizards;
 }
@@ -192,6 +192,7 @@ sub users() {
     return Alambic::Model::Users->new($users);
 }
 
+# Add or update user to the Alambic db.
 sub set_user($$$$$$$) {
     my $self = shift;
     my $id = shift;
