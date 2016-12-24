@@ -20,6 +20,9 @@ has al => sub {
 sub startup {
     my $self = shift;
     
+    # Add another namespace to load commands from
+    push @{$self->commands->namespaces}, 'Alambic::Commands';
+    
     $self->secrets(['Secrets of Alambic']);
     
     # Use application logger
@@ -109,14 +112,15 @@ sub startup {
     # Router
     my $r = $self->routes;
 	
-    # Install routes, that works only if the instance is not initialised.
-    if ( $self->app->al->instance_name() eq 'MyDBNameInit' ) {
-	print "### Executing Install procedure.\n";
-	$r->post('/install')->to( 'alambic#install_post' );
-	$r->any('/')->to( 'alambic#install' );
-	$r->any('*')->to( 'alambic#install' );
-	return;
-    }
+    # # Catch all routes only if the instance is not initialised.
+    # # Now is initialised by command.
+    # if ( $self->app->al->instance_name() eq 'MyDBNameInit' ) {
+    # 	print "### Executing Install procedure.\n";
+    # 	$r->post('/install')->to( 'alambic#install_post' );
+    # 	$r->any('/')->to( 'alambic#install' );
+    # 	$r->any('*')->to( 'alambic#install' );
+    # 	return;
+    # }
 
     # Normal route to controller
     $r->get('/')->to( 'alambic#welcome' );
