@@ -20,13 +20,13 @@
 
             <div class="row">
               <div class="col-sm-6">
-		<p>Models include the definition of metrics, attributes, and the quality model itself.</p>
+		<p>Models include the definition of metrics, attributes, and the quality model itself. There are <%= scalar( keys %$metrics ) %> metrics and <%= scalar( keys %$attributes ) %> attributes defined.</p>
+		<p>All data is stored in the database, and can be imported from a set of JSON files on the file system.</p>
 		<br />
 	      </div>
 	      <div class="col-sm-6">
                 <div class="list-group">
-                  <a class="list-group-item" href="/admin/models/init" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Re-read models</a>
-                  <a class="list-group-item" href="/admin/models/import" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Import JSON</a>
+                  <!-- a class="list-group-item" href="/admin/models/init" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Re-read models</a -->
                 </div>
               </div>
             </div>
