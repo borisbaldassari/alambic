@@ -19,9 +19,9 @@ my $db_m_ok = $alambic->is_db_m_ok();
 ok( $db_m_ok == 0, "Is db minion ok returns 0 (db was not defined).") or diag explain $db_m_ok;
 
 my $conf = $alambic->instance_name();
-is( $conf, 'DefaultName', "Instance has correct name") or diag explain $conf;
+is( $conf, 'MyDBNameInit', "Instance has correct default name") or diag explain $conf;
 $conf = $alambic->instance_desc();
-is( $conf, 'Default Description', "Instance has correct desc") or diag explain $conf;
+is( $conf, 'MyDBDescInit', "Instance has correct default desc") or diag explain $conf;
 $conf = $alambic->instance_pg_alambic();
 is( $conf, '', "Instance has correct pg_alambic") or diag explain $conf;
 $conf = $alambic->instance_pg_minion();
@@ -57,7 +57,7 @@ ok( $project_name =~ m!^Tools CDT$!, 'Project retrieved by Alambic has correct n
 
 my $plugins = $alambic->get_plugins();
 my $plugins_list = $plugins->get_list_plugins_pre();
-my $pv = 4;
+my $pv = 7;
 ok( scalar @{$plugins_list} == $pv, "Plugins pre list has $pv entries." ) or diag explain $plugins_list;
 ok( grep( /^Hudson$/, @{$plugins_list} ) == 1, "Plugins pre list has Hudson." ) or diag explain $plugins_list;
 
