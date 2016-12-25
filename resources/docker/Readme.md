@@ -13,5 +13,5 @@ In the root of the Alambic repository, execute:
 `$ docker-compose -f docker-compose.run.yml up`
 
 To execute all tests, execute:
-`$ docker-compose -f docker-compose.run.yml run sh /root/start_test_all.sh`
+`$ docker-compose -f docker-compose.test.yml up`
 

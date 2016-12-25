@@ -8,11 +8,11 @@ cat alambic.conf
 # Initialise the app: create tables, init instance.
 script/alambic alambic init
 
-perl -Ilib t/unit/Model/Alambic.t
+#perl -Ilib t/unit/Model/Alambic.t
 perl -Ilib t/unit/Model/Models.t
-perl -Ilib t/unit/Model/Plugins.t
-perl -Ilib t/unit/Model/Project.t
-perl -Ilib t/unit/Model/RepoDB.t
+#perl -Ilib t/unit/Model/Plugins.t
+#perl -Ilib t/unit/Model/Project.t
+#perl -Ilib t/unit/Model/RepoDB.t
 
 
 
