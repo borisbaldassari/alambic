@@ -1,7 +1,5 @@
 # Using alambic in Docker
 
-## Dockerfile.base
-
 In the /resources/docker directory, execute:
 `$ docker build -t bbaldassari/alambic -f Dockerfile .`
 

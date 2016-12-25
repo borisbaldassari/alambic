@@ -32,12 +32,17 @@ RUN sh /root/00_install_deps.sh
 
 USER alambic
 RUN git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
-COPY test_all.sh /home/alambic/test_all.sh
+COPY alambic_start.sh /home/alambic/alambic_start.sh
+COPY alambic_test.sh /home/alambic/alambic_test.sh
+COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
 
 USER root
-COPY start_test_all.sh /root/start_test_all.sh
-RUN chmod +x /home/alambic/test_all.sh
-RUN chmod +x /root/start_test_all.sh
+COPY alambic_start_wrapper.sh /root/alambic_start_wrapper.sh
+COPY alambic_test_wrapper.sh /root/alambic_test_wrapper.sh
+RUN chmod +x /home/alambic/alambic_start.sh
+RUN chmod +x /home/alambic/alambic_test.sh
+RUN chmod +x /root/alambic_start_wrapper.sh
+RUN chmod +x /root/alambic_test_wrapper.sh
 
 CMD ["/usr/sbin/sshd", "-D"]
 

@@ -2,7 +2,7 @@ version: '2'
 services:
   alambic:
     image: bbaldassari/alambic
-    command: sh /root/alambic_start_wrapper.sh
+    command: su - alambic -c 'sh alambic_test.sh'
     ports: 
     - "3000:3000"
     depends_on: 
