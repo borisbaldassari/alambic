@@ -14,48 +14,52 @@ isa_ok( $plugins, 'Alambic::Model::Plugins' );
 
 my $list = $plugins->get_names_all();
 my $pv = 9;
-ok( scalar(keys %{$list}) == $pv, "There is a total of $pv plugins detected." ) or Dumper explain %$list;
+ok( scalar(keys %{$list}) == $pv, "get_names_all There is a total of $pv plugins detected." ) or Dumper explain %$list;
+
+$list = $plugins->get_conf_all();
+$pv = 9;
+ok( scalar(keys %{$list}) == $pv, "get_conf_all has $pv entries." ) or explain Dumper %$list;
 
 # Check plugins types
 $list = $plugins->get_list_plugins_pre();
 $pv = 7;
-ok( scalar(@{$list}) == $pv, "List pre has $pv entries." ) or explain Dumper @$list;
+ok( scalar(@{$list}) == $pv, "get_list_plugins_pre List pre has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_cdata();
 $pv = 1;
-ok( scalar(@{$list}) == $pv, "List cdata has $pv entries." ) or explain Dumper @$list;
+ok( scalar(@{$list}) == $pv, "get_list_plugins_cdata List cdata has $pv entries." ) or explain Dumper @$list;
 
-$list = $plugins->get_list_plugins_post();print Dumper($list);
+$list = $plugins->get_list_plugins_post();
 $pv = 1; 
-ok( scalar(@{$list}) == $pv, "List post has $pv entries." ) or explain Dumper @$list;
+ok( scalar(@{$list}) == $pv, "get_list_plugins_post List post has $pv entries." ) or explain Dumper @$list;
 
-$list = $plugins->get_list_plugins_global();print Dumper($list);
+$list = $plugins->get_list_plugins_global();
 $pv = 0;
-ok( scalar(@{$list}) == $pv, "List global has $pv entries." ) or explain Dumper @$list;
+ok( scalar(@{$list}) == $pv, "get_list_plugins_global List global has $pv entries." ) or explain Dumper @$list;
 
 # Check plugins ability
-$list = $plugins->get_list_plugins_data();print Dumper($list);
-$pv = 1;
+$list = $plugins->get_list_plugins_data();
+$pv = 6;
 ok( scalar @{$list} == $pv, "List data has $pv entries." ) or explain Dumper @$list;
 
-$list = $plugins->get_list_plugins_metrics();print Dumper($list);
-$pv = 3;
+$list = $plugins->get_list_plugins_metrics();
+$pv = 7;
 ok( scalar @{$list} == $pv, "List metrics has $pv entries." ) or explain Dumper @$list;
 
-$list = $plugins->get_list_plugins_figs();print Dumper($list);
-$pv = 1;
+$list = $plugins->get_list_plugins_figs();
+$pv = 6;
 ok( scalar(@{$list}) == $pv, "List figs has $pv entries." ) or explain Dumper @$list;
 
-$list = $plugins->get_list_plugins_info();print Dumper($list);
+$list = $plugins->get_list_plugins_info();
 $pv = 1;
 ok( scalar(@{$list}) == $pv, "List info has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_recs();
-$pv = 2;
+$pv = 7;
 ok( scalar(@{$list}) == $pv, "List recs has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_viz();
-$pv = 3;
+$pv = 9;
 ok( scalar(@{$list}) == $pv, "List viz has $pv entries." ) or explain Dumper @$list;
 
 note( "Loading EclipsePmi plugin." );
@@ -66,17 +70,28 @@ ok( $conf_pmi->{'name'} =~ m!Eclipse PMI$!, "Eclipse PMI plugin has correct name
 
 note( "Executing EclipsePmi run_plugin without project_pmi." );
 my $ret = $plugins->run_plugin( 'tools.cdt', 'EclipsePmi', {'project_pmi' => 'tools.cdt'} );
-is( $ret->{'info'}{'bugzilla_product'}, 'CDT', "Bugzilla product is CDT.") or Dumper explain $ret;
-is( $ret->{'info'}{'title'}, 'C/C++ Development Tooling (CDT)', "PMI title is correct.") or Dumper explain $ret;
-is( $ret->{'log'}[0], '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].', "Checking first line of log.") or Dumper explain $ret;
+is( $ret->{'info'}{'PMI_BUGZILLA_PRODUCT'}, 'CDT', "Bugzilla product is CDT.") or Dumper explain $ret;
+is( $ret->{'info'}{'PMI_TITLE'}, 'Eclipse C/C++ Development Tooling (CDT)', "PMI title is correct.") or Dumper explain $ret;
+is( $ret->{'log'}[0], '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].', "Checking first line of log: using eclipse pmi infra at...") or Dumper explain $ret;
 is( $ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.") or Dumper explain $ret;
 
 note( "Executing EclipsePmi run_plugin with project_pmi." );
 $ret = $plugins->run_plugin( 'tools.cdt', 'EclipsePmi', {} );
-is( $ret->{'info'}{'bugzilla_product'}, 'CDT', "Bugzilla product is CDT.") or Dumper explain $ret;
-is( $ret->{'info'}{'title'}, 'C/C++ Development Tooling (CDT)', "PMI title is correct.") or Dumper explain $ret;
+is( $ret->{'info'}{'PMI_BUGZILLA_PRODUCT'}, 'CDT', "Bugzilla product is CDT.") or Dumper explain $ret;
+is( $ret->{'info'}{'PMI_TITLE'}, 'Eclipse C/C++ Development Tooling (CDT)', "PMI title is correct.") or Dumper explain $ret;
 is( $ret->{'log'}[0], '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].', "Checking first line of log.") or Dumper explain $ret;
 is( $ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.") or Dumper explain $ret;
 
 
-done_testing(23);
+note( "Loading EclipseReport post plugin." );
+my $plugin_report = $plugins->get_plugin("EclipseReport");
+my $conf_report = $plugin_report->get_conf();
+ok( $conf_report->{'id'} eq 'EclipseReport', 'Check name of post plugin.') or Dumper $conf_report;
+print Dumper($conf_report);
+print Dumper($plugin_report);
+    
+#$ret = $plugins->run_post( 'tools.cdt', 'EclipseReport', {'project_id' => 'tools.cdt'} );
+#print Dumper($ret);
+
+
+done_testing(25);
