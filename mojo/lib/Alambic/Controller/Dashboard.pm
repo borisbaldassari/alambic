@@ -65,8 +65,6 @@ sub display_plugins {
 
     my $plugin_conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
     
-#    print "# In Dashboard::display_plugins " . $project_id . ' ' . $page_id . ".\n";
-
     if ($plugin_conf->{'type'} =~ m!^cdata$!) {
 	
     }
@@ -99,6 +97,20 @@ sub display_plugins {
 	$self->redirect_to( '/projects/' . $project_id );
 
     }
+}
+
+
+sub display_figures {
+    my $self = shift;
+
+    my $project_id = $self->param( 'id' );
+    my $plugin_id = $self->param( 'plugin' );
+    my $page_id = $self->param( 'page' ) || '';
+
+    my $plugin_conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
+    
+    # If the page is a data, reply static file under 'projects/output'
+    $self->reply->static( '../projects/' . $project_id . '/output/figures/' . $page_id );
 }
 
 

@@ -74,12 +74,15 @@ sub run_plugin($$) {
 	'log' => [],
 	);
 
+    # Create RepoFS object for writing and reading files on FS.
     my $repofs = Alambic::Model::RepoFS->new();
 
     my $hudson_url = $conf->{'hudson_url'};
 
+    # Retrieve and store data from the remote repository.
     $ret{'log'} = &_retrieve_data( $project_id, $hudson_url, $repofs );
     
+    # Analyse retrieved data, generate info, metrics, plots and visualisation.
     my $tmp_ret = &_compute_data( $project_id, $hudson_url, $repofs );
     
     $ret{'metrics'} = $tmp_ret->{'metrics'};
@@ -137,10 +140,6 @@ sub _compute_data($) {
     my $date_now = DateTime->now();
     my $date_1w = DateTime->now()->subtract(days => 7);
     my $date_1w_ms = $date_1w->epoch() * 1000;
-
-#    print "############################ \n";
-#    print "# Date is $date_now and $date_1w.\n";
-#    print "############################ \n";
     
     foreach my $job (@{$hudson->{'jobs'}}) {
 	if ($job->{'color'} =~ m!green!) { 
@@ -214,7 +213,7 @@ sub _compute_data($) {
 	my $lsb_id = $job->{'lastSuccessfulBuild'}->{'number'} || 0;
 	my $lsb_time = $job->{'lastSuccessfulBuild'}->{'timestamp'} || 0;
 	my $lsb_duration = $job->{'lastSuccessfulBuild'}->{'duration'} || 0;
-	my $hr_score = $job->{'healthReport'}[0]{'score'};
+	my $hr_score = $job->{'healthReport'}[0]{'score'} || 0;
 	$csv_out .= $name . $sep
 	    . $job->{'buildable'} . $sep
 	    . $job->{'color'} . $sep
@@ -233,7 +232,6 @@ sub _compute_data($) {
 
 	# Now read all builds.
 	foreach my $build (@{$job->{'builds'}}) {
-#            print Dumper($build);
 	    my $time = $build->{'timestamp'};
 	    my $name = $build->{'fullDisplayName'};
 	    my $result = $build->{'result'} || 'UNKNOWN';

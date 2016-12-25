@@ -108,12 +108,11 @@ sub knit_rmarkdown_inc($$$$) {
 	my $r_cmd = "Rscript -e \"library(rmarkdown); ";
 	$r_cmd .= "project.id <- '${project_id}'; plugin.id <- '$plugin_id'; ";
 	foreach my $key (keys %{$params}) {
-	    $r_cmd .= $key . " <- " . $params->{$key};
+	    $r_cmd .= $key . " <- '" . $params->{$key} . "'; ";
 	}
 	$r_cmd .= "rmarkdown::render('${r_md}', output_format='html_fragment', output_file='$r_md_out')\"";
 	
-	push( @log, "[Tools::R] Exec [$r_cmd] to [$r_md_out]." );
-#	print "[Tools::R] Exec [$r_cmd].\n";
+	push( @log, "[Tools::R] Exec [$r_cmd]." );
 	my @out = `$r_cmd 2>&1`;
     }
     
@@ -189,9 +188,10 @@ sub knit_rmarkdown_pdf($$$$) {
     my $file_in = $r_dir . "/" . $r_md_out;
     my $dir_in_fig = $r_dir . '/figures/';
     my $dir_out = "projects/" . $project_id . "/output/";
-    my $file_out = $dir_out . $project_id . "_" . $r_md_out;
+    my $file_out = $dir_out . $r_md_out;
     my $dir_out_fig = $dir_out . '/figures/';
     move( $file_in, $file_out );
+    push( @log, "[Tools::R] Moved file from ${file_in} to $dir_out." );
 
     # Create dir for figures.
     if (! -d "${dir_out_fig}" ) {
@@ -204,7 +204,7 @@ sub knit_rmarkdown_pdf($$$$) {
     my @files = glob qq(${files});
     foreach my $file (@files) {
 	my $ret = move($file, $dir_out_fig);
-#	push( @log, "[Tools::R] Moved file from ${file} to $dir_out_fig. ret $ret." );
+	push( @log, "[Tools::R] Moved file from ${file} to $dir_out_fig." );
     }
 
     return \@log;

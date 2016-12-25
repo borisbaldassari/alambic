@@ -53,10 +53,8 @@ sub generate_passwd($) {
     my $self = shift;
     my $passwd = shift;
     
-    print "[Model::Users] generate_passwd for [$passwd].\n";
     my $pbkdf2 = Crypt::PBKDF2->new; 
     my $hash = $pbkdf2->generate($passwd);
-    print "Hash is [$hash].\n";
 
     return $hash;
 }

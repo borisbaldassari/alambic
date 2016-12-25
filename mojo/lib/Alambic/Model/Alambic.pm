@@ -70,10 +70,10 @@ sub new {
 
     # If the database is not initialised, then init it.
     if (not &is_db_ok()) { 
-    	print "### ###################\n";
-    	print "### Initialising DB!!! \n";
-    	print "### ###################\n";
-    	&init();
+         die "
+Database is not initialised. Please first execute:\n
+\$ script/alambic alambic init\n
+And restart alambic.\n";
     } 
 	
     # Retrieve all metrics definition to initialise Models.pm
@@ -162,13 +162,17 @@ sub get_models() {
     return $models;
 }
 
+# Return the RepoFS.pm object for this instance.
+sub get_repo_fs() {
+    return $repofs;
+}
 
 # Return the RepoDB.pm object for this instance.
 sub get_repo_db() {
     return $repodb;
 }
 
-# Return the RepoDB.pm object for this instance.
+# Return the Wizards.pm object for this instance.
 sub get_wizards() {
     return $wizards;
 }
@@ -192,6 +196,7 @@ sub users() {
     return Alambic::Model::Users->new($users);
 }
 
+# Add or update user to the Alambic db.
 sub set_user($$$$$$$) {
     my $self = shift;
     my $id = shift;
@@ -421,6 +426,9 @@ sub get_project_hist($) {
     
 }
 
+# Return all data for the last run of the project
+# Params:
+#  * project_id
 sub get_project_last_run($) {
     my $self = shift;
     my $project_id = shift;
@@ -428,6 +436,10 @@ sub get_project_last_run($) {
     return $repodb->get_project_last_run($project_id);
 }
 
+# Return all data for a specific run
+# Params:
+#  * project_id
+#  * run_id 
 sub get_project_run($$) {
     my $self = shift;
     my $project_id = shift;
@@ -567,3 +579,25 @@ sub delete_project($) {
 
 
 1;
+
+
+=pod
+ 
+=head1 SYNOPSIS
+
+    use Alambic::Model::Alambic;
+    
+    my $config = $self->plugin('Config');
+    state $al = Alambic::Model::Alambic->new($config);
+
+Provides high-level functions to interact with Alambic. 
+ 
+=head1 DESCRIPTION
+
+=head2 init()
+
+
+
+=head2 backup()
+ 
+=cut

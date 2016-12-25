@@ -32,20 +32,23 @@
 % my @data_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_data()} ) } keys %$project_plugins;
 % my @figs_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_figs()} ) } keys %$project_plugins;
 % my ($data_vol, $figs_vol) = (0, 0); 
-% foreach my $dp (@data_plugins) { 
+% foreach my $dp (@data_plugins) {
+%   next if not ( grep( /^$dp$/, $plugins->get_list_plugins_data() ) );
 %   $data_vol += scalar keys %{$plugins->get_plugin($dp)->get_conf()->{'provides_data'}};
 % }
 % foreach my $fp (@figs_plugins) {
+%   next if not ( grep( /^$fp$/, $plugins->get_list_plugins_figs() ) );
 %   $figs_vol += scalar keys %{$plugins->get_plugin($fp)->get_conf()->{'provides_figs'}};
 % }
-
+% my $by = exists($runs->[-1]) ? $runs->[-1]->{'run_user'} : 'Unknown';
+% my $on = exists($runs->[-1]) ? $runs->[-1]->{'run_delay'} : 0;
                 <dl class="dl-horizontal">
 		  <dt>ID</dt><dd><%= $project->get_id() %></dd>
                   <dt>Name</dt><dd><%= $project->name() %></dd>
                   <dt>Description</dt><dd><%== $project->desc() %></dd>
 		  <dt>Is active</dt><dd><%= $project->active() ? 'Yes' : 'No' %></dd>
 		  <dt>Last run</dt><dd>Executed on <code><%= $project->last_run() || "Never" %></code><br />
-		    By <code><%= $runs->[-1]->{'run_user'} || 'Unknown' %></code>, took <code><%= $runs->[-1]->{'run_delay'} || 0 %></code> seconds.<br />
+		    By <code><%= $by %></code>, took <code><%= $on %></code> seconds.<br />
 		    Please note that only a full run will store data in the database. Partial runs (plugin, pre, qm, post) will have their results only displayed in the job.</dd>
 		</dl>
 		<hr />

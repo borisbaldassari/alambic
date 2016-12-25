@@ -7,7 +7,7 @@
             <h1 class="al-h1"><small><%= $project_id %></small> Project Metrics</h1>
             <br />
 
-%= include 'alambic/dashboard/dashboard_menu', current => '/projects/metrics', project_id => $project_id
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/data', project_id => $project_id
 
             <br />
 

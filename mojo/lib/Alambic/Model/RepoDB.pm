@@ -53,6 +53,7 @@ sub new {
 	$db_url = $alambic_db;
     }
 
+    print "Initialising Mojo::Pg with [$db_url].\n";
     $pg = Mojo::Pg->new($db_url);
     
     return bless {}, $class;
@@ -68,7 +69,6 @@ sub backup_db() {
     my ($self) = @_;
     
     my $sql_out = &_db_query_create();
-	print "################################\n";
    
     my @tables = ( 'conf', 'users', 
 		   'models_attributes', 'models_metrics', 'models_qms', 

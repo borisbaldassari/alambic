@@ -1,0 +1,11 @@
+
+- name: alambic_run
+  service: alambic
+  command: sh /root/alambic_test_wrapper.sh
+- name: alambic_push
+  service: alambic
+  type: push
+  image_name: bbaldassari/alambic
+  registry: https://index.docker.io/v1/
+  encrypted_dockercfg_path: dockercfg.encrypted
+

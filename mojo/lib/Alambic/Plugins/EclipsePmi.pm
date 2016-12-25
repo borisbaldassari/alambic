@@ -123,8 +123,10 @@ sub run_plugin($$) {
 	'log' => [],
 	);
 
+    # Create RepoFS object for writing and reading files on FS.
     my $repofs = Alambic::Model::RepoFS->new();
 
+    # Retrieve and store data from the remote repository.
     my $ret_tmp = &_retrieve_data( $project_id, $project_pmi, $repofs );
     if (not defined($ret_tmp)) {
 	return { 'log' => ['Could not fetch anything useful from PMI.'] };
@@ -132,6 +134,7 @@ sub run_plugin($$) {
 	$ret{'log'} = $ret_tmp;
     }
     
+    # Analyse retrieved data, generate info, metrics, plots and visualisation.
     my $tmp_ret = &_compute_data( $project_id, $project_pmi, $repofs );
 
     $ret{'metrics'} = $tmp_ret->{'metrics'};
