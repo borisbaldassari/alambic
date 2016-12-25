@@ -16,8 +16,8 @@ RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 RUN yum install -y passwd perl-CPAN gcc make bzip2 git libxml2-devel openssl openssl-devel; yum clean all
 
 # Install postgresql 9.5 client
-RUN rpm -Uvh https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86_64/pgdg-centos95-9.5-3.noarch.rpm
-RUN yum install -y postgresql95 postgresql95-devel
+RUN rpm -Uvh https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86_64/pgdg-centos95-9.5-3.noarch.rpm \
+    && yum install -y postgresql95 postgresql95-devel
 
 
 # Create user alambic, password passpass
@@ -25,18 +25,20 @@ RUN adduser alambic && \
     echo passpass | passwd alambic --stdin
 
 
-# Run script for alambic user, perlbrew and all mojo stuff
-COPY 00_init.sh /root/00_init.sh
-COPY 01_alambic.sh /root/01_alambic.sh
-RUN chmod +x /root/00_init.sh 
-RUN sh /root/00_init.sh
+# Run initialisation script to install perlbrew and all mojo stuff
+COPY 00_install_deps.sh /root/00_install_deps.sh
+RUN chmod +x /root/00_install_deps.sh 
+RUN sh /root/00_install_deps.sh
 
-#USER alambic
-#RUN su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git'
-#COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
+USER alambic
+RUN git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
+COPY test_all.sh /home/alambic/test_all.sh
 
-#RUN hypnotoad script/alambic
+USER root
+COPY start_test_all.sh /root/start_test_all.sh
+RUN chmod +x /home/alambic/test_all.sh
+RUN chmod +x /root/start_test_all.sh
 
-ENTRYPOINT ["/usr/sbin/sshd", "-D"]
+CMD ["/usr/sbin/sshd", "-D"]
 
 
