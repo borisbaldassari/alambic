@@ -1,7 +1,7 @@
 
 - name: alambic_run
   service: alambic
-  command: echo "foo"
+  command: su - alambic -c 'sh alambic_test.sh'
 - name: postgres_run
   service: postgres
   command: echo "bar"
