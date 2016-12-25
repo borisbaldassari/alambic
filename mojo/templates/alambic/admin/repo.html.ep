@@ -16,10 +16,19 @@
 % }
 
 %= include 'alambic/admin/admin_menu', current => '/admin/repo'
+% my $fa_icon; my $link_init = '';
+% if (app->al->is_db_ok) { 
+%   $fa_icon = '<i class="fa fa-check-circle-o fa-lg"></i>';
+% } else { 
+%   $fa_icon = '<a href="/admin/repo/init"><i class="fa fa-exclamation-circle fa-lg"></i></a>';
+%   $link_init = '<a href="/admin/repo/init">Init</a>';
+% }
+% my $fa_icon_m = app->al->is_db_m_ok ? "check-circle-o" : "exclamation-circle";
 
             <div class="row">
               <div class="col-sm-6">
-		<p>All projects and configuration data is stored in a Postgres database.</p>
+		<p>All projects and configuration data is stored in a Postgres database. An Alambic instance can be entirely restored from its database backup, including history, attributes, metrics and indicators, since the file system only holds generated files.</p>
+
 		<br />
 	      </div>
 	      <div class="col-sm-6">
@@ -29,7 +38,25 @@
 
               </div>
             </div>	    
+
+            <div class="row">
+              <div class="col-lg-12">
+		
+                <div class="panel panel-default">
+                  <div class="panel-heading">Databases</div>
+                  <table class="table table-striped">
+		    <tr><th width="40%">Database</th><th width="60%">Configuration</th></tr>
+		    <tr><td>Alambic database</td><td><%== $fa_icon %> &nbsp; <code><%= app->al->instance_pg_alambic() %></code><%== $link_init %></td></tr>
+		    <tr><td>Minion database</td><td><i class="fa fa-<%= $fa_icon_m %> fa-lg"></i> &nbsp; <code><%= app->al->instance_pg_minion() %></code></td></tr>
+                  </table>
+				</div>
+			  </div>
+			</div>
                 
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Backups</div>
             <table class="table table-striped">
               <tr><th>File</th><th>Restore</th><th>Download</th><th>Delete</th></tr>
 % my $files = stash( 'files_backup' ) || [];
@@ -43,6 +70,9 @@
               </tr>
 % }
             </table>
+				</div>
+			  </div>
+			</div>
 
 
 
