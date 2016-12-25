@@ -35,7 +35,7 @@ my $plugins = {
 	'id' => 'EclipseIts',
 	'name' => 'Eclipse ITS',
 	'desc' => [
-	    'Eclipse ITS retrieves bug tracking system data from the Eclipse dashboard repository. This plugin will look for a file named project-its-prj-static.json on <a href="http://dashboard.eclipse.org/data/json/">the Eclipse dashboard</a>. This plugin is redundant with the EclipseGrimoire plugin',
+	    'Eclipse ITS description',
 	],
 	'ability' => [
 	    'metrics',
@@ -64,13 +64,93 @@ my $plugins = {
 my $models = Alambic::Model::Models->new($metrics, $attributes, $qm, $plugins);
 isa_ok( $models, 'Alambic::Model::Models' );
 
+my $qm_full = $models->get_qm_full();
+my $qm_full_ref  = {
+    'children' => [
+	{
+	    'ind' => undef,
+	    'children' => [
+		{
+		    'ind' => undef,
+		    'value' => '0',
+		    'father' => 'ATTR1',
+		    'type' => 'metric',
+		    'mnemo' => 'METRIC1',
+		    'name' => 'Metric 1'
+		}
+		],
+	    'name' => 'Attribute 1',
+	    'type' => 'attribute',
+	    'mnemo' => 'ATTR1'
+	}
+	],
+    'version' => 'Sun Dec 25 15:55:41 2016',
+    'name' => 'Alambic Full Quality Model'
+};
+is_deeply( $qm_full->{'children'}, $qm_full_ref->{'children'}, "Full QM children tree is conform." ) or diag explain $qm_full->{'children'};
+is($qm_full->{'name'}, $qm_full_ref->{'name'}, "Full QM name is conform." ) or diag explain $qm_full->{'name'};
+
+my $metr = $models->get_metric('METRIC1');
+is_deeply( $metr, $metrics->{'METRIC1'}, "Single metric retrieval is ok." ) or diag explain $metr;
+
+my $metrs = $models->get_metrics();
+is_deeply( $metrs, $metrics, "Metrics retrieved are ok." ) or diag explain $metrs;
+
+my $metrs_f = $models->get_metrics_full();
+is_deeply( $metrs_f->{'children'}{'METRIC1'}{'desc'}, ['Desc'], "Get full metrics children tree is conform on desc." ) or diag explain $metrs_f;
+is_deeply( $metrs_f->{'children'}{'METRIC1'}{'parents'}, {'ATTR1'=>1}, "Get full metrics children tree is conform on parents." ) or diag explain $metrs_f;
+is($metrs_f->{'name'}, "Alambic Metrics", "Full metrics name is conform." ) or diag explain $metrs_f->{'name'};
+
+my $metrs_a = $models->get_metrics_active(); 
+is_deeply( $metrs_a, [], "No active metric is defined (there is no qm defined)." ) or diag explain $metrs_a;
+
+my $metrs_r = $models->get_metrics_repos();
+is_deeply( $metrs_r, { 'EclipseIts' => 1 }, "get_metrics_repos is ok: one repository containing 1 metric." ) or diag explain $metrs_r;
+
+my $attr = $models->get_attribute('ATTR1');
+is_deeply( $attr, $attributes->{'ATTR1'}, "Single attribute retrieval is ok." ) or diag explain $metr;
+
 my $attrs = $models->get_attributes();
 is_deeply( $attrs, $attributes, "Attributes retrieved are ok." ) or diag explain $attrs;
 
-my $metr = $models->get_metric('METRIC1');
+my $attrs_f = $models->get_attributes_full();
+is_deeply( $attrs_f->{'children'}{'ATTR1'}{'desc'}, ['Desc'], "Get full attributes children tree is conform on desc." ) or diag explain $attrs_f;
+is_deeply( $attrs_f->{'children'}{'ATTR1'}{'name'}, 'Attribute 1', "Get full attributes children tree is conform on name." ) or diag explain $attrs_f;
+is($attrs_f->{'name'}, "Alambic Attributes", "Full attributes name is conform." ) or diag explain $attrs_f->{'name'};
+
+my $qm = $models->get_qm();
+my $qm_ref = [
+    {
+	'children' => [
+	    {
+		'mnemo' => 'METRIC1',
+		'ind' => undef,
+		'type' => 'metric',
+		'value' => '0',
+		'name' => 'Metric 1',
+		'father' => 'ATTR1'
+	    }
+	    ],
+	'mnemo' => 'ATTR1',
+	'type' => 'attribute',
+	'ind' => undef,
+	'name' => 'Attribute 1'
+    }
+    ];
+is_deeply( $qm, $qm_ref, "Quality model retrieval is ok." ) or diag explain $qm;
+
+
+my $models_ = Alambic::Model::Models->new();
+$models->init_models($metrics, $attributes, $qm, $plugins);
+isa_ok( $models, 'Alambic::Model::Models' );
+
+$attrs = $models->get_attributes();
+is_deeply( $attrs, $attributes, "Attributes retrieved are ok." ) or diag explain $attrs;
+
+$metr = $models->get_metric('METRIC1');
 is_deeply( $metr, $metrics->{'METRIC1'}, "Single metric retrieved is ok." ) or diag explain $metr;
 
-my $metrs = $models->get_metrics();
+$metrs = $models->get_metrics();
 is_deeply( $metrs, $metrics, "Metrics retrieved are ok." ) or diag explain $metrs;
 
 done_testing();

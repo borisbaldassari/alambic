@@ -162,6 +162,10 @@ sub get_models() {
     return $models;
 }
 
+# Return the RepoFS.pm object for this instance.
+sub get_repo_fs() {
+    return $repofs;
+}
 
 # Return the RepoDB.pm object for this instance.
 sub get_repo_db() {
@@ -422,6 +426,9 @@ sub get_project_hist($) {
     
 }
 
+# Return all data for the last run of the project
+# Params:
+#  * project_id
 sub get_project_last_run($) {
     my $self = shift;
     my $project_id = shift;
@@ -429,6 +436,10 @@ sub get_project_last_run($) {
     return $repodb->get_project_last_run($project_id);
 }
 
+# Return all data for a specific run
+# Params:
+#  * project_id
+#  * run_id 
 sub get_project_run($$) {
     my $self = shift;
     my $project_id = shift;
@@ -568,3 +579,25 @@ sub delete_project($) {
 
 
 1;
+
+
+=pod
+ 
+=head1 SYNOPSIS
+
+    use Alambic::Model::Alambic;
+    
+    my $config = $self->plugin('Config');
+    state $al = Alambic::Model::Alambic->new($config);
+
+Provides high-level functions to interact with Alambic. 
+ 
+=head1 DESCRIPTION
+
+=head2 init()
+
+
+
+=head2 backup()
+ 
+=cut

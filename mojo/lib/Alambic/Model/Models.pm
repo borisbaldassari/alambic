@@ -83,7 +83,7 @@ sub _init_metrics($) {
 	# Check if the metric is active in the qm 
 	my @nodes_array;
         # Find nodes of qm which have the same mnemonic.
-	&find_qm_node($in_model, "metric", $tmp_metric, \@nodes_array, "root");
+	&_find_qm_node($in_model, "metric", $tmp_metric, \@nodes_array, "root");
 	my %tmp_nodes;
 	foreach my $node (@nodes_array) {
 	    if (defined($node->{"father"})) {
@@ -130,7 +130,7 @@ sub _init_metrics($) {
 # Find and return a specific mnemo in the quality model tree.
 # The function can return zero, one or more nodes.
 # This is a recursive method!
-sub find_qm_node($$$$) {
+sub _find_qm_node($$$$) {
     my $raw_qm_array = shift;
     my $type = shift;
     my $mnemo = shift;
@@ -144,7 +144,7 @@ sub find_qm_node($$$$) {
 	    next;
 	}
 	if (exists($child->{"children"})) {
-	    &find_qm_node($child->{"children"}, $type, $mnemo, $nodes_array, $child->{"mnemo"});
+	    &_find_qm_node($child->{"children"}, $type, $mnemo, $nodes_array, $child->{"mnemo"});
 	} else {
 	}
     }
@@ -180,15 +180,15 @@ sub get_qm_full() {
 #   $attrs a ref to hash of values for attributes
 #   $metrics a ref to hash of values for metrics
 #   $inds a ref to hash of indicators for metrics
-sub populate_qm($$$$$) {
-    my $self = shift;
-    my $qm = shift;
-    my $l_attrs = shift;
-    my $l_metrics = shift;
-    my $l_inds = shift;
+#sub populate_qm($$$$$) {
+#    my $self = shift;
+#    my $qm = shift;
+#    my $l_attrs = shift;
+#    my $l_metrics = shift;
+#    my $l_inds = shift;
 
-    return &_populate_qm($qm, $l_attrs, $l_metrics, $l_inds);
-}
+#    return &_populate_qm($qm, $l_attrs, $l_metrics, $l_inds);
+#}
 
 
 # Recursive function to populate the quality model with information from 
@@ -225,28 +225,28 @@ sub _populate_qm($$$$$) {
     }
 }
 
-sub get_model_nodes() {
-    my @nodes = sort &find_nodes($model->{'children'});
-    return @nodes;
-}
+# sub get_model_nodes() {
+#     my @nodes = sort &_find_nodes($model->{'children'});
+#     return @nodes;
+# }
 
 
 # Utility to find all node mnemos in the qm tree
-sub find_nodes($) {
-    my $nodes = shift;
+# sub _find_nodes($) {
+#     my $nodes = shift;
 
-    my @nodes_ret;
-    foreach my $node (@{$nodes}) {
-	my $mnemo = $node->{'mnemo'};
-	push(@nodes_ret, $mnemo);
-	if (exists($node->{'children'})) {
-	    my @nodes_new = &find_nodes($node->{'children'});
-	    push(@nodes_ret, @{nodes_new});
-	}
-    }
+#     my @nodes_ret;
+#     foreach my $node (@{$nodes}) {
+# 	my $mnemo = $node->{'mnemo'};
+# 	push(@nodes_ret, $mnemo);
+# 	if (exists($node->{'children'})) {
+# 	    my @nodes_new = &_find_nodes($node->{'children'});
+# 	    push(@nodes_ret, @{nodes_new});
+# 	}
+#     }
     
-    return uniq(@nodes_ret);
-}
+#     return uniq(@nodes_ret);
+# }
 
 
 # Returns information about a single metric.
@@ -292,9 +292,12 @@ sub get_metrics() {
     return \%metrics;
 }
 
+# Returns a list of the active metrics, i.e. metrics defined and 
+# used in the quality model. It is an array of metrics ids.
 sub get_metrics_active() {
     return \@metrics_active;
 }
+
 
 sub get_metrics_repos() {
     return \%metrics_ds;
@@ -303,7 +306,7 @@ sub get_metrics_repos() {
 sub get_metrics_full() {
     my %full = (
         'name' => "Alambic Metrics",
-        'version' => localtime(),
+        'version' => "" . localtime(),
         'children' => \%metrics,
     );
 
