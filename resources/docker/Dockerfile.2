@@ -4,10 +4,17 @@ MAINTAINER Boris boris.baldassari@castalia.solutions
 
 EXPOSE 3000
 
+RUN whoami
+COPY 11_start_test.sh /root/11_start_test.sh
+
 USER alambic
-RUN su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git'
+RUN whoami
+RUN git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
 COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
-PGPASSWORD=pass4alambic psql -h postgres < ../resources/docker/psql_init.sql
+COPY test_all.sh /home/alambic/test_all.sh
+COPY psql_init.sql /home/alambic/psql_init.sql
+
+USER root
 
 #RUN hypnotoad script/alambic
 

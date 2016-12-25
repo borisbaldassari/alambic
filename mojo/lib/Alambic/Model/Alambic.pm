@@ -70,10 +70,10 @@ sub new {
 
     # If the database is not initialised, then init it.
     if (not &is_db_ok()) { 
-    	print "### ###################\n";
-    	print "### Initialising DB!!! \n";
-    	print "### ###################\n";
-    	&init();
+         die "
+Database is not initialised. Please first execute:\n
+\$ script/alambic alambic init\n
+And restart alambic.\n";
     } 
 	
     # Retrieve all metrics definition to initialise Models.pm

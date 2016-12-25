@@ -32,8 +32,8 @@ RUN chmod +x /root/00_init.sh
 RUN sh /root/00_init.sh
 
 #USER alambic
-RUN su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git'
-COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
+#RUN su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git'
+#COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
 
 #RUN hypnotoad script/alambic
 
