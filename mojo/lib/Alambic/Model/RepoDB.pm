@@ -53,7 +53,7 @@ sub new {
 	$db_url = $alambic_db;
     }
 
-    print "Initialising Mojo::Pg with [$db_url].\n";
+#    print("Initialising Mojo::Pg with [$db_url].\n");
     $pg = Mojo::Pg->new($db_url);
     
     return bless {}, $class;

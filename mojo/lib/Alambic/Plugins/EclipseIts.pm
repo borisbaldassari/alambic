@@ -131,6 +131,8 @@ sub _retrieve_data($$$) {
 
     push( @log, "[Plugins::EclipseIts] Starting retrieval of data for [$project_id] url [$url]." );
     
+    push( @log, "[Plugins::EclipseIts] Retrieving static [$url] to input.\n" );
+
     # Fetch json file from the dashboard.eclipse.org
     my $ua = Mojo::UserAgent->new;
     my $content = $ua->get($url)->res->body;

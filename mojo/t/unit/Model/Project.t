@@ -31,6 +31,7 @@ my $attributes = {
     }
 };
 my $qm = [ {'mnemo' => 'ATTR1', 'active' => 'true', 'type' => 'attribute', 'children' => [{'mnemo' => 'ITS_CLOSED', 'active' => 'true', 'type' => 'metric'}, {'mnemo' => 'ITS_CLOSERS', 'active' => 'true', 'type' => 'metric'}] } ];
+
 my $plugins = {
     'EclipseIts' => {
 	'provides_data' => {
@@ -94,8 +95,7 @@ ok( grep( /^\[Plugins::EclipseIts\] Executing R/, @{$ret} ) >= 1, "Log has Execu
 ok( -e "projects/tools.cdt/input/tools.cdt_import_its.json", "Check that file import_its.json exists." );
 ok( -e "projects/tools.cdt/input/tools.cdt_import_its_evol.json", "Check that file import_its_evol.json exists." );
 ok( -e "projects/tools.cdt/output/its_evol_changed.html", "Check that file its_evol_changed.html exists." );
-ok( -e "projects/tools.cdt/output/EclipseIts.inc", "Check that file EclipseIts.inc exists." );
-ok( -e "projects/tools.cdt/output/its_evol_ggplot.html", "Check that file its_evol_ggplot.html exists." );
+ok( -e "projects/tools.cdt/output/eclipse_its.inc", "Check that file EclipseIts.inc exists." );
 ok( -e "projects/tools.cdt/output/its_evol_opened.html", "Check that file its_evol_opened.html exists." );
 ok( -e "projects/tools.cdt/output/its_evol_people.html", "Check that file its_evol_people.html exists." );
 ok( -e "projects/tools.cdt/output/its_evol_summary.html", "Check that file its_evol_summary.html exists." );
@@ -130,6 +130,5 @@ ok( exists($ret->{'attrs'}{'ATTR1'}), "After qm run attr1 is in ret." ) or diag 
 ok( exists($ret->{'inds'}{'ITS_CLOSED'}), "After qm run inds its_closed is in ret." ) or diag explain $ret;
 ok( exists($ret->{'inds'}{'ITS_CLOSERS'}), "After qm run inds its_closers is in ret." ) or diag explain $ret;
 ok( exists($ret->{'attrs_conf'}{'ATTR1'}), "After qm run attrs_conf is in ret." ) or diag explain $ret;
-print Dumper $ret;
 
-done_testing(38);
+done_testing(37);

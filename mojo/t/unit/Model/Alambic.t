@@ -22,6 +22,8 @@ my $conf = $alambic->instance_name();
 is( $conf, 'MyDBNameInit', "Instance has correct default name") or diag explain $conf;
 $conf = $alambic->instance_desc();
 is( $conf, 'MyDBDescInit', "Instance has correct default desc") or diag explain $conf;
+my $version = $alambic->instance_version();
+is( $version, '3.2-dev', "Alambic version is $version, considered ok.") or diag explain $version;
 
 my $model = $alambic->get_models();
 isa_ok( $model, 'Alambic::Model::Models' );
