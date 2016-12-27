@@ -2,6 +2,8 @@
 
 Alambic is an open-source platform and service for the management and visualisation of software engineering data.
 
+[ ![Codeship Status for BorisBaldassari/alambic](https://app.codeship.com/projects/8f5ae970-a10d-0134-6d00-664a346b6816/status?branch=master)](https://app.codeship.com/projects/189806)
+
 It basically retrieves metrics from many various repositories (code metrics, scm, its, mailing lists, stack overflow questions, etc.) and makes them available for custom plugins to produce analysis, numbers, graphics, and data sets. 
 
 A flexible plugin system allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs). Examples of plugins ready to use include PMD Results Analysis, StackOverflow questions and PMI Checks for Eclipse projects.
@@ -45,5 +47,3 @@ Like many projects, Alambic has a huge debt of gratitude to all the software tha
 * [Perl](http://perl.org/), its [myriad of modules](http://www.ctan.org/), and the [Mojolicious team](http://mojolicious.org/).
 * The [R project](https://www.r-project.org/), and its [myriad of packages](https://cran.r-project.org/). The guys at [RStudio](https://www.rstudio.com/) have contributed a lot of [cool packages](https://www.rstudio.com/products/rpackages/), including [ggplot2](http://ggplot2.org/), [knitr](http://yihui.name/knitr/) and [rmarkdown](http://rmarkdown.rstudio.com/).
 * [Plot.ly](http://plot.ly/) for their open-source contributions, including the [plotly R package](https://plot.ly/r/) and the [javascript library](https://plot.ly/javascript/), and for their [free online service](https://plot.ly/plot) for data exploration and visualisation, which rocks!
-
-
