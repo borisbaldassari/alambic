@@ -20,7 +20,7 @@ library(knitr)
 require(ggplot2)
 require(xtable)
 
-opts_chunk$set(fig.path = 'figures/')
+opts_chunk$set(echo=F, fig.path = 'figures/')
 
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
@@ -111,10 +111,10 @@ The rulesets detected in the current PMD log are ``r paste(unique(pmd.rulesets$r
 
 <div class="row"><div class="col-lg-6">
 
-<img src="/projects/`r project.id`/PmdAnalysis/pmd_configuration_rulesets_repartition.svg" frameborder="0" style="width: 100%; height: 600px" />
+<img src="/projects/`r project.id`/PmdAnalysis/pmd_configuration_rulesets_repartition.svg" frameborder="0" style="width: 100%; height: 400px" />
 
 </div><div class="col-sm-6">
-
+<br />
 ```{r rulesets-repartition-table, results='asis', warning=F}
 # Create data.frame
 tmp.rulesets <- data.frame(unique(pmd.rulesets$ruleset))

@@ -11,8 +11,7 @@ use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
 use DateTime;
 use Data::Dumper;
-use File::Copy;
-use File::Path qw(remove_tree);
+use Text::CSV;
 
 
 # Main configuration hash for the plugin
@@ -20,7 +19,8 @@ my %conf = (
     "id" => "Hudson",
     "name" => "Hudson CI",
     "desc" => [ 
-	"Retrieves information from the Hudson continuous integration engine.",
+	"Retrieves information from a Hudson continuous integration engine, displays a summary of its status, and provides recommendations to better use CI.",
+        "Check the documentation for this plugin on the project wiki: <a href=\"https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/Hudson\">https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/Hudson</a>."
     ],
     "type" => "pre",
     "ability" => [ 'metrics', 'viz', 'figs', 'recs' ],
@@ -74,12 +74,15 @@ sub run_plugin($$) {
 	'log' => [],
 	);
 
+    # Create RepoFS object for writing and reading files on FS.
     my $repofs = Alambic::Model::RepoFS->new();
 
     my $hudson_url = $conf->{'hudson_url'};
 
+    # Retrieve and store data from the remote repository.
     $ret{'log'} = &_retrieve_data( $project_id, $hudson_url, $repofs );
     
+    # Analyse retrieved data, generate info, metrics, plots and visualisation.
     my $tmp_ret = &_compute_data( $project_id, $hudson_url, $repofs );
     
     $ret{'metrics'} = $tmp_ret->{'metrics'};
@@ -137,10 +140,6 @@ sub _compute_data($) {
     my $date_now = DateTime->now();
     my $date_1w = DateTime->now()->subtract(days => 7);
     my $date_1w_ms = $date_1w->epoch() * 1000;
-
-#    print "############################ \n";
-#    print "# Date is $date_now and $date_1w.\n";
-#    print "############################ \n";
     
     foreach my $job (@{$hudson->{'jobs'}}) {
 	if ($job->{'color'} =~ m!green!) { 
@@ -166,25 +165,28 @@ sub _compute_data($) {
 	}
     }
 
+    # Prepare the Text::CSV module.
+    my $csv = Text::CSV->new ( { sep_char => ',' , binary => 1, 
+                                 quote_char => '"',
+                                 auto_diag => 1} )  # should set binary attribute.
+        or die "Cannot use CSV: ".Text::CSV->error_diag ();
+
     # Write metrics json file to disk.
     $repofs->write_output( $project_id, "metrics_hudson.json", encode_json(\%metrics) );
 
     # Write csv file for metrics
     my @metrics_csv = sort map {$conf{'provides_metrics'}{$_}} keys %{$conf{'provides_metrics'}};
     my $csv_out = join( ',', sort @metrics_csv) . "\n";
-    $csv_out .= join( ',', map { $metrics{$_} } sort @metrics_csv) . "\n";
+    $csv->combine( map { $metrics{$_} } sort @metrics_csv );
+    $csv_out .= $csv->string() . "\n";
     
     $repofs->write_plugin( 'Hudson', $project_id . "_hudson_metrics.csv", $csv_out );
 
     # Write csv file for main information about hudson instance
     @metrics_csv = ('name', 'desc', 'jobs', 'url');
     $csv_out = join( ',', @metrics_csv) . "\n";
-    my $node_desc = $hudson->{'nodeDescription'};
-    $node_desc =~ s!"!\"!;
-    $csv_out .= $hudson->{'nodeName'} . ','
-	. '"' . $node_desc . '"' . ','
-	. $metrics{'JOBS'} . ','
-	. $hudson_url . "\n";
+    $csv->combine( ( $hudson->{'nodeName'}, $hudson->{'nodeDescription'}, $metrics{'JOBS'}, $hudson_url ) );
+    $csv_out .= $csv->string() . "\n";
 
     $repofs->write_plugin( 'Hudson', $project_id . "_hudson_main.csv", $csv_out );
     
@@ -211,7 +213,7 @@ sub _compute_data($) {
 	my $lsb_id = $job->{'lastSuccessfulBuild'}->{'number'} || 0;
 	my $lsb_time = $job->{'lastSuccessfulBuild'}->{'timestamp'} || 0;
 	my $lsb_duration = $job->{'lastSuccessfulBuild'}->{'duration'} || 0;
-	my $hr_score = $job->{'healthReport'}[0]{'score'};
+	my $hr_score = $job->{'healthReport'}[0]{'score'} || 0;
 	$csv_out .= $name . $sep
 	    . $job->{'buildable'} . $sep
 	    . $job->{'color'} . $sep
@@ -232,7 +234,7 @@ sub _compute_data($) {
 	foreach my $build (@{$job->{'builds'}}) {
 	    my $time = $build->{'timestamp'};
 	    my $name = $build->{'fullDisplayName'};
-	    my $result = $build->{'result'};
+	    my $result = $build->{'result'} || 'UNKNOWN';
 	    my $id = $build->{'id'};
 	    my $number = $build->{'number'};
 	    my $duration = $build->{'duration'};

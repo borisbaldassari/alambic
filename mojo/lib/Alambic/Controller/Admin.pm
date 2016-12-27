@@ -21,6 +21,7 @@ sub edit {
     $self->stash(
         name => $self->app->al->instance_name(),
         desc => $self->app->al->instance_desc(),
+        gt => $self->app->al->get_repo_db()->conf()->{'google_tracking'},
         );
     $self->render( template => 'alambic/admin/instance_edit' );
 }
@@ -30,12 +31,15 @@ sub edit {
 sub edit_post {
     my $self = shift;
 
-    # Gte values from form.
+    # Get values from form.
     my $name = $self->param( 'name' );
     my $desc = $self->param( 'desc' );
+    my $gt = $self->param( 'google-tracking' );
     
     $self->app->al->get_repo_db()->name($name);
     $self->app->al->get_repo_db()->desc($desc);
+    print "# in admin:edit_post [$gt].\n";
+    $self->app->al->get_repo_db()->conf('google-tracking', $gt);
 
     $self->flash( msg => "Instance details have been saved." );
     $self->redirect_to( '/admin/summary' );
@@ -406,9 +410,10 @@ sub projects_run {
     my $self = shift;
     my $project_id = $self->param( 'pid' );
 
+    my $user = $self->session('session_user');
+    
     # Start minion job
-    my $job = $self->minion->enqueue( run_project => [ $project_id ] => { delay => 0 });
-#    my $project = $self->app->al->run_project( $project_id );
+    my $job = $self->minion->enqueue( run_project => [ $project_id, $user ] => { delay => 0 });
 
     my $msg = "Project run for $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
     
@@ -585,6 +590,46 @@ sub projects_del_plugin {
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/projects/' . $project_id );
 }
+
+
+sub del_input_file() {
+    my $self = shift;
+    
+    my $project_id = $self->param( 'pid' );
+    my $file = $self->param( 'file' );
+
+    my $ret = unlink( 'projects/' . $project_id . '/input/' . $file );
+    my $msg;
+    if ($ret == 1) {
+        $msg = "Deleted input file [$file].";
+    } else {
+        $msg = "ERROR: could not delete input file.";
+    }
+
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
+sub del_output_file() {
+    my $self = shift;
+    
+    my $project_id = $self->param( 'pid' );
+    my $file = $self->param( 'file' );
+
+    my $ret = unlink( 'projects/' . $project_id . '/output/' . $file );
+    my $msg;
+    if ($ret == 1) {
+        $msg = "Deleted output file [$file].";
+    } else {
+        $msg = "ERROR: could not delete output file.";
+    }
+
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/projects/' . $project_id );
+}
+
+
 
 
 1;

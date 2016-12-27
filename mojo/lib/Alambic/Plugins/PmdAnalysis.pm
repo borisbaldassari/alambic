@@ -36,7 +36,7 @@ my %conf = (
     "provides_data" => {
 	"import_pmd_analysis_conf.xml" => "The PMD configuration file retrieved for the analysis (XML).",
 	"import_pmd_analysis_results.xml" => "The PMD results file retrieved for the analysis (XML).",
-	"pmd_analysis_main_csv" => "Generic information about the project : PMD version, timestamp of analysis, number of non-conformities, number of rules checked, number of rules violated, number of clean rules, rate of acquired practices (CSV).",
+	"pmd_analysis_main.csv" => "Generic information about the project : PMD version, timestamp of analysis, number of non-conformities, number of rules checked, number of rules violated, number of clean rules, rate of acquired practices (CSV).",
 	"pmd_analysis_files.csv" => "Files: for each non-conform file, its name, total number of non-conformities, number of non-conformities for each priority, number of broken and clean rules, and the rate of acquired practices (CSV).",
 	"pmd_analysis_rules.csv" => "Rules: number of non-conformities for each category of rules and priority (CSV).",
 	"pmd_analysis_violations.csv" => "Violations: foreach violated rule, its priority, the ruleset it belongs to, and the volume of violations (CSV).",
@@ -89,13 +89,16 @@ sub run_plugin($$) {
 	'log' => [],
 	);
 
+    # Create RepoFS object for writing and reading files on FS.
     my $repofs = Alambic::Model::RepoFS->new();
 
     my $url_xml = $conf->{'url_pmd_xml'};
     my $url_conf = $conf->{'url_pmd_conf'};
 
+    # Retrieve and store data from the remote repository.
     $ret{'log'} = &_retrieve_data( $project_id, $url_xml, $url_conf, $repofs );
     
+    # Analyse retrieved data, generate info, metrics, plots and visualisation.
     my $tmp_ret = &_compute_data( $project_id, $repofs );
     
     $ret{'metrics'} = $tmp_ret->{'metrics'};
@@ -193,7 +196,7 @@ sub _compute_data($$$) {
     # Write rules to a csv file
     $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_rules.csv", $csv_out );
     $repofs->write_output( $project_id, "pmd_analysis_rules.csv", $csv_out );
-    push( @log, "Writing rules to file [" . $project_id . "_pmd_analysis_rules.csv]." );
+    push( @log, "[PmdAnalysis] Writing rules to file [" . $project_id . "_pmd_analysis_rules.csv]." );
     
     # Compute number of broken rules.
     my $total_rko = scalar keys %violations;
@@ -260,7 +263,7 @@ sub _compute_data($$$) {
     }
     
     # Write files to a csv file
-    push( @log, "Writing files to file [" . $project_id . "_pmd_analysis_files.csv].." );
+    push( @log, "[PmdAnalysis] Writing files to file [" . $project_id . "_pmd_analysis_files.csv].." );
     $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_files.csv", $csv_files_out );
     $repofs->write_output( $project_id, "pmd_analysis_files.csv", $csv_files_out );
 
@@ -286,12 +289,12 @@ sub _compute_data($$$) {
     }
     
     # Write rulesets to CSV (first format).
-    push( @log, "Writing rulesets to file [" . $project_id . "_conf_rulesets.csv]." );
+    push( @log, "[PmdAnalysis] Writing rulesets to file [" . $project_id . "_conf_rulesets.csv]." );
     $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_rulesets.csv", $csv_rulesets_out );
     $repofs->write_output( $project_id, "pmd_analysis_rulesets.csv", $csv_rulesets_out );
     
     # Write rulesets to CSV (second format).
-    push( @log, "Writing rulesets2 to file [" . $project_id . "_conf_rulesets2.csv]." );
+    push( @log, "[PmdAnalysis] Writing rulesets2 to file [" . $project_id . "_conf_rulesets2.csv]." );
     $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_rulesets2.csv", $csv_rulesets2_out );
     $repofs->write_output( $project_id, "pmd_analysis_rulesets2.csv", $csv_rulesets2_out );
 
@@ -302,7 +305,7 @@ sub _compute_data($$$) {
     my $csv_main_out = "PMD version,Timestamp,ConfFile,NCC,RULES,RKO,ROK,ROKR\n";
     $csv_main_out .= "$pmd_version,$pmd_timestamp,,$total_ncc,$vol_rules,$total_rko,$total_rok,$total_rokr\n";
     
-    push( @log, "Writing main pmd file [" . $project_id . "_pmd_analysis_main.csv].." );
+    push( @log, "[PmdAnalysis] Writing main pmd file [" . $project_id . "_pmd_analysis_main.csv].." );
     $repofs->write_plugin( 'PmdAnalysis', $project_id . "_pmd_analysis_main.csv", $csv_main_out );
     $repofs->write_output( $project_id, "pmd_analysis_main.csv", $csv_main_out );
 

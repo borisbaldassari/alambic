@@ -101,12 +101,15 @@ sub run_plugin($$) {
 	'log' => [],
 	);
 
+    # Create RepoFS object for writing and reading files on FS.
     my $repofs = Alambic::Model::RepoFS->new();
 
     my $project_grim = $conf->{'project_grim'};
 
+    # Retrieve and store data from the remote repository.
     $ret{'log'} = &_retrieve_data( $project_id, $project_grim, $repofs );
     
+    # Analyse retrieved data, generate info, metrics, plots and visualisation.
     my $tmp_ret = &_compute_data( $project_id, $project_grim, $repofs );
     
     $ret{'metrics'} = $tmp_ret->{'metrics'};
@@ -128,6 +131,8 @@ sub _retrieve_data($$$) {
 
     push( @log, "[Plugins::EclipseIts] Starting retrieval of data for [$project_id] url [$url]." );
     
+    push( @log, "[Plugins::EclipseIts] Retrieving static [$url] to input.\n" );
+
     # Fetch json file from the dashboard.eclipse.org
     my $ua = Mojo::UserAgent->new;
     my $content = $ua->get($url)->res->body;
@@ -230,11 +235,11 @@ sub _compute_data($$$) {
     my $weeks = -4;
     my $closed_old = $metrics_evol->{'closed'}->[$weeks];
     my $opened_old = $metrics_evol->{'opened'}->[$weeks];
-    if ( $closed_old > ( 2 * $opened_old) ) {
+    if ( $closed_old < ( 2 * $opened_old) ) {
 	push( @recs, { 'rid' => 'ITS_OPENED_BUGS', 
 		       'severity' => 1,
 		       'src' => 'EclipseIts',
-		       'desc' => 'During last year, there has been twice as many opened bugs (' 
+		       'desc' => 'During last 4 weeks, there has been twice as many opened bugs (' 
 			   . $opened_old . ') as closed bugs (' . $closed_old . '). This may be ok '
 			   . 'if the activity has notably increased, but it could also reveal some '
 			   . 'instability or decrease in project quality.' 

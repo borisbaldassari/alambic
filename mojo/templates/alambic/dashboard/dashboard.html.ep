@@ -38,13 +38,6 @@
   <span data-toggle="tooltip" data-placement="top" title="<%= $name %>"><i class="fa <%= $icon %>"></i></span>
  <% end %>
 
- <% my $attribute = begin %>
- % my $attr = shift;
-%#                      <div class="progress">
-%#                        <div class="progress-bar" role="progressbar" aria-valuenow="<%= $project->attributes()->{'QM_QUALITY'} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= comp_c( $project_attrs->{$attr} ) %>; width: <%= &comp_p( $project_attrs->{$attr} ) %>%;"><%= $project_attrs->{$attr} %> / 5</div>
-%#                      </div>
-<% end %>
-		      
             <h1 class="al-h1"><small><%= $project_id %></small> Summary</h1>
             <br />
 	    
@@ -81,7 +74,7 @@
 	      <dt>ID</dt><dd><%= $project_id %></dd>
 	      <dt>Name</dt><dd><%= $project->name() %></dd>
               <dt>Description</dt><dd><%== $project->desc() %></dd>
-	      <dt>Last analysis</dt><dd><%= $run->{'run_time'} %></dd>
+	      <dt>Last analysis</dt><dd>Executed on <code><%= $run->{'run_time'} %></code> by <code><%= $run->{'run_user'} %></code>, took <code><%= $run->{'run_delay'} %></code> seconds.</dd>
             </dl>
 	    
 	    <br />
@@ -137,6 +130,7 @@
 		  <div class="panel-heading">Plugins</div>
 		  <ul class="list-group">
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   next if not ( grep( /^$p$/, $plugins->get_list_plugins_pre() ) );
 %   my $conf = $plugins->get_plugin($p)->get_conf();
                     <li class="list-group-item"><%= $plugins_list->{$p} %>
 		      <span class="pull-right">

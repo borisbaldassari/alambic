@@ -126,7 +126,7 @@ t <- apply(jobs.nok, 1,
                              x[[1]], '</td><td><small>', x[[16]], 
                              '</small></td><td><small>', x[[6]], 
                              ' sec.</small></td><td>', ' ',
-                             x[[14]], ' &percnt;</td></tr>', sep=''))
+                             x[[14]], ' &#37;</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
@@ -149,7 +149,7 @@ t <- apply(jobs.unstable, 1,
                              x[[1]], '</td><td><small>', x[[16]], 
                              '</small></td><td><small>', x[[6]], 
                              ' sec.</small></td><td>', ' ',
-                             x[[14]], ' &percnt;</td></tr>', sep=''))
+                             x[[14]], ' &#37;</td></tr>', sep=''))
 #<span class="label" style="background-color: #cc6686"></span>
 t <- paste(t, collapse=" ")
 cat(t)
@@ -173,7 +173,7 @@ t <- apply(jobs.ok, 1,
                              x[[1]], '</td><td><small>', x[[16]], 
                              '</small></td><td><small>', x[[6]], 
                              ' sec.</small></td><td>', ' ',
-                             x[[14]], ' &percnt;</td></tr>', sep=''))
+                             x[[14]], ' &#37;</td></tr>', sep=''))
 #<span class="label" style="background-color: #cc6686"></span>
 t <- paste(t, collapse=" ")
 cat(t)

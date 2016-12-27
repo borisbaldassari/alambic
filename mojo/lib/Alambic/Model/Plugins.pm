@@ -72,27 +72,6 @@ sub _read_plugins() {
 	    push( @{$plugins_ability{ $a }}, $conf->{'id'} );
 	}
     }
-
-}
-
-
-sub get_list_plugins_pre() {
-    return $plugins_type{'pre'} || [];
-}
-
-
-sub get_list_plugins_cdata() {
-    return $plugins_type{'cdata'} || [];
-}
-
-
-sub get_list_plugins_post() {
-    return $plugins_type{'post'} || [];
-}
-
-
-sub get_list_plugins_global() {
-    return $plugins_type{'global'} || [];
 }
 
 
@@ -122,6 +101,26 @@ sub get_conf_all() {
     }
     
     return \%list;
+}
+
+
+sub get_list_plugins_pre() {
+    return $plugins_type{'pre'} || [];
+}
+
+
+sub get_list_plugins_cdata() {
+    return $plugins_type{'cdata'} || [];
+}
+
+
+sub get_list_plugins_post() {
+    return $plugins_type{'post'} || [];
+}
+
+
+sub get_list_plugins_global() {
+    return $plugins_type{'global'} || [];
 }
 
 

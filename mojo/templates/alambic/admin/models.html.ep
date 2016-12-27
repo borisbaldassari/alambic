@@ -1,5 +1,7 @@
 % use File::Basename qw( fileparse );
 % use Data::Dumper;
+% my $metrics = $models->get_metrics();
+% my $attributes = $models->get_attributes();
 
             <h1 class="al-h1"><small>Administration</small> Alambic Models</h1>
             <br />
@@ -20,18 +22,17 @@
 
             <div class="row">
               <div class="col-sm-6">
-		<p>Models include the definition of metrics, attributes, and the quality model itself.</p>
+		<p>Models include the definition of metrics, attributes, and the quality model itself. There are <%= scalar( keys %{$metrics || {}} ) %> metrics and <%= scalar( keys %$attributes ) %> attributes defined.</p>
+		<p>All data is stored in the database, and can be imported from a set of JSON files on the file system.</p>
 		<br />
 	      </div>
 	      <div class="col-sm-6">
                 <div class="list-group">
-                  <a class="list-group-item" href="/admin/models/init" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Re-read models</a>
-                  <a class="list-group-item" href="/admin/models/import" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Import JSON</a>
+                  <!-- a class="list-group-item" href="/admin/models/init" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Re-read models</a -->
                 </div>
               </div>
             </div>
 	      	    
-% my $metrics = $models->get_metrics();
             <div class="row">	      
               <div class="col-md-6">
                 <div class="panel panel-default">
@@ -48,7 +49,6 @@
                   </table>	    
 		</div>
 		
-% my $attributes = $models->get_attributes();
                 <div class="panel panel-default">
                   <div class="panel-heading">Attributes</div>
                   <div class="panel-body"><%= scalar( keys %$attributes ) %> attributes defined.</div>

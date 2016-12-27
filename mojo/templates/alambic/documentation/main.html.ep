@@ -75,7 +75,7 @@
 
                 <p>Data is retrieved by executing <b>pre-plugins</b>. Plugins first collect the data and then optionnaly run checks and actions, then compute metrics or visualisation objects. Once all pre-plugins have been executed, the attributes are computed and the quality model is populated. </p>
 		<p>Then the <b>post-plugins</b> are executed, and have access to all data retrieved and computed by pre-plugins. Once the project has been successfully analysed results are displayed in the dashboard section. This section provides several pages to analyse the project's situation and zoom into the details when needed. The plugins tab displays the visualisation output of installed plugins.</p>
-		<p>Once all projects have been executed, <b>post-plugins</b> are executed. They have access to data, information, recommendations, metrics and attributes from all projects.</p>
+		<p>Once all projects have been executed, <b>global plugins</b> are executed. They have access to data, information, recommendations, metrics and attributes from all projects.</p>
 		<p></p>
               </div>
               <div class="col-lg-6">
@@ -84,5 +84,20 @@
             </div>
             
 	    <br />
+	    
+            <div class="row">
+              <div class="col-lg-6">
+                <h3>Metrics, indicators, attributes, confidence</h3>
+
+		<p></p>
+		<p></p>
+		<p></p>
+		
+              </div>
+              <div class="col-lg-6">
+                <div class="text-center" ><img src="/images/alambic_presentation_metrics.svg" class="img-responsive" style="width: 800px;" /></div>
+              </div>
+            </div>
+	    
 	    <br />
             

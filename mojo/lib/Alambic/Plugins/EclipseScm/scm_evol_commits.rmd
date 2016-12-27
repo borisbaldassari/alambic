@@ -6,7 +6,7 @@ output: html_document
 library(dygraphs)
 library(xts)
 
-project.id <- 'modeling.sirius'
+#project.id <- 'modeling.sirius'
 file.evol = paste("", project.id, "_scm_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 evol[is.na(evol)] <- 0

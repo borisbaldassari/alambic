@@ -47,6 +47,17 @@ sub backup {
 }
 
 
+# Download SQL backup file.
+sub dl {
+    my $self = shift;
+    
+    my $file_sql = $self->param( 'file' );
+
+    # If the page is a fig, reply static file under 'backups/'
+    $self->reply->static( '../backups/' . $file_sql );
+}
+
+
 # Restore DB for Alambic admin.
 sub restore {
     my $self = shift;
@@ -67,6 +78,25 @@ sub restore {
     
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/repo' );
+}
+
+
+# Delete a backup file on the server
+sub delete() {
+    my $self = shift;
+    
+    my $file = $self->param( 'file' );
+
+    my $ret = unlink( 'backups/' . $file );
+    my $msg;
+    if ($ret == 1) {
+        $msg = "Deleted backup file [$file].";
+    } else {
+        $msg = "ERROR: could not delete backup file.";
+    }
+
+    $self->flash( msg => $msg );
+    $self->redirect_to( '/admin/repo/' );
 }
 
 

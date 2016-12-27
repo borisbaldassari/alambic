@@ -17,10 +17,10 @@ is( scalar grep( /ITS_CLOSED/, keys %{$ret->{'metrics'}} ), 4, "There should be 
 is( scalar grep( /ITS_CLOSERS/, keys %{$ret->{'metrics'}} ), 4, "There should be 4 ITS_CLOSERS_*." ) or diag explain $ret;
 is( scalar grep( /ITS_DIFF_/, keys %{$ret->{'metrics'}} ), 6, "There should be 6 ITS_DIFF_*.") or diag explain $ret;
 is( scalar grep( /ITS_PERCENTAGE/, keys %{$ret->{'metrics'}} ), 6, "There should be 6 ITS_PERCENTAGE_*." ) or diag explain $ret;
-ok( exists($ret->{'metrics'}{'ITS_CHANGED'}), "There should a metric called ITS_CHANGED." ) or diag explain $ret;
-ok( exists($ret->{'metrics'}{'ITS_CHANGERS'}), "There should a metric called ITS_CHANGERS." ) or diag explain $ret;
-ok( exists($ret->{'metrics'}{'ITS_OPENED'}), "There should a metric called ITS_OPENED." ) or diag explain $ret;
-ok( exists($ret->{'metrics'}{'ITS_OPENERS'}), "There should a metric called ITS_OPENERS." ) or diag explain $ret;
+ok( exists($ret->{'metrics'}{'ITS_CHANGED'}), "There should be a metric called ITS_CHANGED." ) or diag explain $ret;
+ok( exists($ret->{'metrics'}{'ITS_CHANGERS'}), "There should be a metric called ITS_CHANGERS." ) or diag explain $ret;
+ok( exists($ret->{'metrics'}{'ITS_OPENED'}), "There should be a metric called ITS_OPENED." ) or diag explain $ret;
+ok( exists($ret->{'metrics'}{'ITS_OPENERS'}), "There should be a metric called ITS_OPENERS." ) or diag explain $ret;
 
 # Check that files have been created.
 ok( -e "projects/tools.cdt/input/tools.cdt_import_its.json", "Check that file import_its.json exists." );

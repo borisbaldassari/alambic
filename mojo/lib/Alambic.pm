@@ -20,6 +20,9 @@ has al => sub {
 sub startup {
     my $self = shift;
     
+    # Add another namespace to load commands from
+    push @{$self->commands->namespaces}, 'Alambic::Commands';
+    
     $self->secrets(['Secrets of Alambic']);
     
     # Use application logger
@@ -58,8 +61,8 @@ sub startup {
     
     # Add task to compute all data for a project
     $self->minion->add_task( run_project => sub {
-        my ($job, $project_id) = @_;
-        my $ret = $self->al->run_project($project_id);
+        my ($job, $project_id, $user) = @_;
+        my $ret = $self->al->run_project($project_id, $user);
         $job->finish($ret);
     } );
     
@@ -109,14 +112,15 @@ sub startup {
     # Router
     my $r = $self->routes;
 	
-    # Install routes, that works only if the instance is not initialised.
-    if ( $self->app->al->instance_name() eq 'MyDBNameInit' ) {
-	print "### Executing Install procedure.\n";
-	$r->post('/install')->to( 'alambic#install_post' );
-	$r->any('/')->to( 'alambic#install' );
-	$r->any('*')->to( 'alambic#install' );
-	return;
-    }
+    # # Catch all routes only if the instance is not initialised.
+    # # Now is initialised by command.
+    # if ( $self->app->al->instance_name() eq 'MyDBNameInit' ) {
+    # 	print "### Executing Install procedure.\n";
+    # 	$r->post('/install')->to( 'alambic#install_post' );
+    # 	$r->any('/')->to( 'alambic#install' );
+    # 	$r->any('*')->to( 'alambic#install' );
+    # 	return;
+    # }
 
     # Normal route to controller
     $r->get('/')->to( 'alambic#welcome' );
@@ -138,6 +142,7 @@ sub startup {
     $r_projects->get('/#id/#page')->to( action => 'display_project' );
     $r_projects->get('/#id/#plugin/#page')->to( action => 'display_plugins' );
     $r_projects->post('/#id/#plugin/#page')->to( action => 'display_plugins_post' );
+    $r_projects->get('/#id/#plugin/figures/#page')->to( action => 'display_figures' );
 
     # JSON data for models 
     $r->get('/models/#page')->to( 'admin#data_models' );
@@ -199,6 +204,8 @@ sub startup {
     $r_admin_projects->post('/#pid/setp/#plid')->to( action => 'projects_add_plugin_post' );
     $r_admin_projects->get('/#pid/runp/#plid')->to( action => 'projects_run_plugin' );
     $r_admin_projects->get('/#pid/delp/#plid')->to( action => 'projects_del_plugin' );
+    $r_admin_projects->get('/#pid/del_input_file/#file')->to( 'admin#del_input_file' );
+    $r_admin_projects->get('/#pid/del_output_file/#file')->to( 'admin#del_output_file' );
     # my $r_admin_models = $r->get('/admin/models/')->to( controller => 'admin' );
 
     # Job management
@@ -212,6 +219,8 @@ sub startup {
     $r_admin->get('/repo/init')->to('repo#init');
     $r_admin->get('/repo/backup')->to('repo#backup');
     $r_admin->get('/repo/restore/#file')->to('repo#restore');
+    $r_admin->get('/repo/dl/#file')->to('repo#dl');
+    $r_admin->get('/repo/del_backup/#file')->to('repo#delete');
  
     # Admin fallback when no auth
     $r->any('/admin/*')->to( 'alambic#failed' );   

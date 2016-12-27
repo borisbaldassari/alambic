@@ -13,6 +13,7 @@ use Alambic::Model::Users;
 
 use Mojo::JSON qw (decode_json encode_json);
 use Data::Dumper;
+use DateTime;
 use POSIX;
 
 require Exporter;
@@ -23,6 +24,7 @@ our @EXPORT_OK = qw(
                      restore
                      instance_name
                      instance_desc
+                     instance_version
                      instance_pg_alambic
                      instance_pg_minion
                      is_db_ok
@@ -54,6 +56,7 @@ my $repofs;
 my $plugins;
 my $wizards;
 my $models;
+my $al_version;
 
 
 # Create a new Alambic object.
@@ -62,6 +65,7 @@ sub new {
 
     $config = $config_opt;
     my $pg_alambic = $config->{'conf_pg_alambic'};
+    $al_version = $config->{'alambic_version'};
     $repodb = Alambic::Model::RepoDB->new($pg_alambic);
     $repofs = Alambic::Model::RepoFS->new();
     $plugins = Alambic::Model::Plugins->new();
@@ -69,10 +73,10 @@ sub new {
 
     # If the database is not initialised, then init it.
     if (not &is_db_ok()) { 
-    	print "### ###################\n";
-    	print "### Initialising DB!!! \n";
-    	print "### ###################\n";
-    	&init();
+         die "
+Database is not initialised. Please first execute:\n
+\$ script/alambic alambic init\n
+And restart alambic.\n";
     } 
 	
     # Retrieve all metrics definition to initialise Models.pm
@@ -128,6 +132,13 @@ sub instance_desc($) {
     return $repodb->desc();
 }
 
+# Get the version of Alambic running this instance.
+sub instance_version($) {
+    my ($self) = @_;
+    
+    return $al_version;
+}
+
 # Get the postgresql configuration for alambic.
 sub instance_pg_alambic() {
     return $config->{'conf_pg_alambic'};
@@ -161,13 +172,17 @@ sub get_models() {
     return $models;
 }
 
+# Return the RepoFS.pm object for this instance.
+sub get_repo_fs() {
+    return $repofs;
+}
 
 # Return the RepoDB.pm object for this instance.
 sub get_repo_db() {
     return $repodb;
 }
 
-# Return the RepoDB.pm object for this instance.
+# Return the Wizards.pm object for this instance.
 sub get_wizards() {
     return $wizards;
 }
@@ -191,6 +206,7 @@ sub users() {
     return Alambic::Model::Users->new($users);
 }
 
+# Add or update user to the Alambic db.
 sub set_user($$$$$$$) {
     my $self = shift;
     my $id = shift;
@@ -420,6 +436,9 @@ sub get_project_hist($) {
     
 }
 
+# Return all data for the last run of the project
+# Params:
+#  * project_id
 sub get_project_last_run($) {
     my $self = shift;
     my $project_id = shift;
@@ -427,6 +446,10 @@ sub get_project_last_run($) {
     return $repodb->get_project_last_run($project_id);
 }
 
+# Return all data for a specific run
+# Params:
+#  * project_id
+#  * run_id 
 sub get_project_run($$) {
     my $self = shift;
     my $project_id = shift;
@@ -451,17 +474,21 @@ sub get_project_run($$) {
 #      "log" => ['log entry'],
 #    }
 sub run_project($) {
-    my ($self, $project_id) = @_;
+    my ($self, $project_id, $user) = @_;
 
-    my $time_start = time;
+    my $time_start = DateTime->now();
+    my $time_start_epoch = $time_start->epoch();
     my $run = {
-	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
+	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start_epoch) ),
 	'delay' => 0,
-	'user' => 'none',
+	'user' => $user || 'unknown',
     };
 
     my $project = &_get_project($project_id);
     my $values = $project->run_project($models);
+    my $time_finished = DateTime->now();
+    my $delay = $time_finished - $time_start;
+    $run->{'delay'} = $delay->in_units('seconds');
     
     my $ret = $repodb->add_project_run($project_id, $run,
 			     $values->{'info'}, 
@@ -493,13 +520,6 @@ sub run_project($) {
 sub run_plugins($) {
     my ($self, $project_id) = @_;
 
-    my $time_start = time;
-    my $run = {
-	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
-	'delay' => 0,
-	'user' => 'none',
-    };
-
     my $project = &_get_project($project_id);
     my $values = $project->run_plugins();
 
@@ -522,15 +542,9 @@ sub run_plugins($) {
 sub run_qm($) {
     my ($self, $project_id) = @_;
 
-    my $time_start = time;
-    my $run = {
-	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
-	'delay' => 0,
-	'user' => 'none',
-    };
-
     my $project = &_get_project($project_id);
     my $values = $project->run_qm($models);
+
     return $values;
 }
 
@@ -551,13 +565,6 @@ sub run_qm($) {
 #    }
 sub run_posts($) {
     my ($self, $project_id) = @_;
-
-    my $time_start = time;
-    my $run = {
-	'timestamp' => strftime( "%Y-%m-%d %H:%M:%S\n", localtime($time_start) ),
-	'delay' => 0,
-	'user' => 'none',
-    };
 
     my $project = &_get_project($project_id);
     my $values = $project->run_posts($models);
@@ -582,3 +589,25 @@ sub delete_project($) {
 
 
 1;
+
+
+=pod
+ 
+=head1 SYNOPSIS
+
+    use Alambic::Model::Alambic;
+    
+    my $config = $self->plugin('Config');
+    state $al = Alambic::Model::Alambic->new($config);
+
+Provides high-level functions to interact with Alambic. 
+ 
+=head1 DESCRIPTION
+
+=head2 init()
+
+
+
+=head2 backup()
+ 
+=cut
