@@ -37,7 +37,7 @@ eval {
     # Checking database.
     push( @tables, $_->{'tablename'} ) for $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->hashes->each;
-    is( scalar @tables, 9, "Database has 9 tables defined.") or diag explain @tables;
+    is( scalar @tables, 10, "Database has 10 tables defined.") or diag explain @tables;
     ok( grep( /^conf$/, @tables ) == 1, "Table conf is defined.") or diag explain @tables;
     ok( grep( /^projects_conf$/, @tables ) == 1, "Table projects_conf is defined.") or diag explain @tables;
     ok( grep( /^projects_runs$/, @tables ) == 1, "Table projects_runs is defined.") or diag explain @tables;
@@ -46,7 +46,7 @@ eval {
     ok( grep( /^models_metrics$/, @tables ) == 1, "Table models_metrics is defined.") or diag explain @tables;
     ok( grep( /^models_attributes$/, @tables ) == 1, "Table models_attributes is defined.") or diag explain @tables;
     ok( grep( /^models_qms$/, @tables ) == 1, "Table models_qms is defined.") or diag explain @tables;
-#    ok( grep( /^recs$/, @tables ) == 1, "Table recs is defined.") or diag explain @tables;
+    ok( grep( /^users$/, @tables ) == 1, "Table users is defined.") or diag explain @tables;
     
     my %values;
     my $results = $pg->db->query('select * from conf');
@@ -84,9 +84,29 @@ eval {
     $desc = $repodb->desc();
     is( $desc, 'MyDBDescInit', "Desc from module is MyDBDescInit." ) or diag explain $desc;
 
+
+    my $metric = $repodb->get_metrics();
+    is_deeply($metric, {}, "get_metrics() Get all metrics returns empty hash when there is none.") or diag explain $metric;
+    
+    note( "Adding metric through sql." );
+    my ($mnemo, $name, $desc, $scale) = ('menmo', 'name', ['desc'], [1, 2, 3, 4]);
+    my $query = "INSERT INTO models_metrics (mnemo, name, description, scale) VALUES "
+	. "(?, ?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description, scale) "
+	. "= (?, ?, ?, ?)";
+    my $ret = $pg->db->query( $query, ($mnemo, $name, $desc, $scale, $mnemo, $name, $desc, $scale) );
+    note( "After adding metric through sql." );
+
+    $metric = $repodb->set_metric('METRIC1', 'Metric 1', ['description'], [1,2,3,4]); print Dumper($metric);
+    is_deeply($metric, {}, "get_metrics() Get all metrics returns empty hash when there is none.") or diag explain $metric;
+    
+    $metric = $repodb->get_metric(); print Dumper($metric);
+    is_deeply($metric, {}, "get_metrics() Get all metrics returns empty hash when there is none.") or diag explain $metric;
+    
+    $metric = $repodb->get_metrics();print Dumper($metric);
+    is_deeply($metric, {}, "get_metrics() Get all metrics returns empty hash when there is none.") or diag explain $metric;
+    
     # Check projects_conf information
     note( "Check projects_conf information." );
-
     my $ret = $repodb->set_project_conf('modeling.sirius', 'Sirius', 'Sirius is a great tool.', 0, '{}');
     ok( $ret == 1, "First update of project_info returns 1.") or diag explain $ret;
 
@@ -127,7 +147,8 @@ eval {
 					 "timestamp" => "$run_time", 
 					 "delay" => 13, 
 					 "user" => "none"
-				     }, 
+				     },
+				     {'WEBSITE' => "http://www.example.com"},
 				     {'MYMETRIC' => 5}, 
 				     {'MYINDIC' => 6}, 
 				     {'MYATTR' => 8} , 
@@ -150,6 +171,9 @@ eval {
 				      }
 				     }, "Recs retrieved from last run are ok.") or diag explain $results;
 
+    my $getinfo = $repodb->get_info('modeling.sirius');
+    is_deeply( $getinfo->{'info'}, {'WEBSITE' => "http://www.example.com"}, "Get info returns website.") or diag explain $getinfo;
+    
     # Second run
     $run_time = strftime("%Y-%m-%d %H:%M:%S\n", localtime(time));
     $ret = $repodb->add_project_run( 'modeling.sirius', 
@@ -158,6 +182,7 @@ eval {
 					 "delay" => 113, 
 					 "user" => "none"
 				     }, 
+				     {'WEBSITE' => "http://www.example.com"},
 				     {'MYMETRIC' => 15}, 
 				     {'MYINDIC' => 16}, 
 				     {'MYATTR' => 18} , 
@@ -220,4 +245,4 @@ END {
     $repodb->clean_db() if $clean_db;
 }
 
-done_testing(51);
+done_testing(54);

@@ -26,12 +26,11 @@ ok( exists($ret->{'metrics'}{'ITS_OPENERS'}), "There should be a metric called I
 ok( -e "projects/tools.cdt/input/tools.cdt_import_its.json", "Check that file import_its.json exists." );
 ok( -e "projects/tools.cdt/input/tools.cdt_import_its_evol.json", "Check that file import_its_evol.json exists." );
 ok( -e "projects/tools.cdt/output/its_evol_changed.html", "Check that file its_evol_changed.html exists." );
-ok( -e "projects/tools.cdt/output/EclipseIts.inc", "Check that file EclipseIts.inc exists." );
-ok( -e "projects/tools.cdt/output/its_evol_ggplot.html", "Check that file its_evol_ggplot.html exists." );
+ok( -e "projects/tools.cdt/output/eclipse_its.inc", "Check that file EclipseIts.inc exists." );
 ok( -e "projects/tools.cdt/output/its_evol_opened.html", "Check that file its_evol_opened.html exists." );
 ok( -e "projects/tools.cdt/output/its_evol_people.html", "Check that file its_evol_people.html exists." );
 ok( -e "projects/tools.cdt/output/its_evol_summary.html", "Check that file its_evol_summary.html exists." );
 ok( -e "projects/tools.cdt/output/tools.cdt_metrics_its.json", "Check that file tools.cdt_metrics_its.json exists." );
 
 
-done_testing(20);
+done_testing(19);
