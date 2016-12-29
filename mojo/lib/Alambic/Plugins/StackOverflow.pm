@@ -219,6 +219,18 @@ sub _compute_data() {
     $metrics{'SO_VOTES_VOL_5Y'} = $votes;
     $metrics{'SO_VIEWS_VOL_5Y'} = $views;
     $metrics{'SO_ASKERS_5Y'} = scalar keys %people;
+
+    if ( $metrics{'SO_ANSWER_RATE_5Y'} < 0.7 ) {
+	push( @recs, { 'rid' => 'SO_ANSWER_RATE_LOW', 
+		       'severity' => 1,
+		       'src' => 'StackOverflow',
+		       'desc' => 'The average number of answers per question is quite low (' 
+			   . $metrics{'SO_ANSWER_RATE_5Y'} . '). It is important to answer '
+			   . 'to people to show support and make them progress on the project.' 
+	      } 
+	    );
+	
+    }
     
     # Prepare hash of parameters for R exection.
     my %params = (
