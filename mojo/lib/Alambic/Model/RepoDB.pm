@@ -547,10 +547,13 @@ sub add_project_run($$$$$$$) {
 	. "= (?, ?, ?)";
 
     my $id = 0;
+
     eval {
-	$id = $pg->db->query($query, ($project_id, $run_time, $info_json, $project_id, $run_time, $info_json)
-	    )->hash->{'id'};
+	my $ret = $pg->db->query($query, ($project_id, $run_time, $info_json, $project_id, $run_time, $info_json));
+	$id = $ret->hash->{'id'};
     };
+
+    if ($@) { print "# In Exception " . Dumper($@) . "\n"}
     
     # Execute insert in db.
     $query = "INSERT INTO projects_runs 
