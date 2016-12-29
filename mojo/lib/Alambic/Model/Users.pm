@@ -63,7 +63,7 @@ sub get_user($) {
     my $self = shift;
     my $user = shift;
     
-    return $users{$user} || undef;
+    return exists $users{$user} ? $users{$user} : undef;
 }
 
 sub get_users() {    

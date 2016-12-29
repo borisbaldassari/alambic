@@ -130,13 +130,14 @@
 		  <div class="panel-heading">Plugins</div>
 		  <ul class="list-group">
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
-%   next if not ( grep( /^$p$/, $plugins->get_list_plugins_pre() ) );
+%   next if not ( grep $_ eq $p, @{$plugins->get_list_plugins_pre()} );
 %   my $conf = $plugins->get_plugin($p)->get_conf();
-                    <li class="list-group-item"><%= $plugins_list->{$p} %>
+            <li class="list-group-item"><%= $plugins_list->{$p} %>
 		      <span class="pull-right">
-			<a href="/documentation/plugins#<%= $p %>"><i class="fa fa-question-circle fa-lg"></i></a> &nbsp;
-			<a href="/projects/<%= $project_id %>/<%= $p %>.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
-			<%== join( ' &nbsp; ', map { $icon_ability->($_, $p) } sort @{$conf->{'ability'}} ) %></span>
+			    <a href="/documentation/plugins#<%= $p %>"><i class="fa fa-question-circle fa-lg"></i></a> &nbsp;
+		        <a href="/projects/<%= $project_id %>/<%= $p %>.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
+		        <%== join( ' &nbsp; ', map { $icon_ability->($_, $p) } sort @{$conf->{'ability'}} ) %>
+              </span>
 		    </li>
 % }
 		  </ul>
@@ -254,6 +255,7 @@
                       <th width="70%">Description</th>
 		    </tr>
 % foreach my $item (sort { $b->{'severity'} <=> $a->{'severity'} } @{$run->{'recs'} || []}) {
+%   next if ( $item->{'severity'} != 3 ); 
 		      <tr>
 			<td><%= $item->{'rid'} %></td>
 			<td><%= $recs_txt{ $item->{'severity'} } %></td>

@@ -137,7 +137,7 @@
 %     my $plugin_recs = $plugins->get_plugin($p)->get_conf()->{'provides_recs'};
 %     foreach my $pr (sort @$plugin_recs) {
 %       my @recs_ = grep { $_->{'rid'} =~ /$pr/ } @{$run->{'recs'} || []};
-%       my $vol = my $vol = scalar @recs_; 
+%       my $vol = scalar @recs_; 
 %       next if ($vol == 0);
               <tr>
                 <td><a href="/documentation/recs.html#<%= $pr %>"><%= $pr %></a></td>

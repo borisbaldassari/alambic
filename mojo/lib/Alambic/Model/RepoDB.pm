@@ -191,28 +191,10 @@ sub get_info($) {
     my $results = $pg->db->query("SELECT last_run, info FROM projects_info WHERE project_id=?", ($project_id));
     while (my $next = $results->hash) {
 	$ret{'last_run'} = $next->{'last_run'}; 
-	$ret{'info'} = encode_json( $next->{'info'} ); 
+	$ret{'info'} = decode_json( $next->{'info'} ); 
     }
     
     return \%ret;
-}
-
-
-# Get a single metric definition from db.
-sub get_metric($) {
-    my ($self, $mnemo) = @_;
-    
-    my $results = $pg->db->query("SELECT * FROM models_metrics WHERE mnemo='?';", ($mnemo));
-    my $ret;
-
-    # Process one row at a time
-    while (my $next = $results->hash) {
-	$ret->{$next->{'mnemo'}} = $next;
-	$ret->{$next->{'mnemo'}}->{'description'} = decode_json( $next->{'description'} );
-	$ret->{$next->{'mnemo'}}->{'scale'} = decode_json( $next->{'scale'} );
-    }
-
-    return $ret;
 }
 
 
@@ -227,9 +209,30 @@ sub get_metrics($) {
 	$ret->{$next->{'mnemo'}}->{'description'} = decode_json( $next->{'description'} );
 	$ret->{$next->{'mnemo'}}->{'scale'} = decode_json( $next->{'scale'} );
     }
+    
+    return $ret || {};
+}
 
+
+# Get a single metric definition from db.
+sub get_metric($) {
+    my ($self, $mnemo) = @_;
+    print "# repodb get_metric \n.";
+    my $results = $pg->db->query("SELECT * FROM models_metrics WHERE mnemo='?';", ($mnemo));
+    my $ret;
+
+    print "# repodb get_metric \n.";
+    # Process one row at a time
+    while (my $next = $results->hash) {
+	$ret->{$next->{'mnemo'}} = $next;
+	$ret->{$next->{'mnemo'}}->{'description'} = decode_json( $next->{'description'} );
+	$ret->{$next->{'mnemo'}}->{'scale'} = decode_json( $next->{'scale'} );
+    }
+
+    print "# repodb get_metric \n.";
     return $ret;
 }
+
 
 
 # Set a metric definition in the db.
@@ -239,12 +242,16 @@ sub set_metric($) {
     my $name = shift || '';
     my $desc = shift || '[]';
     my $scale = shift || '[]';
+
+    print "# repodb set_metric \n.";
     
     my $query = "INSERT INTO models_metrics (mnemo, name, description, scale) VALUES "
 	. "(?, ?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description, scale) "
 	. "= (?, ?, ?, ?)";
     my $ret = $pg->db->query( $query, ($mnemo, $name, $desc, $scale, $mnemo, $name, $desc, $scale) );
     
+    print "# repodb set_metric \n.";
+
     return $ret;
 }
 
@@ -361,7 +368,7 @@ sub add_user($$$$$$) {
 
 
 # Get a specific user from db
-sub del_user($$$$$$) {
+sub del_user($) {
     my $self = shift;
     my $uid = shift;
     
@@ -540,10 +547,13 @@ sub add_project_run($$$$$$$) {
 	. "= (?, ?, ?)";
 
     my $id = 0;
+
     eval {
-	$id = $pg->db->query($query, ($project_id, $run_time, $info_json, $project_id, $run_time, $info_json)
-	    )->hash->{'id'};
+	my $ret = $pg->db->query($query, ($project_id, $run_time, $info_json, $project_id, $run_time, $info_json));
+	$id = $ret->hash->{'id'};
     };
+
+    if ($@) { print "# In Exception " . Dumper($@) . "\n"}
     
     # Execute insert in db.
     $query = "INSERT INTO projects_runs 
@@ -650,7 +660,7 @@ sub get_project_last_run() {
 #
 # Params
 #  - $id the id of the project, e.g. modeling.sirus.
-sub get_project_run() {
+sub get_project_run($$) {
     my ($self, $project_id, $id) = @_;
 
     my %project;

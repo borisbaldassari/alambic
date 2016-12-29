@@ -20,13 +20,16 @@ has al => sub {
 sub startup {
     my $self = shift;
     
+    # Get config from alambic.conf
+    my $config = $self->plugin('Config');
+
     # Add another namespace to load commands from
     push @{$self->commands->namespaces}, 'Alambic::Commands';
     
     $self->secrets(['Secrets of Alambic']);
     
     # Use application logger
-    $self->log->info('Alambic v3.0 application started.');
+    $self->log->info('Alambic ' . $config->{'alambic_version'} . ' application started.');
         
     my $conf_mail = {
 	from     => 'alambic@castalia.solutions',
@@ -40,9 +43,6 @@ sub startup {
     # Set layout for pages.
     $self->defaults(layout => 'default');
     
-    # Get config from alambic.conf
-    my $config = $self->plugin('Config');
-
     # Use Minion for job queuing.
     $self->plugin( Minion => {Pg => $config->{'conf_pg_minion'}} );
 
@@ -140,6 +140,7 @@ sub startup {
     my $r_projects = $r->get('/projects')->to( controller => 'dashboard' );
     $r_projects->get('/#id')->to( action => 'display_summary' );
     $r_projects->get('/#id/#page')->to( action => 'display_project' );
+    $r_projects->get('/#id/history/#build/#page')->to( action => 'display_history' );
     $r_projects->get('/#id/#plugin/#page')->to( action => 'display_plugins' );
     $r_projects->post('/#id/#plugin/#page')->to( action => 'display_plugins_post' );
     $r_projects->get('/#id/#plugin/figures/#page')->to( action => 'display_figures' );

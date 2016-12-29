@@ -25,6 +25,15 @@ sub run {
       my $project = $self->app->al->set_user( 
           'administrator', 'Administrator', 'alambic@castalia.solutions', 
           'password', ['Admin'], [], {} );
+  } elsif ($args[0] eq 'backup') { 
+
+    my $sql = $self->app->al->backup();
+    my $repofs = Alambic::Model::RepoFS->new();
+    my $file_sql = $repofs->write_backup($sql);
+    
+    say "Database has been backed up in [$file_sql].";
+      
+      
   } elsif ($args[0] eq 'check') { 
       
       
