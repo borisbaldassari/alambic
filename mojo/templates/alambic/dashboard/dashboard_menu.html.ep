@@ -41,6 +41,7 @@
 % }
                   </ul>
                 </li>
+                <li role="presentation"<%== ( $current =~ m!^/projects/history$! ) ? ' class="active"' : '' %>><a href="/projects/<%= $project_id %>/history">History</a></li> 
                 <li role="presentation"<%== ( $current =~ m!^/projects/log$! ) ? ' class="active"' : '' %>><a href="/projects/<%= $project_id %>/log">Log</a></li>            
               </ul>
             </div>

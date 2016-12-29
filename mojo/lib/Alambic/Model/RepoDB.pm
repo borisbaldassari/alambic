@@ -657,7 +657,7 @@ sub get_project_last_run() {
 #
 # Params
 #  - $id the id of the project, e.g. modeling.sirus.
-sub get_project_run() {
+sub get_project_run($$) {
     my ($self, $project_id, $id) = @_;
 
     my %project;
