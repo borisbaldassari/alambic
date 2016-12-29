@@ -6,7 +6,6 @@ use Data::Dumper;
 # Install screen for Alambic.
 sub install {
     my $self = shift;
-    print "# In Controller::Alambic \n";
 	
     # Render template "alambic/install.html.ep"
     $self->render();
@@ -15,7 +14,6 @@ sub install {
 # Install screen for Alambic.
 sub install_post {
     my $self = shift;
-    print "# In Controller::Alambic \n";
 
     my $name = $self->param( 'name' );
     my $desc = $self->param( 'desc' );

@@ -217,11 +217,10 @@ sub get_metrics($) {
 # Get a single metric definition from db.
 sub get_metric($) {
     my ($self, $mnemo) = @_;
-    print "# repodb get_metric \n.";
+
     my $results = $pg->db->query("SELECT * FROM models_metrics WHERE mnemo='?';", ($mnemo));
     my $ret;
 
-    print "# repodb get_metric \n.";
     # Process one row at a time
     while (my $next = $results->hash) {
 	$ret->{$next->{'mnemo'}} = $next;
@@ -229,7 +228,6 @@ sub get_metric($) {
 	$ret->{$next->{'mnemo'}}->{'scale'} = decode_json( $next->{'scale'} );
     }
 
-    print "# repodb get_metric \n.";
     return $ret;
 }
 
@@ -243,15 +241,11 @@ sub set_metric($) {
     my $desc = shift || '[]';
     my $scale = shift || '[]';
 
-    print "# repodb set_metric \n.";
-    
     my $query = "INSERT INTO models_metrics (mnemo, name, description, scale) VALUES "
 	. "(?, ?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description, scale) "
 	. "= (?, ?, ?, ?)";
     my $ret = $pg->db->query( $query, ($mnemo, $name, $desc, $scale, $mnemo, $name, $desc, $scale) );
     
-    print "# repodb set_metric \n.";
-
     return $ret;
 }
 

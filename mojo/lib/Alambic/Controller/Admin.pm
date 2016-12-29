@@ -38,7 +38,6 @@ sub edit_post {
     
     $self->app->al->get_repo_db()->name($name);
     $self->app->al->get_repo_db()->desc($desc);
-    print "# in admin:edit_post [$gt].\n";
     $self->app->al->get_repo_db()->conf('google-tracking', $gt);
 
     $self->flash( msg => "Instance details have been saved." );

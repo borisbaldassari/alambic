@@ -199,7 +199,6 @@ sub _display_project_html($$) {
 	my %runs;
 	my $runs_info = $self->app->al->get_repo_db->get_project_all_runs($project_id);
 	foreach my $run_ (@{$runs_info}) {
-	    print "# " . $run_->{'id'} . ".\n";
 	    $runs{ $run_->{'id'} } = $self->app->al->get_repo_db->get_project_run($project_id, $run_->{'id'});
 	}
 
