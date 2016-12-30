@@ -94,6 +94,16 @@ sub restore_db($) {
 
     my $results = $pg->db->query($sql_in);
 
+    # Now reset the auto-increment columns
+    my $next_pr = $pg->db->query( "SELECT id FROM projects_runs ORDER BY id DESC LIMIT 1;" )->hash->{'id'};
+    my $next_cd = $pg->db->query( "SELECT id FROM projects_cdata ORDER BY id DESC LIMIT 1;" )->hash->{'id'};
+
+    # We want to set the NEXT sequence id.
+    $next_pr++;
+    $next_cd++;
+    $pg->db->query( "ALTER SEQUENCE public.projects_runs_id_seq RESTART WITH ${next_pr};" );
+    $pg->db->query( "ALTER SEQUENCE public.projects_cdata_id_seq RESTART WITH ${next_cd};" );
+    
     return 1;
 }
 
@@ -847,6 +857,7 @@ CREATE TABLE IF NOT EXISTS projects_info (
     info JSONB, 
     PRIMARY KEY( project_id )
 );
+
 ";
 }
 
