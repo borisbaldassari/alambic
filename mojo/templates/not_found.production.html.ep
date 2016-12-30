@@ -2,7 +2,7 @@
             <h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>
 
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <div class="alert alert-warning alert-dismissible" role="alert">
                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   Page not found (404).
