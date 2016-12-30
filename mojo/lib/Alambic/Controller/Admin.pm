@@ -210,8 +210,8 @@ sub models_import {
 	foreach my $metric ( @{$metrics->{'children'}} ) {
 	    $repodb->set_metric( $metric->{'mnemo'}, 
 				 $metric->{'name'}, 
-				 encode_json($metric->{'desc'}), 
-				 encode_json($metric->{'scale'}) );
+				 $metric->{'desc'}, 
+				 $metric->{'scale'} );
 	}
     } elsif ($type =~ m!^attributes$!) {
 	my $attributes = decode_json( $repofs->read_models('attributes', $file) );
@@ -219,14 +219,14 @@ sub models_import {
 	foreach my $attribute ( @{$attributes->{'children'}} ) {
 	    $repodb->set_attribute( $attribute->{'mnemo'}, 
 				    $attribute->{'name'}, 
-				    encode_json($attribute->{'desc'}) );
+				    $attribute->{'desc'} );
 	}
     } elsif ($type =~ m!^qm$!) {
 	my $qm = decode_json( $repofs->read_models('qm', $file) );
 
 	$repodb->set_qm( "ALB_BASIC",
 			 "Alambic Quality Model", 
-			 encode_json($qm->{'children'}) );
+			 $qm->{'children'} );
 
     } else {
 	print "DBG something went wrong.\n";

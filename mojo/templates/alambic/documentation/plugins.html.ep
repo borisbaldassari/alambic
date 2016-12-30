@@ -1,5 +1,5 @@
 
-% my $type = stash( 'type' );
+% my $type = stash( 'type' ) || '';
 % my $plugins = app->al->get_plugins();
 % my $pis_list = $plugins->get_names_all();
 % my $pis_list_pre = $plugins->get_list_plugins_pre();

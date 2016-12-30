@@ -13,6 +13,9 @@ perl -Ilib t/unit/Model/Models.t
 perl -Ilib t/unit/Model/Plugins.t
 #perl -Ilib t/unit/Model/Project.t
 #perl -Ilib t/unit/Model/RepoDB.t
-
+perl -Ilib t/unit/Model/RepoFS.t
+perl -Ilib t/unit/Model/Tools.t
+#perl -Ilib t/unit/Model/Users.t
+#perl -Ilib t/unit/Model/Wizards.t
 
 
