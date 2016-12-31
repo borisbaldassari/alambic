@@ -14,7 +14,7 @@ output:
 
 ```{r init, echo=FALSE, message=FALSE}
 # Main information
-project.id <- 'tools.cdt'
+#project.id <- 'tools.cdt'
 plugin.id <- 'EclipseReport'
 
 library(knitr)

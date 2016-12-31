@@ -15,6 +15,10 @@ my %conf = (
     "id" => "r_sessions",
     "name" => "R sessions",
     "desc" => "Runs R for plugins, computes data and generates files.",
+    "type" => "tool",
+    "params" => {
+	"path_r" => "The absolute path to the R binary.",
+    },
     "provides_methods" => {
         "knit_rmarkdown_inc" => "",
         "knit_rmarkdown_pdf" => "",
@@ -35,12 +39,7 @@ sub get_conf() {
     return \%conf;
 }
 
-sub start() {
-    return 1;
-}
-
-sub stop() {
-    return 1;
+sub install() {
 }
 
 sub test() {
@@ -161,7 +160,7 @@ sub knit_rmarkdown_pdf($$$$) {
     my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
     my $r_md = $r_file;
     $r_file =~ s/(.*)\..*+/$1/;
-    my $r_md_out = "${r_file}.pdf";
+    my $r_md_out = "${project_id}_${r_file}.pdf";
 
     # Change the current working directory localy only.
     {
@@ -322,10 +321,6 @@ sub knit_rmarkdown_svg($$$$) {
     move( $file_in, $dir_out );
 
     return \@log;
-}
-
-sub _start_session() {
-    
 }
 
 
