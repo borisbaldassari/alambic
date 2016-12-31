@@ -8,8 +8,6 @@ suppressPackageStartupMessages(library(googleVis))
 options(gvis.plot.tag='chart')
 
 variables <- commandArgs(trailingOnly=TRUE)
-project.id <- variables[1]
-plugin.id <- variables[2]
 
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
