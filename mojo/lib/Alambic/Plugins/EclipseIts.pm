@@ -8,6 +8,7 @@ use Alambic::Tools::R;
 
 use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
+use List::Util qw(reduce);
 use Data::Dumper;
 
 # Main configuration hash for the plugin
@@ -233,8 +234,14 @@ sub _compute_data($$$) {
     # Check number of open bugs.
     # If there are at least twice as many opened bugs as closed bugs, raise an alert.
     my $weeks = -4;
-    my $closed_old = $metrics_evol->{'closed'}->[$weeks];
-    my $opened_old = $metrics_evol->{'opened'}->[$weeks];
+
+    #    print "#Metrics_vol " . Dumper($metrics_evol);
+    my @closed = @{$metrics_evol->{'closed'}};
+    my @opened = @{$metrics_evol->{'opened'}};
+    
+    my $closed_old = reduce { $a + $b } splice @closed, $weeks;
+    my $opened_old = reduce { $a + $b } splice @opened, $weeks;
+
     if ( $closed_old < ( 2 * $opened_old) ) {
 	push( @recs, { 'rid' => 'ITS_OPENED_BUGS', 
 		       'severity' => 1,
