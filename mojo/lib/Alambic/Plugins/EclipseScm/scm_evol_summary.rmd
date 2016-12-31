@@ -2,7 +2,7 @@
 output: html_document
 ---
 <div class="row"><div class="col-md-12">
-```{r summary-1, echo=FALSE, fig.height=3.5, message=FALSE}
+```{r summary-1, echo=FALSE, fig.height=3.5, message=FALSE, warning=FALSE}
 library(plotly)
 library(reshape2)
 

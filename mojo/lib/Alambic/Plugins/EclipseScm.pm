@@ -63,7 +63,6 @@ my %conf = (
     },
     "provides_figs" => {
         'scm_evol_summary.rmd' => "scm_evol_summary.html",
-        'scm_evol_summary_lines.rmd' => "scm_evol_summary_lines.html",
         'scm_evol_lines.rmd' => "scm_evol_lines.html",
         'scm_evol_people.rmd' => "scm_evol_people.html",
         'scm_evol_commits.rmd' => "scm_evol_commits.html",
