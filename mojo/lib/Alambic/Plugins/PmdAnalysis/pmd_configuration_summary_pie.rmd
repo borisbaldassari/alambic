@@ -13,7 +13,6 @@ plugin.id <- variables[2]
 
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
-project.id <- 'modeling.sirius'
 pmd.rules <- read.csv(file=paste("", project.id, "_pmd_analysis_rules.csv", sep=""), header=T)
 
 pmd.rules.ok <- pmd.rules[,c(1,2)]

@@ -6,7 +6,7 @@ output: html_document
 library(plotly)
 library(reshape2)
 
-project.id <- 'modeling.sirius'
+#project.id <- 'modeling.sirius'
 file.evol = paste("", project.id, "_scm_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 evol <- evol[evol$repositories >= 1 & complete.cases(evol),]
