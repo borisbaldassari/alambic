@@ -13,11 +13,11 @@ my $plugins = Alambic::Model::Plugins->new();
 isa_ok( $plugins, 'Alambic::Model::Plugins' );
 
 my $list = $plugins->get_names_all();
-my $pv = 8;
+my $pv = 7;
 ok( scalar(keys %{$list}) == $pv, "get_names_all There is a total of $pv plugins detected." ) or Dumper explain %$list;
 
 $list = $plugins->get_conf_all();
-$pv = 8;
+$pv = 7;
 ok( scalar(keys %{$list}) == $pv, "get_conf_all has $pv entries." ) or explain Dumper %$list;
 
 # Check plugins types
@@ -30,7 +30,7 @@ $pv = 0;
 ok( scalar(@{$list}) == $pv, "get_list_plugins_cdata List cdata has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_post();
-$pv = 1; 
+$pv = 0; 
 ok( scalar(@{$list}) == $pv, "get_list_plugins_post List post has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_global();
@@ -39,7 +39,7 @@ ok( scalar(@{$list}) == $pv, "get_list_plugins_global List global has $pv entrie
 
 # Check plugins ability
 $list = $plugins->get_list_plugins_data();
-$pv = 6;
+$pv = 5;
 ok( scalar @{$list} == $pv, "List data has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_metrics();
@@ -59,7 +59,7 @@ $pv = 7;
 ok( scalar(@{$list}) == $pv, "List recs has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_viz();
-$pv = 8;
+$pv = 7;
 ok( scalar(@{$list}) == $pv, "List viz has $pv entries." ) or explain Dumper @$list;
 
 note( "Loading EclipsePmi plugin." );
@@ -83,14 +83,14 @@ is( $ret->{'log'}[0], '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https:/
 is( $ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.") or Dumper explain $ret;
 
 
-note( "Loading EclipseReport post plugin." );
-my $plugin_report = $plugins->get_plugin("EclipseReport");
-my $conf_report = $plugin_report->get_conf();
-ok( $conf_report->{'id'} eq 'EclipseReport', 'Check name of post plugin.') or Dumper $conf_report;
-is_deeply( $conf_report->{'provides_data'}, {'EclipseReport.pdf' => 'A PDF report on the project\'s current status.'}, 'Check provided data of post plugin.') or Dumper $conf_report;
+#note( "Loading EclipseReport post plugin." );
+#my $plugin_report = $plugins->get_plugin("EclipseReport");
+#my $conf_report = $plugin_report->get_conf();
+#ok( $conf_report->{'id'} eq 'EclipseReport', 'Check name of post plugin.') or Dumper $conf_report;
+#is_deeply( $conf_report->{'provides_data'}, {'EclipseReport.pdf' => 'A PDF report on the project\'s current status.'}, 'Check provided data of post plugin.') or Dumper $conf_report;
     
 #$ret = $plugins->run_post( 'tools.cdt', 'EclipseReport', {'project_id' => 'tools.cdt'} );
 #print Dumper($ret);
 
 
-done_testing(26);
+done_testing(24);
