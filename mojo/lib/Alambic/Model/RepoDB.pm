@@ -95,8 +95,10 @@ sub restore_db($) {
     my $results = $pg->db->query($sql_in);
 
     # Now reset the auto-increment columns
-    my $next_pr = $pg->db->query( "SELECT id FROM projects_runs ORDER BY id DESC LIMIT 1;" )->hash->{'id'};
-    my $next_cd = $pg->db->query( "SELECT id FROM projects_cdata ORDER BY id DESC LIMIT 1;" )->hash->{'id'};
+    my $next_pr = $pg->db->query( "SELECT id FROM projects_runs ORDER BY id DESC LIMIT 1;" )->hash;
+    $next_pr = $next_pr->{'id'} ? $next_pr->{'id'} : 1;
+    my $next_cd = $pg->db->query( "SELECT id FROM projects_cdata ORDER BY id DESC LIMIT 1;" )->hash;
+    $next_cd = $next_cd->{'id'} ? $next_cd->{'id'} : 1;
 
     # We want to set the NEXT sequence id.
     $next_pr++;
