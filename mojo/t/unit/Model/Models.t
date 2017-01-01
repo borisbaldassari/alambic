@@ -118,7 +118,7 @@ is_deeply( $attrs_f->{'children'}{'ATTR1'}{'desc'}, ['Desc'], "Get full attribut
 is_deeply( $attrs_f->{'children'}{'ATTR1'}{'name'}, 'Attribute 1', "Get full attributes children tree is conform on name." ) or diag explain $attrs_f;
 is($attrs_f->{'name'}, "Alambic Attributes", "Full attributes name is conform." ) or diag explain $attrs_f->{'name'};
 
-my $qm = $models->get_qm();
+$qm = $models->get_qm();
 my $qm_ref = [
     {
 	'children' => [

@@ -1,7 +1,7 @@
 
 - name: alambic_run
   service: alambic
-  command: sh /root/alambic_test_wrapper.sh
+  command: su - alambic -c 'cd alambic/mojo && perl ../resources/scripts/alambic_test.pl'
 - name: alambic_push
   service: alambic
   type: push

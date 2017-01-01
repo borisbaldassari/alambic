@@ -5,7 +5,7 @@ use warnings;
 
 use Mojo::Pg;
 use Mojo::JSON qw(decode_json encode_json);
-use Test::More;
+use Test::More tests => 59;
 use Data::Dumper;
 use POSIX;
 
@@ -133,7 +133,7 @@ eval {
     
     # Check projects_conf information
     note( "Check projects_conf information." );
-    my $ret = $repodb->set_project_conf('modeling.sirius', 'Sirius', 'Sirius is a great tool.', 0, '{}');
+    $ret = $repodb->set_project_conf('modeling.sirius', 'Sirius', 'Sirius is a great tool.', 0, '{}');
     ok( $ret == 1, "First update of project_info returns 1.") or diag explain $ret;
 
     my $ret_ok = {
@@ -188,7 +188,7 @@ eval {
 				     ] );
     ok( $ret > 0, "Adding project run returns a non-null id ($ret)." );
 
-    my $results = $repodb->get_project_last_run('modeling.sirius');
+    $results = $repodb->get_project_last_run('modeling.sirius');
     is_deeply( $results->{'metrics'}, {'MYMETRIC' => 5}, "Metrics retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'indicators'}, {'MYINDIC' => 6}, "Indicators retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'attributes'}, {'MYATTR' => 8}, "Attributes retrieved from last run are ok.") or diag explain $results;
