@@ -44,6 +44,14 @@ RUN chmod +x /home/alambic/alambic_test.sh
 RUN chmod +x /root/alambic_start_wrapper.sh
 RUN chmod +x /root/alambic_test_wrapper.sh
 
+# Install R and all dependencies
+RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm; \
+	yum install -y R;
+RUN yum install -y wget libcurl-devel
+
+COPY alambic_install_r.R /home/boris/
+RUN su - alambic -c 'Rscript alambic_install_r.R'
+
 CMD ["/usr/sbin/sshd", "-D"]
 
 
