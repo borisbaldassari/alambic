@@ -50,7 +50,9 @@ RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.
 RUN yum install -y wget libcurl-devel
 
 COPY alambic_install_r.R /home/alambic/
-RUN su - alambic -c 'Rscript alambic_install_r.R'
+RUN Rscript /home/alambic/alambic_install_r.R
+
+
 
 CMD ["/usr/sbin/sshd", "-D"]
 
