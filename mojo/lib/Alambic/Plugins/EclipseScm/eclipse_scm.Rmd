@@ -48,7 +48,8 @@ The Eclipse Foundations has setup a dedicated server to analyse project reposito
 Data for project is directly available from the project&apos;s dashboard:
 
 * project summary: http://dashboard.eclipse.org/project.html?project=`r project.id`, 
-* as JSON files: http://dashboard.eclipse.org/data/json/`r project.id`.
+* Static metrics JSON file: http://dashboard.eclipse.org/data/json/`r project.id`-scm-prj-static.json.
+* Evolutionary metrics JSON file: http://dashboard.eclipse.org/data/json/`r project.id`-scm-prj-evolutionary.json.
 
 </div><div class="col-sm-4">
   <div class="panel panel-default">
