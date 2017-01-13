@@ -31,7 +31,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><span class="fa fa-flask"></span> &nbsp; <%== app->al->instance_name() %> (&beta;eta)</a>
+          <a class="navbar-brand" href="/"><span class="fa fa-flask"></span> &nbsp; <%== app->al->instance_name() %> (v. <%= app->al->instance_version() || "No version" %>)</a>
         </div>
 
         <ul class="nav navbar-top-links navbar-right">
