@@ -5,8 +5,11 @@ use warnings;
 
 use Alambic::Model::RepoFS;
 
+use GitLab::API::v3;
 use Mojo::JSON qw( decode_json encode_json );
-use Mojo::UserAgent;
+use Date::Parse;
+use Time::Piece;
+use Time::Seconds;
 use Data::Dumper;
 
 # Main configuration hash for the plugin
@@ -14,7 +17,7 @@ my %conf = (
     "id" => "GitlabIts",
     "name" => "GitLab ITS",
     "desc" => [
-	'qsf',
+	'This plugin retrieves Issue Tracking Information from a ',
 	'qsf',
     ],
     "type" => "pre",
@@ -29,16 +32,30 @@ my %conf = (
     "provides_info" => [
     ],
     "provides_data" => {
-	"metrics_its_evol.csv" => "Evolution metrics for the ITS plugin (CSV).",
+	"import_gl_its.json" => "Original JSON file as retrieved from the GitLab server (JSON).",
     },
     "provides_metrics" => {
-        "CHANGED" => "ITS_CHANGED", 
+        "ITS_CHANGED_1W" => "ITS_CHANGED_1W", 
+        "ITS_CHANGED_1M" => "ITS_CHANGED_1M", 
+        "ITS_CHANGED_1Y" => "ITS_CHANGED_1Y", 
+        "ITS_CREATED_1W" => "ITS_CREATED_1W", 
+        "ITS_CREATED_1M" => "ITS_CREATED_1M", 
+        "ITS_CREATED_1Y" => "ITS_CREATED_1Y", 
+	"ITS_ISSUES_OPEN" => "ITS_ISSUES_OPEN",
+	"ITS_ISSUES_CLOSED" => "ITS_ISSUES_CLOSED",
+	"ITS_ISSUES_ALL" => "ITS_ISSUES_ALL",
+	"ITS_ISSUES_LATE" => "ITS_ISSUES_LATE",
+	"ITS_ISSUES_UNASSIGNED" => "ITS_ISSUES_UNASSIGNED",
+	"ITS_TOTAL_DOWNVOTES" => "ITS_TOTAL_DOWNVOTES",
+	"ITS_TOTAL_UPVOTES" => "ITS_TOTAL_UPVOTES",
+	"ITS_AUTHORS" => "ITS_AUTHORS",
+	"ITS_PEOPLE" => "ITS_PEOPLE",
     },
     "provides_figs" => {
         'its_evol_summary.rmd' => "its_evol_summary.html",
     },
     "provides_recs" => [
-        "ITS_CLOSERS",
+        "ITS_LONG_STANDING_OPEN",
     ],
     "provides_viz" => {
         "gitlab_its.html" => "GitLab ITS",
@@ -76,155 +93,138 @@ sub run_plugin($$) {
     my $gl_url = $conf->{'gitlab_url'};
     my $gl_id = $conf->{'gitlab_id'};
     my $gl_token = $conf->{'gitlab_token'};
-    my $gl_url_project = $gl_url . '/api/v3/projects/';
-    my $gl_url_its = $gl_url . '/api/v3/projects/' . $gl_id . '/issues';
-
-    # Fetch JSON data from GitLab server
-    my $ua = Mojo::UserAgent->new;
-
-    my $i = 1;
-    my $project_its_res = $ua->get($gl_url_project => {"PRIVATE-TOKEN" => "$gl_token"})->res;
-
-    # See Mojo::UserAgent doc: 
-    # https://docs.gitlab.com/ee/api/README.html#pagination
-    my $headers = $project_its_res->headers;
-    my $headers_link = $headers->header('Link');
-    print Dumper($headers_link);
-    my $project_its = $project_its_res->body;
     
-    my $project_json = encode_json($project_its);
-    $repofs->write_input( $project_id, "import_gl_project.json", $project_json );
-    $repofs->write_output( $project_id, "import_gl_project.json", $project_json );
-    print "About to request '$gl_url_its'.\n";
-    my $its_json = $ua->get($gl_url_its => {"PRIVATE-TOKEN" => "$gl_token"})->res->body;
-    $repofs->write_input( $project_id, "import_gl_its.json", $its_json );
-    $repofs->write_output( $project_id, "import_gl_its.json", $its_json );
+    push( @{$ret{'log'}}, "[Plugins::GitlabIts] Retrieving data from [$gl_url] for project [$gl_id]." ); 
 
-    my $res_project = decode_json($project_json);
-    my $res_its = decode_json($its_json);
-    print Dumper($res_its);
+    # Create GitLab API object for all rest operations.
+    my $api = GitLab::API::v3->new(
+        url   => $gl_url . "/api/v3",
+        token => $gl_token,
+	);
+    # Request information about issues for this specific project.
+    my $issues_p = $api->paginator( 'issues', $gl_id );
+    my $issues;
+    while (my $issue = $issues_p->next()) {
+        push( @$issues, $issue );
+    }
+    
+    # Write the original file to disk.
+    my $project_json = encode_json($issues);
+    $repofs->write_input( $project_id, "import_gl_its.json", $project_json );
+    $repofs->write_output( $project_id, "import_gl_its.json", $project_json );
+    my $issues_vol = scalar @$issues;
+
+    # Store all issues in our own array
+    my @issues_f;
+    
+    # Will contain metrics and aggregated information.
+    my ($issues_closed, $issues_open, 
+	$issues_created_1w, $issues_created_1m, $issues_created_1y,
+	$issues_changed_1w, $issues_changed_1m, $issues_changed_1y,
+	$total_upvotes, $total_downvotes) = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    my (@issues_unassigned, @issues_late);
+    my (%milestones, %authors, %people);
+
+    # Time::Piece object. Will be used for the date calculations.
+    my $t_now = localtime;
+    my $t_1w = $t_now - ONE_WEEK;
+    my $t_1m = $t_now - ONE_MONTH;
+    my $t_1y = $t_now - ONE_YEAR;
+    
+    foreach my $issue (@$issues) {
+
+	my %issues_l;
+	$issues_l{'id'} = $issue->{'iid'};
+	$issues_l{'title'} = $issue->{'title'};
+	$issues_l{'web_url'} = $issue->{'web_url'};
+	$issues_l{'state'} = $issue->{'state'};
+	$issues_l{'upvotes'} = $issue->{'upvotes'};
+	$issues_l{'downvotes'} = $issue->{'downvotes'};
+	$issues_l{'created_at'} = $issue->{'created_at'};
+	$issues_l{'updated_at'} = $issue->{'updated_at'};
+	$issues_l{'due_date'} = $issue->{'due_date'};
+	$issues_l{'user_notes_count'} = $issue->{'user_notes_count'};
+
+	# Convert string dates to epoch seconds
+	my $date_created = str2time($issue->{'created_at'});
+	my $date_changed = str2time($issue->{'updated_at'});
+	my $date_due = str2time($issue->{'due_date'});
+
+	# Compute/set metrics
+	$total_upvotes += $issue->{'upvotes'};
+	$total_downvotes += $issue->{'downvotes'};
+
+	# Check if issue's due date has past
+	if ( defined($date_due) and $date_due < $t_now->epoch ) { 
+	    push( @issues_late, $issue->{'iid'} ); 
+	}
+
+	$issues_created_1w++ if ( $date_created > $t_1w->epoch );
+	$issues_created_1m++ if ( $date_created > $t_1m->epoch );
+	$issues_created_1y++ if ( $date_created > $t_1y->epoch );
+
+	$issues_changed_1w++ if ( $date_changed > $t_1w->epoch );
+	$issues_changed_1m++ if ( $date_changed > $t_1m->epoch );
+	$issues_changed_1y++ if ( $date_changed > $t_1y->epoch );
+
+	
+	
+	# Track milestones information
+	if ( defined( $issue->{'milestone'}{'id'} ) ) {
+	    $milestones{$issue->{'milestone'}{'id'}} = $issue->{'milestone'};
+	}
+
+	# Gather people (i.e. all people who interact with the its) 
+	# and authors (number of times each person has submitted an issue).
+	if ( defined( $issue->{'author'} ) ) {
+	    $people{$issue->{'author'}{'username'}} =  $issue->{'author'};
+	    $authors{$issue->{'author'}{'username'}}++;
+	}
+	if ( defined($issue->{'assignee'}) ) {
+	    $people{$issue->{'assignee'}{'username'}} =  $issue->{'assignee'};
+	} else {
+	    push( @issues_unassigned, $issue->{'iid'} ) 
+		if ($issue->{'state'} eq 'open'); 
+	}
+
+	push( @issues_f, \%issues_l );
+
+	# Recommendations    
+	if ( ($issue->{'state'} eq 'open') && ($date_changed < $t_1y->epoch) ) {
+	    push( @{$ret{'recs'}}, { 'rid' => 'ITS_LONG_STANDING_OPEN', 
+			   'severity' => 1,
+			   'src' => 'GitLabIts',
+			   'desc' => 'Issue ' . $issue->{'iid'} . ' has not been updated during the last year, '
+			       . 'and is still open. Long-standing bugs have a negative impact on people\'s '
+			       . 'perception. You should either close the bug or add some more information.' 
+		  } 
+		);
+	}
+	
+    }
+
+    # Write our own list of issues.
+    $repofs->write_output( $project_id, "import_gl_its_issues.json", encode_json(\@issues_f) );
     
     # Analyse retrieved data, generate info, metrics, plots and visualisation.
-    $ret{'metrics'}{'star_count'} = $res_project->{'star_count'};
-    $ret{'metrics'}{'forks_count'} = $res_project->{'forks_count'};
-    $ret{'metrics'}{'forks_count'} = $res_project->{'forks_count'};
-
-
-#    my $tmp_ret = &_compute_data( $project_id, $gl_url, $gl_id, $gl_token, $repofs );
-        
-    return \%ret;
-}
-
-
-# Basically read the imported files and make the mapping to the 
-# new metric names.
-sub _compute_data($$$) {
-    my ($project_id, $project_pmi, $repofs) = @_;
-
-    my @recs;
-    my @log;
+    $ret{'metrics'}{'ITS_ISSUES_OPEN'} = $issues_open;
+    $ret{'metrics'}{'ITS_ISSUES_CLOSED'} = $issues_closed;
+    $ret{'metrics'}{'ITS_ISSUES_ALL'} = $issues_vol;
+    $ret{'metrics'}{'ITS_ISSUES_LATE'} = scalar @issues_late;
+    $ret{'metrics'}{'ITS_ISSUES_UNASSIGNED_OPEN'} = scalar @issues_unassigned;
+    $ret{'metrics'}{'ITS_TOTAL_DOWNVOTES'} = $total_downvotes;
+    $ret{'metrics'}{'ITS_TOTAL_UPVOTES'} = $total_upvotes;
+    # time series
+    $ret{'metrics'}{'ITS_CREATED_1W'} = $issues_created_1w;
+    $ret{'metrics'}{'ITS_CREATED_1M'} = $issues_created_1m;
+    $ret{'metrics'}{'ITS_CREATED_1Y'} = $issues_created_1y;
+    $ret{'metrics'}{'ITS_CHANGED_1W'} = $issues_changed_1w;
+    $ret{'metrics'}{'ITS_CHANGED_1M'} = $issues_changed_1m;
+    $ret{'metrics'}{'ITS_CHANGED_1Y'} = $issues_changed_1y;
+    $ret{'metrics'}{'ITS_AUTHORS'} = scalar keys %authors;
+    $ret{'metrics'}{'ITS_PEOPLE'} = scalar keys %people;
     
-    push( @log, "[Plugins::EclipseIts] Starting compute data for [$project_id]." );
-
-    my $metrics_new;
-
-    # Read data from its file in $data_input
-    my $json = $repofs->read_input( $project_id, "import_its.json" );
-    my $metrics_old = decode_json($json);
-
-    foreach my $metric (keys %{$metrics_old}) {
-        if ( exists( $conf{'provides_metrics'}{uc($metric)} ) ) {
-            $metrics_new->{ $conf{'provides_metrics'}{uc($metric)} } = $metrics_old->{$metric};
-        }
-    }
-    
-    # Write its metrics json file to disk.
-    $repofs->write_output( $project_id, "metrics_its.json", encode_json($metrics_new) );
-
-    # Write static metrics file
-    my @metrics = sort map {$conf{'provides_metrics'}{$_}} keys %{$conf{'provides_metrics'}};
-    my $csv_out = join( ',', sort @metrics) . "\n";
-    $csv_out .= join( ',', map { $metrics_new->{$_} } sort @metrics) . "\n";
-    
-    $repofs->write_plugin( 'EclipseIts', $project_id . "_its.csv", $csv_out );
-    $repofs->write_output( $project_id, "metrics_its.csv", $csv_out );
-    
-    # Read evol metrics file
-    $json = $repofs->read_input( $project_id, "import_its_evol.json" );
-    my $metrics_evol = decode_json($json);
-
-    # Create csv data for evol
-    $csv_out = "date,changed,changers,closed,closers,opened,openers,trackers,unixtime\n";
-    foreach my $id ( 0 .. (scalar(@{$metrics_evol->{'date'}}) -1 ) ) {
-	$csv_out .= $metrics_evol->{'date'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'changed'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'changers'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'closed'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'closers'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'opened'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'openers'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'trackers'}->[$id] . ',';
-	$csv_out .= $metrics_evol->{'unixtime'}->[$id] . "\n";
-    }
-    $repofs->write_plugin( 'EclipseIts', $project_id . "_its_evol.csv", $csv_out );
-    $repofs->write_output( $project_id, "metrics_its_evol.csv", $csv_out );
-
-    # Now execute the main R script.
-    push( @log, "[Plugins::EclipseIts] Executing R main file." );
-    my $r = Alambic::Tools::R->new();
-    @log = ( @log, @{$r->knit_rmarkdown_inc( 'EclipseIts', $project_id, 'eclipse_its.Rmd' )} );
-
-    # And execute the figures R scripts.
-    my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
-    foreach my $fig (sort @figs) {
-	push( @log, "[Plugins::EclipseIts] Executing R fig file [$fig]." );
-	@log = ( @log, @{$r->knit_rmarkdown_html( 'EclipseIts', $project_id, $fig )} );
-    }
-
-    
-    # Execute checks and fill recs.
-
-    # Check number of open bugs.
-    # If there are at least twice as many opened bugs as closed bugs, raise an alert.
-    my $weeks = -4;
-
-    #    print "#Metrics_vol " . Dumper($metrics_evol);
-    my @closed = @{$metrics_evol->{'closed'}};
-    my @opened = @{$metrics_evol->{'opened'}};
-    
-    my $closed_old = reduce { $a + $b } splice @closed, $weeks;
-    my $opened_old = reduce { $a + $b } splice @opened, $weeks;
-
-    if ( $closed_old < ( 2 * $opened_old) ) {
-	push( @recs, { 'rid' => 'ITS_OPENED_BUGS', 
-		       'severity' => 1,
-		       'src' => 'EclipseIts',
-		       'desc' => 'During last 4 weeks, there has been twice as many opened bugs (' 
-			   . $opened_old . ') as closed bugs (' . $closed_old . '). This may be ok '
-			   . 'if the activity has notably increased, but it could also reveal some '
-			   . 'instability or decrease in project quality.' 
-	      } 
-	    );
-    }
-    
-    # Check the number of closers.
-    # If there are less closers than last year, raise an alert.
-    if ($metrics_new->{'ITS_DIFF_NETCLOSERS_365'} < 0) {
-	push( @recs, { 'rid' => 'ITS_CLOSERS', 
-		       'severity' => 1,
-		       'src' => 'EclipseIts',
-		       'desc' => 'During past year, the number of people closing issues has '
-			   . ' fallen by ' . $metrics_new->{'ITS_DIFF_NETCLOSERS_365'}
-		           . '. This usually means a decrease in project diversity and activity.' 
-	      } 
-	    );
-    }
-    
-    return {
-	"metrics" => $metrics_new,
-	"recs" => \@recs,
-	"log" => \@log,
-    };
+    return \%ret;    
 }
 
 
