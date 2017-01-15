@@ -43,11 +43,7 @@ sub _read_wizards() {
         my $wizard = $1;
 	$wizard =~ s!/!::!g;
 
-        $wizard_path =~ m!.+/([^/\\]+).pm!;
-        my $wizard_name = $1;
-
 	autoload $wizard;
-
         my $conf = $wizard->get_conf();
         $wizards{ $conf->{'id'} } = $wizard;
     }
