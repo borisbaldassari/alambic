@@ -1,4 +1,4 @@
-package Alambic::Wizards::EclipseGitLab;
+package Alambic::Wizards::GitLab;
 
 use strict; 
 use warnings;
@@ -16,10 +16,12 @@ my %conf = (
     ],
     "params" => {
 	"gitlab_url" => "The URL of the GitLab server, e.g. https://gitlab.com",
+	"gitlab_id" => "The ID or namespace of the project to analyse, e.g. 13 or bbaldassari/Alambic",
+	"gitlab_token" => "The Access token to use for the authentication. You can get it from <a href=\"https://gitlab.com/profile/personal_access_tokens\">https://gitlab.com/profile/personal_access_tokens</a>. tiPs2VdkhaDnfmteiToD",
     },
     "plugins" => [
 	"GitLabCi",
-#	"GitLabIts",
+	"GitLabIts",
     ],
 );
 
@@ -39,51 +41,41 @@ sub get_conf() {
 
 
 # Run plugin: retrieves data + compute_data 
-sub run_wizard($$) {
-    my ($self, $project_id) = @_;
+sub run_wizard($$$) {
+    my ($self, $project_id, $conf) = @_;
 
-    my @log;
+    my $gitlab_id = $conf->{'gitlab_id'};
+    my $gitlab_url = $conf->{'gitlab_url'};
+    my $gitlab_token = $conf->{'gitlab_token'};
     
-    my $ua = Mojo::UserAgent->new;
-    $ua->max_redirects(10);
-    $ua->inactivity_timeout(60);
-
-    # Fetch json file from projects.eclipse.org
-    my ($url, $content);
-    if ($project_id =~ m!^polarsys!) {
-        $url = $polarsys_url . $project_id;
-        push( @log, "[Plugins::EclipsePmi] Using PolarSys PMI infra at [$url]." );
-        $content = $ua->get($url)->res->body;
-    } else {
-        $url = $eclipse_url . $project_id;
-        push( @log, "[Plugins::EclipsePmi] Using Eclipse PMI infra at [$url]." );
-        $content = $ua->get($url)->res->body;
-    }
-
-    # Check if we actually get some results.
-    my $pmi = decode_json($content);
-    my $project_pmi;
-    if ( defined($pmi->{'projects'}{$project_id}) ) {
-        $project_pmi = $pmi->{'projects'}{$project_id};
-    } else {
-        push( @log, "ERROR: Could not get [$url]!" );
-        return { 'log' => \@log };
-    }
-    $project_pmi->{'pmi_url'} = $url;
-    print Dumper($project_pmi);
-
-    my $name = $project_pmi->{'title'};
-    my $desc = $project_pmi->{'description'}->[0]->{'summary'};
-    my $project_ci = $project_pmi->{'build_url'}->[0]->{'url'};
-
+    my @log;
+    my %info;
+    
+    # Create GitLab API object for all rest operations.
+    my $api = GitLab::API::v3->new(
+        url   => $gitlab_url . "/api/v3",
+        token => $gitlab_token,
+	);
+    push( @log, "[Wizards::GitLab] Retrieving information from [$gitlab_url] with id [$gitlab_id]." );
+    
+    # Call all info about the project.
+    my $gl_project = $api->project(
+        $gitlab_id,
+    );
+    
+    my $name = $gl_project->{'name'} || 'UNKNOWN';
+    my $desc = $gl_project->{'description'} || 'UNKNOWN';
+    $info{'GL_PROJECT_WEB_URL'} = $gl_project->{'web_url'};
+    $info{'GL_PROJECT_ID'} = $gl_project->{'id'};
+    
     my $plugins_conf = {
-	"GitLabCi" => { 'project_pmi' => $project_id },
-	"GitLabIts" => { 'gitlab_url' => $project_id },
-	"Hudson" => { 'hudson_url' => $project_ci },
+	"GitlabCi" => { 'gitlab_url' => $gitlab_url, 'gitlab_id' => $gitlab_id, 'gitlab_token' => $gitlab_token },
+	"GitlabIts" => { 'gitlab_url' => $gitlab_url, 'gitlab_id' => $gitlab_id, 'gitlab_token' => $gitlab_token },
     };
 
-    my $project = Alambic::Model::Project->new( $project_id, $name, 0, 0, $plugins_conf );
+    my $project = Alambic::Model::Project->new( $project_id, $name, 0, 0, $plugins_conf, { 'info' => \%info} );
     $project->desc($desc);
+#    $project->info(\%info);
         
     return { 'project' => $project, 'log' => \@log };
 }
