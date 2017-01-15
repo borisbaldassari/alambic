@@ -1,4 +1,4 @@
-package Alambic::Plugins::GitlabIts;
+package Alambic::Plugins::GitLabIts;
 
 use strict; 
 use warnings;
@@ -14,10 +14,10 @@ use Data::Dumper;
 
 # Main configuration hash for the plugin
 my %conf = (
-    "id" => "GitlabIts",
+    "id" => "GitLabIts",
     "name" => "GitLab ITS",
     "desc" => [
-	'This plugin retrieves Issue Tracking Information from a ',
+	'This plugin retrieves Issue Tracking Information from a GitLab server',
 	'qsf',
     ],
     "type" => "pre",
@@ -94,7 +94,7 @@ sub run_plugin($$) {
     my $gl_id = $conf->{'gitlab_id'};
     my $gl_token = $conf->{'gitlab_token'};
     
-    push( @{$ret{'log'}}, "[Plugins::GitlabIts] Retrieving data from [$gl_url] for project [$gl_id]." ); 
+    push( @{$ret{'log'}}, "[Plugins::GitLabIts] Retrieving data from [$gl_url] for project [$gl_id]." ); 
 
     # Create GitLab API object for all rest operations.
     my $api = GitLab::API::v3->new(

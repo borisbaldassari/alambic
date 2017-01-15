@@ -1,4 +1,4 @@
-package Alambic::Plugins::GitlabCi;
+package Alambic::Plugins::GitLabCi;
 
 use strict; 
 use warnings;
@@ -12,7 +12,7 @@ use Data::Dumper;
 
 # Main configuration hash for the plugin
 my %conf = (
-    "id" => "GitlabCi",
+    "id" => "GitLabCi",
     "name" => "GitLab CI",
     "desc" => [
 	'qsf',
@@ -86,7 +86,7 @@ sub run_plugin($$) {
 
     # Create GitLab API object for all rest operations.
     my $api = GitLab::API::v3->new(
-        url   => $gl_url . "/api/v3",,
+        url   => $gl_url . "/api/v3",
         token => $gl_token,
 	);
 
@@ -153,6 +153,20 @@ sub run_plugin($$) {
 	push( @jobs_csv, $csv_out );
     }
     $repofs->write_output( $project_id, "ci_jobs.csv", join("", @jobs_csv) );
+
+    # Generate R report
+
+    # Now execute the main R script.
+    push( @{$ret{'log'}}, "[Plugins::GitLabCi] Executing R main file." );
+    my $r = Alambic::Tools::R->new();
+    @{$ret{'log'}} = ( @{$ret{'log'}}, @{$r->knit_rmarkdown_inc( 'GitLabCi', $project_id, 'gitlab_ci.Rmd' )} );
+
+    # And execute the figures R scripts.
+    my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
+    foreach my $fig (sort @figs) {
+	push( @{$ret{'log'}}, "[Plugins::GitLabCi] Executing R fig file [$fig]." );
+	@{$ret{'log'}} = ( @{$ret{'log'}}, @{$r->knit_rmarkdown_html( 'GitLabCi', $project_id, $fig )} );
+    }
     
     return \%ret;
 }
