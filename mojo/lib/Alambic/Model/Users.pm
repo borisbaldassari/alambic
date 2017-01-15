@@ -61,7 +61,7 @@ sub generate_passwd($) {
 
 sub get_user($) {
     my $self = shift;
-    my $user = shift;
+    my $user = shift || "";
     
     return exists $users{$user} ? $users{$user} : undef;
 }
