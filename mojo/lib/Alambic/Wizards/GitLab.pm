@@ -69,8 +69,8 @@ sub run_wizard($$$) {
     $info{'GL_PROJECT_ID'} = $gl_project->{'id'};
     
     my $plugins_conf = {
-	"GitlabCi" => { 'gitlab_url' => $gitlab_url, 'gitlab_id' => $gitlab_id, 'gitlab_token' => $gitlab_token },
-	"GitlabIts" => { 'gitlab_url' => $gitlab_url, 'gitlab_id' => $gitlab_id, 'gitlab_token' => $gitlab_token },
+	"GitLabCi" => { 'gitlab_url' => $gitlab_url, 'gitlab_id' => $gitlab_id, 'gitlab_token' => $gitlab_token },
+	"GitLabIts" => { 'gitlab_url' => $gitlab_url, 'gitlab_id' => $gitlab_id, 'gitlab_token' => $gitlab_token },
     };
 
     my $project = Alambic::Model::Project->new( $project_id, $name, 0, 0, $plugins_conf, { 'info' => \%info} );

@@ -15,8 +15,7 @@ my %conf = (
     "id" => "GitLabCi",
     "name" => "GitLab CI",
     "desc" => [
-	'qsf',
-	'qsf',
+	'Retrieves and analyses Continuous Integration data from a GitLab server.',
     ],
     "type" => "pre",
     "ability" => [ 'metrics', 'data', 'recs', 'figs', 'viz' ],
@@ -36,17 +35,17 @@ my %conf = (
 	"ci_pipelines.json" => "List of pipelines (JSON).",
     },
     "provides_metrics" => {
-        "BUILDS" => "BUILDS", 
-        "BUILDS_FAILED" => "BUILDS_FAILED", 
+        "CI_BUILDS" => "CI_BUILDS", 
+        "CI_BUILDS_FAILED" => "CI_BUILDS_FAILED", 
     },
     "provides_figs" => {
-        'ci_evol_summary.rmd' => "ci_evol_summary.html",
+#        'ci_evol_summary.rmd' => "ci_evol_summary.html",
     },
     "provides_recs" => [
         "CI_BUILDS_REC",
     ],
     "provides_viz" => {
-        "gitlab_ci.html" => "GitLab CI",
+#"        "gitlab_ci.html" => "GitLab CI",
     },
 );
 
@@ -91,11 +90,13 @@ sub run_plugin($$) {
 	);
 
     # Retrieve information about all builds. Returns an array
-    # of builds, see GitLb::API::v3 doc:
+    # of builds, see GitLab::API::v3 doc:
     # http://search.cpan.org/~bluefeet/GitLab-API-v3-1.00/lib/GitLab/API/v3.pm#BUILD_METHODS. 
-    my $builds = $api->builds(
-        $gl_id
-	);
+    my $builds_p = $api->paginator( 'builds', $gl_id );
+    my $builds;
+    while (my $build = $builds_p->next()) {
+        push( @$builds, $build );
+    }
     
     if ( ref($builds) eq "ARRAY" ) {
 	push( @{$ret{'logs'}}, "Retrieved info from [$gl_url].");
@@ -121,7 +122,7 @@ sub run_plugin($$) {
 	# Extract successful and failed builds.
 	my @builds_success = grep $_->{'status'} eq 'success', @$builds;
 	my @builds_failed = grep $_->{'status'} eq 'failed', @$builds;
-	print "Build failed: " . Dumper($builds) . "\n";
+	print "Build failed: " . scalar(@$builds) . "\n";
 	print "Build success: " . scalar(@builds_success) . "\n";
 
 	# Set metrics
@@ -139,6 +140,7 @@ sub run_plugin($$) {
     $repofs->write_output( $project_id, "ci_jobs.json", encode_json(\@builds_ret) );
 
     # Write ci pipelines json file to disk.
+    $repofs->write_output( $project_id, "import_ci_pipelines.json", encode_json(\%pipelines_ret) );
     $repofs->write_output( $project_id, "ci_pipelines.json", encode_json(\%pipelines_ret) );
 
     # Convert builds info to csv

@@ -32,7 +32,8 @@ my %conf = (
     "provides_info" => [
     ],
     "provides_data" => {
-	"import_gl_its.json" => "Original JSON file as retrieved from the GitLab server (JSON).",
+	"import_its.json" => "Original JSON file as retrieved from the GitLab server (JSON).",
+	"its_issues.json" => "Restricted set of issues extracted from the server for metrics calculation (JSON).",
     },
     "provides_metrics" => {
         "ITS_CHANGED_1W" => "ITS_CHANGED_1W", 
@@ -52,13 +53,13 @@ my %conf = (
 	"ITS_PEOPLE" => "ITS_PEOPLE",
     },
     "provides_figs" => {
-        'its_evol_summary.rmd' => "its_evol_summary.html",
+#        'its_evol_summary.rmd' => "its_evol_summary.html",
     },
     "provides_recs" => [
         "ITS_LONG_STANDING_OPEN",
     ],
     "provides_viz" => {
-        "gitlab_its.html" => "GitLab ITS",
+#        "gitlab_its.html" => "GitLab ITS",
     },
 );
 
@@ -110,8 +111,7 @@ sub run_plugin($$) {
     
     # Write the original file to disk.
     my $project_json = encode_json($issues);
-    $repofs->write_input( $project_id, "import_gl_its.json", $project_json );
-    $repofs->write_output( $project_id, "import_gl_its.json", $project_json );
+    $repofs->write_output( $project_id, "import_its.json", $project_json );
     my $issues_vol = scalar @$issues;
 
     # Store all issues in our own array
@@ -186,7 +186,7 @@ sub run_plugin($$) {
 	    push( @issues_unassigned, $issue->{'iid'} ) 
 		if ($issue->{'state'} eq 'open'); 
 	}
-
+	print "working with issue " . $issues_l{'iid'} . ".\n";
 	push( @issues_f, \%issues_l );
 
 	# Recommendations    
@@ -204,7 +204,8 @@ sub run_plugin($$) {
     }
 
     # Write our own list of issues.
-    $repofs->write_output( $project_id, "import_gl_its_issues.json", encode_json(\@issues_f) );
+    $repofs->write_output( $project_id, "its_issues.json", encode_json(\@issues_f) );
+    print "Keys are " . Dumper($issues_f[0]);
     
     # Analyse retrieved data, generate info, metrics, plots and visualisation.
     $ret{'metrics'}{'ITS_ISSUES_OPEN'} = $issues_open;
