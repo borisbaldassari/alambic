@@ -54,8 +54,8 @@ sub startup {
 
     # Add task to create a project with a wizard
     $self->minion->add_task( add_project_wizard => sub {
-        my ($job, $wizard, $project_id) = @_;
-        my $ret = $self->al->create_project_from_wizard($wizard, $project_id);
+        my ($job, $wizard, $project_id, $args) = @_;
+        my $ret = $self->al->create_project_from_wizard($wizard, $project_id, $args);
         $job->finish($ret);
     } );
     
