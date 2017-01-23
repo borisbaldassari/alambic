@@ -37,6 +37,7 @@ our @EXPORT_OK = qw(
                      get_repo_db
                      get_wizards
                      create_project
+                     create_project_from_wizard
                      get_project
                      get_projects_list
                      add_project_plugin
@@ -318,8 +319,12 @@ sub create_project_from_wizard($$) {
     
     my $ret_wiz = $wizards->get_wizard($wiz_id)->run_wizard($project_id, $conf);
     my $project = $ret_wiz->{'project'};
+
+    # XXX One of those days, add cdata here to store information about the project
+    # e.g. web site, name, description, doc, etc.
     
-    my $ret = $repodb->set_project_conf( $project_id, $project->name(), $project->desc(), 0, $project->get_plugins() );
+    my $ret = $repodb->set_project_conf( $project_id, $project->name(), $project->desc(), 0, 
+					 $project->get_plugins() );
     # $ret == 0 means the insert didn't work.
     if ( $ret == 0 ) {
 	return undef;

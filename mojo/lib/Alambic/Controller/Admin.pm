@@ -325,7 +325,6 @@ sub projects_new_post {
     my $project = $self->app->al->create_project( $project_id, $project_name, '', $project_active );
 
     my $msg = "Project '$project_name' ($project_id) has been created.";
-    
     $self->flash( msg => $msg );
     $self->redirect_to( '/admin/projects' );
 }
@@ -335,15 +334,25 @@ sub projects_new_post {
 sub projects_wizards_new_init {
     my $self = shift;
     my $wizard = $self->param( 'wiz' );
-
-    my $conf_wizard = $self->app->al->get_wizards()->get_wizard($wizard)->get_conf();
     
-    $self->stash(
-        wizard_id => $wizard,
-	conf_wizard => $conf_wizard,
-        );
+    # Check if wizard is in the list of wizards.
+    my $list_wizards = $self->app->al->get_wizards()->get_names_all();
+    if ( exists($list_wizards->{$wizard}) ) {
+	# Wizard is in the list: call the wizard create page
+	my $conf_wizard = $self->app->al->get_wizards()->get_wizard($wizard)->get_conf();
+    	$self->stash(
+	    wizard_id => $wizard,
+	    conf_wizard => $conf_wizard,
+	    );
+	
+	$self->render( template => 'alambic/admin/project_set_wizard' );
+    } else {
+	# Wizard is NOT in the list: call the admin projects page
+	my $msg = "Cannot find wizard [$wizard].";
+	$self->flash( msg => $msg );
+	$self->redirect_to( '/admin/projects' );
+    }
 
-    $self->render( template => 'alambic/admin/project_set_wizard' );
 }
 
 
@@ -360,9 +369,9 @@ sub projects_wizards_new_init_post {
         $args{$param} = $self->param( $param );
     }
     
-    my $project = $self->app->al->create_project_from_wizard( $wizard, $project_id, \%args );
+    my $job = $self->minion->enqueue( add_project_wizard => [ $wizard, $project_id, \%args ] => { delay => 0 });
 
-    my $msg = "Project [$project_id] has been created.";
+    my $msg = "Job for project [$project_id] wizard creation has been created.";
     
     $self->flash( msg => $msg );
     $self->redirect_to( "/admin/projects/$project_id" );
@@ -370,6 +379,7 @@ sub projects_wizards_new_init_post {
 
 
 # New project from wizard screen for Alambic admin.
+<<<<<<< HEAD
 # sub projects_wizards_new_check {
 #     my $self = shift;
 #     my $wizard = $self->param( 'wiz' );
@@ -384,6 +394,29 @@ sub projects_wizards_new_init_post {
 
 #     $self->render( template => 'alambic/wizards/$wizard' );
 # }
+=======
+sub projects_wizards_new_check {
+    my $self = shift;
+    my $wizard = $self->param( 'wiz' );
+    my $project_id = $self->param( 'pid' );
+    
+    # Check if wizard is in the list of wizards.
+    my $list_wizards = $self->app->al->get_wizards()->get_names_all();
+    if ( exists($list_wizards->{$wizard}) ) {
+	# Wizard is in the list: call the wizard create page
+	$self->stash(
+	    project_id => $project_id,
+	    wizard => $wizard,
+	    );
+	$self->render( template => 'alambic/wizards/$wizard' );
+    } else {
+	# Wizard is NOT in the list: call the admin projects page
+	my $msg = "Cannot find wizard [$wizard].";
+	$self->flash( msg => $msg );
+	$self->redirect_to( '/admin/projects' );
+    }
+}
+>>>>>>> 284f017... #91 Add jobs for create_from_wizard.
 
 
 # # New project from wizard screen for Alambic admin.
