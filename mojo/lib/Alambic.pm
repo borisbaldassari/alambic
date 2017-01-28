@@ -214,6 +214,9 @@ sub startup {
     $r_admin->get('/jobs/#id')->to( 'jobs#display' );
     $r_admin->get('/jobs/#id/del')->to( 'jobs#delete' );
     $r_admin->get('/jobs/#id/run')->to( 'jobs#redo' );
+    
+    # Tools management
+    $r_admin->get('/tools')->to( 'tools#summary' );
 
     # Database manipulations.
     $r_admin->get('/repo')->to('repo#summary');

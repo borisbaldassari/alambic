@@ -1,0 +1,45 @@
+% my $tools = app->al->get_tools();
+% my $tool_id = stash( 'tool_id' );
+% my $tool = $tools->get_tool($id);
+% my $tool_conf = $tool->get_conf();
+
+            <h1 class="al-h1"><small>Administration</small> Tool <%= $tool_conf->{'id'} %></h1>
+	    <br />
+
+% my $msg = flash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-12">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%== $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+%= include 'alambic/admin/admin_menu', current => '/admin/tools'
+
+            <div class="row">
+              <div class="col-sm-12">
+                <dl class="dl-horizontal">
+		  <dt>ID</dt><dd><%= $tool_conf->{'id'} %></dd>
+		  <dt>Name</dt><dd><%= $tool_conf->{'name'} %></dd>
+		  <dt>Description</dt><dd><%= $tool_conf->{'desc'} %></dd>
+		</dl>
+              </div>
+            </div>
+
+        <h3>Methods</h3>
+
+		<table class="table table-striped">
+		  <tr><th>Method</th><th>Description</th></tr>
+% my $methods = $tool_conf->{'provides_methods'}; use Data::Dumper; print Dumper($methods);
+% foreach my $method ( sort keys %$methods ) {
+		  <tr>
+            <td><%= $method %></td>
+            <td><%= $methods->{$method} %></td>
+          </tr>
+% }
+		</table>
+
