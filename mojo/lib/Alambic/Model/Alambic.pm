@@ -10,6 +10,7 @@ use Alambic::Model::Plugins;
 use Alambic::Model::Wizards;
 use Alambic::Model::Models;
 use Alambic::Model::Users;
+use Alambic::Model::Tools;
 
 use Mojo::JSON qw (decode_json encode_json);
 use Data::Dumper;
@@ -32,6 +33,7 @@ our @EXPORT_OK = qw(
                      users
                      get_plugins
                      get_models
+                     get_tools
                      get_repo_db
                      get_wizards
                      create_project
@@ -56,6 +58,7 @@ my $repofs;
 my $plugins;
 my $wizards;
 my $models;
+my $tools;
 my $al_version;
 
 
@@ -70,6 +73,7 @@ sub new {
     $repofs = Alambic::Model::RepoFS->new();
     $plugins = Alambic::Model::Plugins->new();
     $wizards = Alambic::Model::Wizards->new();
+    $tools = Alambic::Model::Tools->new();
 
     # If the database is not initialised, then init it.
     if (not &is_db_ok()) { 
@@ -170,6 +174,11 @@ sub get_plugins() {
 # Return the Models.pm object for this instance.
 sub get_models() {
     return $models;
+}
+
+# Return the Tools.pm object for this instance.
+sub get_tools() {
+    return $tools;
 }
 
 # Return the RepoFS.pm object for this instance.
