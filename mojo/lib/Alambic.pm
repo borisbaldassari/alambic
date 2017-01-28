@@ -217,6 +217,7 @@ sub startup {
     
     # Tools management
     $r_admin->get('/tools')->to( 'tools#summary' );
+    $r_admin->get('/tools/#id')->to( 'tools#display' );
 
     # Database manipulations.
     $r_admin->get('/repo')->to('repo#summary');
