@@ -2,7 +2,6 @@
 % my $project_id = stash( 'project_id' );
 % my $run = stash( 'run' );
 % my $models = stash( 'models' );
-% my $all = stash( 'all' ); 
 
             <h1 class="al-h1"><small><%= $project_id %></small> Project Metrics</h1>
             <br />
@@ -11,11 +10,8 @@
 
             <br />
 
-% if (defined($all)) {
-            <p>This table lists all metrics retrieved from plugins, even if they are not defined in the metrics definition or in the quality model. Maybe you want to <a href="/projects/<%= $project_id %>/metrics.html">display only active metrics</a>?</p>
-% } else {
-            <p>This table lists all retrieved metrics that are active, i.e. they are defined in the quality model and they have a value filled in. Maybe you want to <a href="/projects/<%= $project_id %>/metrics.html?all=true">display all available metrics</a>?</p>
-% }
+            <p>This table lists all metrics retrieved from plugins, even if they are not defined in the metrics definition or in the quality model.</p>
+
 	    <p>Showing data for run <code><%= $run->{'id'} %></code>, executed on <code><%= $run->{'run_time'} %></code>.</p>
             <br />
 
@@ -28,11 +24,11 @@
                 <th>Indicator</th>
               </tr>
 % my $metrics = $run->{'metrics'};
-% my $inds = $run->{'indicators'}; 
+% my $inds = $run->{'indicators'};
 % my $metrics_def = $models->get_metrics();
 % my $metrics_active = $models->get_metrics_active();
 % foreach my $item (sort keys %{$metrics}) {
-%   if ( grep( /^$item$/, @{$metrics_active} ) || defined($all) ) { 
+%   if ( grep( /^$item$/, @{$metrics_active} ) || defined($all) ) {
               <tr>
                 <td><a href="/documentation/metrics.html#<%= $item %>"><%= $metrics_def->{$item}->{'name'} %></a></td>
                 <td><a href="/documentation/metrics.html#<%= $item %>"><%= $item %></a></td>
