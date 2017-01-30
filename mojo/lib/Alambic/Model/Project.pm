@@ -372,6 +372,9 @@ sub run_project($) {
 	}
     }
 
+    # Create RepoFS object for writing and reading files on FS.
+    my $repofs = Alambic::Model::RepoFS->new();
+    
     # Create a CSV file with all metrics
     my $csv = Text::CSV->new( { binary => 1, eol => "\n" } );
     my $csv_out;
@@ -388,8 +391,7 @@ sub run_project($) {
 	$csv_out .= $csv->string()
     };
 
-    # Create RepoFS object for writing and reading files on FS.
-    my $repofs = Alambic::Model::RepoFS->new();
+    # Write csv file to disk.
     $repofs->write_output( $project_id, "metrics_ref.csv", $csv_out );
     
     # Run post plugins

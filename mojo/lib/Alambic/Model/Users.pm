@@ -12,9 +12,12 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( 
                      get_user
+                     get_roles
                      get_users
-                     get_users_list
+                     get_projects_for_user
                      validate_user
+                     generate_password
+                     
  );  
 
 
