@@ -164,6 +164,11 @@ sub startup {
     	}
     	);
 
+    # User pages
+    my $r_user = $r->any('/user')->over( role => 'Project' )->to( controller => 'users' );
+    $r_user->get('/#id/profile')->to( action => 'profile' );
+    $r_user->get('/#id/project/#project')->to( action => 'projects' );
+    
     # Admin
     my $r_admin = $r->any('/admin')->over( role => 'Admin' )->to( controller => 'admin' );   
     

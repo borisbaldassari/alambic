@@ -235,8 +235,34 @@ sub set_user($$$$$$$) {
     }
 
     return $repodb->add_user($id, $name, $email, 
-			     $passwd, 
-			     $roles, $projects, $notifs);
+			     $passwd, $roles, 
+			     $projects, $notifs);
+}
+
+# Add or update a project in a user profile
+sub set_user_project($$$) {
+    my $self = shift;
+    my $user_id = shift;
+    my $project_id = shift;
+    my $content = shift;
+
+    my $user = $repodb->get_user($user_id)->{$user_id};
+    $user->{'projects'}{$project_id} = $content;
+    return $repodb->add_user($user->{'id'}, $user->{'name'}, $user->{'email'}, 
+			     $user->{'passwd'}, $user->{'roles'}, 
+			     $user->{'projects'}, $user->{'notifs'});
+}
+
+# Add or update user to the Alambic db.
+sub get_user($) {
+    my $self = shift;
+    my $id = shift;
+    
+    if (exists $repodb->get_users()->{$id}) {
+	return $repodb->get_users()->{$id};
+    } else {
+	return undef;
+    }
 }
 
 sub del_user($) {
@@ -507,6 +533,20 @@ sub run_project($) {
 			     $values->{'attrs_conf'}, 
 			     $values->{'recs'});
 
+    # Now get user profiles
+    my $users = &users($self);
+    my $list = $users->get_users();
+    
+    # Read files containing user references
+    # and store them in the user's project section.
+    my $users_ = $repofs->read_users($project_id);
+    foreach my $u (keys %$list) {
+	my $email = $list->{$u}->{'email'};
+	if ( exists( $users_->{$email} ) ) {
+	    &set_user_project($self, $u, $project_id, $users_->{$email});
+	}
+    }
+    
     return $values;
 }
 
