@@ -38,11 +38,11 @@
                     <td><%= $users->{$user}->{'name'} %></td>
                     <td><%= $users->{$user}->{'email'} %></td>
                     <td><%= join( ', ', @{ $users->{$user}->{'roles'} || [] } ) %></td>
-                    <td><%= join( ', ', @{ $users->{$user}->{'projects'} || [] } ) %></td>
+                    <td><%= join( ', ', keys %{ $users->{$user}->{'projects'} || [] } ) %></td>
                     <td>
 		      <a href="/admin/users/<%= $user %>"><i class="fa fa-fw fa-edit"></i></a> &nbsp;
                       <a href="/admin/users/<%= $user %>/del"><i class="fa fa-fw fa-ban"></i></a> &nbsp;
                   </tr>
 % }
             </table>
-            
+
