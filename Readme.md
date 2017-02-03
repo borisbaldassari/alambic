@@ -1,6 +1,6 @@
 # Welcome to the Alambic project
 
-Alambic is an open-source platform and service for the management and visualisation of software engineering data.
+Alambic is an open-source platform and service for the management and visualisation of software engineering data. It is licenced under the [Eclise Public Licence v1.0](https://www.eclipse.org/legal/epl-v10.html).
 
 [ ![Codeship Status for BorisBaldassari/alambic](https://app.codeship.com/projects/8f5ae970-a10d-0134-6d00-664a346b6816/status?branch=master)](https://app.codeship.com/projects/189806)
 
