@@ -1,11 +1,11 @@
 
-- name: alambic_base
-  service: alambic
-  command: su - alambic -c 'cd alambic/mojo && perl ../resources/scripts/alambic_test.pl'
+- name: alambic_base_centos
+  service: alambic_base_centos
+  command: su - alambic -c 'perl -v'
 - name: alambic_push
-  service: alambic
+  service: alambic_base_centos
   type: push
-  image_name: bbaldassari/alambic
+  image_name: bbaldassari/alambic_base_centos
   registry: https://index.docker.io/v1/
   encrypted_dockercfg_path: dockercfg.encrypted
 
