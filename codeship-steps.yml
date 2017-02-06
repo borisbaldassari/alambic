@@ -1,5 +1,5 @@
 
-- name: alambic_run
+- name: alambic_base
   service: alambic
   command: su - alambic -c 'cd alambic/mojo && perl ../resources/scripts/alambic_test.pl'
 - name: alambic_push
