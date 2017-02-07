@@ -22,7 +22,7 @@ my %conf = (
         "Check the documentation for this plugin on the project wiki: <a href=\"https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/StackOverflow\">https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/StackOverflow</a>."
     ],
     "type" => "pre",
-    "ability" => [ 'metrics', 'recs', 'viz' ],
+    "ability" => [ 'metrics', 'recs', 'viz', 'users' ],
     "params" => {
         "so_keyword" => "A Stack Overflow tag to retrieve questions from.",
     },
