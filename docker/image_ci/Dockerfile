@@ -16,6 +16,7 @@ USER alambic
 # Clone Alambic repository
 RUN git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
 COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
+RUN echo "test"
 
 # Execute processes
 CMD ["sh", "/home/alambic/alambic_init.sh"]

@@ -16,7 +16,7 @@ my $args = {
     };
 my $harness = TAP::Harness->new($args);
 
-$harness->runtests(
+my $res = $harness->runtests(
     [ 't/unit/Model/Models.t', 'Testing Model::Models' ],
     [ 't/unit/Model/Plugins.t', 'Testing Model::Plugins' ],
     [ 't/unit/Model/RepoDB.t', 'Testing Model::RepoDB' ],
