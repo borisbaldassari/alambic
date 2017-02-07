@@ -30,14 +30,16 @@ COPY alambic_install_r_deps.sh /root/alambic_install_r_deps.sh
 RUN chmod +x /root/alambic_install_r_deps.sh
 RUN sh /root/alambic_install_r_deps.sh
 
+# Copy perl deps file for alambic
+COPY alambic_install_perl_deps.sh /home/alambic/alambic_install_perl_deps.sh
+RUN chmod +x /home/alambic/alambic_install_perl_deps.sh
+
 
 # Switch to user alambic to install Perl
 USER alambic
 
 # Install Perl, Mojolicious and all dependencies
-COPY alambic_install_perl_deps.sh /root/alambic_install_perl_deps.sh
-RUN chmod +x /root/alambic_install_perl_deps.sh
-RUN sh /root/alambic_install_perl_deps.sh
+RUN sh /home/alambic/alambic_install_perl_deps.sh
 
 
 CMD ["/usr/sbin/sshd", "-D"]
