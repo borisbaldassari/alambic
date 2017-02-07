@@ -19,4 +19,3 @@ COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
 # Execute tests
 CMD ["sh", "/home/alambic/alambic_test.sh"]
 
-

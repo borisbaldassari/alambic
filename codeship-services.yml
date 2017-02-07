@@ -2,7 +2,7 @@ alambic_base_centos:
   build:
     image: bbaldassari/alambic_base_centos
     path: docker/image_base_centos
-    dockerfile: Dockerfile.base
+    dockerfile: Dockerfile
     links:
         - postgres
 postgres:
