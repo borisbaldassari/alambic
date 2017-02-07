@@ -12,11 +12,19 @@ Please note that both test and release images need a postgresql container to run
 In the $AL_HOME/docker/image_base_centos directory, execute:
 `$ docker build -t bbaldassari/alambic_base_centos -f Dockerfile .`
 
-Creates a Centos docker image, with:
-* Perlbrew, Perl, and all required modules installed,
-* a fresh git clone of Alambic
+It creates a Centos docker image, with:
+* Postgresql 9.5 (client),
+* Perlbrew, Perl, Mojolicious and all required modules,
+* The latest release of R and all required packages.
 
-This image needs a Postgresql instance to run. The docker-compose.run.yml file at the root of the repository provides an integrated environment that uses the official docker postgresql image.
+## Building the test image
+
+In the $AL_HOME/docker/image_test directory, execute:
+`$ docker build -t bbaldassari/alambic_test -f Dockerfile .`
+
+It creates an image with Alambic installed and ready for test. 
+
+These images need a Postgresql instance to run. The docker-compose.run.yml file at the root of the repository provides an integrated environment that uses the official docker postgresql image.
 
 In the root of the Alambic repository, execute:
 `$ docker-compose -f docker-compose.run.yml up`
