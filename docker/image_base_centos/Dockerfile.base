@@ -42,6 +42,8 @@ USER alambic
 # Install Perl, Mojolicious and all dependencies
 RUN sh /home/alambic/alambic_install_perl_deps.sh
 
+# Switch back to user root
+USER root
 
 CMD ["/usr/sbin/sshd", "-D"]
 
