@@ -1,6 +1,7 @@
 
 - name: alambic_base_centos
   service: alambic_base_centos
+  command: su - alambic -c 'perl -v'
 
 - name: alambic_base_centos_push
   service: alambic_base_centos
