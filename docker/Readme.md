@@ -14,6 +14,8 @@ The docker-compose.run.yml file at the root of the repository provides an integr
 In the root of the Alambic repository, execute:
 `$ docker-compose -f docker-compose.run.yml up`
 
+Then head up to http://localhost:3000 and play with Alambic.
+
 ## Building the base image
 
 In the $AL_HOME/docker/image_base_centos directory, execute:
@@ -24,6 +26,11 @@ It creates a Centos docker image, with:
 * Perlbrew, Perl, Mojolicious and all required modules,
 * The latest release of R and all required packages.
 
+The official bleeding edge base image can also be downloaded from the alambic ci instance on [quay.io](http://quay.io)
+```
+docker pull quay.io/bbaldassari/alambic_base_centos
+```
+
 ## Building the test image
 
 In the $AL_HOME/docker/image_test directory, execute:
@@ -31,12 +38,19 @@ In the $AL_HOME/docker/image_test directory, execute:
 
 It creates an image called `bbaldassari/alambic_test` with Alambic installed and ready for test.
 
-## Building the latest Alambic image
+The official bleeding edge image can also be downloaded from the alambic ci instance on [quay.io](http://quay.io)
+```
+docker pull quay.io/bbaldassari/alambic_test
+```
 
-In the $AL_HOME/docker/image_test directory, execute:
-`$ docker build -t bbaldassari/alambic_test -f Dockerfile .`
+## Building the latest Alambic CI image
 
-It creates an image called `bbaldassari/alambic_test` with Alambic installed and ready for test.
+In the $AL_HOME/docker/image_ci directory, execute:
+`$ docker build -t bbaldassari/alambic_ci -f Dockerfile .`
 
-To execute all tests, execute:
-`$ docker-compose -f docker-compose.test.yml up`
+It creates an image called `bbaldassari/alambic_ci` with Alambic installed and ready for test.
+
+The official bleeding edge ci image can also be downloaded from the alambic ci instance on [quay.io](http://quay.io)
+```
+docker pull quay.io/bbaldassari/alambic_ci
+```
