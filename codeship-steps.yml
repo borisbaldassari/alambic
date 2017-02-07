@@ -1,14 +1,16 @@
 
-- name: alambic_base_centos_build
-  service: alambic_base_centos_build
-  command: su - alambic -c 'perl -v'
+# Comment out the two following blocks to rebuilt base image.
 
-- name: alambic_base_centos_push
-  service: alambic_base_centos_build
-  type: push
-  image_name: bbaldassari/alambic_base_centos
-  registry: https://index.docker.io/v1/
-  encrypted_dockercfg_path: dockercfg.encrypted
+#- name: alambic_base_centos_build
+#  service: alambic_base_centos_build
+#  command: su - alambic -c 'perl -v'
+
+#- name: alambic_base_centos_push
+#  service: alambic_base_centos_build
+#  type: push
+#  image_name: bbaldassari/alambic_base_centos
+#  registry: https://index.docker.io/v1/
+#  encrypted_dockercfg_path: dockercfg.encrypted
 
 - name: alambic_test_build
   service: alambic_test_build
