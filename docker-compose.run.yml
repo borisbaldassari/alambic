@@ -1,11 +1,11 @@
 version: '2'
 services:
   alambic:
-    image: bbaldassari/alambic
-    command: sh /root/alambic_start_wrapper.sh
-    ports: 
+    image: bbaldassari/alambic_ci
+    command: sh /home/alambic/alambic_init.sh
+    ports:
     - "3000:3000"
-    depends_on: 
+    depends_on:
     - postgres
   postgres:
     image: postgres:9.5

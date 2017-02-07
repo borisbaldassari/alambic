@@ -16,7 +16,9 @@ USER alambic
 # Clone Alambic repository
 RUN git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
 COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
-RUN echo "test"
+
+# copy sql init script for alambic_test.sh
+COPY psql_init.sql /home/alambic/psql_init.sql
 
 # Execute processes
 CMD ["sh", "/home/alambic/alambic_init.sh"]
