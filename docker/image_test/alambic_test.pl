@@ -13,11 +13,10 @@ if (not -e 't') {
 my $args = {
     "verbosity" => 1,
     "lib"     => [ 'lib' ],
-};
-
+    };
 my $harness = TAP::Harness->new($args);
 
-my $res = $harness->runtests(
+$harness->runtests(
     [ 't/unit/Model/Models.t', 'Testing Model::Models' ],
     [ 't/unit/Model/Plugins.t', 'Testing Model::Plugins' ],
     [ 't/unit/Model/RepoDB.t', 'Testing Model::RepoDB' ],
@@ -25,7 +24,7 @@ my $res = $harness->runtests(
     [ 't/unit/Model/Tools.t', 'Testing Model::Tools' ],
     );
 
-# use Data::Dumper;
-# print Dumper($res);
-
 exit $res->failed;
+
+
+

@@ -14,6 +14,6 @@ perl -v
 script/alambic alambic init
 
 # Execute perl script to run tests.
-perl ../resources/scripts/alambic_test.pl
+perl ~/alambic_test.pl
 
 

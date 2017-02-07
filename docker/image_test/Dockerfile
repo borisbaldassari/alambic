@@ -6,6 +6,7 @@ EXPOSE 3000
 
 # Copy as root and set permissions
 COPY alambic_test.sh /home/alambic/alambic_test.sh
+COPY alambic_test.pl /home/alambic/alambic_test.pl
 RUN chmod +x /home/alambic/alambic_test.sh
 RUN chown alambic:alambic /home/alambic/alambic_test.sh
 

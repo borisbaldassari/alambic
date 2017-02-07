@@ -1,5 +1,8 @@
 alambic_base_centos:
-  image: bbaldassari/alambic_base_centos
+  build:
+    image: bbaldassari/alambic_base_centos
+    path: docker/image_base_centos/
+    dockerfile: Dockerfile
 
 alambic_test:
   image: bbaldassari/alambic_test
