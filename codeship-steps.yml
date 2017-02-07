@@ -23,7 +23,7 @@
   encrypted_dockercfg_path: dockercfg.encrypted
 - name: alambic_ci_build
   service: alambic_ci_build
-  command: su - alambic -c 'sh /home/alambic/alambic_test.sh'
+  command: sh /home/alambic/alambic_test.sh
 - name: alambic_ci_push
   service: alambic_ci_build
   type: push
