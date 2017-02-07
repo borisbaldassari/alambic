@@ -4,7 +4,7 @@
 #- name: alambic_base_centos_build
 #  service: alambic_base_centos_build
 #  command: su - alambic -c 'perl -v'
-
+#
 #- name: alambic_base_centos_push
 #  service: alambic_base_centos_build
 #  type: push
@@ -15,18 +15,15 @@
 - name: alambic_test_build
   service: alambic_test_build
   command: sh /home/alambic/alambic_test.sh
-
 - name: alambic_test_push
   service: alambic_test
   type: push
   image_name: bbaldassari/alambic_test
   registry: https://index.docker.io/v1/
   encrypted_dockercfg_path: dockercfg.encrypted
-
 - name: alambic_ci_build
   service: alambic_ci_build
   command: su - alambic -c 'sh /home/alambic/alambic_test.sh'
-
 - name: alambic_ci_push
   service: alambic_ci_build
   type: push
