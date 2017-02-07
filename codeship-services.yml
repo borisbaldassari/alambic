@@ -1,12 +1,13 @@
 alambic_base_centos:
-  build:
-    image: bbaldassari/alambic_base_centos
-    path: docker/image_base_centos
-    dockerfile: Dockerfile
-    links:
-        - postgres
+  image: bbaldassari/alambic_base_centos
+
+alambic_test:
+  image: bbaldassari/alambic_test
+  links:
+      - postgres
+
 postgres:
-  image: postgres:9.5
-  environment:
-    POSTGRES_PASSWORD: pass4alambic
-    POSTGRES_USER: alambic
+    image: postgres:9.5
+    environment:
+        POSTGRES_PASSWORD: pass4alambic
+        POSTGRES_USER: alambic
