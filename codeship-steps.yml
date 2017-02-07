@@ -16,7 +16,7 @@
   service: alambic_test_build
   command: sh /home/alambic/alambic_test.sh
 - name: alambic_test_push
-  service: alambic_test
+  service: alambic_test_build
   type: push
   image_name: bbaldassari/alambic_test
   registry: https://index.docker.io/v1/
