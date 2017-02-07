@@ -12,7 +12,7 @@
 
 - name: alambic_test
   service: alambic_test
-  command: sh /home/alambic/alambic_test.sh
+  command: su - alambic -c 'sh /home/alambic/alambic_test.sh'
 
 - name: alambic_test_push
   service: alambic_test
