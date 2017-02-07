@@ -33,6 +33,7 @@ RUN sh /root/alambic_install_r_deps.sh
 # Copy perl deps file for alambic
 COPY alambic_install_perl_deps.sh /home/alambic/alambic_install_perl_deps.sh
 RUN chmod +x /home/alambic/alambic_install_perl_deps.sh
+RUN chown alambic /home/alambic/alambic_install_perl_deps.sh
 
 
 # Switch to user alambic to install Perl
