@@ -18,6 +18,8 @@ Then head up to http://localhost:3000 and play with Alambic.
 
 ## Building the base image
 
+The base image is continuously built on https://quay.io/repository/bbaldassari/alambic_base_centos
+
 In the $AL_HOME/docker/image_base_centos directory, execute:
 `$ docker build -t bbaldassari/alambic_base_centos -f Dockerfile .`
 
@@ -33,6 +35,8 @@ docker pull quay.io/bbaldassari/alambic_base_centos
 
 ## Building the test image
 
+The test image is continuously built on https://quay.io/repository/bbaldassari/alambic_test
+
 In the $AL_HOME/docker/image_test directory, execute:
 `$ docker build -t bbaldassari/alambic_test -f Dockerfile .`
 
@@ -44,6 +48,8 @@ docker pull quay.io/bbaldassari/alambic_test
 ```
 
 ## Building the latest Alambic CI image
+
+The ci image is continuously built on https://quay.io/repository/bbaldassari/alambic_ci
 
 In the $AL_HOME/docker/image_ci directory, execute:
 `$ docker build -t bbaldassari/alambic_ci -f Dockerfile .`
