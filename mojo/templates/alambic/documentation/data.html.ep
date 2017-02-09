@@ -100,7 +100,7 @@
 % 
 % foreach my $ds (sort keys %{$project_info}) {
 %   my $conf = $plugins->get_plugin($ds)->get_conf();
-%   foreach my $fig (sort map { $conf->{'provides_figs'}->{$_} } keys %{$conf->{'provides_figs'}}) {
+%   foreach my $fig (sort keys %{$conf->{'provides_figs'}}) {
 	            <li><a href="/projects/<%= $proj %>/<%= $ds %>/<%= $fig %>">/projects/<%= $proj %>/<%= $ds %>/<%= $fig %></a></li>
 %   }
 % }

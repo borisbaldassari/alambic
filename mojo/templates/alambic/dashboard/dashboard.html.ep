@@ -319,8 +319,8 @@
 %     foreach my $pd (sort keys %{$plugin_figs}) {
 		    <tr id="figs_<%= $p %>">
 		      <td><%= $p %></td>
-		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $plugin_figs->{$pd} %>"><%= $plugin_figs->{$pd} %></a></td>
-		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $plugin_figs->{$pd} %>">/projects/<%= $project_id %>/<%= $p %>/<%= $plugin_figs->{$pd} %></a></td>
+		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>"><%= $pd %></a></td>
+		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>">/projects/<%= $project_id %>/<%= $p %>/<%= $pd %></a></td>
 		    </tr>
 %     }
 %   }

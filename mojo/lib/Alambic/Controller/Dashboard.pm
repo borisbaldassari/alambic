@@ -81,7 +81,7 @@ sub display_plugins {
 	    );
 	$self->render( template => 'alambic/dashboard/plugins' );
 	
-    } elsif ( grep( /$page_id(.html)?/, map {$plugin_conf->{'provides_figs'}{$_}} keys %{$plugin_conf->{'provides_figs'}} ) ) {
+    } elsif ( grep( /$page_id(.html)?/, keys %{$plugin_conf->{'provides_figs'}} ) ) {
 	
 	# If the page is a fig, reply static file under 'projects/output'
 	$self->reply->static( '../projects/' . $project_id . '/output/' . $page_id );

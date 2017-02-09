@@ -43,6 +43,9 @@ my %conf = (
 	"SO_ASKERS_5Y" => "SO_ASKERS_5Y",
     },
     "provides_figs" => {
+	"blob-so-evolution-1.svg" => "Evolution of questions on SO (SVG).",
+	"blob-so-plot-1.svg" => "Summary of questions on SO (SVG).",
+	"blob-so-tm-1.svg" => "Main words used on SO (SVG).",
     },
     "provides_recs" => [
         "SO_ANSWER_RATE_LOW",
@@ -241,7 +244,11 @@ sub _compute_data() {
     # Now execute the main R script.
     push( @log, "[Plugins::StackOverflow] Executing R main file." );
     my $r = Alambic::Tools::R->new();
-    @log = ( @log, @{$r->knit_rmarkdown_inc( 'StackOverflow', $project_id, 'stack_overflow.Rmd', \%params )} );    
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'StackOverflow', $project_id, 'stack_overflow.Rmd', 
+					     [ 'blob-so-evolution-1.svg', 
+					       'blob-so-plot-1.svg', 
+					       'blob-so-tm-1.svg' ], 
+					     \%params )} );    
     
     return {
 	"metrics" => \%metrics,

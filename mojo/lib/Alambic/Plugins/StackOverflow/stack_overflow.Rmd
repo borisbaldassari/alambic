@@ -19,7 +19,7 @@ library(knitr)
 require('ggplot2')
 require('xtable')
 
-opts_chunk$set(echo=F, message=F, warning=F, fig.path = 'figures/')
+opts_chunk$set(echo=F, message=F, warning=F, fig.path = '')
 
 # project.id <- 'modeling.sirius'
 # project.tag <- 'eclipse-sirius'
