@@ -93,7 +93,7 @@ sub knit_rmarkdown_inc($$$$) {
     my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
     my $r_md_out = $r_in;
     $r_md_out =~ s/(.*)\..*+/$1/;
-    $r_md_out = "${r_md_out}.inc";
+    $r_md_out = "${project_id}_${r_md_out}.inc";
 
     # Change the current working directory localy only.
     {
@@ -139,7 +139,7 @@ sub knit_rmarkdown_inc($$$$) {
     # If defined, also move the generated images.
     if (defined($r_out) and ref($r_out) eq 'ARRAY') {
 	foreach my $file (@$r_out) {
-	    $file_in = $r_dir . "/" . $file;
+	    $file_in = $r_dir . "/" . $project_id . "_" . $file;
 	    my $ret = move($file_in, $dir_out);
 	    push( @log, "[Tools::R] Moved image file from [${file_in}] to [$dir_out]. ret [$ret]." );
 	}
@@ -240,7 +240,8 @@ sub knit_rmarkdown_html($$$$) {
     my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
     my $r_md_out = $r_in;
     $r_md_out =~ s/(.*)\..*+/$1/;
-    $r_md_out = "${r_md_out}.html";
+    $r_md_out = "${project_id}_${r_md_out}.html";
+    print "# r_out is $r_out and r_md_out is $r_md_out.\n";
 
     # Change the current working directory localy only.
     {
@@ -286,7 +287,7 @@ sub knit_rmarkdown_html($$$$) {
     # If defined, also move the generated images.
     if (defined($r_out) and ref($r_out) eq 'ARRAY') {
 	foreach my $file (@$r_out) {
-	    $file_in = $r_dir . "/" . $file;
+	    $file_in = $r_dir . "/" . $project_id . "_" . $file;
 	    my $ret = move($file_in, $dir_out);
 	    push( @log, "[Tools::R] Moved image file from [${file_in}] to [$dir_out]. ret [$ret]." );
 	}
@@ -334,7 +335,7 @@ sub knit_rmarkdown_images($$$$$) {
     # Move the generated files to project output dir
     my $dir_out = "projects/" . $project_id . "/output/";
     foreach my $file (@$r_out) {
-	my $file_in = $r_dir . "/" . $file;
+	my $file_in = $r_dir . "/" . $project_id . "_" . $file;
 	my $ret = move($file_in, $dir_out);
 	push( @log, "[Tools::R] Moved image file from [${file_in}] to [$dir_out]. ret [$ret]." );
     }

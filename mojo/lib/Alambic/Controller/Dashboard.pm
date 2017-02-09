@@ -84,7 +84,7 @@ sub display_plugins {
     } elsif ( grep( /$page_id(.html)?/, keys %{$plugin_conf->{'provides_figs'}} ) ) {
 	
 	# If the page is a fig, reply static file under 'projects/output'
-	$self->reply->static( '../projects/' . $project_id . '/output/' . $page_id );
+	$self->reply->static( '../projects/' . $project_id . '/output/' . $project_id . '_' . $page_id );
 
     } elsif ( grep( /$page_id/, keys %{$plugin_conf->{'provides_data'}} ) ) {
 
@@ -92,9 +92,8 @@ sub display_plugins {
 	$self->reply->static( '../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id );
 
     } else {
-
-	$self->flash( msg => "Cannot find [$project_id/$plugin_id/$page_id]." );
-	$self->redirect_to( '/projects/' . $project_id );
+	
+	$self->reply->not_found;
 
     }
 }
@@ -175,8 +174,7 @@ sub _display_project_json($$) {
         
     } else {
 	
-	$self->flash( msg => "Cannot find [$project_id/$page_id]." );
-	$self->redirect_to( '/projects/' . $project_id );
+	$self->reply->not_found;
 	
     }
 
@@ -334,8 +332,7 @@ sub _display_project_history_json($$$$) {
         
     } else {
 	
-	$self->flash( msg => "Cannot find [/$project_id/history/$build_id/$page_id]." );
-	$self->redirect_to( '/projects/' . $project_id . "/history" );
+	$self->reply->not_found;
 	
     }
 

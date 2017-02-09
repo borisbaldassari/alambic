@@ -43,9 +43,9 @@ my %conf = (
 	"SO_ASKERS_5Y" => "SO_ASKERS_5Y",
     },
     "provides_figs" => {
-	"blob-so-evolution-1.svg" => "Evolution of questions on SO (SVG).",
-	"blob-so-plot-1.svg" => "Summary of questions on SO (SVG).",
-	"blob-so-tm-1.svg" => "Main words used on SO (SVG).",
+	"so_evolution.svg" => "Evolution of questions on SO (SVG).",
+	"so_plot.svg" => "Summary of questions on SO (SVG).",
+	"so_tm.svg" => "Main words used on SO (SVG).",
     },
     "provides_recs" => [
         "SO_ANSWER_RATE_LOW",
@@ -245,10 +245,15 @@ sub _compute_data() {
     push( @log, "[Plugins::StackOverflow] Executing R main file." );
     my $r = Alambic::Tools::R->new();
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'StackOverflow', $project_id, 'stack_overflow.Rmd', 
-					     [ 'blob-so-evolution-1.svg', 
-					       'blob-so-plot-1.svg', 
-					       'blob-so-tm-1.svg' ], 
+					     [], 
 					     \%params )} );    
+    # And execute r scripts for images
+    my @files_r = ('so_evolution', 'so_plot', 'so_tm');
+    foreach my $file_r ( @files_r ) {
+	@log = ( @log, @{$r->knit_rmarkdown_images( 'StackOverflow', $project_id, 
+						    $file_r . '.r', 
+						    [$file_r . '.svg'] )} );
+    }
     
     return {
 	"metrics" => \%metrics,

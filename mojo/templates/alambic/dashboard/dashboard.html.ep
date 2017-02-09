@@ -18,7 +18,7 @@
  % my $value = shift || 0;
  % return $value * 20;
 <% end %>
- 
+
 <% my $comp_c = begin %>
  % my $value = shift || 0;
  % return $colours->[int($value)];
@@ -40,7 +40,7 @@
 
             <h1 class="al-h1"><small><%= $project_id %></small> Summary</h1>
             <br />
-	    
+
 % my $msg = flash( 'msg' );
 % if ( defined($msg) ) {
             <div class="row">
@@ -53,9 +53,9 @@
             </div>
 % }
 
-%= include 'alambic/dashboard/dashboard_menu', current => '/projects/summary', project_id => "$project_id" 
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/summary', project_id => "$project_id"
             <br />
-	    
+
 	    <!-- span class="label" style="background-color: #3E3F3A">#3E3F3A</span>
 	    <span class="label" style="background-color: #FFA500">#FFA500</span>
 	    <span class="label" style="background-color: #5884B3">#5884B3</span>
@@ -63,7 +63,7 @@
 	    <span class="label" style="background-color: #9DBE59">#9DBE59</span -->
 
             <br />
-	    
+
 	    <div class="row">
               <div class="col-md-6">
               </div>
@@ -76,15 +76,15 @@
               <dt>Description</dt><dd><%== $project->desc() %></dd>
 	      <dt>Last analysis</dt><dd>Executed on <code><%= $run->{'run_time'} %></code> by <code><%= $run->{'run_user'} %></code>, took <code><%= $run->{'run_delay'} %></code> seconds.</dd>
             </dl>
-	    
+
 	    <br />
-		 
+
 	    <div class="row">
               <div class="col-lg-4">
                 <div class="panel panel-default">
 		  <div class="panel-heading">Quality Model</div>
                   <div class="panel-body">
-		    
+
 % my $attr = 'QM_QUALITY';
                     <dt style="margin-bottom: 5px"><a href="/documentation/attributes.html#<%= $attr %>">Project Health</a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
                     <dd>
@@ -93,23 +93,23 @@
                       </div>
                     </dd>
 		    <hr />
-		    
+
 % $attr = 'QM_ECOSYSTEM';
                     <dt style="margin-bottom: 5px"><a href="/documentation/attributes.html#<%= $attr %>">Ecosystem</a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
                     <dd>
                       <div class="progress">
-			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} || '' %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} %> / 5</div> 
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} || '' %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} %> / 5</div>
                       </div>
                     </dd>
-		    
+
 % $attr = 'QM_PROCESS';
                     <dt style="margin-bottom: 5px"><a href="/documentation/attributes.html#<%= $attr %>">Process</a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
                     <dd>
                       <div class="progress">
-			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} || '' %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} %> / 5</div> 
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} || '' %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} %> / 5</div>
                       </div>
                     </dd>
-		    
+
                   </div>
                 </div>
               </div>
@@ -146,14 +146,14 @@
             </div>
 
 	    <hr />
-	    
+
 	    <div class="panel-group" id="accordion_info">
 	      <div class="panel panel-default">
 		<div class="panel-heading">
 		  <a data-toggle="collapse" data-parent="#accordion_info" href="#collapse_info">Information </a>
 		</div>
 		<div id="collapse_info" class="panel-collapse collapse">
-            
+
 		  <table class="table table-striped table-condensed table-hover">
 		    <tr>
                       <th width="20%">Name</th>
@@ -168,18 +168,18 @@
 		    </tr>
 % }
 		  </table>
-		  
+
 		</div>
 	      </div>
 	    </div>
-            
+
 	    <div class="panel-group" id="accordion_metrics">
 	      <div class="panel panel-default">
 		<div class="panel-heading">
 		  <a data-toggle="collapse" data-parent="#accordion_metrics" href="#collapse_metrics">Metrics </a>
 		</div>
 		<div id="collapse_metrics" class="panel-collapse collapse">
-            
+
 		  <table class="table table-striped table-condensed table-hover">
 		    <tr>
                       <th width="20%">Name</th>
@@ -189,11 +189,11 @@
                       <th width="10%">Indicator</th>
 		    </tr>
 % my $metrics = $run->{'metrics'};
-% my $inds = $run->{'indicators'}; 
+% my $inds = $run->{'indicators'};
 % my $metrics_def = $models->get_metrics();
 % my $metrics_active = $models->get_metrics_active();
 % foreach my $item (sort keys %{$metrics}) {
-%   if ( grep( /^$item$/, @{$metrics_active} ) ) { 
+%   if ( grep( /^$item$/, @{$metrics_active} ) ) {
 		    <tr>
                       <td><a href="/documentation/metrics.html#<%= $item %>"><%= $metrics_def->{$item}->{'name'} %></a></td>
                       <td><a href="/documentation/metrics.html#<%= $item %>"><%= $item %></a></td>
@@ -209,7 +209,7 @@
 	      </div>
 	    </div>
 
-	    
+
 	    <div class="panel-group" id="accordion_attrs">
 	      <div class="panel panel-default">
 		<div class="panel-heading">
@@ -225,7 +225,7 @@
                       <th width="10%">Value</th>
                       <th width="10%">Confidence</th>
 		    </tr>
-% foreach my $attr (sort keys %{$attributes}) { 
+% foreach my $attr (sort keys %{$attributes}) {
 		    <tr>
                       <td><a href="/documentation/attributes.html#<%= $attr %>"><%= defined($models->get_attribute($attr)) ? $models->get_attribute($attr)->{'name'} : $attr %></a></td>
                       <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attr %></a></td>
@@ -240,14 +240,14 @@
 	      </div>
 	    </div>
 
-	    
+
 	    <div class="panel-group" id="accordion_recs">
 	      <div class="panel panel-default">
 		<div class="panel-heading">
 		  <a data-toggle="collapse" data-parent="#accordion_recs" href="#collapse_recs">Recommendations </a>
 		</div>
 		<div id="collapse_recs" class="panel-collapse collapse">
-	    
+
 		  <table class="table table-striped table-condensed table-hover">
 		    <tr>
                       <th width="20%">Type</th>
@@ -255,7 +255,7 @@
                       <th width="70%">Description</th>
 		    </tr>
 % foreach my $item (sort { $b->{'severity'} <=> $a->{'severity'} } @{$run->{'recs'} || []}) {
-%   next if ( $item->{'severity'} != 3 ); 
+%   next if ( $item->{'severity'} != 3 );
 		      <tr>
 			<td><%= $item->{'rid'} %></td>
 			<td><%= $recs_txt{ $item->{'severity'} } %></td>
@@ -277,7 +277,7 @@
 		  <table class="table table-striped table-condensed table-hover">
 		    <tr>
                       <th width="20%">Plugin</th>
-                      <th width="40%">Name</th>
+                      <th width="40%">Description</th>
                       <th width="40%">URL</th>
 		    </tr>
 % my $list_data = $plugins->get_list_plugins_data();
@@ -294,7 +294,7 @@
 %   }
 % }
 		  </table>
-		  
+
 		</div>
 	      </div>
 	    </div>
@@ -309,7 +309,7 @@
 		  <table class="table table-striped table-condensed table-hover">
 		    <tr>
                       <th width="20%">Plugin</th>
-                      <th width="40%">Name</th>
+                      <th width="40%">Description</th>
                       <th width="40%">URL</th>
 		    </tr>
 % my $list_figs = $plugins->get_list_plugins_figs();
@@ -319,14 +319,14 @@
 %     foreach my $pd (sort keys %{$plugin_figs}) {
 		    <tr id="figs_<%= $p %>">
 		      <td><%= $p %></td>
-		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>"><%= $pd %></a></td>
+		      <td><%= $plugin_figs->{$pd} %></td>
 		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>">/projects/<%= $project_id %>/<%= $p %>/<%= $pd %></a></td>
 		    </tr>
 %     }
 %   }
 % }
 		  </table>
-		  
+
 		</div>
 	      </div>
 	    </div>
@@ -344,7 +344,7 @@
                       <th width="40%">Name</th>
                       <th width="40%">URL</th>
 		    </tr>
-% my $list_viz = $plugins->get_list_plugins_viz(); 
+% my $list_viz = $plugins->get_list_plugins_viz();
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
 %   if (grep( /$p/, @$list_viz )) {
 %     my $plugin_viz = $plugins->get_plugin($p)->get_conf()->{'provides_viz'};
@@ -359,7 +359,7 @@
 %   }
 % }
 		  </table>
-		  
+
 		</div>
 	      </div>
 	    </div>
