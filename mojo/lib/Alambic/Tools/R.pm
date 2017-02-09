@@ -121,7 +121,8 @@ sub knit_rmarkdown_inc($$$$) {
     my $dir_in_fig = $r_dir . '/figures/';
     my $dir_out = "projects/" . $project_id . "/output/";
     my $dir_out_fig = $dir_out . '/figures/';
-    move( $file_in, $dir_out );
+    my $ret = move( $file_in, $dir_out );
+    push( @log, "[Tools::R] Moved main file from [${file_in}] to [$dir_out]. ret [$ret]." );
 
     # Create dir for figures.
     if (! -d "${dir_out_fig}" ) {
@@ -133,14 +134,14 @@ sub knit_rmarkdown_inc($$$$) {
     my $files = $dir_in_fig . "*";
     my @files = glob qq(${files});
     foreach my $file (@files) {
-	my $ret = move($file, $dir_out_fig);
+	$ret = move($file, $dir_out_fig);
     }
     
     # If defined, also move the generated images.
     if (defined($r_out) and ref($r_out) eq 'ARRAY') {
 	foreach my $file (@$r_out) {
 	    $file_in = $r_dir . "/" . $project_id . "_" . $file;
-	    my $ret = move($file_in, $dir_out);
+	    $ret = move($file_in, $dir_out);
 	    push( @log, "[Tools::R] Moved image file from [${file_in}] to [$dir_out]. ret [$ret]." );
 	}
     }
@@ -241,7 +242,6 @@ sub knit_rmarkdown_html($$$$) {
     my $r_md_out = $r_in;
     $r_md_out =~ s/(.*)\..*+/$1/;
     $r_md_out = "${project_id}_${r_md_out}.html";
-    print "# r_out is $r_out and r_md_out is $r_md_out.\n";
 
     # Change the current working directory localy only.
     {
