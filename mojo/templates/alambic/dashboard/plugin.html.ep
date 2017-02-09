@@ -116,7 +116,7 @@
                 <th width="10%">Severity</th>
                 <th width="70%">Description</th>
               </tr>
-% foreach my $pr (sort @run_recs) {
+% foreach my $pr (sort {$b->{'rid'} cmp $a->{'rid'}} @run_recs) {
               <tr>
                 <td><%= $pr->{'rid'} %></td>
                 <td><%= $recs_txt{ $pr->{'severity'} } %></td>
@@ -157,7 +157,7 @@
 % foreach my $item (sort keys %$plugin_data) {
               <tr>
 		<td><%= $item %></td>
-		<td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>"><%= $pd %></a><br /><%= $plugin_data->{$item} %></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %>"><%= $item %></a><br /><%= $plugin_data->{$item} %></td>
 		<td><a href="/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %>">/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %></a></td>
 	      </tr>
 % }
