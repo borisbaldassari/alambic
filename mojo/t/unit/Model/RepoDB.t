@@ -12,8 +12,18 @@ use POSIX;
 BEGIN { use_ok( 'Alambic::Model::RepoDB' ); }
 
 my $clean_db = 1;
+my $file_conf = "alambic.conf";
+my $conf;
+{
+    open(my $fh, "<", $file_conf) or die "Could not open [$file_conf].\n";
+    local $/;
+    $conf = <$fh>;
+    close $fh;
+}
 
-my $pg = Mojo::Pg->new('postgresql://alambic:pass4alambic@/alambic_db');
+my $conf_e = eval $conf;
+my $conf_db = $conf_e->{'conf_pg_alambic'};
+my $pg = Mojo::Pg->new($conf_db);
 
 my $repodb = Alambic::Model::RepoDB->new();
 isa_ok( $repodb, 'Alambic::Model::RepoDB' );

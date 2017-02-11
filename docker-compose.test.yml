@@ -1,14 +1,16 @@
 version: '2'
 services:
+  postgres:
+    image: postgres:9.5
+    container_name: postgres
+    environment:
+        POSTGRES_PASSWORD: pass4alambic
+        POSTGRES_USER: alambic
   alambic_test:
     image: bbaldassari/alambic_test
-    command: sh /home/alambic/alambic_test.sh
+    command: su - alambic -c "sh /home/alambic/alambic_test.sh"
     ports:
     - "3000:3000"
     depends_on:
     - postgres
-  postgres:
-    image: postgres:9.5
-    environment:
-        POSTGRES_PASSWORD: pass4alambic
-        POSTGRES_USER: alambic
+
