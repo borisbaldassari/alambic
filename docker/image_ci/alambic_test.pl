@@ -1,0 +1,1 @@
+../../resources/scripts/alambic_test.pl
