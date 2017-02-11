@@ -22,6 +22,6 @@ COPY psql_init.sql /home/alambic/psql_init.sql
 
 USER root
 
-# Execute tests
-CMD ["su", "-", "alambic", "-c", "/home/alambic/alambic_test.sh"]
+CMD [ "su", "-", "alambic", "-c", "perl", "-v" ]
+
 
