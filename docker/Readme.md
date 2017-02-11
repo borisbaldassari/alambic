@@ -9,16 +9,23 @@ Please note that both test and ci images need a postgresql container to run. A c
 
 ## Running Alambic using compose
 
-The docker-compose.run.yml file at the root of the repository provides an integrated environment that uses the official docker postgresql 9.5 image.
+The docker-compose.run.yml file at the root of the repository provides an integrated environment that uses the official docker postgresql 9.5 image, runs an init script and sets the application up for use.
 
 In the root of the Alambic repository, execute:
 `$ docker-compose -f docker-compose.run.yml up`
 
-Then head up to http://localhost:3000 and play with Alambic.
+Then head up to http://localhost:3000 and play with Alambic. Default login/password is administrator/password
+
+## Running Alambic tests using compose
+
+The docker-compose.test.yml file at the root of the repository provides an integrated environment that uses the official docker postgresql 9.5 image, runs all perl tests and outputs the resultof Test::Harness.
+
+In the root of the Alambic repository, execute:
+`$ docker-compose -f docker-compose.test.yml run alambic_test`
 
 ## Building the base image
 
-The base image is continuously built on https://quay.io/repository/bbaldassari/alambic_base_centos
+The base image is continuously built on codefresh, and pushed to the docker hub: https://hub.docker.com/r/bbaldassari/alambic_base_centos/
 
 In the $AL_HOME/docker/image_base_centos directory, execute:
 `$ docker build -t bbaldassari/alambic_base_centos -f Dockerfile .`
@@ -28,35 +35,35 @@ It creates a Centos docker image, with:
 * Perlbrew, Perl, Mojolicious and all required modules,
 * The latest release of R and all required packages.
 
-The official bleeding edge base image can also be downloaded from the alambic ci instance on [quay.io](http://quay.io)
+You can also get individually from docker like this:
 ```
-docker pull quay.io/bbaldassari/alambic_base_centos
+docker pull bbaldassari/alambic_base_centos
 ```
 
 ## Building the test image
 
-The test image is continuously built on https://quay.io/repository/bbaldassari/alambic_test
+The test image is continuously built on codefresh, and pushed to the docker hub: https://hub.docker.com/r/bbaldassari/alambic_test
 
 In the $AL_HOME/docker/image_test directory, execute:
 `$ docker build -t bbaldassari/alambic_test -f Dockerfile .`
 
 It creates an image called `bbaldassari/alambic_test` with Alambic installed and ready for test.
 
-The official bleeding edge image can also be downloaded from the alambic ci instance on [quay.io](http://quay.io)
+You can also get individually from docker like this:
 ```
-docker pull quay.io/bbaldassari/alambic_test
+docker pull bbaldassari/alambic_test
 ```
 
 ## Building the latest Alambic CI image
 
-The ci image is continuously built on https://quay.io/repository/bbaldassari/alambic_ci
+The ci image is continuously built on codefresh, and pushed to the docker hub: https://hub.docker.com/r/bbaldassari/alambic_ci
 
 In the $AL_HOME/docker/image_ci directory, execute:
 `$ docker build -t bbaldassari/alambic_ci -f Dockerfile .`
 
 It creates an image called `bbaldassari/alambic_ci` with Alambic installed and ready for test.
 
-The official bleeding edge ci image can also be downloaded from the alambic ci instance on [quay.io](http://quay.io)
+You can also get individually from docker like this:
 ```
-docker pull quay.io/bbaldassari/alambic_ci
+docker pull bbaldassari/alambic_ci
 ```
