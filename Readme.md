@@ -2,8 +2,6 @@
 
 Alambic is an open-source platform and service for the management and visualisation of software engineering data. It is licenced under the [Eclise Public Licence v1.0](https://www.eclipse.org/legal/epl-v10.html).
 
-[ ![Codeship Status for BorisBaldassari/alambic](https://app.codeship.com/projects/8f5ae970-a10d-0134-6d00-664a346b6816/status?branch=master)](https://app.codeship.com/projects/189806)
-
 It basically retrieves metrics from many various repositories (code metrics, scm, its, mailing lists, stack overflow questions, etc.) and makes them available for custom plugins to produce analysis, numbers, graphics, and data sets. 
 
 A flexible plugin system allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs). Examples of plugins ready to use include PMD Results Analysis, StackOverflow questions and PMI Checks for Eclipse projects.
