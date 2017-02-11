@@ -1,1 +1,4 @@
-../../resources/scripts/psql_init.sql
+CREATE DATABASE alambic_db OWNER alambic;
+CREATE DATABASE minion_db OWNER alambic;
+
+
