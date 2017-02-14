@@ -20,6 +20,9 @@ COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
 # copy sql init script for alambic_test.sh
 COPY psql_init.sql /home/alambic/psql_init.sql
 
+USER root
+
 # Execute processes
-CMD ["sh", "/home/alambic/alambic_init.sh"]
+CMD [ "su", "-", "alambic", "-c", "/home/alambic/alambic_init.sh"]
+
 
