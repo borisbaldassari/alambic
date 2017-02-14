@@ -6,6 +6,7 @@ EXPOSE 3000
 
 # Copy as root and set permissions
 COPY alambic_init.sh /home/alambic/alambic_init.sh
+COPY alambic_init.sh /home/alambic/alambic_init_start.sh
 COPY alambic_start.sh /home/alambic/alambic_start.sh
 RUN chown alambic:alambic /home/alambic/alambic_init.sh
 RUN chown alambic:alambic /home/alambic/alambic_start.sh
