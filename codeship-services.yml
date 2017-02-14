@@ -9,9 +9,6 @@ alambic_test_build:
     image: bbaldassari/alambic_test
     path: docker/image_test/
     dockerfile: Dockerfile
-
-alambic_test_run:
-  image: bbaldassari/alambic_test
   links:
       - postgres
 
