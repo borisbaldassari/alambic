@@ -22,6 +22,6 @@ COPY psql_init.sql /home/alambic/psql_init.sql
 
 USER root
 
-CMD [ "su", "-", "alambic", "-c", "perl", "-v" ]
+CMD [ "su", "-", "alambic", "-c", "perl -v" ]
 
 
