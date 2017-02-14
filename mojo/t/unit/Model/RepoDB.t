@@ -25,7 +25,7 @@ my $conf_e = eval $conf;
 my $conf_db = $conf_e->{'conf_pg_alambic'};
 my $pg = Mojo::Pg->new($conf_db);
 
-my $repodb = Alambic::Model::RepoDB->new();
+my $repodb = Alambic::Model::RepoDB->new($conf_db);
 isa_ok( $repodb, 'Alambic::Model::RepoDB' );
 
 my $is_init = $repodb->is_db_defined();
