@@ -16,9 +16,4 @@ cat alambic.conf
 # Initialise the app: create tables, init instance.
 script/alambic alambic init
 
-# Start main process for mojo
-hypnotoad script/alambic
-
-# Start workers for jobs
-script/alambic minion worker
 
