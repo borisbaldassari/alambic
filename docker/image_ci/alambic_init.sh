@@ -9,7 +9,7 @@ source ~/.bashrc
 perl -v
 
 # Create the required databases: alambic_db and minion_db
-PGPASSWORD=pass4alambic psql -h postgres < ~/psql_init.sql
+PGPASSWORD=pass4alambic psql -h postgres < ~/alambic/resources/scripts/psql_init.sql
 
 cd /home/alambic/alambic/mojo
 cat alambic.conf
