@@ -1,4 +1,5 @@
 
+echo "# Alambic script for test."
 echo "Waiting 10 seconds for the db to init correctly."
 sleep 10
 

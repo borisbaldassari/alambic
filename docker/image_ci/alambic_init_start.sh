@@ -1,5 +1,6 @@
-# Script to initialise Alambic for the ci docker image.
 
+# Script to initialise Alambic for the ci docker image.
+echo "# Alambic script for init start."
 echo "Waiting 10 seconds for the db to init correctly."
 sleep 10
 
