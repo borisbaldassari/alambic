@@ -1,6 +1,7 @@
 # Using alambic in Docker
 
 A few Docker images are setup:
+
 * A base image built from a CentOS 7 (`alambic_base_centos`) that contains all dependencies: Postgresql, Perl, Mojolicious, R, and all required modules.
 * A test image `image_test` built from `alambic_base_centos` that clones the Alambic repository and executes all tests.
 * A release image `alambic_ci` built from `alambic_base_centos` that provides a complete Alambic ready to use.
@@ -31,6 +32,7 @@ In the $AL_HOME/docker/image_base_centos directory, execute:
 `$ docker build -t bbaldassari/alambic_base_centos -f Dockerfile .`
 
 It creates a Centos docker image, with:
+
 * Postgresql 9.5 (client),
 * Perlbrew, Perl, Mojolicious and all required modules,
 * The latest release of R and all required packages.
