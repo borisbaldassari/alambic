@@ -25,7 +25,7 @@
 
 - name: alambic_ci_build
   service: alambic_ci_build
-  command: sh /home/alambic/alambic_init.sh
+  command: su - alambic -c "sh /home/alambic/alambic_init.sh"
 
 - name: alambic_ci_push
   service: alambic_ci_build

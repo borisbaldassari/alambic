@@ -17,6 +17,8 @@ alambic_ci_build:
     image: bbaldassari/alambic_ci
     path: docker/image_ci/
     dockerfile: Dockerfile
+  links:
+      - postgres
 
 postgres:
     image: postgres:9.5
