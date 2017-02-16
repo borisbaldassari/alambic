@@ -559,7 +559,8 @@ sub _aggregate_inds($$$$$) {
 	
     }
 
-    my $confidence = $raw_qm->{"m_ok"} . " / " . $raw_qm->{"m_total"};
+    my $confidence = ($raw_qm->{"m_ok"} || 'x') . " / " 
+	. ($raw_qm->{"m_total"} || 'x');
 
     # Populate hashes of values for indicators, attributes.
     if (defined($coef)) {
