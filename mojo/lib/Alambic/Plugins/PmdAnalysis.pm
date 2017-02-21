@@ -47,12 +47,12 @@ my %conf = (
     "provides_metrics" => {
     },
     "provides_figs" => {
-	'pmd_analysis_pie.rmd' => 'pmd_analysis_pie.html',
-	'pmd_analysis_files_ncc1.r' => 'pmd_analysis_files_ncc1.svg',
-	'pmd_analysis_top_5_rules.r' => 'pmd_analysis_top_5_rules.svg',
-	'pmd_configuration_rulesets_repartition.r' => 'pmd_configuration_rulesets_repartition.svg',
-	'pmd_configuration_summary_pie.rmd' => 'pmd_configuration_summary_pie.html',
-	'pmd_configuration_violations_rules.r' => 'pmd_configuration_violations_rules.svg',
+	'pmd_analysis_pie.html' => 'Pie of PMD analysis results (HTML)',
+	'pmd_analysis_files_ncc1.svg' => 'Non-conforimities by file (SVG)',
+	'pmd_analysis_top_5_rules.svg' => 'Top 5 rules with most non-conformities (SVG)',
+	'pmd_configuration_rulesets_repartition.svg' => 'Repartition of non-conformities across rulesets (SVG)',
+	'pmd_configuration_summary_pie.html' => 'Pie of PMD configuration results (HTML)',
+	'pmd_configuration_violations_rules.svg' => 'Non-conformities by rule (SVG)',
     },
     "provides_recs" => [
         "PMD_RULE_DEL",
@@ -376,14 +376,16 @@ sub _compute_data($$$) {
     }
     
     # And execute the figures R scripts.
-    foreach my $fig (sort keys %{$conf{'provides_figs'}}) {
-	push( @log, "[Plugins::PmdAnalysis] Executing R fig file [$fig]." );
-	if ($conf{'provides_figs'}{$fig} =~ /\.html$/) {
-	    @log = ( @log, @{$r->knit_rmarkdown_html( 'PmdAnalysis', $project_id, $fig )} );
-	} elsif ($conf{'provides_figs'}{$fig} =~ /\.svg$/) {
-	    @log = ( @log, @{$r->knit_rmarkdown_svg( 'PmdAnalysis', $project_id, $fig )} );
-	}
+    @log = ( @log, @{$r->knit_rmarkdown_html( 'PmdAnalysis', $project_id, "pmd_analysis_pie.rmd" )} );
+    @log = ( @log, @{$r->knit_rmarkdown_html( 'PmdAnalysis', $project_id, "pmd_configuration_summary_pie.rmd" )} );
+    my @files_r = ('pmd_analysis_files_ncc1', 'pmd_analysis_top_5_rules', 
+		   'pmd_configuration_rulesets_repartition', 'pmd_configuration_violations_rules');
+    foreach my $file_r ( @files_r ) {
+	@log = ( @log, @{$r->knit_rmarkdown_images( 'PmdAnalysis', $project_id, 
+						    $file_r . '.r', 
+						    [$file_r . '.svg'] )} );
     }
+
     
     return {
 	"recs" => \@recs,

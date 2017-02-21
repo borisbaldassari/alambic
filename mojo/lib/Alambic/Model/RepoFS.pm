@@ -4,6 +4,7 @@ use warnings;
 use strict;
 
 use File::Path qw( remove_tree );
+use Mojo::JSON qw( decode_json encode_json );
 use POSIX;
 
 require Exporter;
@@ -17,6 +18,8 @@ our @EXPORT_OK = qw(
                      read_plugin
                      write_models
                      read_models
+                     write_users
+                     read_users
                      delete_project
                    );  
 
@@ -177,6 +180,47 @@ sub write_models($$$) {
     open my $fh, ">", $path;
     print $fh $content;
     close $fh;
+}
+
+sub write_users($$$) {
+    my ($self, $plugin_id, $project_id, $content) = @_;
+
+    # Create users dir if it does not exist
+    my $dir_path = 'projects/' . $project_id . '/users/' ;
+    if (not -d $dir_path ) { 
+        mkdir( $dir_path );
+    }
+
+    my $path = $dir_path . $plugin_id . "_users.json";
+    open my $fh, ">", $path;
+    print $fh encode_json( $content );
+    close $fh;
+}
+
+sub read_users($$$) {
+    my ($self, $project_id) = @_;
+
+    my @files_users = <projects/${project_id}/users/*_users.json>;
+    my %users;
+#    print "Reading users.\n";
+    foreach my $file (@files_users) {
+	if (-e $file && $file =~ m!.*/([^/]+)_users.json!) {
+	    my $plugin_id = $1;
+	    do { 
+		local $/;
+		open my $fh, '<', $file or return 0;
+		my $json = <$fh>;
+		close $fh;
+		my $content = decode_json($json);
+		foreach my $u (keys %$content) { 
+		    $users{$u}{$plugin_id} = $content->{$u};
+#		    print "Reading user [$u].\n";
+		}
+	    };
+	}
+    }
+    
+    return \%users;
 }
 
 sub read_models($$) {

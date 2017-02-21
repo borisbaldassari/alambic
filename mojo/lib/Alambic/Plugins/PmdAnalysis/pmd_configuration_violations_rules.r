@@ -4,11 +4,13 @@ variables <- commandArgs(trailingOnly=TRUE)
 project.id <- variables[1]
 plugin.id <- variables[2]
 
+file.out <- paste( project.id, "_pmd_configuration_violations_rules.svg", sep="")
+
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
 pmd.violations <- read.csv(file=paste("", project.id, "_pmd_analysis_violations.csv", sep=""), header=T)
 
-svg("pmd_configuration_violations_rules.svg", width=14, height=8)
+svg(file.out, width=14, height=8)
 ggplot(data=pmd.violations, aes(x=reorder(Mnemo, vol), y=vol+1, fill=factor(priority))) +
   geom_bar(stat='identity') +
   scale_fill_manual(values=priority.colours) +

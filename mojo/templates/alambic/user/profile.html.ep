@@ -1,0 +1,21 @@
+% my $user_id = stash( 'user_id' );
+% my $project_id = stash( 'project_id' );
+% my $user = app->al->get_user($user_id);
+
+            <h1 class="al-h1"><small><%= $user_id %></small> User profile</h1>
+            <br />
+
+%= include 'alambic/user/user_menu', current => '/user/profile', user => $user,  
+            <br />
+	    
+	    <h2>Profile</h2>
+	    <br />
+	    
+            <dl class="dl-horizontal">
+	        <dt>ID</dt><dd><%= $user->{'id'} %></dd>
+	        <dt>Name</dt><dd><%= $user->{'name'} %></dd>
+	        <dt>Email</dt><dd><%= $user->{'email'} %></dd>
+	        <dt>Roles</dt><dd><%= join( ', ', @{ $user->{'roles'} || [] } ) %></dd>
+	    </dl>
+
+

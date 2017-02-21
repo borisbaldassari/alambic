@@ -70,17 +70,17 @@ sub init_models($$$$) {
 }
 
 #
-# Add is_active, parents nodes to metrics definition.
+# Add used, parents nodes to metrics definition.
 #
 sub _init_metrics($) {
     my $in_metrics = shift;
     my $in_model = shift;
     my $in_plugins = shift;
 
-    # Import metrics and enhance their defition (add is_active)
+    # Import metrics and enhance their defition (add is_used)
     foreach my $tmp_metric (keys %$in_metrics) {
 
-	# Check if the metric is active in the qm 
+	# Check if the metric is used in the qm 
 	my @nodes_array;
         # Find nodes of qm which have the same mnemonic.
 	&_find_qm_node($in_model, "metric", $tmp_metric, \@nodes_array, "root");
@@ -92,11 +92,11 @@ sub _init_metrics($) {
 #		$self->log->info( "[Model::Models] ERR: no father on " . $node->{"mnemo"} . "" );
 	    }
 
-	    my $active = $node->{"active"} || '';
-	    if ($active =~ m!true!i) { 
-		$in_metrics->{$tmp_metric}->{"active"} = "true"; 
+	    my $used = $node->{"used"} || '';
+	    if ($used =~ m!true!i) { 
+		$in_metrics->{$tmp_metric}->{"used"} = "true"; 
 	    } else {
-		$in_metrics->{$tmp_metric}->{"active"} = "false"; 
+		$in_metrics->{$tmp_metric}->{"used"} = "false"; 
 	    }
 	}
 	$in_metrics->{$tmp_metric}->{"parents"} = \%tmp_nodes;
@@ -105,10 +105,10 @@ sub _init_metrics($) {
 	$metrics{$tmp_metric} = $in_metrics->{$tmp_metric};
 
 	# Populate metrics_ds and %metrics only if the metric has been found in the qm.
-	if ( defined($in_metrics->{$tmp_metric}->{'active'}) &&
-	     $in_metrics->{$tmp_metric}->{'active'} =~ m!true! ) { 
+	#if ( defined($in_metrics->{$tmp_metric}->{'used'}) &&
+	#     $in_metrics->{$tmp_metric}->{'used'} =~ m!true! ) { 
 	    push( @metrics_active, $tmp_metric ) 
-	}
+	#}
     }
 
     # Now build the list of data sources by reading through

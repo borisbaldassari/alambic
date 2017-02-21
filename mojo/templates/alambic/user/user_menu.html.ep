@@ -1,0 +1,14 @@
+
+            <div class="tabbable">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"<%== ( $current =~ m!^/user/profile$! ) ? ' class="active"' : '' %>><a href="/user/<%= $user_id %>/profile">Summary</a></li>
+                <li role="presentation"<%== ( $current =~ m!^/projects/data$! ) ? ' class="active"' : '' %> class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Projects <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">		
+% foreach my $project_id ( sort keys %{$user->{'projects'}} ) {
+                    <li role="presentation"<%== ( $current =~ m!^/user/projects$! ) ? ' class="active"' : '' %>><a href="/user/<%= $user->{'id'} %>/project/<%= $project_id %>"><%= $project_id %></a></li>		
+% }
+                  </ul>
+		</li>
+              </ul>
+            </div>

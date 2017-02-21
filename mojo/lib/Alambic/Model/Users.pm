@@ -12,9 +12,12 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( 
                      get_user
+                     get_roles
                      get_users
-                     get_users_list
+                     get_projects_for_user
                      validate_user
+                     generate_password
+                     
  );  
 
 
@@ -34,18 +37,13 @@ sub validate_user($$$) {
     my $uid = shift || "";
     my $passwd = shift || "";
 
-    return $uid;
-
-    print "[Model::Users] Trying auth for $uid and $passwd.\n";
     if ( exists $users{$uid}{'passwd'} ) {
 	my $hash = $users{$uid}{'passwd'};
-	print "[Model::Users] Hash is $hash.\n";
 	my $pbkdf2 = Crypt::PBKDF2->new;
 	if ($pbkdf2->validate($hash, $passwd)) {
 	    return $uid;
 	}
     }
-    print "[Model::Users] Auth not ok for $uid and $passwd.\n";
     return undef;
 }
 

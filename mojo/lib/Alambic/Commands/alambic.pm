@@ -24,7 +24,7 @@ sub run {
       # Set administrator parameters.
       my $project = $self->app->al->set_user( 
           'administrator', 'Administrator', 'alambic@castalia.solutions', 
-          'password', ['Admin'], [], {} );
+          'password', ['Admin'], {}, {} );
   } elsif ($args[0] eq 'backup') { 
 
     my $sql = $self->app->al->backup();
