@@ -68,7 +68,6 @@ sub display_plugins {
     if ($plugin_conf->{'type'} =~ m!^cdata$!) {
 	
     }
-
     
     # Action depends on the type of file requested
     if ( grep( /$page_id/, keys %{$plugin_conf->{'provides_viz'}} ) ) {
@@ -81,21 +80,35 @@ sub display_plugins {
 	    );
 	$self->render( template => 'alambic/dashboard/plugins' );
 	
-    } elsif ( grep( /$page_id(.html)?/, map {$plugin_conf->{'provides_figs'}{$_}} keys %{$plugin_conf->{'provides_figs'}} ) ) {
-	
-	# If the page is a fig, reply static file under 'projects/output'
-	$self->reply->static( '../projects/' . $project_id . '/output/' . $page_id );
-
-    } elsif ( grep( /$page_id/, keys %{$plugin_conf->{'provides_data'}} ) ) {
-
-	# If the page is a data, reply static file under 'projects/output'
-	$self->reply->static( '../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id );
-
     } else {
 
-	$self->flash( msg => "Cannot find [$project_id/$plugin_id/$page_id]." );
-	$self->redirect_to( '/projects/' . $project_id );
-
+	# Then require some technique to identify the 404s from all requests
+	my $ret;
+	
+	if ( grep( /$page_id(.html)?/, keys %{$plugin_conf->{'provides_figs'}} ) ) {
+	    
+	    # If the page is a fig, reply static file under 'projects/output'
+	    $ret = '../projects/' . $project_id . '/output/' . $project_id . '_' . $page_id;
+	    
+	} elsif ( grep( /$page_id/, keys %{$plugin_conf->{'provides_data'}} ) ) {
+	    
+	    # If the page is a data, reply static file under 'projects/output' or 'projects/input'
+	    my $file_out = 'projects/' . $project_id . '/output/' . $project_id . "_" . $page_id;
+	    my $file_in = 'projects/' . $project_id . '/input/' . $project_id . "_" . $page_id;
+	    
+	    if (-e $file_out) {
+		$ret = '../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id;
+	    } elsif (-e $file_in) {
+		$ret = '../projects/' . $project_id . '/input/' . $project_id . "_" . $page_id;
+	    } 
+	}   
+	 
+	if ( defined($ret) ) {
+		$self->reply->static( $ret );
+	} else {
+	    $self->reply->not_found;
+	    
+	}
     }
 }
 
@@ -175,8 +188,7 @@ sub _display_project_json($$) {
         
     } else {
 	
-	$self->flash( msg => "Cannot find [$project_id/$page_id]." );
-	$self->redirect_to( '/projects/' . $project_id );
+	$self->reply->not_found;
 	
     }
 
@@ -199,7 +211,6 @@ sub _display_project_html($$) {
 	my %runs;
 	my $runs_info = $self->app->al->get_repo_db->get_project_all_runs($project_id);
 	foreach my $run_ (@{$runs_info}) {
-	    print "# " . $run_->{'id'} . ".\n";
 	    $runs{ $run_->{'id'} } = $self->app->al->get_repo_db->get_project_run($project_id, $run_->{'id'});
 	}
 
@@ -335,8 +346,7 @@ sub _display_project_history_json($$$$) {
         
     } else {
 	
-	$self->flash( msg => "Cannot find [/$project_id/history/$build_id/$page_id]." );
-	$self->redirect_to( '/projects/' . $project_id . "/history" );
+	$self->reply->not_found;
 	
     }
 

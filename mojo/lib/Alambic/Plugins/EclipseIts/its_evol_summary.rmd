@@ -2,7 +2,7 @@
 output: html_document
 ---
 <div class="row"><div class="col-md-12">
-```{r init, echo=FALSE, fig.height=3, message=FALSE}
+```{r init, echo=FALSE, fig.height=3, message=FALSE, warning=FALSE}
 library(plotly)
 library(reshape2)
 
@@ -12,11 +12,24 @@ evol <- read.csv(file=file.evol, header=T)
 evol[is.na(evol)] <- 0
 evol <- evol[cumsum(abs(evol$changed + evol$changers + evol$closed 
                         + evol$closers + evol$opened + evol$openers 
-                        + evol$trackers)) != 0,]
+                        + evol$trackers)) != 0 & complete.cases(evol),]
 
-my.data.long <- melt(evol[,c(1:8)], id.vars="date", value.name="value", variable.name="metric")
-p <-plot_ly(my.data.long, x = date, y = metric, size = value, mode = "markers", width=800, height=350) %>%
-      layout(autosize = F, width=800, height=350)
+evol.i <- data.frame(seq(1:nrow(evol)), evol[,c('date','changed', 'changers', 'closed', 'closers', 'opened', 'openers', 'trackers')])
+names(evol.i)[1] <- 'index'
+
+p <- plot_ly(data=evol.i, x=~index, y=~changed, text= ~paste('Date: ', date), 
+		name="Changed", type='scatter', mode='lines', width=800, height=350)  %>% 
+	add_trace(y=~changers, name='Changers', mode='lines') %>% 
+	add_trace(y=~closed, name='Closed', mode='lines') %>% 
+	add_trace(y=~closers, name='Closers', mode='lines') %>% 
+	add_trace(y=~opened, name='Opened', mode='lines') %>% 
+	add_trace(y=~openers, name='Openers', mode='lines') %>% 
+	add_trace(y=~trackers, name='Trackers', mode='lines') %>%
+    layout(autosize = F,
+		yaxis = list( title = "Value" ))
+
+#p <-plot_ly(my.data.long, x = "date", y = "metric", size = "value", mode = "markers", width=800, height=350) %>%
+#      layout(autosize = F, width=800, height=350)
 p
 ```
 </div></div>

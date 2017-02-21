@@ -8,6 +8,7 @@ use Alambic::Tools::R;
 
 use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
+use List::Util qw(reduce);
 use Data::Dumper;
 
 # Main configuration hash for the plugin
@@ -62,10 +63,10 @@ my %conf = (
         "OPENERS" => "ITS_OPENERS", 
     },
     "provides_figs" => {
-        'its_evol_summary.rmd' => "its_evol_summary.html",
-        'its_evol_changed.rmd' => "its_evol_changed.html",
-        'its_evol_opened.rmd' => "its_evol_opened.html",
-        'its_evol_people.rmd' => "its_evol_people.html",
+        'its_evol_summary.html' => "Evolution of ITS metrics (HTML)",
+        'its_evol_changed.html' => "Evolution of changed issues (HTML)",
+        'its_evol_opened.html' => "Evolution of opened issues (HTML)",
+        'its_evol_people.html' => "Evolution of people involved with issues (HTML)",
     },
     "provides_recs" => [
         "ITS_OPEN_BUGS",
@@ -221,7 +222,12 @@ sub _compute_data($$$) {
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'EclipseIts', $project_id, 'eclipse_its.Rmd' )} );
 
     # And execute the figures R scripts.
-    my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
+    my @figs = (
+        'its_evol_summary.rmd',
+        'its_evol_changed.rmd',
+        'its_evol_opened.rmd',
+	'its_evol_people.rmd',
+    );
     foreach my $fig (sort @figs) {
 	push( @log, "[Plugins::EclipseIts] Executing R fig file [$fig]." );
 	@log = ( @log, @{$r->knit_rmarkdown_html( 'EclipseIts', $project_id, $fig )} );
@@ -233,8 +239,14 @@ sub _compute_data($$$) {
     # Check number of open bugs.
     # If there are at least twice as many opened bugs as closed bugs, raise an alert.
     my $weeks = -4;
-    my $closed_old = $metrics_evol->{'closed'}->[$weeks];
-    my $opened_old = $metrics_evol->{'opened'}->[$weeks];
+
+    #    print "#Metrics_vol " . Dumper($metrics_evol);
+    my @closed = @{$metrics_evol->{'closed'}};
+    my @opened = @{$metrics_evol->{'opened'}};
+    
+    my $closed_old = reduce { $a + $b } splice @closed, $weeks;
+    my $opened_old = reduce { $a + $b } splice @opened, $weeks;
+
     if ( $closed_old < ( 2 * $opened_old) ) {
 	push( @recs, { 'rid' => 'ITS_OPENED_BUGS', 
 		       'severity' => 1,

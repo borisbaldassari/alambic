@@ -4,17 +4,28 @@ use strict;
 use warnings;
 
 use Mojo::Pg;
-use Test::More;
+use Mojo::JSON qw(decode_json encode_json);
+use Test::More tests => 59;
 use Data::Dumper;
 use POSIX;
 
 BEGIN { use_ok( 'Alambic::Model::RepoDB' ); }
 
 my $clean_db = 1;
+my $file_conf = "alambic.conf";
+my $conf;
+{
+    open(my $fh, "<", $file_conf) or die "Could not open [$file_conf].\n";
+    local $/;
+    $conf = <$fh>;
+    close $fh;
+}
 
-my $pg = Mojo::Pg->new('postgresql://alambic:pass4alambic@/alambic_db');
+my $conf_e = eval $conf;
+my $conf_db = $conf_e->{'conf_pg_alambic'};
+my $pg = Mojo::Pg->new($conf_db);
 
-my $repodb = Alambic::Model::RepoDB->new();
+my $repodb = Alambic::Model::RepoDB->new($conf_db);
 isa_ok( $repodb, 'Alambic::Model::RepoDB' );
 
 my $is_init = $repodb->is_db_defined();
@@ -53,13 +64,13 @@ eval {
     while (my $next = $results->hash) { 
 	$values{ $next->{'param'} } = $next->{'val'}; 
     }
-    is( $values{'name'}, "MyDBNameInit", "Name in DB is MyDBNameInit." ) or diag explain %values;
-    is( $values{'desc'}, "MyDBDescInit", "Desc in DB is MyDBDescInit." ) or diag explain %values;
+    is( $values{'name'}, "Default CLI init", "Name in DB is Default CLI init." ) or diag explain %values;
+    is( $values{'desc'}, "Default CLI Init description", "Desc in DB is Default CLI Init description." ) or diag explain %values;
     
     my $name = $repodb->name();
-    is( $name, 'MyDBNameInit', "Name from module is MyDBNameInit." ) or diag explain $name;
+    is( $name, 'Default CLI init', "Name from module is Default CLI init." ) or diag explain $name;
     my $desc = $repodb->desc();
-    is( $desc, 'MyDBDescInit', "Desc from module is MyDBDescInit." ) or diag explain $name;
+    is( $desc, 'Default CLI Init description', "Desc from module is Default CLI Init description." ) or diag explain $name;
 
     # Check instance information.
     note( "Check instance information." );
@@ -89,25 +100,50 @@ eval {
     is_deeply($metric, {}, "get_metrics() Get all metrics returns empty hash when there is none.") or diag explain $metric;
     
     note( "Adding metric through sql." );
-    my ($mnemo, $name, $desc, $scale) = ('menmo', 'name', ['desc'], [1, 2, 3, 4]);
-    my $query = "INSERT INTO models_metrics (mnemo, name, description, scale) VALUES "
-	. "(?, ?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description, scale) "
-	. "= (?, ?, ?, ?)";
-    my $ret = $pg->db->query( $query, ($mnemo, $name, $desc, $scale, $mnemo, $name, $desc, $scale) );
-    note( "After adding metric through sql." );
+    @tables = ();
+    push( @tables, $_->{'tablename'} ) for $pg->db->query("SELECT tablename FROM pg_catalog.pg_tables 
+      WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")->hashes->each;
+    is( scalar @tables, 10, "Database has still 10 tables defined.") or diag explain @tables;
 
-    $metric = $repodb->set_metric('METRIC1', 'Metric 1', ['description'], [1,2,3,4]); print Dumper($metric);
-    is_deeply($metric, {}, "get_metrics() Get all metrics returns empty hash when there is none.") or diag explain $metric;
+    my ($mnemo, $scale, $ret);
+    ($mnemo, $name, $desc, $scale) = ('mnemo', 'name', encode_json(['desc']), encode_json([1, 2, 3, 4]));
+    my $query = "INSERT INTO models_metrics (mnemo, name, description, scale) VALUES "
+     	. "(?, ?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description, scale) "
+     	. "= (?, ?, ?, ?)";
+    eval {
+	$ret = $pg->db->query( $query, ($mnemo, $name, $desc, $scale, $mnemo, $name, $desc, $scale) );
+    };
+    ok( $@ eq '', "Add a metric through sql." );
+
+    eval {
+	$metric = $repodb->set_metric('METRIC1', 'Metric 1', ['description'], [1,2,3,4]);
+    };
+    ok( $@ eq '', "Add a metric through set_metric.");
     
-    $metric = $repodb->get_metric(); print Dumper($metric);
-    is_deeply($metric, {}, "get_metrics() Get all metrics returns empty hash when there is none.") or diag explain $metric;
+    my $metric_ref = { 
+	'METRIC1' => {
+	    'scale' => [ 1, 2, 3, 4 ],
+	    'description' => [ 'description' ],
+	    'name' => 'Metric 1',
+	    'mnemo' => 'METRIC1'
+	},
+	'mnemo' => {
+	    'scale' => [ 1, 2, 3, 4 ],
+	    'description' => [ 'desc' ],
+	    'name' => 'name',
+	    'mnemo' => 'mnemo'
+	}
+    };
     
-    $metric = $repodb->get_metrics();print Dumper($metric);
-    is_deeply($metric, {}, "get_metrics() Get all metrics returns empty hash when there is none.") or diag explain $metric;
+    $metric = $repodb->get_metric('METRIC1');
+    is_deeply($metric->{'METRIC1'}, $metric_ref->{'METRIC1'}, "get_metrics() Get all metrics returns METRIC1.") or diag explain $metric;
+    
+    $metric = $repodb->get_metrics();
+    is_deeply($metric, $metric_ref, "get_metrics() Get all metrics returns empty hash when there is none.") or diag explain $metric;
     
     # Check projects_conf information
     note( "Check projects_conf information." );
-    my $ret = $repodb->set_project_conf('modeling.sirius', 'Sirius', 'Sirius is a great tool.', 0, '{}');
+    $ret = $repodb->set_project_conf('modeling.sirius', 'Sirius', 'Sirius is a great tool.', 0, '{}');
     ok( $ret == 1, "First update of project_info returns 1.") or diag explain $ret;
 
     my $ret_ok = {
@@ -153,11 +189,13 @@ eval {
 				     {'MYINDIC' => 6}, 
 				     {'MYATTR' => 8} , 
 				     {'MYATTR_CONF' => "1 / 2"} , 
-				     {'MYREC' => {
-					 'rid' => 'REC_PMI_1', 
-					 'desc' => 'This is a description.'
-				      }
-				     } );
+				     [ {
+					 'MYREC' => {
+					     'rid' => 'REC_PMI_1', 
+					     'desc' => 'This is a description.'
+					 }
+				       }
+				     ] );
     ok( $ret > 0, "Adding project run returns a non-null id ($ret)." );
 
     $results = $repodb->get_project_last_run('modeling.sirius');
@@ -165,12 +203,11 @@ eval {
     is_deeply( $results->{'indicators'}, {'MYINDIC' => 6}, "Indicators retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'attributes'}, {'MYATTR' => 8}, "Attributes retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'attributes_conf'}, {'MYATTR_CONF' => "1 / 2"}, "Attributes conf retrieved from last run are ok.") or diag explain $results;
-    is_deeply( $results->{'recs'}, {'MYREC' => {
-					 'rid' => 'REC_PMI_1', 
-					 'desc' => 'This is a description.'
-				      }
-				     }, "Recs retrieved from last run are ok.") or diag explain $results;
-
+    is_deeply( $results->{'recs'}, [ { 'MYREC' => {
+	'rid' => 'REC_PMI_1', 
+	'desc' => 'This is a description.',
+				       } } ], "Recs retrieved from last run are ok.") or diag explain $results;
+    
     my $getinfo = $repodb->get_info('modeling.sirius');
     is_deeply( $getinfo->{'info'}, {'WEBSITE' => "http://www.example.com"}, "Get info returns website.") or diag explain $getinfo;
     
@@ -187,11 +224,11 @@ eval {
 				     {'MYINDIC' => 16}, 
 				     {'MYATTR' => 18} , 
 				     {'MYATTR_CONF' => "10 / 20"} , 
-				     {'MYREC' => {
+				     [ { 'MYREC' => {
 					 'rid' => 'REC_PMI_11', 
 					 'desc' => 'This is a description.'
-				      }
-				     } );
+					 }
+				       }] );
     ok( $ret > 0, "Adding project run returns a non-null id ($ret)." );
 
     $results = $repodb->get_project_last_run('modeling.sirius');
@@ -199,11 +236,11 @@ eval {
     is_deeply( $results->{'indicators'}, {'MYINDIC' => 16}, "Indicators retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'attributes'}, {'MYATTR' => 18}, "Attributes retrieved from last run are ok.") or diag explain $results;
     is_deeply( $results->{'attributes_conf'}, {'MYATTR_CONF' => "10 / 20"}, "Attributes conf retrieved from last run are ok.") or diag explain $results;
-    is_deeply( $results->{'recs'}, {'MYREC' => {
+    is_deeply( $results->{'recs'}, [ { 'MYREC' => {
 					 'rid' => 'REC_PMI_11', 
 					 'desc' => 'This is a description.'
-				    }
-	                           }, "Recs retrieved from last run are ok.") or diag explain $results;
+				       } }
+	                           ], "Recs retrieved from last run are ok.") or diag explain $results;
 
     $results = $repodb->get_project_all_runs('modeling.sirius');
     is( scalar @$results, 2, "Get all runs has two entries." ) or diag explain $results;
@@ -245,4 +282,4 @@ END {
     $repodb->clean_db() if $clean_db;
 }
 
-done_testing(54);
+done_testing(59);

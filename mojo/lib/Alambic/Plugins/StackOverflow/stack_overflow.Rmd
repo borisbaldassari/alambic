@@ -19,12 +19,12 @@ library(knitr)
 require('ggplot2')
 require('xtable')
 
-opts_chunk$set(echo=F, message=F, warning=F, fig.path = 'figures/')
+ project.id <- 'tools.cdt'
+ project.tag <- 'tools.cdt'
+ date.now <- '2016-03-17T15:38:55'
+date.before <- '2011-03-17T15:38:55'
 
-# project.id <- 'modeling.sirius'
-# project.tag <- 'eclipse-sirius'
-# date.now <- '2016-03-17T15:38:55'
-#date.before <- '2011-03-17T15:38:55'
+opts_chunk$set(echo=F, message=F, warning=F, fig.path = paste(project.id, '_', sep=""))
 
 file.csv = paste(project.id, '_so.csv', sep="")
 
@@ -78,33 +78,8 @@ rm(project.xts.updates)
   <p>The wordcloud on the right details frequent words used in the question titles. The size and colour of the words depend on their number of appearances in questions. It shows what are the concerns and issues of people when dealing with the project.</p>
 
  </div><div class="col-lg-5">
-
-```{r blob-so-tm, dev='svg', fig.width=6, fig.height=4, dev.args=list(bg='transparent'), out.extra='class="img-responsive"'}
-require(tm)
-require(wordcloud)
-require(SnowballC)
-
-stemCompletion_mod <- function(x,dict=dictCorpus) {
-  PlainTextDocument(stripWhitespace(paste(stemCompletion(unlist(strsplit(as.character(x)," ")),dictionary=dict, type="shortest"),sep="", collapse=" ")))
-}
-
-mysrc <- DataframeSource(as.data.frame(project$title))
-corpus <- VCorpus(mysrc)
-mydict <- corpus
-
-corpus <- tm_map(corpus, stripWhitespace)
-corpus <- tm_map(corpus, content_transformer(tolower))
-corpus <- tm_map(corpus, content_transformer(removePunctuation))
-corpus <- tm_map(corpus, content_transformer(removeNumbers))
-corpus <- tm_map(corpus, removeWords, stopwords("english"))
-a <- tm_map(corpus, stemDocument)
-#a <- sapply(a, stemCompletion_mod, dict=mydict)[[1]]
-#stemCompletion_mod(docs[[1]],dictCorpus)
-#a <- tm_map(a, content_transformer(stemCompletion))
-
-wordcloud(a, scale=c(7,1), max.words=50, random.order=FALSE, rot.per=0.15, use.r.layout=FALSE, colors=brewer.pal(8, "Dark2"))
-
-```
+ 
+ <img src="/projects/`r project.id`/StackOverflow/so_tm.svg" frameborder="0" style="width: 100%; height: 370px" />
 
 </div></div>
 
@@ -113,7 +88,7 @@ wordcloud(a, scale=c(7,1), max.words=50, random.order=FALSE, rot.per=0.15, use.r
 <p>The following recent questions (less than 1 month old) have been asked more than 2 days ago and still have no answer. Would you like to check them?</p>
 
 
-```{r blob-so-recent-questions-list, results='asis'}
+```{r so-recent-questions-list, results='asis'}
 questions.recent <- last(project.xts, "1 month")
 time.2days.ago <- seq.Date(Sys.Date(), by="-2 days", length.out = 2)[-2]
 questions.recent <- questions.recent[paste("/", as.character(time.2days.ago), sep="")]
@@ -153,47 +128,11 @@ vol.questions.noanswer.scored <- nrow(questions.noanswer)
 
  </div><div class="col-lg-6">
 
-```{r blob-so-evolution, fig.width=10, fig.height=6, dev.args=list(bg='transparent'), out.extra='class="img-responsive"', warning=F}
-project.xts.yearly.answered <- data.frame(
-    apply.yearly(x=project.xts[project.xts$is_answered != 0,], FUN=nrow),
-    "Accepted answer"
-    )
-project.xts.yearly.answered$year <- as.Date(rownames(project.xts.yearly.answered))
-names(project.xts.yearly.answered) <- c("question", "type")
-
-project.xts.yearly.notanswered <- data.frame(
-    apply.yearly(x=project.xts[project.xts$is_answered == 0,], FUN=nrow),
-    "No accepted answer"
-    )
-project.xts.yearly.notanswered$year <- as.Date(rownames(project.xts.yearly.notanswered))
-names(project.xts.yearly.notanswered) <- c("question", "type")
-
-project.xts.yearly <- rbind(project.xts.yearly.answered, project.xts.yearly.notanswered)
-
-myplot.yearly <- data.frame(as.Date(paste(format(as.Date(rownames(project.xts.yearly)), format="%Y"), "-01-01", sep="")),
-                            coredata(project.xts.yearly))
-
-names(myplot.yearly) <- c("date", "vol", "type")
-
-ggplot(myplot.yearly, aes(x=date, y=vol, fill=type)) +
-  geom_bar(stat='identity', colour='black', size=0.5) +
-  theme(
-    panel.background=element_blank(),
-    axis.line=element_line(colour='black')
-        ) +
-  ggtitle(paste('Number of', project.id, 'questions on StackOverflow')) +
-  xlab("Years") +
-  ylab("Number of Questions") +
-  #geom_text(aes(label=vol), vjust=-0.2, size=3) +
-  guides(fill=guide_legend(reverse=T)) +
-  scale_fill_manual(values=binary.colours)
-
-rm(project.xts.yearly, project.xts.yearly.answered, project.xts.yearly.notanswered, myplot.yearly)
-```
+<img src="/projects/`r project.id`/StackOverflow/so_evolution.svg" frameborder="0" style="width: 100%; height: 370px" />
 
 </div></div>
 
-```{r blob-so-questions-list, results='asis'}
+```{r so-questions-list, results='asis'}
 
 questions.noanswer.table <- questions.noanswer[1:10,c("link", "m.date.human", "score", "views")]
 names(questions.noanswer.table) <- c("Question", "Last update", "Score", "Views")
@@ -218,22 +157,6 @@ rm(questions.noanswer, questions.noanswer.table)
 
   <p>The following graphic shows the number of questions concerning  ``r project.id``, from ``r question.first`` to ``r question.last``. The size of bubbles show the score they got by SO users. </p>
 
-```{r blob-so-plot, dev='svg', fig.width=20, fig.height=12, dev.args=list(bg='transparent'), out.extra='class="img-responsive"'}
-p <- ggplot(project, aes(x=c.date, y=answer_count, fill=factor(!is_answered))) +
-  geom_point(aes(size=score), shape=21, colour='black', alpha=0.5) +
-  scale_size(range=c(1,30)) + 
-  theme(
-    panel.background=element_blank(),
-    axis.line=element_line(colour='black')
-        ) +
-  ggtitle('Questions on StackOverflow across years') +
-  xlab("Time") +
-  ylab("Number of answers") +
-  scale_fill_manual(values=binary.colours) +
-  labs( fill="Has an accepted answer", size="Number of votes" ) +
-  guides(fill=guide_legend(override.aes=list(size=5)))
-
-p
-```
+<img src="/projects/`r project.id`/StackOverflow/so_plot.svg" frameborder="0" style="width: 100%; height: 460px" />
 
 </div></div>

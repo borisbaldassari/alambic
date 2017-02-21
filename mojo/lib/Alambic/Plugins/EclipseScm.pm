@@ -62,11 +62,10 @@ my %conf = (
         "REPOSITORIES" => "SCM_REPOSITORIES",
     },
     "provides_figs" => {
-        'scm_evol_summary.rmd' => "scm_evol_summary.html",
-        'scm_evol_summary_lines.rmd' => "scm_evol_summary_lines.html",
-        'scm_evol_lines.rmd' => "scm_evol_lines.html",
-        'scm_evol_people.rmd' => "scm_evol_people.html",
-        'scm_evol_commits.rmd' => "scm_evol_commits.html",
+        'scm_evol_summary.html' => "Evolution of main SCM metrics (HTML)",
+        'scm_evol_lines.html' => "Evolution of number of lines modified (HTML)",
+        'scm_evol_people.html' => "Evolution of people involved in SCM (HTML)",
+        'scm_evol_commits.html' => "Evolution of commits (HTML)",
     },
     "provides_recs" => [
         "SCM_CLOSE_BUGS",
@@ -217,7 +216,12 @@ sub _compute_data($) {
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'EclipseScm', $project_id, 'eclipse_scm.Rmd' )} );
 
     # And execute the figures R scripts.
-    my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
+    my @figs = (
+        'scm_evol_summary.rmd',
+        'scm_evol_lines.rmd',
+        'scm_evol_people.rmd',
+        'scm_evol_commits.rmd',
+    );
     foreach my $fig (sort @figs) {
 	push( @log, "[Plugins::EclipseScm] Executing R fig file [$fig]." );
 	@log = ( @log, @{$r->knit_rmarkdown_html( 'EclipseScm', $project_id, $fig )} );

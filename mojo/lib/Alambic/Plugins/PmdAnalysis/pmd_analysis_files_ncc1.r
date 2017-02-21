@@ -4,6 +4,8 @@ variables <- commandArgs(trailingOnly=TRUE)
 project.id <- variables[1]
 plugin.id <- variables[2]
 
+file.out <- paste( project.id, "_pmd_analysis_files_ncc1.svg", sep="")
+
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
 #project.id <- "modeling.sirius"
@@ -39,7 +41,7 @@ names(pmd.files.ncc1) <- c("File", "NCC", "Priority")
 pmd.files.ncc2 <- pmd.files.list.30[,c(1,3)]
 pmd.files.ncc2$Priority <- 2
 names(pmd.files.ncc2) <- c("File", "NCC", "Priority")
-# XXX 
+# XXX
 
 pmd.files.ncc <- rbind(pmd.files.ncc1, pmd.files.ncc2)
 
@@ -50,7 +52,7 @@ myfiles <- lapply(
 myfiles.stop <- lapply( X=as.vector(pmd.files.ncc$File), FUN=function(x) nchar(x) )
 pmd.files.ncc$File <- paste("...", substr(pmd.files.ncc$File, start=myfiles, stop=myfiles.stop), sep="")
 
-svg("pmd_analysis_files_ncc1.svg", width=14, height=8)
+svg(file.out, width=14, height=8)
 ggplot(pmd.files.ncc, aes(x=reorder(File, -NCC), y=NCC, fill=factor(Priority))) +
     geom_bar(stat="identity") +
     scale_fill_manual(values=priority.colours) +

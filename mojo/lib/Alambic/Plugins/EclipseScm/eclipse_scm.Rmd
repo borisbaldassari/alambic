@@ -48,7 +48,8 @@ The Eclipse Foundations has setup a dedicated server to analyse project reposito
 Data for project is directly available from the project&apos;s dashboard:
 
 * project summary: http://dashboard.eclipse.org/project.html?project=`r project.id`, 
-* as JSON files: http://dashboard.eclipse.org/data/json/`r project.id`.
+* Static metrics JSON file: http://dashboard.eclipse.org/data/json/`r project.id`-scm-prj-static.json.
+* Evolutionary metrics JSON file: http://dashboard.eclipse.org/data/json/`r project.id`-scm-prj-evolutionary.json.
 
 </div><div class="col-sm-4">
   <div class="panel panel-default">
@@ -78,8 +79,6 @@ The evolution of ``r ncol(evol)`` metrics has been retrieved, spaning from ``r e
 The following plot uses [plotly services](http://plot.ly) to enable users to play with data itself, and its associated plot. Hover on the graph for more options.
 
 <iframe src="/projects/`r project.id`/EclipseScm/scm_evol_summary.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
-
-<iframe src="/projects/`r project.id`/EclipseScm/scm_evol_summary_lines.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
 
 -----
 

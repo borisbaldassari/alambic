@@ -15,11 +15,15 @@ my %conf = (
     "id" => "r_sessions",
     "name" => "R sessions",
     "desc" => "Runs R for plugins, computes data and generates files.",
+    "type" => "tool",
+    "params" => {
+	"path_r" => "The absolute path to the R binary.",
+    },
     "provides_methods" => {
-        "knit_rmarkdown_inc" => "",
-        "knit_rmarkdown_pdf" => "",
-        "knit_rmarkdown_html" => "",
-        "knit_rmarkdown_svg" => "",
+        "knit_rmarkdown_inc" => "Knit a r markdown document into a inc file.",
+        "knit_rmarkdown_pdf" => "Knit a r markdown document into a pdf file",
+        "knit_rmarkdown_html" => "Knit a r markdown document into a html file",
+        "knit_rmarkdown_svg" => "Knit a r markdown document into a svg file",
     },
 );
 
@@ -35,12 +39,7 @@ sub get_conf() {
     return \%conf;
 }
 
-sub start() {
-    return 1;
-}
-
-sub stop() {
-    return 1;
+sub install() {
 }
 
 sub test() {
@@ -82,18 +81,19 @@ sub test() {
 # Params:
 #   - $plugin_id: the name/id of the calling plugin, e.g. EclipseIts.
 #   - $project_id: the id of the project analysed.
-#   - $r_file: the short name of the file to execute (e.g. EclipseIts.Rmd)
+#   - $r_in: the short name of the file to execute (e.g. EclipseIts.rmd)
+#   - \@r_out: the short name of the file to produce (e.g. EclipseIts.png)
 #   - %params: a ref to hash of parameters/values for the execution.
 sub knit_rmarkdown_inc($$$$) {
-    my ($self, $plugin_id, $project_id, $r_file, $params) = @_;
+    my ($self, $plugin_id, $project_id, $r_in, $r_out, $params) = @_;
 
     my @log;
     
     # Set vars.
     my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
-    my $r_md = $r_file;
-    $r_file =~ s/(.*)\..*+/$1/;
-    my $r_md_out = "${r_file}.inc";
+    my $r_md_out = $r_in;
+    $r_md_out =~ s/(.*)\..*+/$1/;
+    $r_md_out = "${project_id}_${r_md_out}.inc";
 
     # Change the current working directory localy only.
     {
@@ -110,7 +110,7 @@ sub knit_rmarkdown_inc($$$$) {
 	foreach my $key (keys %{$params}) {
 	    $r_cmd .= $key . " <- '" . $params->{$key} . "'; ";
 	}
-	$r_cmd .= "rmarkdown::render('${r_md}', output_format='html_fragment', output_file='$r_md_out')\"";
+	$r_cmd .= "rmarkdown::render('${r_in}', output_format='html_fragment', output_file='$r_md_out')\"";
 	
 	push( @log, "[Tools::R] Exec [$r_cmd]." );
 	my @out = `$r_cmd 2>&1`;
@@ -121,7 +121,8 @@ sub knit_rmarkdown_inc($$$$) {
     my $dir_in_fig = $r_dir . '/figures/';
     my $dir_out = "projects/" . $project_id . "/output/";
     my $dir_out_fig = $dir_out . '/figures/';
-    move( $file_in, $dir_out );
+    my $ret = move( $file_in, $dir_out );
+    push( @log, "[Tools::R] Moved main file from [${file_in}] to [$dir_out]. ret [$ret]." );
 
     # Create dir for figures.
     if (! -d "${dir_out_fig}" ) {
@@ -133,15 +134,23 @@ sub knit_rmarkdown_inc($$$$) {
     my $files = $dir_in_fig . "*";
     my @files = glob qq(${files});
     foreach my $file (@files) {
-	my $ret = move($file, $dir_out_fig);
-#	push( @log, "[Tools::R] Moved file from ${file} to $dir_out_fig. ret $ret." );
+	$ret = move($file, $dir_out_fig);
+    }
+    
+    # If defined, also move the generated images.
+    if (defined($r_out) and ref($r_out) eq 'ARRAY') {
+	foreach my $file (@$r_out) {
+	    $file_in = $r_dir . "/" . $project_id . "_" . $file;
+	    $ret = move($file_in, $dir_out);
+	    push( @log, "[Tools::R] Moved image file from [${file_in}] to [$dir_out]. ret [$ret]." );
+	}
     }
 
     return \@log;
 }
 
 
-# Function to knit a rmarkdown document to a html snippet.
+# Function to knit a rmarkdown document to a pdf document.
 # It goes into the plugin's directory, 
 # creates required directories (e.g. figures/) and executes Rscript.
 #
@@ -161,7 +170,7 @@ sub knit_rmarkdown_pdf($$$$) {
     my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
     my $r_md = $r_file;
     $r_file =~ s/(.*)\..*+/$1/;
-    my $r_md_out = "${r_file}.pdf";
+    my $r_md_out = "${project_id}_${r_file}.pdf";
 
     # Change the current working directory localy only.
     {
@@ -180,7 +189,7 @@ sub knit_rmarkdown_pdf($$$$) {
 	}
 	$r_cmd .= "rmarkdown::render('${r_md}', output_file='$r_md_out')\"";
 	
-	push( @log, "[Tools::R] Exec [$r_cmd] output to [$r_md_out]." );
+	push( @log, "[Tools::R] Exec [$r_cmd]." );
 	my @out = `$r_cmd 2>&1`;
     }
     
@@ -211,7 +220,7 @@ sub knit_rmarkdown_pdf($$$$) {
 }
 
 
-# Function to knit a rmarkdown document to html.
+# Function to knit a rmarkdown document to a full html document.
 # It goes into the plugin's directory, 
 # creates required directories (e.g. figures/) and executes Rscript.
 #
@@ -220,25 +229,26 @@ sub knit_rmarkdown_pdf($$$$) {
 # Params:
 #   - $plugin_id: the name/id of the calling plugin, e.g. EclipseIts.
 #   - $project_id: the id of the project analysed.
-#   - $r_file: the short name of the file to execute (e.g. EclipseIts.Rmd)
+#   - $r_in: the short name of the file to execute (e.g. EclipseIts.rmd)
+#   - \@r_out: the short name of the file to produce (e.g. EclipseIts.png)
 #   - %params: a ref to hash of parameters/values for the execution.
 sub knit_rmarkdown_html($$$$) {
-    my ($self, $plugin_id, $project_id, $r_file, $params) = @_;
+    my ($self, $plugin_id, $project_id, $r_in, $r_out, $params) = @_;
 
     my @log;
     
     # Set vars.
     my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
-    my $r_md = $r_file;
-    $r_file =~ s/(.*)\..*+/$1/;
-    my $r_md_out = "${r_file}.html";
+    my $r_md_out = $r_in;
+    $r_md_out =~ s/(.*)\..*+/$1/;
+    $r_md_out = "${project_id}_${r_md_out}.html";
 
     # Change the current working directory localy only.
     {
 	local $CWD = $r_dir;
 	# Create dir for figures.
 	if (! -d "figures/" ) {
-	    push( @log, "Creating directory [figures/]." );
+	    push( @log, "[Tools::R] Creating directory [figures/]." );
 	    mkdir "figures/";
 	}
 	
@@ -246,11 +256,11 @@ sub knit_rmarkdown_html($$$$) {
 	my $r_cmd = "Rscript -e \"library(rmarkdown); ";
 	$r_cmd .= "project.id <- '${project_id}'; plugin.id <- '$plugin_id'; ";
 	foreach my $key (keys %{$params}) {
-	    $r_cmd .= $key . " <- " . $params->{$key};
+	    $r_cmd .= $key . " <- '" . $params->{$key} . "'; ";
 	}
-	$r_cmd .= "rmarkdown::render('${r_md}', output_format='html_document', output_file='$r_md_out')\"";
+	$r_cmd .= "rmarkdown::render('${r_in}', output_format='html_document', output_file='$r_md_out')\"";
 	
-	push( @log, "[Tools::R] Exec [$r_cmd] output to [$r_md_out]." );
+	push( @log, "[Tools::R] Exec [$r_cmd]." );
 	my @out = `$r_cmd 2>&1`;
     }
     
@@ -272,14 +282,22 @@ sub knit_rmarkdown_html($$$$) {
     my @files = glob qq(${files});
     foreach my $file (@files) {
 	my $ret = move($file, $dir_out_fig);
-#	push( @log, "[Tools::R] Moved file from ${file} to $dir_out_fig. ret $ret." );
     }
-
+    
+    # If defined, also move the generated images.
+    if (defined($r_out) and ref($r_out) eq 'ARRAY') {
+	foreach my $file (@$r_out) {
+	    $file_in = $r_dir . "/" . $project_id . "_" . $file;
+	    my $ret = move($file_in, $dir_out);
+	    push( @log, "[Tools::R] Moved image file from [${file_in}] to [$dir_out]. ret [$ret]." );
+	}
+    }
+    
     return \@log;
 }
 
 
-# Function to knit a rmarkdown document to svg.
+# Function to knit a rmarkdown document to image(s).
 # It goes into the plugin's directory, 
 # creates required directories (e.g. figures/) and executes Rscript.
 #
@@ -288,44 +306,41 @@ sub knit_rmarkdown_html($$$$) {
 # Params:
 #   - $plugin_id: the name/id of the calling plugin, e.g. EclipseIts.
 #   - $project_id: the id of the project analysed.
-#   - $r_file: the short name of the file to execute (e.g. EclipseIts.Rmd)
-#   - %params: a ref to hash of parameters/values for the execution.
-sub knit_rmarkdown_svg($$$$) {
-    my ($self, $plugin_id, $project_id, $r_file, $params) = @_;
+#   - $r_in: the short name of the file to execute (e.g. EclipseIts.rmd)
+#   - \@r_out: the short name of the file to produce (e.g. EclipseIts.png)
+#   - \%params: a ref to hash of parameters/values for the execution.
+sub knit_rmarkdown_images($$$$$) {
+    my ($self, $plugin_id, $project_id, $r_in, $r_out, $params) = @_;
 
     my @log;
     
     # Set vars.
     my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
-    my $r_md = $r_file;
-    $r_file =~ s/(.*)\..*+/$1/;
-    my $r_md_out = "${r_file}.svg";
 
     # Change the current working directory localy only.
     {
 	local $CWD = $r_dir;
 	# Now execute the main R script.
-	my $r_cmd = "Rscript '$r_md' ";
+	my $r_cmd = "Rscript '$r_in' ";
 	# Passing arguments: 2 first args are project.id and plugin.id
 	$r_cmd .= $project_id . " " . $plugin_id;
 	foreach my $key (sort keys %{$params}) {
 	    $r_cmd .= " " . $params->{$key};
 	}
 	
-	push( @log, "[Tools::R] Exec [$r_cmd] output to [$r_md_out]." );
-	my @out = `$r_cmd 2>&1`;
+	push( @log, "[Tools::R] Exec [$r_cmd]." );
+	my @out = `$r_cmd 2>&1`; 
     }
     
-    # Move the generated main file to project output dir
-    my $file_in = $r_dir . "/" . $r_md_out;
+    # Move the generated files to project output dir
     my $dir_out = "projects/" . $project_id . "/output/";
-    move( $file_in, $dir_out );
+    foreach my $file (@$r_out) {
+	my $file_in = $r_dir . "/" . $project_id . "_" . $file;
+	my $ret = move($file_in, $dir_out);
+	push( @log, "[Tools::R] Moved image file from [${file_in}] to [$dir_out]. ret [$ret]." );
+    }
 
     return \@log;
-}
-
-sub _start_session() {
-    
 }
 
 

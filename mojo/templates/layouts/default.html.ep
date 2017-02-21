@@ -31,7 +31,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><span class="fa fa-flask"></span> &nbsp; <%== app->al->instance_name() %> (&beta;eta)</a>
+          <a class="navbar-brand" href="/"><span class="fa fa-flask"></span> &nbsp; <%== app->al->instance_name() %> (v. <%= app->al->instance_version() || "No version" %>)</a>
         </div>
 
         <ul class="nav navbar-top-links navbar-right">
@@ -40,7 +40,7 @@
 % my $user_name = defined($user) ? $user->{'name'} : $user_id;
 % if (defined($user)) { 
           <li><%= $user_name %> &nbsp; <i class="fa fa-user fa-fw fa-lg"></i></li>
-<li><a href="/logout"><i class="fa fa-sign-out fa-fw fa-lg"></i></a></li>
+          <li><a href="/logout"><i class="fa fa-sign-out fa-fw fa-lg"></i></a></li>
 % } else {
           <li><a href="/login"><i class="fa fa-user fa-fw fa-lg"></i></a></li>
 % }
@@ -58,6 +58,9 @@
           <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
               <li><a href="/"><i class="fa fa-home fa-fw" style="color: orange;"></i> Home</a></li>
+% if (defined($user)) { 
+              <li><a href="/user/<%= $user_id %>/profile"><i class="fa fa-home fa-fw" style="color: orange;"></i> My Alambic</a></li>
+% }
               <li><a href="/about.html"><i class="fa fa-bullseye fa-fw" style="color: orange;"></i> About</a></li>
               <li<%== $url =~ m!^doc! ? ' class="active"' : '' %>><a href=""><i class="fa fa-life-ring fa-fw" style="color: orange;"></i> Documentation<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level<%= $self->req->url =~ m!^/documentation! ? ' active' : '' %>">

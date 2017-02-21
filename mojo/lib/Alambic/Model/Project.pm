@@ -372,6 +372,9 @@ sub run_project($) {
 	}
     }
 
+    # Create RepoFS object for writing and reading files on FS.
+    my $repofs = Alambic::Model::RepoFS->new();
+    
     # Create a CSV file with all metrics
     my $csv = Text::CSV->new( { binary => 1, eol => "\n" } );
     my $csv_out;
@@ -388,8 +391,7 @@ sub run_project($) {
 	$csv_out .= $csv->string()
     };
 
-    # Create RepoFS object for writing and reading files on FS.
-    my $repofs = Alambic::Model::RepoFS->new();
+    # Write csv file to disk.
     $repofs->write_output( $project_id, "metrics_ref.csv", $csv_out );
     
     # Run post plugins
@@ -557,7 +559,8 @@ sub _aggregate_inds($$$$$) {
 	
     }
 
-    my $confidence = $raw_qm->{"m_ok"} . " / " . $raw_qm->{"m_total"};
+    my $confidence = ($raw_qm->{"m_ok"} || 'x') . " / " 
+	. ($raw_qm->{"m_total"} || 'x');
 
     # Populate hashes of values for indicators, attributes.
     if (defined($coef)) {

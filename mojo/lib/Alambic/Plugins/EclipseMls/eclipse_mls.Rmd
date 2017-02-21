@@ -43,7 +43,8 @@ evol <- read.csv(file=file.evol, header=T)
 The official Eclipse developer mailing lists are hosted on (https://dev.eclipse.org/mailman/listinfo) and use Mailman. User communications are achieved through forums, hosted at (http://www.eclipse.org/forums/?). Both are analysed together and made available on [the Eclipse dashboard](http://dashboard.eclipse.org):
 
 * project summary: http://dashboard.eclipse.org/project.html?project=`r project.id`, 
-* as JSON files: http://dashboard.eclipse.org/data/json/`r project.id`.
+* Static metrics JSON file: http://dashboard.eclipse.org/data/json/`r project.id`-mls-prj-static.json.
+* Evolutionary metrics JSON file: http://dashboard.eclipse.org/data/json/`r project.id`-mls-prj-evolutionary.json.
 
 </div><div class="col-sm-4">
   <div class="panel panel-default">

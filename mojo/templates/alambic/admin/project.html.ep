@@ -83,7 +83,7 @@
 	    <hr />
 
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-12">
 		
 		<h3>Plugins: Pre</h3>
 		
@@ -140,7 +140,12 @@
 		</table>
 		
               </div>
-              <div class="col-md-6">
+            </div>
+
+	    <hr />
+
+            <div class="row">
+              <div class="col-md-12">
 		<h3>Runs</h3>
 
 		<p>History of runs for this project.</p>
