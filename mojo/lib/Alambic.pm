@@ -150,22 +150,32 @@ sub startup {
 
     ### Protected routes
     $self->routes->add_condition(
-    	role => sub {
-    	    my ( $r, $c, $captures, $role ) = @_;
-	    my $user = $self->al->users->get_user($c->session->{'session_user'}) || {};
-
+    	roles => sub {
+    	    my ( $r, $c, $captures, $roles ) = @_;
+	    my @roles = @$roles;
+	    
+	    # 1. User is connected?
+	    if ( exists( $c->session->{'session_user'} ) ) {
+		my $user = $self->al->users->get_user($c->session->{'session_user'}) || {};
+		while ( my $role = shift @roles ) {
+		    if ( grep { $_ eq ${role} } @{$user->{'roles'}} ) {
+			# It's ok, we know him
+			return 1;
+		    } 
+		}
+	    }
     	    # Keep the weirdos out!
-    	    return undef
-    		if ( !exists( $c->session->{'session_user'} )
-    		     || not grep { $_ eq ${role} } @{$user->{'roles'}} );
-
-    	    # It's ok, we know him
-    	    return 1;
+	    return undef;
     	}
     	);
 
+    # User pages
+    my $r_user = $r->any('/user')->over( roles => [ 'Project', 'Admin' ] )->to( controller => 'users' );
+    $r_user->get('/#id/profile')->to( action => 'profile' );
+    $r_user->get('/#id/project/#project')->to( action => 'projects' );
+    
     # Admin
-    my $r_admin = $r->any('/admin')->over( role => 'Admin' )->to( controller => 'admin' );   
+    my $r_admin = $r->any('/admin')->over( roles => [ 'Admin' ] )->to( controller => 'admin' );   
     
     $r_admin->get('/edit')->to( action => 'edit' );
     $r_admin->post('/edit')->to( action => 'edit_post' );
@@ -214,6 +224,10 @@ sub startup {
     $r_admin->get('/jobs/#id')->to( 'jobs#display' );
     $r_admin->get('/jobs/#id/del')->to( 'jobs#delete' );
     $r_admin->get('/jobs/#id/run')->to( 'jobs#redo' );
+    
+    # Tools management
+    $r_admin->get('/tools')->to( 'tools#summary' );
+    $r_admin->get('/tools/#id')->to( 'tools#display' );
 
     # Database manipulations.
     $r_admin->get('/repo')->to('repo#summary');

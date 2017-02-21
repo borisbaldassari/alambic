@@ -7,5 +7,6 @@
 <h2>Message from Alambic</h2>
 
 <p>User <code><%= $name %></code> (<code><%= $email %></code>) has left a message for Alambic team on <code><%= $today %></code>.</p>
+
 <p><%= $message %></p>
 

@@ -50,8 +50,7 @@ sub _read_tools() {
 
 
 sub get_list_all() {
-    my @list = keys %tools;
-    @list = sort @list;
+    my @list = sort keys %tools;
     
     return \@list;
 }

@@ -7,6 +7,7 @@
                 <li role="presentation"<%== ( $current =~ m!^/admin/jobs$! ) ? ' class="active"' : '' %>><a href="/admin/jobs">Jobs</a></li>
                 <li role="presentation"<%== ( $current =~ m!^/admin/projects$! ) ? ' class="active"' : '' %>><a href="/admin/projects">Projects</a></li>
                 <li role="presentation"<%== ( $current =~ m!^/admin/users$! ) ? ' class="active"' : '' %>><a href="/admin/users">Users</a></li>
+                <li role="presentation"<%== ( $current =~ m!^/admin/tools$! ) ? ' class="active"' : '' %>><a href="/admin/tools">Tools</a></li>
               </ul>
             </div>
             <br />
