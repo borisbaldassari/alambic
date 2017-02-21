@@ -1,10 +1,25 @@
-alambic:
+alambic_base_centos_build:
   build:
-    image: bbaldassari/alambic
-    path: resources/docker
+    image: bbaldassari/alambic_base_centos
+    path: docker/image_base_centos/
     dockerfile: Dockerfile
-    links:
-        - postgres
+
+alambic_test_build:
+  build:
+    image: bbaldassari/alambic_test
+    path: docker/image_test/
+    dockerfile: Dockerfile
+  links:
+      - postgres
+
+alambic_ci_build:
+  build:
+    image: bbaldassari/alambic_ci
+    path: docker/image_ci/
+    dockerfile: Dockerfile
+  links:
+      - postgres
+
 postgres:
     image: postgres:9.5
     environment:

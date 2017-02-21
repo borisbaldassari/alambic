@@ -15,9 +15,9 @@
                     <li role="presentation"><a href="/projects/<%= $project_id %>/info">Information</a></li>
                     <li role="presentation"><a href="/projects/<%= $project_id %>/metrics">Metrics</a></li>
                     <li role="presentation"><a href="/projects/<%= $project_id %>/attributes">Attributes</a></li>
-                    <li role="presentation"><a href="/projects/<%= $project_id %>/recs">Recommendations</a></l>
+                    <li role="presentation"><a href="/projects/<%= $project_id %>/recs">Recommendations</a></li>
 		    <li role="separator" class="divider"></li>
-% my $list_pre = $plugins->get_list_plugins_pre(); 
+% my $list_pre = $plugins->get_list_plugins_pre();
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
 %   if (grep( /$p/, @$list_pre )) {
 %     my $plugin_name = exists($list->{$p}) ? $list->{$p} : "Unknown";
@@ -26,13 +26,13 @@
 % }
                   </ul>
                 </li>
-                <li role="presentation"<%== ( $current =~ m!^/projects/viz$! ) ? ' class="active"' : '' %> class="dropdown">
+                <li role="presentation" class="dropdown<%== ( $current =~ m!^/projects/viz$! ) ? ' active' : '' %>">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Visualisation <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
-% my $list_viz = $plugins->get_list_plugins_viz(); 
+% my $list_viz = $plugins->get_list_plugins_viz();
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
 %   if (grep( /$p/, @$list_viz )) {
-%     my $plugin_name = exists($list->{$p}) ? $list->{$p} : "Unknown";	 
+%     my $plugin_name = exists($list->{$p}) ? $list->{$p} : "Unknown";
 %     my $plugin_viz = $plugins->get_plugin($p)->get_conf()->{'provides_viz'};
 %     foreach my $pv (sort keys %{$plugin_viz}) {
                     <li role="presentation"><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pv %>"><%= $plugin_viz->{$pv} %></a></li>
@@ -41,7 +41,7 @@
 % }
                   </ul>
                 </li>
-                <li role="presentation"<%== ( $current =~ m!^/projects/history$! ) ? ' class="active"' : '' %>><a href="/projects/<%= $project_id %>/history">History</a></li> 
-                <li role="presentation"<%== ( $current =~ m!^/projects/log$! ) ? ' class="active"' : '' %>><a href="/projects/<%= $project_id %>/log">Log</a></li>            
+                <li role="presentation"<%== ( $current =~ m!^/projects/history$! ) ? ' class="active"' : '' %>><a href="/projects/<%= $project_id %>/history">History</a></li>
+                <li role="presentation"<%== ( $current =~ m!^/projects/log$! ) ? ' class="active"' : '' %>><a href="/projects/<%= $project_id %>/log">Log</a></li>
               </ul>
             </div>

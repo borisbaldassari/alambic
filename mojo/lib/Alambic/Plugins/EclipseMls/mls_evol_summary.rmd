@@ -2,7 +2,7 @@
 output: html_document
 ---
 <div class="row"><div class="col-md-12">
-```{r init, echo=FALSE, fig.height=3, message=FALSE}
+```{r init, echo=FALSE, fig.height=3, message=FALSE, warning=FALSE}
 library(plotly)
 library(reshape2)
 
@@ -11,11 +11,21 @@ file.evol = paste("", project.id, "_mls_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 evol <- evol[cumsum(abs(evol$sent_response + evol$senders_init + evol$senders_response 
                         + evol$sent + evol$threads + evol$repositories 
-                        + evol$senders )) != 0,]
+                        + evol$senders )) != 0 & complete.cases(evol),]
 
-my.data.long <- melt(evol[,c(1,2,4:9)], id.vars="date", value.name="value", variable.name="metric")
-p <-plot_ly(my.data.long, x = date, y = metric, size = value, mode = "markers", width=800, height=350) %>%
-      layout(autosize = F, width=800, height=350)
+evol.i <- data.frame(seq(1:nrow(evol)), evol[,c('date', 'sent_response','senders_init', 'senders_response', 'sent', 'threads', 'repositories', 'senders')])
+names(evol.i)[1] <- 'index'
+
+p <- plot_ly(data=evol.i, x=~index, y=~senders_init, text= ~paste('Date: ', date), 
+		name="Senders Init", type='scatter', mode='lines', width=800, height=350)  %>% 
+	add_trace(y=~sent_response, name='Sent Response', mode='lines') %>% 
+	add_trace(y=~senders_response, name='Senders Response', mode='lines') %>% 
+	add_trace(y=~sent, name='Sent', mode='lines') %>% 
+	add_trace(y=~threads, name='Threads', mode='lines') %>% 
+	add_trace(y=~repositories, name='Repositories', mode='lines') %>% 
+	add_trace(y=~senders, name='Senders', mode='lines') %>%
+    layout(autosize = F,
+		yaxis = list( title = "Value" ))
 p
 ```
 </div></div>

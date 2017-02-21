@@ -3,3 +3,4 @@ mojo/projects/*
 *~
 codeship.aes
 *.Rhistory
+*.RData

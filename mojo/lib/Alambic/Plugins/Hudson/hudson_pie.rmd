@@ -13,8 +13,6 @@ require('reshape2')
 file.metrics = paste("", project.id, "_hudson_metrics.csv", sep="")
 hudson.metrics <- read.csv(file=file.metrics, header=T)
 
-#jobs.tmp <- hudson.metrics[1,c('JOBS_GREEN', 'JOBS_YELLOW', 'JOBS_RED')]
-#jobs.tmp <- as.list(unlist(hudson.metrics[1,c('JOBS_GREEN', 'JOBS_YELLOW', 'JOBS_RED')]))
 jobs <- data.frame(unlist(c('JOBS_GREEN', 'JOBS_YELLOW', 'JOBS_RED')), unlist(hudson.metrics[1,c('JOBS_GREEN', 'JOBS_YELLOW', 'JOBS_RED')]))
   
 p <- gvisPieChart(jobs, 

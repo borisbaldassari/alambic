@@ -53,7 +53,6 @@ sub new {
 	$db_url = $alambic_db;
     }
 
-#    print("Initialising Mojo::Pg with [$db_url].\n");
     $pg = Mojo::Pg->new($db_url);
     
     return bless {}, $class;
@@ -94,6 +93,18 @@ sub restore_db($) {
 
     my $results = $pg->db->query($sql_in);
 
+    # Now reset the auto-increment columns
+    my $next_pr = $pg->db->query( "SELECT id FROM projects_runs ORDER BY id DESC LIMIT 1;" )->hash;
+    $next_pr = $next_pr->{'id'} ? $next_pr->{'id'} : 1;
+    my $next_cd = $pg->db->query( "SELECT id FROM projects_cdata ORDER BY id DESC LIMIT 1;" )->hash;
+    $next_cd = $next_cd->{'id'} ? $next_cd->{'id'} : 1;
+
+    # We want to set the NEXT sequence id.
+    $next_pr++;
+    $next_cd++;
+    $pg->db->query( "ALTER SEQUENCE public.projects_runs_id_seq RESTART WITH ${next_pr};" );
+    $pg->db->query( "ALTER SEQUENCE public.projects_cdata_id_seq RESTART WITH ${next_cd};" );
+    
     return 1;
 }
 
@@ -217,11 +228,14 @@ sub get_metrics($) {
 # Get a single metric definition from db.
 sub get_metric($) {
     my ($self, $mnemo) = @_;
-    print "# repodb get_metric \n.";
-    my $results = $pg->db->query("SELECT * FROM models_metrics WHERE mnemo='?';", ($mnemo));
-    my $ret;
+    my ($ret, $results);
 
-    print "# repodb get_metric \n.";
+    eval { 
+	$results = $pg->db->query("SELECT * FROM models_metrics WHERE mnemo=?;", ($mnemo));
+    };
+
+    if ($@) { print "# In RepoDB::get_metric Exception.\n" . Dumper($@); }
+
     # Process one row at a time
     while (my $next = $results->hash) {
 	$ret->{$next->{'mnemo'}} = $next;
@@ -229,7 +243,6 @@ sub get_metric($) {
 	$ret->{$next->{'mnemo'}}->{'scale'} = decode_json( $next->{'scale'} );
     }
 
-    print "# repodb get_metric \n.";
     return $ret;
 }
 
@@ -240,18 +253,14 @@ sub set_metric($) {
     my $self = shift;
     my $mnemo = shift;
     my $name = shift || '';
-    my $desc = shift || '[]';
-    my $scale = shift || '[]';
+    my $desc = encode_json( shift || [] );
+    my $scale = encode_json( shift || [] );
 
-    print "# repodb set_metric \n.";
-    
     my $query = "INSERT INTO models_metrics (mnemo, name, description, scale) VALUES "
 	. "(?, ?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description, scale) "
 	. "= (?, ?, ?, ?)";
     my $ret = $pg->db->query( $query, ($mnemo, $name, $desc, $scale, $mnemo, $name, $desc, $scale) );
     
-    print "# repodb set_metric \n.";
-
     return $ret;
 }
 
@@ -260,7 +269,7 @@ sub set_metric($) {
 sub get_attribute($) {
     my ($self, $mnemo) = @_;
     
-    my $results = $pg->db->query("SELECT * FROM models_attributes WHERE mnemo='?';", ($mnemo));
+    my $results = $pg->db->query("SELECT * FROM models_attributes WHERE mnemo=?;", ($mnemo));
     my $ret;
 
     # Process one row at a time
@@ -292,7 +301,7 @@ sub set_attribute($) {
     my $self = shift;
     my $mnemo = shift;
     my $name = shift || '';
-    my $desc = shift || '[]';
+    my $desc = encode_json( shift || [] );
     
     my $query = "INSERT INTO models_attributes (mnemo, name, description) VALUES "
 	. "(?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description) "
@@ -407,7 +416,7 @@ sub set_qm($$$) {
     my $self = shift;
     my $mnemo = shift;
     my $name = shift || '';
-    my $model = shift || '[]';
+    my $model = encode_json( shift || [] );
     
     my $query = "INSERT INTO models_qms (mnemo, name, model) VALUES "
 	. "(?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, model) "
@@ -532,12 +541,12 @@ sub add_project_run($$$$$$$) {
     my $run_delay = $run->{'delay'};
     my $run_user = $run->{'user'};
 
-    my $info_json = encode_json($info);
-    my $metrics_json = encode_json($metrics);
-    my $indicators_json = encode_json($indicators);
-    my $attributes_json = encode_json($attributes);
-    my $attributes_conf_json = encode_json($attributes_conf);
-    my $recs_json = encode_json($recs);
+    my $info_json = encode_json($info) || '{}';
+    my $metrics_json = encode_json($metrics) || '{}';
+    my $indicators_json = encode_json($indicators) || '{}';
+    my $attributes_json = encode_json($attributes) || '{}';
+    my $attributes_conf_json = encode_json($attributes_conf) || '{}';
+    my $recs_json = encode_json($recs) || '[]';
 
     # Execute insert in db.
     my $query = "INSERT INTO projects_info 
@@ -553,7 +562,7 @@ sub add_project_run($$$$$$$) {
 	$id = $ret->hash->{'id'};
     };
 
-    if ($@) { print "# In Exception " . Dumper($@) . "\n"}
+    if ($@) { print "# In RepoDB::add_project_run projects_info Exception " . Dumper($@) . "\n"}
     
     # Execute insert in db.
     $query = "INSERT INTO projects_runs 
@@ -569,6 +578,8 @@ sub add_project_run($$$$$$$) {
 			      $attributes_conf_json, $recs_json) 
 	    )->hash->{'id'};
     };
+
+    if ($@) { print "# In RepoDB::add_project_run projects_runs Exception " . Dumper($@) . "\n"}
     
     return $id;
 }
@@ -847,6 +858,7 @@ CREATE TABLE IF NOT EXISTS projects_info (
     info JSONB, 
     PRIMARY KEY( project_id )
 );
+
 ";
 }
 

@@ -11,11 +11,11 @@
 
             <p>The table below lists all runs for this project. For each run the list of metrics, indicators, attributes and their confidence interval can be downloaded with values.</p>
             <br />
-
+	    
 % foreach my $run (sort { $runs->{$b}{'run_time'} cmp $runs->{$a}{'run_time'} } keys %{$runs}) { 
-%   my %metrics = %{$runs->{$run}{'metrics'}};
-%   my %attributes = %{$runs->{$run}{'attributes'}};
-%   my @recs = @{$runs->{$run}{'recs'}};	    
+%   my %metrics = %{ $runs->{$run}{'metrics'} || {} };
+%   my %attributes = %{ $runs->{$run}{'attributes'} || {} };
+%   my @recs = @{ $runs->{$run}{'recs'} || [] };	    
 	    <div class="panel-group" id="accordion_run_<%= $runs->{$run}{'id'} %>">
 	      <div class="panel panel-default">
 		<div class="panel-heading">

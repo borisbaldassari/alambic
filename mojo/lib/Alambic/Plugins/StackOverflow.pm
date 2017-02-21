@@ -22,7 +22,7 @@ my %conf = (
         "Check the documentation for this plugin on the project wiki: <a href=\"https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/StackOverflow\">https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/StackOverflow</a>."
     ],
     "type" => "pre",
-    "ability" => [ 'metrics', 'recs', 'figs', 'viz' ],
+    "ability" => [ 'metrics', 'recs', 'viz', 'users' ],
     "params" => {
         "so_keyword" => "A Stack Overflow tag to retrieve questions from.",
     },
@@ -43,10 +43,12 @@ my %conf = (
 	"SO_ASKERS_5Y" => "SO_ASKERS_5Y",
     },
     "provides_figs" => {
+	"so_evolution.svg" => "Evolution of questions on SO (SVG).",
+	"so_plot.svg" => "Summary of questions on SO (SVG).",
+	"so_tm.svg" => "Main words used on SO (SVG).",
     },
     "provides_recs" => [
-        "SO_RULE_DEL",
-        "SO_FIX_RULE",
+        "SO_ANSWER_RATE_LOW",
     ],
     "provides_viz" => {
         "stack_overflow.html" => "Stack Overflow",
@@ -219,6 +221,18 @@ sub _compute_data() {
     $metrics{'SO_VOTES_VOL_5Y'} = $votes;
     $metrics{'SO_VIEWS_VOL_5Y'} = $views;
     $metrics{'SO_ASKERS_5Y'} = scalar keys %people;
+
+    if ( $metrics{'SO_ANSWER_RATE_5Y'} < 0.7 ) {
+	push( @recs, { 'rid' => 'SO_ANSWER_RATE_LOW', 
+		       'severity' => 1,
+		       'src' => 'StackOverflow',
+		       'desc' => 'The average number of answers per question is quite low (' 
+			   . $metrics{'SO_ANSWER_RATE_5Y'} . '). It is important to answer '
+			   . 'to people to show support and make them progress on the project.' 
+	      } 
+	    );
+	
+    }
     
     # Prepare hash of parameters for R exection.
     my %params = (
@@ -230,7 +244,16 @@ sub _compute_data() {
     # Now execute the main R script.
     push( @log, "[Plugins::StackOverflow] Executing R main file." );
     my $r = Alambic::Tools::R->new();
-    @log = ( @log, @{$r->knit_rmarkdown_inc( 'StackOverflow', $project_id, 'stack_overflow.Rmd', \%params )} );    
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'StackOverflow', $project_id, 'stack_overflow.Rmd', 
+					     [], 
+					     \%params )} );    
+    # And execute r scripts for images
+    my @files_r = ('so_evolution', 'so_plot', 'so_tm');
+    foreach my $file_r ( @files_r ) {
+	@log = ( @log, @{$r->knit_rmarkdown_images( 'StackOverflow', $project_id, 
+						    $file_r . '.r', 
+						    [$file_r . '.svg'] )} );
+    }
     
     return {
 	"metrics" => \%metrics,

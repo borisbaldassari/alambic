@@ -61,9 +61,9 @@ my %conf = (
         "THREADS" => "MLS_THREADS",
     },
     "provides_figs" => {
-	"mls_evol_summary.rmd" => "mls_evol_summary.html",
-	"mls_evol_people.rmd" => "mls_evol_people.html",
-	"mls_evol_sent.rmd" => "mls_evol_sent.html",
+	"mls_evol_summary.html" => "Evolution of MLS metrics (HTML)",
+	"mls_evol_people.html" => "Evolution of people involved in mailing lists (HTML)",
+	"mls_evol_sent.html" => "Evolution of emails sent on mailing list (HTML)",
     },
     "provides_recs" => [
         "MLS_SENT",
@@ -217,7 +217,11 @@ sub _compute_data($$$) {
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'EclipseMls', $project_id, 'eclipse_mls.Rmd' )} );
 
     # And execute the figures R scripts.
-    my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
+    my @figs = (
+	"mls_evol_summary.rmd",
+	"mls_evol_people.rmd",
+	"mls_evol_sent.rmd",
+    );
     foreach my $fig (sort @figs) {
 	push( @log, "[Plugins::EclipseMls] Executing R fig file [$fig]." );
 	@log = ( @log, @{$r->knit_rmarkdown_html( 'EclipseMls', $project_id, $fig )} );

@@ -1,0 +1,49 @@
+% my $tools = app->al->get_tools();
+% my $tools_list = $tools->get_list_all();
+
+            <h1 class="al-h1"><small>Administration</small> Tools</h1>
+	    <br />
+
+% my $msg = flash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-12">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%== $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+%= include 'alambic/admin/admin_menu', current => '/admin/tools'
+
+            <div class="row">
+              <div class="col-sm-6">
+        		<p><%= scalar @$tools_list %> tools are defined on this instance. </p>
+              </div>
+              <div class="col-sm-6">
+              </div>
+            </div>
+            <br />
+
+            <table class="table table-striped">
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Version</th>
+                <th colspan="1">Actions</th>
+              </tr>
+
+% foreach my $tool_id ( @$tools_list ) {
+%   my $tool = $tools->get_tool($tool_id); use Data::Dumper; print Dumper($tool);
+%   my $tool_conf = $tool->get_conf();
+                  <tr>
+		<td><%= $tool_conf->{'id'} %></td>
+		<td><b><%= $tool_conf->{'name'} %></b></td>
+		<td><%= $tool->version() %></td>
+		<td width="1cm"><a href="/admin/tools/<%= $tool_id %>"><i class="fa fa-eye"></i></a></td>
+              </tr>
+% }
+              </table>
+

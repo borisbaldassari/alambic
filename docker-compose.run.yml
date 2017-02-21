@@ -1,14 +1,16 @@
 version: '2'
 services:
-  alambic:
-    image: bbaldassari/alambic
-    command: sh /root/alambic_start_wrapper.sh
-    ports: 
-    - "3000:3000"
-    depends_on: 
-    - postgres
-  postgres:
+  postgres_ci:
     image: postgres:9.5
+    container_name: postgres_ci
     environment:
         POSTGRES_PASSWORD: pass4alambic
         POSTGRES_USER: alambic
+  alambic_ci:
+    image: bbaldassari/alambic_ci
+    command: su - alambic -c "sh /home/alambic/alambic/docker/image_ci/alambic_init_start.sh"
+    ports:
+    - "3000:3000"
+    depends_on:
+    - postgres_ci
+

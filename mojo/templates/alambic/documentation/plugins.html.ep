@@ -1,5 +1,5 @@
 
-% my $type = stash( 'type' );
+% my $type = stash( 'type' ) || '';
 % my $plugins = app->al->get_plugins();
 % my $pis_list = $plugins->get_names_all();
 % my $pis_list_pre = $plugins->get_list_plugins_pre();
@@ -59,7 +59,7 @@
 % } else {
 	    <br />
 % }
-	    
+
 
             <p>Plugins add new functionalities to Alambic. They most notably provide new data sources for projects, computing and visualisation features, and can be easily customised to fit specific needs. Each plugin provides a set of <i>abilities</i>, which are features they provide to the system:</p>
 	    <ul>
@@ -103,7 +103,7 @@
                 <p><b>Metrics</b><br />
                   <%== join( ', ', map { '<a href="/documentation/metrics.html#' . $conf->{'provides_metrics'}->{$_} . '">' . $conf->{'provides_metrics'}->{$_} . "</a>" } sort keys %{$conf->{'provides_metrics'}} ) %></p>
                 <p><b>Figures</b><br />
-                  <%== join( ', ', map { $conf->{'provides_figs'}->{$_} } sort keys %{$conf->{'provides_figs'}} ) %></p>
+                  <%== join( '<br />', map { $_ . ': ' .  $conf->{'provides_figs'}->{$_} } sort keys %{$conf->{'provides_figs'}} ) %></p>
                 <p><b>Downloads</b><br />
                   <%== join( "<br />", , map { $_ . ': ' .  $conf->{'provides_data'}->{$_} } sort keys %{$conf->{'provides_data'}} ) %></p>
                 <p><b>Recommendations</b><br />
@@ -128,14 +128,14 @@
               <div class="col-md-6">
                 <p><b>ID</b>: <%= $conf->{'id'} %></p>
 		<p><b>Abilities</b>: &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
-                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>                    
+                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>
                 <p><b>Description</b>: <br /><%== join( '<br />', @{$conf->{'desc'}}) %></p>
               </div>
               <div class="col-md-6">
                 <p><b>Provides metrics</b><br />
                   <%== join( ', ', map { '<a href="/documentation/metrics.html#' . $conf->{'provides_metrics'}->{$_} . '">' . $conf->{'provides_metrics'}->{$_} . "</a>" } sort keys %{$conf->{'provides_metrics'}} ) %></p>
                 <p><b>Provides figures</b><br />
-                  <%== join( ', ', map { '' . $conf->{'provides_figs'}->{$_} . '' } sort keys %{$conf->{'provides_figs'}} ) %></p>
+                  <%== join( '<br />', map { $_ . ': ' .  $conf->{'provides_figs'}->{$_} } sort keys %{$conf->{'provides_figs'}} ) %></p>
                 <p><b>Provides data</b><br />
                   <%== join( "<br />", , map { $_ . ': ' .  $conf->{'provides_data'}->{$_} } sort keys %{$conf->{'provides_data'}} ) %></p>
                 <p><b>Provides recommendations</b><br />
@@ -160,14 +160,14 @@
               <div class="col-md-6">
                 <p><b>ID</b>: <%= $conf->{'id'} %></p>
 		<p><b>Abilities</b>: &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
-                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>                    
+                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>
                 <p><b>Description</b>: <br /><%== join( '<br />', @{$conf->{'desc'}}) %></p>
               </div>
               <div class="col-md-6">
                 <p><b>Provides metrics</b><br />
                   <%== join( ', ', map { '<a href="/documentation/metrics.html#' . $conf->{'provides_metrics'}->{$_} . '">' . $conf->{'provides_metrics'}->{$_} . "</a>" } sort keys %{$conf->{'provides_metrics'}} ) %></p>
                 <p><b>Provides figures</b><br />
-                  <%== join( ', ', map { '' . $conf->{'provides_figs'}->{$_} . '' } sort keys %{$conf->{'provides_figs'}} ) %></p>
+                  <%== join( '<br />', map { $_ . ': ' .  $conf->{'provides_figs'}->{$_} } sort keys %{$conf->{'provides_figs'}} ) %></p>
                 <p><b>Provides data</b><br />
                   <%== join( "<br />", , map { $_ . ': ' .  $conf->{'provides_data'}->{$_} } sort keys %{$conf->{'provides_data'}} ) %></p>
                 <p><b>Provides recommendations</b><br />
@@ -192,14 +192,14 @@
               <div class="col-md-6">
                 <p><b>ID</b>: <%= $conf->{'id'} %></p>
 		<p><b>Abilities</b>: &nbsp; <%== join( ' &nbsp; ', map { $icon_ability->($_) } @{$conf->{'ability'}} ) %></p>
-                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>                    
+                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>
                 <p><b>Description</b>: <br /><%== join( '<br />', @{$conf->{'desc'}}) %></p>
               </div>
               <div class="col-md-6">
                 <p><b>Provides metrics</b><br />
                   <%== join( ', ', map { '<a href="/documentation/metrics.html#' . $conf->{'provides_metrics'}->{$_} . '">' . $conf->{'provides_metrics'}->{$_} . "</a>" } sort keys %{$conf->{'provides_metrics'}} ) %></p>
                 <p><b>Provides figures</b><br />
-                  <%== join( ', ', map { '' . $conf->{'provides_figs'}->{$_} . '' } sort keys %{$conf->{'provides_figs'}} ) %></p>
+                  <%== join( '<br />', map { $_ . ': ' .  $conf->{'provides_figs'}->{$_} } sort keys %{$conf->{'provides_figs'}} ) %></p>
                 <p><b>Provides data</b><br />
                   <%== join( "<br />", , map { $_ . ': ' .  $conf->{'provides_data'}->{$_} } sort keys %{$conf->{'provides_data'}} ) %></p>
                 <p><b>Provides recommendations</b><br />
@@ -222,7 +222,7 @@
 	    <div class="row">
               <div class="col-md-6">
                 <p><b>ID</b>: <%= $conf->{'id'} %></p>
-                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>                    
+                <p><b>Parameters</b>: <%= join( ', ', keys %{$conf->{'params'}} ) %></p>
                 <p><b>Description</b>: <br /><%== join( '<br />', @{$conf->{'desc'}}) %></p>
               </div>
               <div class="col-md-6">

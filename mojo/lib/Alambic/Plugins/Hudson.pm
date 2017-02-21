@@ -39,8 +39,8 @@ my %conf = (
     "provides_data" => {
     },
     "provides_figs" => {
-        'hudson_hist.rmd' => "hudson_hist.html",
-        'hudson_pie.rmd' => "hudson_pie.html",
+        'hudson_hist.html' => "History of Hudson builds (HTML)",
+        'hudson_pie.html' => "Pie of jobs statuses (HTML)",
     },
     "provides_recs" => [
 	"CI_FAILING_JOBS",
@@ -262,7 +262,7 @@ sub _compute_data($) {
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'Hudson', $project_id, 'hudson.Rmd' )} );
     
     # And execute the figures R scripts.
-    my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
+    my @figs = ( 'hudson_hist.rmd', 'hudson_pie.rmd' );
     foreach my $fig (sort @figs) {
 	push( @log, "[Plugins::Hudson] Executing R fig file [$fig]." );
 	@log = ( @log, @{$r->knit_rmarkdown_html( 'Hudson', $project_id, $fig )} );
