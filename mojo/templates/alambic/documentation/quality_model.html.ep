@@ -189,7 +189,6 @@ function click(d) {
       mynode.description = mymetrics[d.mnemo]["description"]; 
       mynode.name = mymetrics[d.mnemo]["name"]; 
       mynode.datasource = mymetrics[d.mnemo]["ds"]; 
-
       var mydiv = d3.select("div#details-box");
 
       mydiv.text("");

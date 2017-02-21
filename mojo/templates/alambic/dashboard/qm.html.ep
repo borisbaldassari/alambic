@@ -45,7 +45,7 @@ var myconcepts = {};
 var myvalues = new Object();
 
 // Load file for attributes.
-d3.json("/data/attributes_full.json", function(error, attrs) {
+d3.json("/models/attributes_full.json", function(error, attrs) {
   if (error) return console.warn(error);
 
   for (var i in attrs.children) {
@@ -55,7 +55,7 @@ d3.json("/data/attributes_full.json", function(error, attrs) {
 });
 
 // Load file for metrics.
-d3.json("/data/metrics_full.json", function(error, metrics) {
+d3.json("/models/metrics_full.json", function(error, metrics) {
   if (error) return console.warn(error);
   
   for (var i in metrics.children) {
@@ -226,39 +226,6 @@ function click(d) {
       pdesct = mydiv.append('p');
       pdesct.classed("details", true); 
       pdesct.html("<b>Description</b>:")
-      for (desc_idx = 0 ; desc_idx < mynode.description.length ; desc_idx++) {
-          var pdesc = mydiv.append('p');
-          pdesc.classed("details", true);
-          pdesc.html(mynode.description[desc_idx]);
-      }
-    } else if (d.type == "concept") {
-      mynode = d;
-      mynode.description = myconcepts[d.mnemo]["desc"]; 
-      mynode.name = myconcepts[d.mnemo]["name"]; 
-      mynode.question = myconcepts[d.mnemo]["question"]; 
-
-      var mydiv = d3.select("div#details-box-project");
-
-      mydiv.text("");
-
-      var ptitle = mydiv.append('p');
-      ptitle.classed("title", true);
-      mytitlehtml = d.type.charAt(0).toUpperCase() + d.type.slice(1) + ": " + mynode.name + " (" + mynode.mnemo + ")";
-      mytitlehtml += ' &nbsp; <a href="/documentation/questions.html#' + mynode.mnemo + '">More info <i class="fa fa-external-link"></i></a>';
-      ptitle.html(mytitlehtml); 
-  
-      p = mydiv.append('p');
-      p.classed("details", true); 
-      var mycolour = d.ind ? mycolours[Math.floor(d.ind)] : "gray";
-      p.html('<div class="row"><div class="col-sm-6"><b>Active:</b> ' + mynode.active.charAt(0).toUpperCase() + mynode.active.slice(1) + ' &nbsp; </div><div class="col-sm-6"><b>Value:</b> <span class="label label-scale" style="background-color: ' + mycolour + '"> ' + d.ind + " </span></div></div>");
-
-      pdesct = mydiv.append('p');
-      pdesct.classed("details", true); 
-      pdesct.html("<b>Question:</b><br />" + mynode.question);
-      
-      pdesct = mydiv.append('p');
-      pdesct.classed("details", true); 
-      pdesct.html("<b>Description:</b>")
       for (desc_idx = 0 ; desc_idx < mynode.description.length ; desc_idx++) {
           var pdesc = mydiv.append('p');
           pdesc.classed("details", true);
