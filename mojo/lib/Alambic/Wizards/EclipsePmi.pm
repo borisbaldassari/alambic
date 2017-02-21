@@ -12,13 +12,16 @@ my %conf = (
     "id" => "EclipsePmi",
     "name" => "Eclipse PMI Wizard",
     "desc" => [
-	'The Eclipse PMI wizard creates a new project with all data source plugins needed to analyse a project from the Eclipse forge. It retrieves and uses values from the PMI repository to set the plugin parameters automatically.',
+	'The Eclipse PMI wizard creates a new project with all data source plugins needed to analyse a project from the Eclipse forge, including Eclipse ITS, Eclipse MLS, Eclipse PMI, Eclipse SCM and Hudson CI. It retrieves and uses values from the PMI repository to set the plugin parameters automatically.',
+	"This wizard only creates the plugins that will be always available. Depending on the project's configuration and data sources availability, other plugins may be needed and manually added to the configuration.",
     ],
     "params" => {
     },
     "plugins" => [
-	"EclipsePmi",
 	"EclipseIts",
+	"EclipseMls",
+	"EclipsePmi",
+	"EclipseScm",
 	"Hudson",
     ],
 );
@@ -79,8 +82,10 @@ sub run_wizard($$) {
     my $project_ci = $project_pmi->{'build_url'}->[0]->{'url'};
 
     my $plugins_conf = {
-	"EclipsePmi" => { 'project_pmi' => $project_id },
 	"EclipseIts" => { 'project_grim' => $project_id },
+	"EclipseMls" => { 'project_grim' => $project_id },
+	"EclipsePmi" => { 'project_pmi' => $project_id },
+	"EclipseScm" => { 'project_grim' => $project_id },
 	"Hudson" => { 'hudson_url' => $project_ci },
     };
 
