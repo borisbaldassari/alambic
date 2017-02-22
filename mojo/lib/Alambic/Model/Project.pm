@@ -232,10 +232,7 @@ sub run_plugins() {
     my @log;
     
     my $list = $plugins_module->get_list_plugins_pre(); 
-#print "# Project::run_plugins Plugin list is " . Dumper($list);
-#print "# Project::run_plugins Plugin list is " . Dumper(keys %plugins);
     my @pre_plugins = sort grep ( $plugins{$_}, @$list );
-#print "# Project::run_plugins final Plugin list is " . Dumper(@pre_plugins);
     foreach my $plugin_id (@pre_plugins) {
 	my $ret = $plugins_module->run_plugin($project_id, $plugin_id, $plugins{$plugin_id});
 	
@@ -304,7 +301,6 @@ sub run_post() {
 sub run_posts() {
     my ($self, $models) = @_;
 
-    my $ret_final;
     my @log;
 
     my $main = {
@@ -318,17 +314,16 @@ sub run_posts() {
     };
 
     my @post_plugins = sort grep { $plugins_module->get_plugin($_)->get_conf()->{'type'} =~ /^post$/ } keys %plugins;
+    my $ret;
     foreach my $plugin_id (@post_plugins) {
-	my $ret = $plugins_module->run_post($project_id, $plugin_id, $conf);
-	
+	$ret = $plugins_module->run_post($project_id, $plugin_id, $conf);
 	foreach my $info (sort keys %{$ret->{'info'}} ) { $info{$info} = $ret->{'info'}{$info}; }
 	foreach my $metric (sort keys %{$ret->{'metrics'}} ) { $metrics{$metric} = $ret->{'metrics'}{$metric}; }
 	foreach my $rec ( @{$ret->{'recs'}} ) { push( @recs, $rec ); }
 	@log = (@log, @{$ret->{'log'}});
     }
-    $ret_final->{'log'} = \@log;
     
-    return $ret_final;
+    return $ret;
 
 }
 
@@ -379,7 +374,7 @@ sub run_project($) {
     my $csv = Text::CSV->new( { binary => 1, eol => "\n" } );
     my $csv_out;
     my $metrics = $models->get_metrics();
-    my @metrics; #print Dumper($metrics);
+    my @metrics; 
     foreach my $metric (keys %$metrics) {
 	my $desc = join( ' ', @{$metrics->{$metric}{'description'}} );
 	my @metrics = (
