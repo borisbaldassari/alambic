@@ -15,6 +15,7 @@ my %conf = (
     "id" => "r_sessions",
     "name" => "R sessions",
     "desc" => "Runs R for plugins, computes data and generates files.",
+    "ability" => [ "methods" ],
     "type" => "tool",
     "params" => {
 	"path_r" => "The absolute path to the R binary.",
@@ -40,6 +41,23 @@ sub get_conf() {
 }
 
 sub install() {
+}
+
+sub version() {
+
+    my $r_cmd = "R --version";
+    my @out = `$r_cmd 2>&1`;
+    chomp @out;
+
+    for my $l ( @out ) {
+	if ( $l =~ m/^(R version .*)$/ ) {
+	    return $1;
+	} else {
+	    return "R version not found.";
+	}
+    }
+    return "R version not found.";
+
 }
 
 sub test() {
