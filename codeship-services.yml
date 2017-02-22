@@ -12,14 +12,6 @@ alambic_test_build:
   links:
       - postgres
 
-alambic_ci_build:
-  build:
-    image: bbaldassari/alambic_ci
-    path: docker/image_ci/
-    dockerfile: Dockerfile
-  links:
-      - postgres
-
 postgres:
     image: postgres:9.5
     environment:
