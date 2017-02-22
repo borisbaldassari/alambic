@@ -6,7 +6,6 @@ use warnings;
 use Alambic::Model::RepoFS;
 use File::chdir;
 use File::Copy;
-#use File::Path qw(remove_tree);
     
 use Data::Dumper;
 

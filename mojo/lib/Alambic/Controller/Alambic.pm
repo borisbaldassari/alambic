@@ -60,16 +60,12 @@ sub login_post() {
 
     # Check return value for login.
     my $users = $self->app->al->users();
-    print "Users is " . Dumper($users);
     my $valid = $users->validate_user($username, $password);
-    print "Valid is " . Dumper($valid);
     if ( $valid ) {
-	print "Password validated.\n";
         $self->session( 'session_user' => $username );
         $self->flash( msg => "You have been successfully authenticated as user $username." );
         $self->redirect_to( '/user/' . $username . '/profile' );
     } else {
-	print "Password NOT validated.\n";
 	delete $self->session->{session_user};
         $self->flash( msg => "Wrong login/password. Sorry." );
         $self->redirect_to( '/login' );
