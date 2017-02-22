@@ -34,7 +34,7 @@
 
 		<table class="table table-striped">
 		  <tr><th>Method</th><th>Description</th></tr>
-% my $methods = $tool_conf->{'provides_methods'}; use Data::Dumper; print Dumper($methods);
+% my $methods = $tool_conf->{'provides_methods'}; 
 % foreach my $method ( sort keys %$methods ) {
 		  <tr>
             <td><%= $method %></td>

@@ -31,7 +31,7 @@
 % my $project_plugins = $project->get_plugins();
 % my @data_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_data()} ) } keys %$project_plugins;
 % my @figs_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_figs()} ) } keys %$project_plugins;
-% my ($data_vol, $figs_vol) = (0, 0); 
+% my ($data_vol, $figs_vol) = (0, 0);
 % foreach my $dp (@data_plugins) {
 %   next if not ( grep( /^$dp$/, $plugins->get_list_plugins_data() ) );
 %   $data_vol += scalar keys %{$plugins->get_plugin($dp)->get_conf()->{'provides_data'}};
@@ -76,7 +76,7 @@
                     <a class="list-group-item" href="/projects/<%= $project_id %>" role="button"><i class="fa fa-fw fa-dashboard"></i> &nbsp; Project dashboard</a>
                   </div>
                 </div>
-		
+
               </div>
             </div>
 
@@ -84,9 +84,9 @@
 
             <div class="row">
               <div class="col-md-12">
-		
+
 		<h3>Plugins: Pre</h3>
-		
+
 		<p>You can add a data source from:
 % foreach my $p (sort @$plugins_pre) {
 %   if (not exists($project_plugins->{$p})) {
@@ -111,11 +111,11 @@
                     <td width="1cm"><a href="/admin/projects/<%= $project_id %>/runp/<%= $plugin %>"><i class="fa fa-cogs"></i></a></td>
                     <td width="1cm"><a href="/admin/projects/<%= $project_id %>/delp/<%= $plugin %>"><i class="fa fa-ban"></i></a></td></tr>
 %   }
-% }            
+% }
 		</table>
-		
+
 		<h3>Plugins: Post</h3>
-		
+
 		<p>You can add a data source from:
 % foreach my $p (sort @$plugins_post) {
 %   if (not exists($project_plugins->{$p})) {
@@ -123,7 +123,7 @@
 %   }
 % }
 		</p>
-		
+
 		<table class="table table-striped">
 		  <tr><th>Name</th><th>ID</th><th colspan="3">Actions</th></tr>
 % foreach my $plugin ( sort keys %$project_plugins ) {
@@ -136,9 +136,9 @@
                     <td width="1cm"><a href="/admin/projects/<%= $project_id %>/runp/<%= $plugin %>"><i class="fa fa-cogs"></i></a></td>
                     <td width="1cm"><a href="/admin/projects/<%= $project_id %>/delp/<%= $plugin %>"><i class="fa fa-ban"></i></a></td></tr>
 %   }
-% }            
+% }
 		</table>
-		
+
               </div>
             </div>
 
@@ -156,7 +156,7 @@
                     <td><%= $run->{'id'} %></td><td><%= $run->{'run_time'} %></td>
                     <td><%= $run->{'run_delay'} %></td><td><%= $run->{'run_user'} %></td>
 		  </tr>
-% }            
+% }
 		</table>
               </div>
             </div>
@@ -167,7 +167,7 @@
               <div class="col-md-6">
 
                 <h3>Input files</h3>
-                
+
                 <table class="table table-striped">
                   <tr><th>File</th><th colspan="1">Actions</th></tr>
 % my %timestamps = %{stash( 'files_time' )};
@@ -182,8 +182,8 @@
               </div>
               <div class="col-md-6">
 
-                <h3>Project files</h3>
-                
+                <h3>Generated files</h3>
+
                 <table class="table table-striped">
                   <tr><th>File</th><th colspan="1">Actions</th></tr>
 % foreach my $file (@{stash( 'files_output' )}) {

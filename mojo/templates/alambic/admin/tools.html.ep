@@ -36,7 +36,7 @@
               </tr>
 
 % foreach my $tool_id ( @$tools_list ) {
-%   my $tool = $tools->get_tool($tool_id); use Data::Dumper; print Dumper($tool);
+%   my $tool = $tools->get_tool($tool_id); 
 %   my $tool_conf = $tool->get_conf();
                   <tr>
 		<td><%= $tool_conf->{'id'} %></td>

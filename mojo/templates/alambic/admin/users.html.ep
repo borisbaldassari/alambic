@@ -33,7 +33,6 @@
               <tr><th>ID</th><th>Name</th><th>Email</th><th>Roles</th><th>Projects</th><th>Actions</th></tr>
 % my $users = app->al->users->get_users();
 % foreach my $user (sort keys %$users) {
-%   print "Projects: " . Dumper($users->{$user}->{'projects'});
                   <tr>
                     <td><%= $user %></td>
                     <td><%= $users->{$user}->{'name'} %></td>
