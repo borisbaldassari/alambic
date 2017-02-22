@@ -1,11 +1,11 @@
 
 echo "# Alambic script for test."
-echo "Waiting 30 seconds for the db to init correctly."
-sleep 30
+echo "Waiting 20 seconds for the db to init correctly."
+sleep 20
 
 # Create the required databases: alambic_db and minion_db
 cd ~/alambic/docker/image_ci/
-PGPASSWORD=pass4alambic psql -h postgres < ~/alambic/resources/scripts/psql_init.sql
+PGPASSWORD=pass4alambic psql -h postgres_ci < ~/alambic/resources/scripts/psql_init.sql
 
 cd ~/alambic/mojo
 cat alambic.conf

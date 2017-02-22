@@ -1,8 +1,8 @@
 
 # Script to start an Alambic instance.
 echo "# Alambic script for init start."
-echo "Waiting 30 seconds for the db to init correctly."
-sleep 30
+echo "Waiting 20 seconds for the db to init correctly."
+sleep 20
 
 # Make sure we use the right perl from perlbrew
 source ~/.bashrc
