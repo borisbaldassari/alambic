@@ -153,6 +153,9 @@ sub get_qm_full() {
     # Create a rich version of the quality model with all info on nodes.
     &_populate_qm($qm_full_children, undef, undef, undef, undef);
 
+    print "# In Models " . Dumper($qm_full_children);
+
+    
     my $qm_full = {
         "name" => "Alambic Full Quality Model",
         "version" => "" . localtime(),

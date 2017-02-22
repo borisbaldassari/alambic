@@ -300,15 +300,9 @@ sub run_post() {
 #   - $models a ref to a Models.pm object
 sub run_posts() {
     my ($self, $models) = @_;
-
-    my @log;
-
-    my $main = {
-	"last_run" => $project_last_run,
-    };
-
+    print "Project.pm Project last run " . Dumper($project_last_run);
     my $conf = {
-	'main' => $main,
+	'last_run' => $project_last_run,
 	'project' => $self,
 	'models' => $models,
     };
@@ -320,7 +314,6 @@ sub run_posts() {
 	foreach my $info (sort keys %{$ret->{'info'}} ) { $info{$info} = $ret->{'info'}{$info}; }
 	foreach my $metric (sort keys %{$ret->{'metrics'}} ) { $metrics{$metric} = $ret->{'metrics'}{$metric}; }
 	foreach my $rec ( @{$ret->{'recs'}} ) { push( @recs, $rec ); }
-	@log = (@log, @{$ret->{'log'}});
     }
     
     return $ret;
@@ -344,6 +337,7 @@ sub run_project($) {
     @recs = ();
     
     my %ret;
+    $ret{'log'} = [ '[Model::Project] Start Project run.' ];
 
     # Run plugins
     my $pre_data = $self->run_plugins();
@@ -390,8 +384,8 @@ sub run_project($) {
     $repofs->write_output( $project_id, "metrics_ref.csv", $csv_out );
     
     # Run post plugins
-    my $post_data = $self->run_posts($models);
-    $ret{'log'} = [ @{$ret{'log'}}, @{$post_data->{'log'}} ];
+    my $post_data = $self->run_posts($models) || {};
+    @{$ret{'log'}} = ( @{$ret{'log'}}, @{$post_data->{'log'} || []} );
 
     return \%ret;
 }
