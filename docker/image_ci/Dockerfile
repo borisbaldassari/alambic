@@ -14,6 +14,6 @@ COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
 USER root
 
 # Execute processes
-CMD [ "su", "-", "alambic", "-c", "/home/alambic/alambic/docker/image_ci/alambic_init_start.sh"]
+CMD [ "su", "-", "alambic", "-c", "sh /home/alambic/alambic/docker/image_ci/alambic_init_start.sh"]
 
 
