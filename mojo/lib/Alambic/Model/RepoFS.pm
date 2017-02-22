@@ -107,7 +107,14 @@ sub read_output($$) {
 sub write_plugin($$$) {
     my ($self, $plugin_id, $file_name, $content) = @_;
 
-    my $file_content_out = "lib/Alambic/Plugins/" . $plugin_id . "/" . $file_name;
+    my $dir_content_out = "lib/Alambic/Plugins/" . $plugin_id;
+    my $file_content_out = $dir_content_out . "/" . $file_name;
+
+    # Create plugin dir if it does not exist
+    if (not -d $dir_content_out ) { 
+        mkdir( $dir_content_out );
+    }
+
     open my $fh, ">", $file_content_out;
     print $fh $content;
     close $fh;
