@@ -102,7 +102,7 @@ is_deeply( $metrs_f->{'children'}{'METRIC1'}{'parents'}, {'ATTR1'=>1}, "Get full
 is($metrs_f->{'name'}, "Alambic Metrics", "Full metrics name is conform." ) or diag explain $metrs_f->{'name'};
 
 my $metrs_a = $models->get_metrics_active(); 
-is_deeply( $metrs_a, [], "No active metric is defined (there is no qm defined)." ) or diag explain $metrs_a;
+is_deeply( $metrs_a, [ 'METRIC1' ], "Only one active metric is defined (METRIC1)." ) or diag explain $metrs_a;
 
 my $metrs_r = $models->get_metrics_repos();
 is_deeply( $metrs_r, { 'EclipseIts' => 1 }, "get_metrics_repos is ok: one repository containing 1 metric." ) or diag explain $metrs_r;
