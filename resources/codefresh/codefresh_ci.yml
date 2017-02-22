@@ -24,7 +24,4 @@ steps:
     # You can push the image with whatever tag you want. In our example we use CF_BRANCH, which is a variable in
     # the build process, accessible throughout the entire flow.
     tag: latest # '${{CF_BRANCH}}'
-    credentials:
-      #make sure that you have a dockerUsername and dockerPassword define on the pipeline.
-      username: '${{dockerUsername}}'
-      password: '${{dockerPassword}}'
+
