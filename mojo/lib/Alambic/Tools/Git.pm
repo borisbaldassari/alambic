@@ -125,10 +125,9 @@ sub git_clone_or_pull($$$$) {
 
     if (-e $dir) {
 	# start from an existing working copy    
-	push( @log, "[Tools::Git] Directory [$dir] exists." );
 	eval {
 	    my $r = Git::Repository->new( work_tree => $dir );
-	    push( @log, "[Tools::Git] Version is " . $r->version );
+	    push( @log, "[Tools::Git] Directory [$dir] exists. Version is " . $r->version );
 	    @log = ( @log, @{&git_pull($self, $plugin_id, $project_id)} );
 	};
     } else {
@@ -182,10 +181,9 @@ sub git_log($$$$) {
     
     my @log;
 
-    push( @log, "[Tools::Git] Getting Git log for [$project_id]." );
     my $output = $git->run( ( 'log' ) );
-    $repofs->write_input( $project_id, "import_git.txt", $output );
-    push( @log, "[Tools::Git] Created file [${project_id}_import_git.txt] in input." );
+    $repofs->write_input( $project_id, "tool_git_log.txt", $output );
+    push( @log, "[Tools::Git] Getting Git log for [$project_id] in [${project_id}_tool_git_log.txt]." );
 
     return \@log;
 }
@@ -252,12 +250,11 @@ sub git_pull($$$$) {
     my ($self, $plugin_id, $project_id) = @_;
     
     my @log;
-    push( @log, "[Tools::Git] Pulling from origin." );
     my @output = $git->run( ( 'pull' ) );
     if (scalar @output == 1 && $output[0] =~ m!Already up-to-date!) {
-	push( @log, "[Tools::Git] Already up-to-date." );
+	push( @log, "[Tools::Git] Pulling from origin. Already up-to-date." );
     } else {
-	push( @log, "[Tools::Git] Pull output: " . @output . "." );
+	push( @log, "[Tools::Git] Pulling from origin. Pull output: " . @output . "." );
     }
     
     return \@log;
