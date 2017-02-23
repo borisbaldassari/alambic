@@ -10,3 +10,6 @@
 
 <p><%= $message %></p>
 
+<hr />
+
+<p>This message was sent using Alambic contact form on the <%= localtime() %>.</p>
