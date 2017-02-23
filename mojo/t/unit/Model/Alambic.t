@@ -19,11 +19,11 @@ my $db_m_ok = $alambic->is_db_m_ok();
 ok( $db_m_ok == 0, "Is db minion ok returns 0 (db was not defined).") or diag explain $db_m_ok;
 
 my $conf = $alambic->instance_name();
-is( $conf, 'MyDBNameInit', "Instance has correct default name") or diag explain $conf;
+is( $conf, 'Default CLI init', "Instance has correct default name") or diag explain $conf;
 $conf = $alambic->instance_desc();
-is( $conf, 'MyDBDescInit', "Instance has correct default desc") or diag explain $conf;
-my $version = $alambic->instance_version();
-is( $version, '3.2-dev', "Alambic version is $version, considered ok.") or diag explain $version;
+is( $conf, 'Default CLI Init description', "Instance has correct default desc") or diag explain $conf;
+#my $version = $alambic->instance_version();
+#is( $version, '3.2-dev', "Alambic version is $version, considered ok.") or diag explain $version;
 
 my $model = $alambic->get_models();
 isa_ok( $model, 'Alambic::Model::Models' );
@@ -42,8 +42,8 @@ note("Run a db backup before creating project.");
 my $sql = $alambic->backup();
 ok( $sql =~ m!DROP TABLE IF EXISTS conf!, "SQL backup has drop table for conf.") or diag explain $sql;
 ok( $sql =~ m!CREATE TABLE IF NOT EXISTS conf!, "SQL backup has create table for conf.") or diag explain $sql;
-ok( $sql =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', 'MyDBNameInit'\);!, "SQL backup has insert for name.") or diag explain $sql;
-ok( $sql =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', 'MyDBDescInit'\);!, "SQL backup has insert for desc.") or diag explain $sql;
+ok( $sql =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', 'Default CLI init'\);!, "SQL backup has insert for name.") or diag explain $sql;
+ok( $sql =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', 'Default CLI Init description'\);!, "SQL backup has insert for desc.") or diag explain $sql;
 ok( $sql !~ /tools.cdt/, "SQL backup has still NOT tools.cdt." ) or diag explain $sql;
 
 note("Create empty project from Alambic.");
@@ -83,7 +83,6 @@ ok( scalar(keys %$ret) == 4, "Run plugins." ) or diag explain $ret;
 note("Run project from Alambic.");
 $ret = $alambic->run_project('tools.cdt');
 ok( scalar(keys %$ret) == 4, "Adding run_project returns hash with 4 entries." ) or diag explain $ret;
-print Dumper($ret);
 
 # Restore previous backup and make sure the created project is not there.
 $alambic->restore($sql);
@@ -91,4 +90,4 @@ $project = $alambic->get_project('tools.cdt');
 is( $project, undef, "Get project tools.cdt returns undef after restore." );
 
 
-done_testing(26);
+done_testing();

@@ -139,7 +139,7 @@ sub instance_desc($) {
 # Get the version of Alambic running this instance.
 sub instance_version($) {
     my ($self) = @_;
-    
+
     return $al_version;
 }
 

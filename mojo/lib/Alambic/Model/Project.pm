@@ -300,7 +300,7 @@ sub run_post() {
 #   - $models a ref to a Models.pm object
 sub run_posts() {
     my ($self, $models) = @_;
-    print "Project.pm Project last run " . Dumper($project_last_run);
+
     my $conf = {
 	'last_run' => $project_last_run,
 	'project' => $self,
