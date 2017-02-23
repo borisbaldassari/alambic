@@ -201,8 +201,8 @@ sub users() {
     # my $users = {
     # 	'boris.baldassari' => {
     # 	    'name' => 'Boris Baldassari',
-    # 	    'email' => 'boris.baldassari@gmail.com',
-    # 	    'passwd' => 'boris098',
+    # 	    'email' => 'boris.baldassari@domain.com',
+    # 	    'passwd' => 'password',
     # 	    'roles' => [ 'admin' ],
     # 	    'projects' => [ 'modeling.sirius' ],
     # 	    'notifs' => {

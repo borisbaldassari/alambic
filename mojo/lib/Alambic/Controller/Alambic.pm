@@ -100,16 +100,20 @@ sub contact_post() {
 				  name => $name, 
 				  email => $email, 
 				  message => $message);
-    # Actually send the email
-    $self->mail(
-	mail => {
-	    To => 'boris.baldassari@gmail.com',
-	    Format => 'mail',
-            Data => $data,
-        },
-    );
 
-    $self->flash( msg => "Message has been sent. Thank you!" );
+    # Get the administrator email address.
+    my $admin = $self->app->al->get_user('administrator');
+
+    if (defined($admin->{'email'})) {
+	# Actually send the email
+	$self->mail(
+	    mail => { To => $admin->{'email'}, Format => 'mail', Data => $data }
+	    );
+	$self->flash( msg => "Message has been sent. Thank you!" );
+    } else {
+	$self->flash( msg => "Message could not be sent: cannot find an email address for administrator." );
+    }
+    
     $self->redirect_to( '/' );    
 }
 
