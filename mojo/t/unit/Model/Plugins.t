@@ -13,11 +13,11 @@ my $plugins = Alambic::Model::Plugins->new();
 isa_ok( $plugins, 'Alambic::Model::Plugins' );
 
 my $list = $plugins->get_names_all();
-my $pv = 7;
+my $pv = 8;
 ok( scalar(keys %{$list}) == $pv, "get_names_all There is a total of $pv plugins detected." ) or Dumper explain %$list;
 
 $list = $plugins->get_conf_all();
-$pv = 7;
+$pv = 8;
 ok( scalar(keys %{$list}) == $pv, "get_conf_all has $pv entries." ) or explain Dumper %$list;
 
 # Check plugins types
@@ -30,7 +30,7 @@ $pv = 0;
 ok( scalar(@{$list}) == $pv, "get_list_plugins_cdata List cdata has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_post();
-$pv = 0; 
+$pv = 1; 
 ok( scalar(@{$list}) == $pv, "get_list_plugins_post List post has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_global();
@@ -47,7 +47,7 @@ $pv = 6;
 ok( scalar @{$list} == $pv, "List metrics has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_figs();
-$pv = 5;
+$pv = 6;
 ok( scalar(@{$list}) == $pv, "List figs has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_info();
@@ -59,7 +59,7 @@ $pv = 7;
 ok( scalar(@{$list}) == $pv, "List recs has $pv entries." ) or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_viz();
-$pv = 7;
+$pv = 8;
 ok( scalar(@{$list}) == $pv, "List viz has $pv entries." ) or explain Dumper @$list;
 
 note( "Loading EclipsePmi plugin." );
