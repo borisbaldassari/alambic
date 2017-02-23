@@ -20,8 +20,10 @@ my $res = $harness->runtests(
     [ 't/unit/Model/Models.t', 'Testing Model::Models' ],
     [ 't/unit/Model/Plugins.t', 'Testing Model::Plugins' ],
     [ 't/unit/Model/RepoDB.t', 'Testing Model::RepoDB' ],
+    [ 't/unit/Model/Alambic.t', 'Testing Model::Alambic' ],
     [ 't/unit/Model/RepoFS.t', 'Testing Model::RepoFS' ],
     [ 't/unit/Model/Tools.t', 'Testing Model::Tools' ],
+    [ 't/unit/Tools/Git.t', 'Testing Tools::Git' ],
     );
 
 exit $res->failed;

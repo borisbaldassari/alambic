@@ -63,14 +63,22 @@ if ($exec_cloning) {
 $log = $tool->git_clone_or_pull( 'Test', 'test.project', 
 				   'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git' );
 ok( grep( /^\[Tools::Git\] Directory /, @{$log} ), "Log has Directory." ) or diag explain $log;
-ok( grep( /^\[Tools::Git\] Version is /, @{$log} ), "Log has Version." ) or diag explain $log;
+ok( grep( /Version is /, @{$log} ), "Log has Version." ) or diag explain $log;
 ok( grep( /^\[Tools::Git\] Pulling from origin/, @{$log} ), "Log has Pull from origin." ) or diag explain $log;
-ok( grep( /^\[Tools::Git\] Already up-to-date/, @{$log} ), "Pull is already up-to-date." ) or diag explain $log;
+ok( grep( /Already up-to-date/, @{$log} ), "Pull is already up-to-date." ) or diag explain $log;
 
-$log = $tool->git_commits();
-print "commits " . Dumper($log);
+my $commits = $tool->git_commits();
+ok( ref($commits) eq 'ARRAY', 'Commits is an array.' );
+ok( exists($commits->[0]{'mod'}), 'Commit has mod attribute.' );
+ok( exists($commits->[0]{'auth'}), 'Commit has auth attribute.' );
+ok( exists($commits->[0]{'del'}), 'Commit has del attribute.' );
+ok( exists($commits->[0]{'msg'}), 'Commit has msg attribute.' );
+ok( exists($commits->[0]{'cmtr'}), 'Commit has cmtr attribute.' );
+ok( exists($commits->[0]{'time'}), 'Commit has time attribute.' );
+ok( exists($commits->[0]{'add'}), 'Commit has add attribute.' );
+ok( exists($commits->[0]{'id'}), 'Commit has id attribute.' );
     
 $log = $tool->git_log( 'Test', 'test.project' );
-print "log " . Dumper($log);
+ok( grep( /^\[Tools::Git\] Getting Git log for /, @{$log} ), "Log has Getting log." ) or diag explain $log;
     
-done_testing(9);
+done_testing();
