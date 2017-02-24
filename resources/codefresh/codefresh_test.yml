@@ -2,7 +2,7 @@ version: '1.0'
 
 steps:
 
-  git_clone_private_repo:
+  build_test_image:
     title: Building Test Image
     description: Build Test Image desc...
     image: bbaldassari/image_base_centos:latest
@@ -11,14 +11,33 @@ steps:
       - git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
       - su - alambic -c 'cd /home/alambic/alambic && git checkout {branch_name} && git branch && git status'
       - su - alambic -c 'cp /home/alambic/alambic/docker/image_test/alambic.conf /home/alambic/alambic/mojo/'
+      - su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
+      - su - alambic -c "sh /home/alambic/alambic/resources/scripts/alambic_test_ui.sh"
+    composition:
+      version: '2'
+      postgres:
+        image: 'postgres:9.5'
+        container_name: postgres
+      environment:
+        POSTGRES_PASSWORD: pass4alambic
+        POSTGRES_USER: alambic
+      alambic_test:
+        image: bbaldassari/alambic_test
+        command: su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
+        depends_on:
+          - postgres
+    composition_candidates:
+      alambic_test:
+        image: ${{build_step}}
+        command: su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
 
-  push_ci_to_registry:
+  push_test_to_registry:
     title: Pushing to Docker Registry
-    description: Pushing CI Image desc...
+    description: Pushing Test Image desc...
     type: push
 
     # A candidate is the image that we want to push to registry
-    candidate: '${{build_ci_image}}'
+    candidate: '${{build_test_image}}'
 
     # You can push the image with whatever tag you want. In our example we use CF_BRANCH, which is a variable in
     # the build process, accessible throughout the entire flow.
