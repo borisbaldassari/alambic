@@ -20,7 +20,7 @@ ok( grep( !/^ERROR/, @{$log} ), "Tool self-test returns no ERROR" ) or diag expl
 ok( grep( /^OK: Git exec found/, @{$log} ), "Git bin is in path" ) or diag explain $log;
 
 # Create repo for test project 
-my $exec_cloning = 0;
+my $exec_cloning = 1;
 my $dir_src = "projects/test.project/";
 # Remove existing src directory
 if (-d $dir_src && $exec_cloning) {

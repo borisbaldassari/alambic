@@ -8,7 +8,25 @@ use Data::Dumper;
 
 BEGIN { use_ok( 'Alambic::Model::Alambic' ); }
 
-my $alambic = Alambic::Model::Alambic->new();
+
+my $file_conf = "alambic.conf";
+my $conf_al;
+{
+    open(my $fh, "<", $file_conf) or die "Could not open [$file_conf].\n";
+    local $/;
+    $conf_al = <$fh>;
+    close $fh;
+}
+
+my $conf_e = eval $conf_al;
+
+my %conf = {
+    "conf_pg_alambic" => $conf_e->{'conf_pg_alambic'},
+    "conf_pg_minion" => $conf_e->{'conf_pg_alambic'},
+    "alambic_version" => '3.2-test',
+};
+
+my $alambic = Alambic::Model::Alambic->new( \%conf );
 isa_ok( $alambic, 'Alambic::Model::Alambic' );
 
 # Initialise the db.
