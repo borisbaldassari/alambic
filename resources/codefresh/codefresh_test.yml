@@ -13,15 +13,17 @@ steps:
       - su - alambic -c 'cp /home/alambic/alambic/docker/image_test/alambic.conf /home/alambic/alambic/mojo/'
 
   run_test_image:
+    title: Run Test Image
     type: composition
     composition:
       version: '2'
-      postgres:
-        image: 'postgres:9.5'
-        container_name: postgres
-        environment:
-          POSTGRES_PASSWORD: pass4alambic
-          POSTGRES_USER: alambic
+      services:
+        postgres:
+          image: 'postgres:9.5'
+          container_name: postgres
+          environment:
+            POSTGRES_PASSWORD: pass4alambic
+            POSTGRES_USER: alambic
     composition_candidates:
       alambic_test:
         image: ${{build_test_image}}
