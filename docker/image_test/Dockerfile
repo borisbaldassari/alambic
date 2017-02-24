@@ -8,7 +8,7 @@ EXPOSE 3000
 USER alambic
 
 # Clone Alambic repository
-RUN echo "REBUILD ME NOW!"
+RUN echo "REBUILD MEsd!"
 RUN git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
 COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
 
