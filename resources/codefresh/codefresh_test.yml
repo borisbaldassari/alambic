@@ -2,7 +2,7 @@ version: '1.0'
 
 steps:
 
-  prepare_test_image:
+  prepare_test:
     title: Preparing Test Image
     description: Prepare CI Image desc...
     type: build
@@ -13,10 +13,10 @@ steps:
     image_name: bbaldassari/alambic_test
     tag: latest # ${{CF_BRANCH}}
 
-  build_test_image:
+  build_test:
     title: Building Test Image
     description: Build Test Image desc...
-    image: ${{prepare_test_image}}
+    image: ${{prepare_test}}
     working_directory: ${{main_clone}}
     commands:
       - su - alambic -c 'rm -rf /home/alambic/alambic'
@@ -24,7 +24,7 @@ steps:
       - su - alambic -c 'cd /home/alambic/alambic && git checkout master && git branch && git status'
       - su - alambic -c 'cp /home/alambic/alambic/docker/image_test/alambic.conf /home/alambic/alambic/mojo/'
 
-  run_test_image:
+  run_test:
     title: Run Test Image
     type: composition
     composition:
@@ -37,8 +37,10 @@ steps:
             POSTGRES_PASSWORD: pass4alambic
             POSTGRES_USER: alambic
     composition_candidates:
-      alambic_test:
-        image: ${{build_test_image}}
+      test:
+        image: ${{build_test}}
+        links:
+          -postgres
         command:
           - su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
           - su - alambic -c "sh /home/alambic/alambic/resources/scripts/alambic_test_ui.sh"
@@ -49,7 +51,7 @@ steps:
     type: push
 
     # A candidate is the image that we want to push to registry
-    candidate: '${{build_test_image}}'
+    candidate: '${{build_test}}'
 
     # You can push the image with whatever tag you want. In our example we use CF_BRANCH, which is a variable in
     # the build process, accessible throughout the entire flow.
