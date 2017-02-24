@@ -14,7 +14,8 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE}
-#project.id <- 'modeling.sirius'
+
+#project.id <- 'tools.cdt'
 plugin.id <- 'Hudson'
 file.main = paste("", project.id, "_hudson_main.csv", sep="")
 file.metrics = paste("", project.id, "_hudson_metrics.csv", sep="")
@@ -53,23 +54,18 @@ jobs.nok <- jobs[jobs$color == 'red',]
 
 Hudson instance [``r main$name``] is located at ``r main$url``. 
 
-There are ``r metrics$JOBS`` jobs defined on this instance. ``r metrics$JOBS_GREEN`` are green (stable), ``r metrics$JOBS_YELLOW`` are yellow (unstable), ``r metrics$JOBS_RED`` are red (failing).
+There are ``r metrics$CI_JOBS`` jobs defined on this instance. ``r metrics$CI_JOBS_GREEN`` are green (stable), ``r metrics$CI_JOBS_YELLOW`` are yellow (unstable), ``r metrics$CI_JOBS_RED`` are red (failing).
 
 ## Metrics
 
 The following metrics are available:
 
 <ul>
-  <li>Number of jobs defined on the host (JOBS): ``r metrics[['JOBS']]``.</li>
-  <li>Number of jobs in status failed for more than one week (JOBS_FAILED_1W): ``r metrics[['JOBS_FAILED_1W']]``.</li>
-  <li>Number of jobs in status green (JOBS_GREEN): ``r metrics[['JOBS_GREEN']]``.</li>
-  <li>Number of jobs in status yellow (JOBS_YELLOW): ``r metrics[['JOBS_YELLOW']]``.</li>
-  <li>Number of jobs in status red (JOBS_RED): ``r metrics[['JOBS_RED']]``.</li>
-```{r metrics_table, echo=FALSE, message=FALSE, results='asis', eval=F}
-t <- lapply(names(metrics), function(x) paste(' <li>', x, ': ', metrics[[x]], '</li>', sep=''))
-t <- paste(t, collapse=" ")
-cat(t)
-```
+  <li>Number of jobs defined on the host (CI_JOBS): ``r metrics[['CI_JOBS']]``.</li>
+  <li>Number of jobs in status failed for more than one week (CI_JOBS_FAILED_1W): ``r metrics[['CI_JOBS_FAILED_1W']]``.</li>
+  <li>Number of jobs in status green (CI_JOBS_GREEN): ``r metrics[['CI_JOBS_GREEN']]``.</li>
+  <li>Number of jobs in status yellow (CI_JOBS_YELLOW): ``r metrics[['CI_JOBS_YELLOW']]``.</li>
+  <li>Number of jobs in status red (CI_JOBS_RED): ``r metrics[['CI_JOBS_RED']]``.</li>
 </ul>
 
 </div>
@@ -84,7 +80,7 @@ cat(t)
 
 ## Failing Jobs
 
-There are ``r metrics[['JOBS_RED']]`` failing jobs on the instance. 
+There are ``r metrics[['CI_JOBS_RED']]`` failing jobs on the instance. 
 
 These jobs have not been failing for a long time (less than a week). It should be quite easy to make them succeed again. <b>Fix them</b> as soon as possible.
 
@@ -174,7 +170,6 @@ t <- apply(jobs.ok, 1,
                              '</small></td><td><small>', x[[6]], 
                              ' sec.</small></td><td>', ' ',
                              x[[14]], ' &#37;</td></tr>', sep=''))
-#<span class="label" style="background-color: #cc6686"></span>
 t <- paste(t, collapse=" ")
 cat(t)
 ```

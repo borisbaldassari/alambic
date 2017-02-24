@@ -1,0 +1,59 @@
+version: '1.0'
+
+steps:
+
+  prepare_test:
+    title: Preparing Test Image
+    description: Prepare CI Image desc...
+    type: build
+
+    dockerfile: Dockerfile
+    working_directory: ${{main_clone}}/docker/image_test/
+
+    image_name: bbaldassari/alambic_test
+    tag: latest # ${{CF_BRANCH}}
+
+  build_test:
+    title: Building Test Image
+    description: Build Test Image desc...
+    image: ${{prepare_test}}
+    working_directory: ${{main_clone}}
+    commands:
+      - su - alambic -c 'rm -rf /home/alambic/alambic'
+      - su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic'
+      - su - alambic -c 'cd /home/alambic/alambic && git checkout master && git branch && git status'
+      - su - alambic -c 'cp /home/alambic/alambic/docker/image_test/alambic.conf /home/alambic/alambic/mojo/'
+
+  run_test:
+    title: Run Test Image
+    type: composition
+    composition:
+      version: '2'
+      services:
+        postgres:
+          image: 'postgres:9.5'
+          container_name: postgres
+          environment:
+            POSTGRES_PASSWORD: pass4alambic
+            POSTGRES_USER: alambic
+    composition_candidates:
+      test:
+        image: ${{build_test}}
+        links:
+          -postgres
+        command:
+          - su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
+          - su - alambic -c "sh /home/alambic/alambic/resources/scripts/alambic_test_ui.sh"
+
+  push_test_to_registry:
+    title: Pushing to Docker Registry
+    description: Pushing Test Image desc...
+    type: push
+
+    # A candidate is the image that we want to push to registry
+    candidate: '${{build_test}}'
+
+    # You can push the image with whatever tag you want. In our example we use CF_BRANCH, which is a variable in
+    # the build process, accessible throughout the entire flow.
+    tag: latest # '${{CF_BRANCH}}'
+

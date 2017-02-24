@@ -133,8 +133,8 @@ sub _retrieve_data() {
         
         # Decode the json we got and add items to our set.
 	if (length($content_json) < 10) {
-	    push( @log, "[Plugins::Hudson] Cannot find [$url_question]." ) ;
-	    return [ "[Plugins::Hudson] Cannot find [$url_question]." ];
+	    push( @log, "[Plugins::StackOverflow] Cannot find [$url_question]." ) ;
+	    return [ "[Plugins::StackOverflow] Cannot find [$url_question]." ];
 	} 
 	my $content = decode_json( $content_json );
 	        

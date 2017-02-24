@@ -70,6 +70,7 @@ sub new {
     $config = $config_opt;
     my $pg_alambic = $config->{'conf_pg_alambic'};
     $al_version = $config->{'alambic_version'};
+
     $repodb = Alambic::Model::RepoDB->new($pg_alambic);
     $repofs = Alambic::Model::RepoFS->new();
     $plugins = Alambic::Model::Plugins->new();
@@ -140,7 +141,7 @@ sub instance_desc($) {
 # Get the version of Alambic running this instance.
 sub instance_version($) {
     my ($self) = @_;
-    
+
     return $al_version;
 }
 
@@ -202,8 +203,8 @@ sub users() {
     # my $users = {
     # 	'boris.baldassari' => {
     # 	    'name' => 'Boris Baldassari',
-    # 	    'email' => 'boris.baldassari@gmail.com',
-    # 	    'passwd' => 'boris098',
+    # 	    'email' => 'boris.baldassari@domain.com',
+    # 	    'passwd' => 'password',
     # 	    'roles' => [ 'admin' ],
     # 	    'projects' => [ 'modeling.sirius' ],
     # 	    'notifs' => {

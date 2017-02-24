@@ -1,7 +1,7 @@
 package Alambic::Plugins::Hudson;
 use base 'Mojolicious::Plugin';
 
-use strict; 
+use strict;
 use warnings;
 
 use Alambic::Model::RepoFS;
@@ -18,7 +18,7 @@ use Text::CSV;
 my %conf = (
     "id" => "Hudson",
     "name" => "Hudson CI",
-    "desc" => [ 
+    "desc" => [
 	"Retrieves information from a Hudson continuous integration engine, displays a summary of its status, and provides recommendations to better use CI.",
         "Check the documentation for this plugin on the project wiki: <a href=\"https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/Hudson\">https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/Hudson</a>."
     ],
@@ -30,11 +30,11 @@ my %conf = (
     "provides_info" => [
     ],
     "provides_metrics" => {
-        "JOBS" => "JOBS", 
-        "JOBS_GREEN" => "JOBS_GREEN", 
-        "JOBS_YELLOW" => "JOBS_YELLOW", 
-        "JOBS_RED" => "JOBS_RED", 
-        "JOBS_FAILED_1W" => "JOBS_FAILED_1W", # last build is failed for more than 1W old
+        "CI_JOBS" => "CI_JOBS",
+        "CI_JOBS_GREEN" => "CI_JOBS_GREEN",
+        "CI_JOBS_YELLOW" => "CI_JOBS_YELLOW",
+        "CI_JOBS_RED" => "CI_JOBS_RED",
+        "CI_JOBS_FAILED_1W" => "CI_JOBS_FAILED_1W", # last build is failed for more than 1W old
     },
     "provides_data" => {
     },
@@ -54,7 +54,7 @@ my %conf = (
 # Constructor
 sub new {
     my ($class) = @_;
-    
+
     return bless {}, $class;
 }
 
@@ -63,10 +63,10 @@ sub get_conf() {
 }
 
 
-# Run plugin: retrieves data + compute_data 
+# Run plugin: retrieves data + compute_data
 sub run_plugin($$) {
     my ($self, $project_id, $conf) = @_;
-    
+
     my %ret = (
 	'metrics' => {},
 	'info' => {},
@@ -81,14 +81,14 @@ sub run_plugin($$) {
 
     # Retrieve and store data from the remote repository.
     $ret{'log'} = &_retrieve_data( $project_id, $hudson_url, $repofs );
-    
+
     # Analyse retrieved data, generate info, metrics, plots and visualisation.
     my $tmp_ret = &_compute_data( $project_id, $hudson_url, $repofs );
-    
+
     $ret{'metrics'} = $tmp_ret->{'metrics'};
     $ret{'recs'} = $tmp_ret->{'recs'};
     push( @{$ret{'log'}}, @{$tmp_ret->{'log'}} );
-    
+
     return \%ret;
 }
 
@@ -96,13 +96,13 @@ sub _retrieve_data($) {
     my $project_id = shift;
     my $hudson_url = shift;
     my $repofs = shift;
-    
+
     my $hudson;
     my @log;
 
     my $url = $hudson_url . "/api/json?depth=2";
     push( @log, "[Plugins::Hudson] Starting retrieval of data for [$project_id] url [$url]." );
-    
+
     # Fetch json file from the dashboard.eclipse.org
     my $ua = Mojo::UserAgent->new;
     my $json = $ua->get($url)->res->body;
@@ -130,24 +130,24 @@ sub _compute_data($) {
     my $json = $repofs->read_input( $project_id, "import_hudson.json" );
     my $hudson = decode_json($json);
 
-    $metrics{'JOBS'} = scalar @{$hudson->{'jobs'}};
-    $metrics{'JOBS_GREEN'} = 0;
-    $metrics{'JOBS_YELLOW'} = 0;
-    $metrics{'JOBS_RED'} = 0;
-    $metrics{'JOBS_FAILED_1W'} = 0;
+    $metrics{'CI_JOBS'} = scalar @{$hudson->{'jobs'}};
+    $metrics{'CI_JOBS_GREEN'} = 0;
+    $metrics{'CI_JOBS_YELLOW'} = 0;
+    $metrics{'CI_JOBS_RED'} = 0;
+    $metrics{'CI_JOBS_FAILED_1W'} = 0;
 
     # Find the date for one week ago
     my $date_now = DateTime->now();
     my $date_1w = DateTime->now()->subtract(days => 7);
     my $date_1w_ms = $date_1w->epoch() * 1000;
-    
+
     foreach my $job (@{$hudson->{'jobs'}}) {
-	if ($job->{'color'} =~ m!green!) { 
-	    $metrics{'JOBS_GREEN'}++;
-	} elsif ($job->{'color'} =~ m!yellow!) { 
-	    $metrics{'JOBS_YELLOW'}++; 
-	} elsif ($job->{'color'} =~ m!red!) { 
-	    $metrics{'JOBS_RED'}++;
+	if ($job->{'color'} =~ m!green!) {
+	    $metrics{'CI_JOBS_GREEN'}++;
+	} elsif ($job->{'color'} =~ m!yellow!) {
+	    $metrics{'CI_JOBS_YELLOW'}++;
+	} elsif ($job->{'color'} =~ m!red!) {
+	    $metrics{'CI_JOBS_RED'}++;
 	}
 
 	my $job_last_success = $job->{'lastSuccessfulBuild'}{'timestamp'} || 0;
@@ -155,7 +155,7 @@ sub _compute_data($) {
 	# If last successful build is more than 1W old, count it.
 	if ( $job_last_success < $date_1w_ms
 	    && $job->{'color'} =~ m!red! ) {
-	    $metrics{'JOBS_FAILED_1W'}++;
+	    $metrics{'CI_JOBS_FAILED_1W'}++;
 	    my $rec = {
 		"rid" => "CI_FAILING_JOBS",
 		"severity" => 3,
@@ -166,7 +166,7 @@ sub _compute_data($) {
     }
 
     # Prepare the Text::CSV module.
-    my $csv = Text::CSV->new ( { sep_char => ',' , binary => 1, 
+    my $csv = Text::CSV->new ( { sep_char => ',' , binary => 1,
                                  quote_char => '"',
                                  auto_diag => 1} )  # should set binary attribute.
         or die "Cannot use CSV: ".Text::CSV->error_diag ();
@@ -179,22 +179,22 @@ sub _compute_data($) {
     my $csv_out = join( ',', sort @metrics_csv) . "\n";
     $csv->combine( map { $metrics{$_} } sort @metrics_csv );
     $csv_out .= $csv->string() . "\n";
-    
+
     $repofs->write_plugin( 'Hudson', $project_id . "_hudson_metrics.csv", $csv_out );
 
     # Write csv file for main information about hudson instance
     @metrics_csv = ('name', 'desc', 'jobs', 'url');
     $csv_out = join( ',', @metrics_csv) . "\n";
-    $csv->combine( ( $hudson->{'nodeName'}, $hudson->{'nodeDescription'}, $metrics{'JOBS'}, $hudson_url ) );
+    $csv->combine( ( $hudson->{'nodeName'}, $hudson->{'nodeDescription'}, $metrics{'CI_JOBS'}, $hudson_url ) );
     $csv_out .= $csv->string() . "\n";
 
     $repofs->write_plugin( 'Hudson', $project_id . "_hudson_main.csv", $csv_out );
-    
+
     # Write csv file for jobs
-    my @jobs_metrics = ('name', 'buildable', 'color', 
+    my @jobs_metrics = ('name', 'buildable', 'color',
 			'last_build', 'last_build_time', 'last_build_duration',
-			'last_failed_build', 'last_failed_build_time', 'last_failed_build_duration', 
-			'last_successful_build', 'last_successful_build_time', 'last_successful_build_duration', 
+			'last_failed_build', 'last_failed_build_time', 'last_failed_build_duration',
+			'last_successful_build', 'last_successful_build_time', 'last_successful_build_duration',
 			'next_build_number', 'health_report', 'url');
     $csv_out = join( ',', @jobs_metrics) . "\n";
     my $sep = ',';
@@ -239,7 +239,7 @@ sub _compute_data($) {
 	    my $number = $build->{'number'};
 	    my $duration = $build->{'duration'};
 	    my $url = $build->{'url'};
-	    
+
 	    $csv_out_builds .= $time . $sep
 		. $name . $sep
 		. $result . $sep
@@ -255,19 +255,19 @@ sub _compute_data($) {
 
     # Write builds csv file
     $repofs->write_plugin( 'Hudson', $project_id . "_hudson_builds.csv", $csv_out_builds );
-    
+
     # Now execute the main R script.
     push( @log, "[Plugins::Hudson] Executing R main file." );
     my $r = Alambic::Tools::R->new();
     @log = ( @log, @{$r->knit_rmarkdown_inc( 'Hudson', $project_id, 'hudson.Rmd' )} );
-    
+
     # And execute the figures R scripts.
     my @figs = ( 'hudson_hist.rmd', 'hudson_pie.rmd' );
     foreach my $fig (sort @figs) {
 	push( @log, "[Plugins::Hudson] Executing R fig file [$fig]." );
 	@log = ( @log, @{$r->knit_rmarkdown_html( 'Hudson', $project_id, $fig )} );
     }
-    
+
     return {
 	"metrics" => \%metrics,
 	"recs" => \@recs,

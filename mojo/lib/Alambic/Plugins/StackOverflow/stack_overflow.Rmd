@@ -19,10 +19,10 @@ library(knitr)
 require('ggplot2')
 require('xtable')
 
- project.id <- 'tools.cdt'
- project.tag <- 'tools.cdt'
- date.now <- '2016-03-17T15:38:55'
-date.before <- '2011-03-17T15:38:55'
+# project.id <- 'tools.cdt'
+# project.tag <- 'tools.cdt'
+# date.now <- '2016-03-17T15:38:55'
+#date.before <- '2011-03-17T15:38:55'
 
 opts_chunk$set(echo=F, message=F, warning=F, fig.path = paste(project.id, '_', sep=""))
 
@@ -78,7 +78,7 @@ rm(project.xts.updates)
   <p>The wordcloud on the right details frequent words used in the question titles. The size and colour of the words depend on their number of appearances in questions. It shows what are the concerns and issues of people when dealing with the project.</p>
 
  </div><div class="col-lg-5">
- 
+
  <img src="/projects/`r project.id`/StackOverflow/so_tm.svg" frameborder="0" style="width: 100%; height: 370px" />
 
 </div></div>

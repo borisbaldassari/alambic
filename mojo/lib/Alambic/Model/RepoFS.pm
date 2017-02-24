@@ -31,6 +31,7 @@ sub new {
 }
 
 
+# Write a file to the project input directory.
 sub write_input($$$) {
     my ($self, $project_id, $file_name, $content) = @_;
 
@@ -48,6 +49,8 @@ sub write_input($$$) {
     close $fh;
 }
 
+
+# Read a file from the project input directory.
 sub read_input($$) {
     my ($self, $project_id, $file_name) = @_;
 
@@ -67,6 +70,7 @@ sub read_input($$) {
 }
 
 
+# Write a file to the project output directory.
 sub write_output($$$) {
     my ($self, $project_id, $file_name, $content) = @_;
 
@@ -85,6 +89,7 @@ sub write_output($$$) {
 }
 
 
+# Write a file to the models directory.
 sub read_output($$) {
     my ($self, $project_id, $file_name) = @_;
 
@@ -104,6 +109,7 @@ sub read_output($$) {
 }
 
 
+# Write a file to the plugins directory.
 sub write_plugin($$$) {
     my ($self, $plugin_id, $file_name, $content) = @_;
 
@@ -121,6 +127,7 @@ sub write_plugin($$$) {
 }
 
 
+# Read a file from the plugins directory.
 sub read_plugin($$) {
     my ($self, $plugin_id, $file_name) = @_;
 
@@ -139,7 +146,7 @@ sub read_plugin($$) {
     return $content;
 }
 
-
+# Write a file to the backups directory.
 sub write_backup($$$) {
     my ($self, $content) = @_;
 
@@ -156,6 +163,7 @@ sub write_backup($$$) {
     return $file_name;
 }
 
+# Read a file from the backups directory.
 sub read_backup($$) {
     my ($self, $file_name) = @_;
 
@@ -175,10 +183,11 @@ sub read_backup($$) {
 }
 
 
+# Write a file to the models directory.
 sub write_models($$$) {
     my ($self, $type, $file_name, $content) = @_;
 
-    # Create backups dir if it does not exist
+    # Create models dir if it does not exist
     if (not -d 'models/' ) { 
         mkdir( 'models/' );
     }
@@ -189,6 +198,7 @@ sub write_models($$$) {
     close $fh;
 }
 
+# Read user operations to the projects/<project_id>/users/ directory.
 sub write_users($$$) {
     my ($self, $plugin_id, $project_id, $content) = @_;
 
@@ -204,12 +214,12 @@ sub write_users($$$) {
     close $fh;
 }
 
+# Read user operations from the projects/<project_id>/users/ directory.
 sub read_users($$$) {
     my ($self, $project_id) = @_;
 
     my @files_users = <projects/${project_id}/users/*_users.json>;
     my %users;
-#    print "Reading users.\n";
     foreach my $file (@files_users) {
 	if (-e $file && $file =~ m!.*/([^/]+)_users.json!) {
 	    my $plugin_id = $1;
@@ -221,7 +231,6 @@ sub read_users($$$) {
 		my $content = decode_json($json);
 		foreach my $u (keys %$content) { 
 		    $users{$u}{$plugin_id} = $content->{$u};
-#		    print "Reading user [$u].\n";
 		}
 	    };
 	}
@@ -230,6 +239,7 @@ sub read_users($$$) {
     return \%users;
 }
 
+# Read a file from the models directory.
 sub read_models($$) {
     my ($self, $type, $file_name) = @_;
 
@@ -249,6 +259,7 @@ sub read_models($$) {
 }
 
 
+# Delete the complete hierarchy of files in projects/<project_id>.
 sub delete_project($) {
     my ($self, $project_id) = @_;
 

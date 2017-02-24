@@ -24,6 +24,18 @@
                     <li role="presentation"><a href="/projects/<%= $project_id %>/<%= $p %>"><%= $plugin_name %></a></li>
 %   }
 % }
+% my (%isect, %union);
+% foreach my $p ( @{$plugins->get_list_plugins_post()}, keys %{$project->get_plugins()} ) {
+%     $union{$p}++ && $isect{$p}++
+% }
+% my @post_plugins = sort keys %isect;
+% if ( scalar(@post_plugins) > 0 ) {
+		    <li role="separator" class="divider"></li>
+% }
+% foreach my $p ( @post_plugins ) {
+%     my $plugin_name = exists($list->{$p}) ? $list->{$p} : "Unknown";
+                    <li role="presentation"><a href="/projects/<%= $project_id %>/<%= $p %>"><%= $plugin_name %></a></li>
+% }
                   </ul>
                 </li>
                 <li role="presentation" class="dropdown<%== ( $current =~ m!^/projects/viz$! ) ? ' active' : '' %>">

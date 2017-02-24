@@ -12,19 +12,17 @@ use Data::Dumper;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( 
-                 read_all_files
                  init_models
-                 get_model_info
-                 get_model_nodes 
+                 get_attribute
                  get_attributes 
                  get_attributes_full
                  get_metric 
                  get_metrics 
+                 get_metrics_active 
                  get_metrics_repos 
                  get_metrics_full
                  get_qm
                  get_qm_full
-                 populate_qm
                  );
 
 
@@ -88,9 +86,7 @@ sub _init_metrics($) {
 	foreach my $node (@nodes_array) {
 	    if (defined($node->{"father"})) {
 		$tmp_nodes{$node->{"father"}}++;
-	    } else {
-#		$self->log->info( "[Model::Models] ERR: no father on " . $node->{"mnemo"} . "" );
-	    }
+	    } 
 
 	    my $used = $node->{"used"} || '';
 	    if ($used =~ m!true!i) { 
@@ -104,11 +100,8 @@ sub _init_metrics($) {
 	$metrics_total++;
 	$metrics{$tmp_metric} = $in_metrics->{$tmp_metric};
 
-	# Populate metrics_ds and %metrics only if the metric has been found in the qm.
-	#if ( defined($in_metrics->{$tmp_metric}->{'used'}) &&
-	#     $in_metrics->{$tmp_metric}->{'used'} =~ m!true! ) { 
-	    push( @metrics_active, $tmp_metric ) 
-	#}
+	# Populate @metrics_active
+	push( @metrics_active, $tmp_metric ) 
     }
 
     # Now build the list of data sources by reading through

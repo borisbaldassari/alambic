@@ -174,7 +174,7 @@ sub run_post($$$) {
     my ($self, $project_id, $plugin_id, $conf) = @_; 
 
     my $ret = $plugins{$plugin_id}->run_post($project_id, $conf);
-    return { 'log' => $ret };
+    return $ret;
 }
 
 1;

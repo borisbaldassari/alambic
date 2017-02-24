@@ -111,9 +111,6 @@
 		    
 		    <p><b>Downloads</b></p>
                     <ul>
-% my $project_info = app->al->get_project($proj)->get_plugins();
-% my $plugins = app->al->get_plugins();
-% 
 % foreach my $ds (sort keys %{$project_info}) {
 %   my $conf = $plugins->get_plugin($ds)->get_conf();
 %   foreach my $fig (sort map { $_ } keys %{$conf->{'provides_data'}}) {
