@@ -17,8 +17,8 @@ perl -v
 # Initialise the app: create tables, init instance.
 script/alambic alambic init
 
-# Execute perl script to run tests.
-perl ~/alambic_test.pl
+script/alambic test
+
 exit $?
 
 

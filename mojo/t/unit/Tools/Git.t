@@ -71,7 +71,6 @@ my $commits = $tool->git_commits();
 ok( ref($commits) eq 'ARRAY', 'Commits is an array.' );
 ok( exists($commits->[0]{'mod'}), 'Commit has mod attribute.' );
 ok( exists($commits->[0]{'auth'}), 'Commit has auth attribute.' );
-ok( exists($commits->[0]{'del'}), 'Commit has del attribute.' );
 ok( exists($commits->[0]{'msg'}), 'Commit has msg attribute.' );
 ok( exists($commits->[0]{'cmtr'}), 'Commit has cmtr attribute.' );
 ok( exists($commits->[0]{'time'}), 'Commit has time attribute.' );

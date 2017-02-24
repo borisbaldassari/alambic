@@ -1,7 +1,7 @@
 
 - name: alambic_test_build
   service: alambic_test_build
-  command: su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
+  command: su - alambic -c "sh /home/alambic/alambic/resources/script/alambic_test.sh"
 
 - name: alambic_test_push
   service: alambic_test_build
