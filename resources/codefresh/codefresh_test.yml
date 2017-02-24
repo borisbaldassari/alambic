@@ -12,7 +12,7 @@ steps:
       - su - alambic -c 'cd /home/alambic/alambic && git checkout master && git branch && git status'
       - su - alambic -c 'cp /home/alambic/alambic/docker/image_test/alambic.conf /home/alambic/alambic/mojo/'
 
-  run_test_image
+  run_test_image:
     type: composition
     composition:
       version: '2'
