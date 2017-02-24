@@ -44,19 +44,6 @@ if ($exec_cloning) {
 			     'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git' );
     ok( grep( /^\[Tools::Git\] Cloning /, @{$log} ), "Log has Ok cloning." ) or diag explain $log;
     ok( -e $dir_src, "Source directory exists after cloning." ) or diag explain $log;
-
-    my $removed_count = remove_tree( $dir_src, {error => \my $err} );
-    if (@$err) {
-	for my $diag (@$err) {
-	    my ($file, $message) = %$diag;
-	    if ($file eq '') {
-		print "General error: $message\n";
-	    }
-	    else {
-		print "Problem unlinking $file: $message\n";
-	    }
-	}
-    }
 }
 #diag explain $log;
 

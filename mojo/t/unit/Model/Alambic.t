@@ -19,12 +19,10 @@ my $conf_al;
 }
 
 my $conf_e = eval $conf_al;
-
-my %conf = {
+my %conf = (
     "conf_pg_alambic" => $conf_e->{'conf_pg_alambic'},
-    "conf_pg_minion" => $conf_e->{'conf_pg_alambic'},
     "alambic_version" => '3.2-test',
-};
+);
 
 my $alambic = Alambic::Model::Alambic->new( \%conf );
 isa_ok( $alambic, 'Alambic::Model::Alambic' );

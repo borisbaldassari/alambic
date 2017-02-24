@@ -69,6 +69,7 @@ sub new {
     $config = $config_opt;
     my $pg_alambic = $config->{'conf_pg_alambic'};
     $al_version = $config->{'alambic_version'};
+
     $repodb = Alambic::Model::RepoDB->new($pg_alambic);
     $repofs = Alambic::Model::RepoFS->new();
     $plugins = Alambic::Model::Plugins->new();
