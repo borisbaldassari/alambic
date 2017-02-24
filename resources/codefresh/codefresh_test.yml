@@ -19,6 +19,7 @@ steps:
     image: ${{prepare_test_image}}
     working_directory: ${{main_clone}}
     commands:
+      - su - alambic -c 'rm -rf /home/alambic/alambic'
       - su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic'
       - su - alambic -c 'cd /home/alambic/alambic && git checkout master && git branch && git status'
       - su - alambic -c 'cp /home/alambic/alambic/docker/image_test/alambic.conf /home/alambic/alambic/mojo/'
