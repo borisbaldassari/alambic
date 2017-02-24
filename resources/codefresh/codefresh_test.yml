@@ -5,7 +5,7 @@ steps:
   build_test_image:
     title: Building Test Image
     description: Build Test Image desc...
-    image: bbaldassari/image_base_centos:latest
+    image: bbaldassari/alambic_base_centos:latest
     working_directory: /home/alambic/
     commands:
       - git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
