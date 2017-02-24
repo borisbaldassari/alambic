@@ -2,11 +2,22 @@ version: '1.0'
 
 steps:
 
+  prepare_test_image:
+    title: Preparing Test Image
+    description: Prepare CI Image desc...
+    type: build
+
+    dockerfile: Dockerfile
+    working_directory: ${{main_clone}}/docker/image_test/
+
+    image_name: bbaldassari/alambic_test
+    tag: latest # ${{CF_BRANCH}}
+
   build_test_image:
     title: Building Test Image
     description: Build Test Image desc...
-    image: bbaldassari/alambic_base_centos:latest
-    working_directory: /home/alambic/
+    image: ${{prepare_test_image}}
+    working_directory: ${{main_clone}}
     commands:
       - su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic'
       - su - alambic -c 'cd /home/alambic/alambic && git checkout master && git branch && git status'
