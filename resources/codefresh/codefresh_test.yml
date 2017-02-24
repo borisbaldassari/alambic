@@ -11,25 +11,22 @@ steps:
       - su - alambic -c 'git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic'
       - su - alambic -c 'cd /home/alambic/alambic && git checkout master && git branch && git status'
       - su - alambic -c 'cp /home/alambic/alambic/docker/image_test/alambic.conf /home/alambic/alambic/mojo/'
-      - su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
-      - su - alambic -c "sh /home/alambic/alambic/resources/scripts/alambic_test_ui.sh"
+
+  run_test_image
     composition:
       version: '2'
       postgres:
         image: 'postgres:9.5'
         container_name: postgres
-      environment:
-        POSTGRES_PASSWORD: pass4alambic
-        POSTGRES_USER: alambic
-      alambic_test:
-        image: bbaldassari/alambic_test
-        command: su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
-        depends_on:
-          - postgres
+        environment:
+          POSTGRES_PASSWORD: pass4alambic
+          POSTGRES_USER: alambic
     composition_candidates:
       alambic_test:
-        image: ${{build_step}}
-        command: su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
+        image: ${{build_test_image}}
+        command:
+          - su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
+          - su - alambic -c "sh /home/alambic/alambic/resources/scripts/alambic_test_ui.sh"
 
   push_test_to_registry:
     title: Pushing to Docker Registry
