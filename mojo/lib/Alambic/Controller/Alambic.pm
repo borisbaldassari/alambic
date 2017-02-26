@@ -85,7 +85,7 @@ sub logout() {
 sub failed() {
     my $self = shift;
     
-    $self->render( template => 'alambic/failed' );
+    $self->render( template => 'alambic/failed', status => 403 );
 }
 
 sub contact_post() {
