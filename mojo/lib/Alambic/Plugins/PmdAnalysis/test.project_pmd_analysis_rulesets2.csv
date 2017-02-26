@@ -1,0 +1,10 @@
+ruleset,priority,ncc
+Basic,1,2
+Basic,2,60
+Basic,3,1231
+Coupling,3,137851
+Design,1,1124
+Design,2,1910
+Design,3,23580
+Design,4,2440
+Unused Code,3,7744
