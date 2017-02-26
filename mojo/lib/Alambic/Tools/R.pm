@@ -23,7 +23,7 @@ my %conf = (
         "knit_rmarkdown_inc" => "Knit a r markdown document into a inc file.",
         "knit_rmarkdown_pdf" => "Knit a r markdown document into a pdf file",
         "knit_rmarkdown_html" => "Knit a r markdown document into a html file",
-        "knit_rmarkdown_svg" => "Knit a r markdown document into a svg file",
+        "knit_rmarkdown_images" => "Knit a r markdown document into a svg file",
     },
 );
 
