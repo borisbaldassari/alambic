@@ -70,7 +70,7 @@ sub run_plugin($$) {
     my %ret = (
 	'metrics' => {},
 	'info' => {},
-	'recs' => {},
+	'recs' => [],
 	'log' => [],
 	);
 
