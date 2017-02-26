@@ -27,11 +27,10 @@ $a = $t->get_ok('/')->status_is(200)
 # Login
 $t->get_ok('/login')
   ->element_exists('input[name=username][type=text]')
-  ->element_exists('input[name=password][type=password]');
+    ->element_exists('input[name=password][type=password]');
 
 my $post_in = { username => 'administrator', password => 'password' };
 my $ret = $t->post_ok('/login' => form => $post_in);
-#print Dumper( $ret );
 
 # Check that we have the right admin summary page.
 $t->get_ok('/admin/summary')
