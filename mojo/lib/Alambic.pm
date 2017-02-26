@@ -127,7 +127,6 @@ sub startup {
     
     # Simple pages
     $r->get('/about')->to( template => 'alambic/about');
-    $r->get('/contact')->to( template => 'alambic/contact');
     $r->post('/contact')->to( 'alambic#contact_post' );
     $r->get('/login')->to( 'alambic#login' );
     $r->post('/login')->to( 'alambic#login_post' );

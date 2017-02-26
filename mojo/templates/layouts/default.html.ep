@@ -61,7 +61,6 @@
 % if (defined($user)) { 
               <li><a href="/user/<%= $user_id %>/profile"><i class="fa fa-home fa-fw" style="color: orange;"></i> My Alambic</a></li>
 % }
-              <li><a href="/about.html"><i class="fa fa-bullseye fa-fw" style="color: orange;"></i> About</a></li>
               <li<%== $url =~ m!^doc! ? ' class="active"' : '' %>><a href=""><i class="fa fa-life-ring fa-fw" style="color: orange;"></i> Documentation<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level<%= $self->req->url =~ m!^/documentation! ? ' active' : '' %>">
                   <li><a href="/documentation/main.html">Summary</a></li>
@@ -82,8 +81,8 @@
                   <li><a href="/projects/<%= $project %>.html"><%= $projects->{$project} %></a></li>
 % }
               </ul></li>
-              <li class="active"><a href="/admin/summary"><i class="fa fa-wrench fa-fw" style="color: orange;"></i> Admin panel</a></li>
-              <li class="active"><a href="/contact.html"><i class="fa fa-comment-o fa-fw" style="color: orange;"></i> Contact</a></li>
+              <li><a href="/admin/summary"><i class="fa fa-wrench fa-fw" style="color: orange;"></i> Admin panel</a></li>
+              <li><a href="/about.html"><i class="fa fa-comment-o fa-fw" style="color: orange;"></i> About</a></li>
             </ul>
           </div>
         </div>
