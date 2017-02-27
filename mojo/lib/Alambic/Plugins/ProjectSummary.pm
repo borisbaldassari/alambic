@@ -30,12 +30,12 @@ my %conf = (
     },
     "provides_figs" => {
 	"badge_attr_alambic.svg" => "A badge to display current value of main quality attribute on an external web site (uses shields.io)",
-        "project_summary.html" => "A HTML snippet to display main quality attributes and their values.",
+        "psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
     },
     "provides_recs" => [
     ],
     "provides_viz" => {
-        "ProjectSummary.pdf" => "Project Summary PDF export.",
+        "project_summary.html" => "Project Summary's presentation of badges and visualisation.",
     },
 );
 
@@ -61,23 +61,30 @@ sub run_post($$) {
     
     my $repofs = Alambic::Model::RepoFS->new();
     my $models = $conf->{'models'};
-#    print "Models: " . Dumper($models);
     my $project = $conf->{'project'};
     my $qm = $project->get_qm($models->get_qm(), $models->get_attributes(), $models->get_metrics());
-#    print "Projects: " . Dumper($qm);
     my $run = $conf->{'last_run'};
-#    print "Last run: " . Dumper($run);
     
     my $params = {
 	"root.name" => $qm->[0]{"name"},
 	"root.value" => $qm->[0]{"ind"},
     };
-
+    # Add value of direct children of main quality attribute
+    # i.e. should be product/process/ecosystem
+    foreach my $c ( @{$qm->[0]{'children'}} ) {
+	$params->{ $c->{'mnemo'} } = $c->{'ind'};
+	$params->{ "QMN_" . $c->{'mnemo'} } = $c->{'name'};
+    }
+    
     # Create badges in output for root attribute
     my $badge = &_create_badge( 'alambic', $qm->[0]{"ind"} );
     $repofs->write_output( $project_id, "badge_attr_alambic.svg", $badge );
     $badge = &_create_badge( $qm->[0]{'name'}, $qm->[0]{'ind'} );
     $repofs->write_output( $project_id, "badge_attr_root.svg", $badge );
+
+    my $psum_attrs = &_create_psum_attrs( $params );
+    $repofs->write_output( $project_id, "psum_attrs.html", $psum_attrs );
+					  
     
     # Foreach child of root attribute create a badge.
     foreach my $attr ( @{$qm->[0]{'children'}} ) {
@@ -87,14 +94,14 @@ sub run_post($$) {
     
     # Execute the figures R scripts.
     my $r = Alambic::Tools::R->new();
-    push( @log, "[Plugins::ProjectSummary] Executing R snippet files." );
-    @log = ( @log, @{$r->knit_rmarkdown_html( 'ProjectSummary', $project_id, 'project_summary.rmd',
-					      [ ], $params )} );
+#    push( @log, "[Plugins::ProjectSummary] Executing R snippet files." );
+#    @log = ( @log, @{$r->knit_rmarkdown_html( 'ProjectSummary', $project_id, 'psum_attrs.rmd',
+#					      [ ], $params )} );
     
-    # Now generate the PDF document.
-    # push( @log, "[Plugins::ProjectSummary] Executing R report." );
-    # my $r = Alambic::Tools::R->new();
-    # @log = ( @log, @{$r->knit_rmarkdown_pdf( 'ProjectSummary', $project_id, 'ProjectSummary.Rmd' )} );
+    # Now generate the main html document.
+    push( @log, "[Plugins::ProjectSummary] Executing R report." );
+    $r = Alambic::Tools::R->new();
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'ProjectSummary', $project_id, 'project_summary.Rmd' )} );
 
     return {
 	"metrics" => {},
@@ -115,6 +122,36 @@ sub _create_badge() {
     my $svg = $ua->get($url)->res->body;
 
     return $svg;
+}
+
+sub _create_psum_attrs() {
+    my ($params) = @_;
+
+    my $html = '<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="generator" content="pandoc" />
+    <body style=\'font-family: "arial"; font-color: #3E3F3A\'>';
+
+    my $attr_root_name = $params->{'root.name'};
+    my $attr_root_value = $params->{'root.value'};
+    $html .= '<p><b><span style="font-weight: bold; font-size: 150%">' 
+	. $attr_root_name 
+	. ' &nbsp; <span style="font-weight: bold; font-size: 300%">' 
+	. $attr_root_value . "</span></p>\n<p>";
+
+    my @subattrs = sort grep( /^QM_.*/, keys %$params );
+    my $subatttrs;
+    foreach my $s (@subattrs) {
+	$html .= '<span style="font-weight: bold; font-size: 150%">' . $params->{"QMN_" . $s} 
+	    . ' &nbsp; ' . $params->{$s} . "</span><br />";
+    }
+    $html .= "</p></body></html>";
+    
+    return $html;
 }
 
 

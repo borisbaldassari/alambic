@@ -1,0 +1,23 @@
+---
+output: html_document
+---
+
+```{r init, echo=FALSE, message=FALSE}
+# Will be called as:
+# Rscript -e "library(rmarkdown); project.id <- 'modeling.sirius'; plugin.id <- 'ProjectSummary'; QM_PROCESS <- '4.0'; root.name <- 'Project Maturity'; QM_ECOSYSTEM <- '3.7'; QMN_QM_PROCESS <- 'Process'; root.value <- '3.9'; QMN_QM_ECOSYSTEM <- 'Ecosystem'; rmarkdown::render('psum_attrs.rmd', output_format='html_document', output_file='modeling.sirius_psum_attrs.html')"
+
+# Get attributes
+qms <- grep("^QM_.*", ls(), perl=TRUE, value=TRUE)
+# get their names
+qmsn <- grep("^QMN_.*", ls(), perl=TRUE, value=TRUE)
+text <- ""
+for (i in 1:length(qms) ) {
+  text.tmp <- paste( eval(parse(text = qms[[i]])), eval(parse(text = qmsn[[i]])), sep=" " )
+  text <- paste(text, text.tmp, sep=" ")
+}
+```
+
+<p><b><span style="color:blue; font-size: 300%">`r root.value`</span> `r root.name`</b></p>
+<p>`r text`</p>
+
+

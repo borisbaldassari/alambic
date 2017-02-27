@@ -1,0 +1,34 @@
+---
+title: "Project Summary"
+author:
+- name: "Boris Baldassari"
+  affiliation: "Castalia Solutions"
+output:
+  html_fragment:
+    toc: false
+    fig_caption: true
+    fig.width: 800
+    self_contained: false
+    lib_dir: libs
+    echo: false
+    dev: svg
+---
+
+# Summary
+
+HTML snippets to embed in other pages to display the current status of the project. 
+
+<iframe src="/projects/`r project.id`/ProjectSummary/psum_attrs.html" frameborder="1" style="width: 400px; height: 300px" scrolling="no"></iframe>
+
+```<iframe src="/projects/`r project.id`/ProjectSummary/psum_attrs.html" frameborder="1" style="width: 100%; height: 360px"></iframe>```
+
+# Badges
+
+This badge shows the main quality attribute evaluation. To use it simply embed the associated code snippet into an external web page.
+
+<img src="/projects/`r project.id`/ProjectSummary/badge_attr_alambic.svg" />
+
+```<img src="/projects/`r project.id`/ProjectSummary/badge_attr_alambic.svg" />```
+
+The same badge can be obtainer for direct subchildren of the root quality attribute. Just replace `alambic` with the name of the quality attribute.
+
