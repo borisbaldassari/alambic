@@ -9,7 +9,7 @@ RUN yum -y update; yum clean all
 
 # Install openssh
 RUN yum -y install openssh-server passwd wget libcurl-devel passwd perl-CPAN gcc \
-    make bzip2 git libxml2-devel openssl openssl-devel pandoc; yum clean all
+    make bzip2 git libxml2-devel openssl openssl-devel; yum clean all
 RUN mkdir /var/run/sshd
 RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 
@@ -35,6 +35,8 @@ COPY alambic_install_perl_deps.sh /home/alambic/alambic_install_perl_deps.sh
 RUN chmod +x /home/alambic/alambic_install_perl_deps.sh
 RUN chown alambic /home/alambic/alambic_install_perl_deps.sh
 
+# Install pandoc
+RUN yum -y pandoc; yum clean all
 
 # Switch to user alambic to install Perl
 USER alambic

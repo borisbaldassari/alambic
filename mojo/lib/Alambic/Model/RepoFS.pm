@@ -74,6 +74,8 @@ sub read_input($$) {
 sub write_output($$$) {
     my ($self, $project_id, $file_name, $content) = @_;
 
+    if (not defined($content)) { return; }
+
     # Create projects output dir if it does not exist
     if (not -d 'projects/' . $project_id ) { 
         mkdir( 'projects/' . $project_id );

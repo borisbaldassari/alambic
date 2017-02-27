@@ -82,7 +82,7 @@ ok( grep( m!PMI_EMPTY_REL!, @{$conf->{'provides_recs'}} ), "Conf has provides_re
 ok( grep( m!pmi_checks!, keys %{$conf->{'provides_viz'}} ), "Conf has provides_figs > pmi_checks" );
 
 # Execute the plugin
-note( "Checking the plugin parameters. ");
+note( "Execute the plugin with tools.cdt project. ");
 my $ret = $plugin->run_plugin("tools.cdt", { 'project_pmi' => 'tools.cdt' } );
 ok( $ret->{'info'}->{'PMI_ID'} =~ m!tools.cdt$!, "Project from PMI has correct id." ) or diag explain $ret;
 is( $ret->{'info'}{'PMI_BUGZILLA_PRODUCT'}, 'CDT', "Bugzilla product is CDT.") or diag explain $ret;
