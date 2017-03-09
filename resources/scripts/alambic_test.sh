@@ -12,6 +12,7 @@ cat alambic.conf
 # Make sure we use the right perl from perlbrew
 source ~/.bashrc
 perl -v
+R --version
 
 # Initialise the app: create tables, init instance.
 script/alambic alambic init

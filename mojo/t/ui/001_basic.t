@@ -5,7 +5,7 @@ use warnings;
 
 use Test::More;
 use Test::Mojo;
-use FindBin;
+
 use Data::Dumper;
 
 my $t = Test::Mojo->new('Alambic');
@@ -89,6 +89,5 @@ $a = $t->get_ok('/about.html')->status_is(200)
     ->element_exists('input[name=name][type=text]')
     ->element_exists('input[name=email][type=text]')
     ->element_exists('textarea[name=message]');
-
 
 done_testing();
