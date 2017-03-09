@@ -13,7 +13,7 @@
 % if ( -e $plugin_template ) {
 %= include "/alambic/plugins/$page_id", project_id => $project_id
 % } else {
-%   my $file_in = app->home->rel_dir( 'projects/' . $project_id . '/output/' . $project_id . '_' . $page_id );
+%   my $file_in = app->home->rel_file( 'projects/' . $project_id . '/output/' . $project_id . '_' . $page_id );
 %   $file_in =~ s/\.html$/.inc/;
 %   my $content;
 %   do {
