@@ -43,6 +43,10 @@ sub startup {
     # Set layout for pages.
     $self->defaults(layout => 'default');
     
+    # Use POD renderer
+    #$self->plugin('PODRenderer');
+    $self->plugin( 'InstallablePaths' );
+
     # Use Minion for job queuing.
     $self->plugin( Minion => {Pg => $config->{'conf_pg_minion'}} );
 

@@ -82,9 +82,9 @@ sub models {
     my $models = $self->app->al->get_models();
     
     # Get list of metrics definition files.
-    my @files_metrics = <models/metrics/*.json>;
-    my @files_attributes = <models/attributes/*.json>;
-    my @files_qm = <models/qm/*.json>;
+    my @files_metrics = <lib/Alambic/files/models/metrics/*.json>;
+    my @files_attributes = <lib/Alambic/files/models/attributes/*.json>;
+    my @files_qm = <lib/Alambic/files/models/qm/*.json>;
 
     $self->stash(
         files_metrics => \@files_metrics,
