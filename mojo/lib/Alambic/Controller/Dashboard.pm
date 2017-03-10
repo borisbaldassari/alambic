@@ -82,24 +82,26 @@ sub display_plugins {
 	
     } else {
 
-	# Then require some technique to identify the 404s from all requests
 	my $ret;
 	
+	# Identify the 404s from all requests
 	if ( grep( /$page_id(.html)?/, keys %{$plugin_conf->{'provides_figs'}} ) ) {
-	    
+#	    print Dumper(`ls`);
 	    # If the page is a fig, reply static file under 'projects/output'
-	    $ret = '../projects/' . $project_id . '/output/' . $project_id . '_' . $page_id;
+    print "# PLUG " . Dumper(`pwd`);
+	    $ret = '../../../../projects/' . $project_id . '/output/' . $project_id . '_' . $page_id;
+    print "# PLUG RET " . Dumper($ret);
 	    
 	} elsif ( grep( /$page_id/, keys %{$plugin_conf->{'provides_data'}} ) ) {
 	    
 	    # If the page is a data, reply static file under 'projects/output' or 'projects/input'
-	    my $file_out = 'projects/' . $project_id . '/output/' . $project_id . "_" . $page_id;
-	    my $file_in = 'projects/' . $project_id . '/input/' . $project_id . "_" . $page_id;
+	    my $file_out = '../../../../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id;
+	    my $file_in = '../../../../projects/' . $project_id . '/input/' . $project_id . "_" . $page_id;
 	    
 	    if (-e $file_out) {
-		$ret = '../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id;
+		$ret = '../../../../projects/' . $project_id . '/output/' . $project_id . "_" . $page_id;
 	    } elsif (-e $file_in) {
-		$ret = '../projects/' . $project_id . '/input/' . $project_id . "_" . $page_id;
+		$ret = '../../../../projects/' . $project_id . '/input/' . $project_id . "_" . $page_id;
 	    } 
 	}   
 	 
@@ -113,6 +115,9 @@ sub display_plugins {
 }
 
 
+# Is used only for backward compatibility and robustness.
+# R reports often use figures/ for the generated plots. We want to support
+# that for people developing R books.
 sub display_figures {
     my $self = shift;
 
@@ -123,7 +128,8 @@ sub display_figures {
     my $plugin_conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
     
     # If the page is a data, reply static file under 'projects/output'
-    $self->reply->static( '../projects/' . $project_id . '/output/figures/' . $page_id );
+    print "# FIG " . Dumper(`pwd`);
+    $self->reply->static( '../../../../projects/' . $project_id . '/output/figures/' . $page_id );
 }
 
 
