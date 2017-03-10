@@ -15,9 +15,9 @@ perl -v
 R --version
 
 # Initialise the app: create tables, init instance.
-script/alambic alambic init
+bin/alambic alambic init
 
-script/alambic test
+bin/alambic test
 
 exit $?
 

@@ -18,7 +18,7 @@ cat alambic.conf
 script/alambic alambic init
 
 # Start main process for mojo
-hypnotoad script/alambic
+hypnotoad bin/alambic
 
 # Start workers for jobs
-script/alambic minion worker
+bin/alambic minion worker

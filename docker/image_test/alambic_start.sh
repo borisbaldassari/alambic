@@ -11,7 +11,8 @@ perl -v
 cd /home/alambic/alambic/mojo
 
 # Start main process for mojo
-hypnotoad script/alambic
+hypnotoad bin/alambic
 
 # Start workers for jobs
-script/alambic minion worker
+bin/alambic minion worker
+

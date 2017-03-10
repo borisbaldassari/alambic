@@ -15,6 +15,6 @@ cd /home/alambic/alambic/mojo
 cat alambic.conf
 
 # Initialise the app: create tables, init instance.
-script/alambic alambic init
+bin/alambic alambic init
 
 
