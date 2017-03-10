@@ -86,12 +86,21 @@ sub display_plugins {
 	
 	# Identify the 404s from all requests
 	if ( grep( /$page_id(.html)?/, keys %{$plugin_conf->{'provides_figs'}} ) ) {
-#	    print Dumper(`ls`);
 	    # If the page is a fig, reply static file under 'projects/output'
-    print "# PLUG " . Dumper(`pwd`);
-	    $ret = '../../../../projects/' . $project_id . '/output/' . $project_id . '_' . $page_id;
-    print "# PLUG RET " . Dumper($ret);
-	    
+	    $ret = 'projects/' . $project_id . '/output/' . $project_id . '_' . $page_id;
+
+	    # We can also build figures from html.ep templates.
+	    # If the static page doesn't exist, then try to render something.
+	    if ( not -e $ret ) {
+		my $run = $self->app->al->get_project_last_run($project_id);
+		$self->stash( 
+		    project_id => $project_id,
+		    run => $run,
+		    );    
+		$self->render( template => "alambic/plugins/$page_id", layout => 'default_empty' );
+		return;
+	    }
+	    $ret = "../../../../" . $ret;
 	} elsif ( grep( /$page_id/, keys %{$plugin_conf->{'provides_data'}} ) ) {
 	    
 	    # If the page is a data, reply static file under 'projects/output' or 'projects/input'
@@ -116,8 +125,8 @@ sub display_plugins {
 
 
 # Is used only for backward compatibility and robustness.
-# R reports often use figures/ for the generated plots. We want to support
-# that for people developing R books.
+# R reports often use figures/ by default for the generated plots. 
+# We want to support that for people developing R books.
 sub display_figures {
     my $self = shift;
 
@@ -128,7 +137,6 @@ sub display_figures {
     my $plugin_conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
     
     # If the page is a data, reply static file under 'projects/output'
-    print "# FIG " . Dumper(`pwd`);
     $self->reply->static( '../../../../projects/' . $project_id . '/output/figures/' . $page_id );
 }
 
