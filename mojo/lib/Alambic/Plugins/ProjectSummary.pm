@@ -35,7 +35,7 @@ my %conf = (
     "provides_recs" => [
     ],
     "provides_viz" => {
-        "project_summary.html" => "Project Summary's presentation of badges and visualisation.",
+        "badges.html" => "Badges",
     },
 );
 
@@ -101,7 +101,7 @@ sub run_post($$) {
     # Now generate the main html document.
     push( @log, "[Plugins::ProjectSummary] Executing R report." );
     $r = Alambic::Tools::R->new();
-    @log = ( @log, @{$r->knit_rmarkdown_inc( 'ProjectSummary', $project_id, 'project_summary.Rmd' )} );
+    @log = ( @log, @{$r->knit_rmarkdown_inc( 'ProjectSummary', $project_id, 'badges.Rmd' )} );
 
     return {
 	"metrics" => {},
