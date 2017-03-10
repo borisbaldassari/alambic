@@ -1,5 +1,5 @@
 ---
-title: "Project Summary"
+title: "Badge"
 author:
 - name: "Boris Baldassari"
   affiliation: "Castalia Solutions"
@@ -16,13 +16,29 @@ output:
 
 # Summary
 
-HTML snippets to embed in other pages to display the current status of the project. 
+This plugin generates a number of badges and HTML snippets to embed in other pages to display the current status of the project. 
 
-<iframe src="/projects/`r project.id`/ProjectSummary/psum_attrs.html" frameborder="1" style="width: 400px; height: 300px" scrolling="no"></iframe>
+---
 
-```<iframe src="/projects/`r project.id`/ProjectSummary/psum_attrs.html" frameborder="1" style="width: 100%; height: 360px"></iframe>```
+# Attributes export
+
+<div class="row"><div class="col-md-6">
+
+## Main attributes
+
+<iframe src="/projects/`r project.id`/ProjectSummary/badge_qm" frameborder="1" style="width: 100%; height: 320px" scrolling="no"></iframe>
+
+```<iframe src="/projects/`r project.id`/ProjectSummary/badge_qm" frameborder="0" style="width: 100%; height: 320px"></iframe>```
+
+</div><div class="col-md-6">
+
+## Individual attributes
+
+</div></div>
 
 # Badges
+
+<div class="row"><div class="col-md-6">
 
 This badge shows the main quality attribute evaluation. To use it simply embed the associated code snippet into an external web page.
 
@@ -30,5 +46,9 @@ This badge shows the main quality attribute evaluation. To use it simply embed t
 
 ```<img src="/projects/`r project.id`/ProjectSummary/badge_attr_alambic.svg" />```
 
+</div><div class="col-md-6">
+
 The same badge can be obtainer for direct subchildren of the root quality attribute. Just replace `alambic` with the name of the quality attribute.
+
+</div></div>
 

@@ -31,6 +31,9 @@ my %conf = (
     "provides_figs" => {
 	"badge_attr_alambic.svg" => "A badge to display current value of main quality attribute on an external web site (uses shields.io)",
         "psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
+        "badge_qm" => "A HTML snippet that displays main quality attributes.",
+        "badge_downloads" => "A HTML snippet that displays downloads for main data.",
+        "badge_plugins" => "A HTML snippet that displays a list of plugins for the project.",
     },
     "provides_recs" => [
     ],
@@ -82,7 +85,7 @@ sub run_post($$) {
     $badge = &_create_badge( $qm->[0]{'name'}, $qm->[0]{'ind'} );
     $repofs->write_output( $project_id, "badge_attr_root.svg", $badge );
 
-    my $psum_attrs = &_create_psum_attrs( $params );
+    my $psum_attrs = &_create_psum_attrs( $self, $params );
     $repofs->write_output( $project_id, "psum_attrs.html", $psum_attrs );
 					  
     
@@ -94,9 +97,9 @@ sub run_post($$) {
     
     # Execute the figures R scripts.
     my $r = Alambic::Tools::R->new();
-#    push( @log, "[Plugins::ProjectSummary] Executing R snippet files." );
-#    @log = ( @log, @{$r->knit_rmarkdown_html( 'ProjectSummary', $project_id, 'psum_attrs.rmd',
-#					      [ ], $params )} );
+   push( @log, "[Plugins::ProjectSummary] Executing R snippet files." );
+   @log = ( @log, @{$r->knit_rmarkdown_html( 'ProjectSummary', $project_id, 'psum_attrs.rmd',
+					      [ ], $params )} );
     
     # Now generate the main html document.
     push( @log, "[Plugins::ProjectSummary] Executing R report." );
@@ -125,33 +128,55 @@ sub _create_badge() {
 }
 
 sub _create_psum_attrs() {
-    my ($params) = @_;
+    my ($self, $params) = @_;
 
-    my $html = '<!DOCTYPE html>
+    my $html_t = '<!DOCTYPE html>
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
+      <meta charset="utf-8">
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="generator" content="pandoc" />
 
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="generator" content="pandoc" />
-    <body style=\'font-family: "arial"; font-color: #3E3F3A\'>';
+      <link href="/css/bootstrap.min.css" rel="stylesheet">
+      <link href="/css/plugins/metisMenu/metisMenu.min.css" rel="stylesheet">
+      <link href="/css/sb-admin-2.css" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
+      <link rel="stylesheet" href="/css/default.css">
+    </head>
 
-    my $attr_root_name = $params->{'root.name'};
-    my $attr_root_value = $params->{'root.value'};
-    $html .= '<p><b><span style="font-weight: bold; font-size: 150%">' 
-	. $attr_root_name 
-	. ' &nbsp; <span style="font-weight: bold; font-size: 300%">' 
-	. $attr_root_value . "</span></p>\n<p>";
+    <body style=\'font-family: "arial"; font-color: #3E3F3A\'>
+      <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+        <div class="list-group">
+          <a href="#info" class="list-group-item"><%= $project_id %></a>
+          <a href="#metrics" class="list-group-item">Metrics</a>
+        </div>
+      </div>
+    </body>
+    </html>';
 
-    my @subattrs = sort grep( /^QM_.*/, keys %$params );
-    my $subatttrs;
-    foreach my $s (@subattrs) {
-	$html .= '<span style="font-weight: bold; font-size: 150%">' . $params->{"QMN_" . $s} 
-	    . ' &nbsp; ' . $params->{$s} . "</span><br />";
-    }
-    $html .= "</p></body></html>";
+    # my $html_r = $self->renderer->render_to_string( 
+    # 	inline => $html_t, handler => 'epl',
+    # 	layout => "default_empty"
+    # 	);
+    # print "RENDERED " . Dumper($html_r);
+
+    # my $attr_root_name = $params->{'root.name'};
+    # my $attr_root_value = $params->{'root.value'};
+    # $html .= '<p><b><span style="font-weight: bold; font-size: 150%">' 
+    # 	. $attr_root_name 
+    # 	. ' &nbsp; <span style="font-weight: bold; font-size: 300%">' 
+    # 	. $attr_root_value . "</span></p>\n<p>";
+
+    # my @subattrs = sort grep( /^QM_.*/, keys %$params );
+    # my $subatttrs;
+    # foreach my $s (@subattrs) {
+    # 	$html .= '<span style="font-weight: bold; font-size: 150%">' . $params->{"QMN_" . $s} 
+    # 	    . ' &nbsp; ' . $params->{$s} . "</span><br />";
+    # }
+    # $html .= "</p></body></html>";
     
-    return $html;
+    return $html_t;
 }
 
 

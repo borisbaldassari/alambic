@@ -1,0 +1,17 @@
+% layout 'default_empty';
+
+% my $project = app->al->get_project($project_id);
+
+                <div class="panel panel-default">
+		          <div class="panel-heading">Downloads
+                    <span class="pull-right"><a href="/projects/<%= $project_id %>.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
+                    <span class="pull-right"><a href="/projects/<%= $project_id %>/qm.html"><i class="fa fa-sitemap fa-lg"></i></a>
+                  </div>
+                  <table class="table table-striped">
+		    <tr><td><a href="/projects/<%= $project_id %>/info.html">Information</a> <span class="pull-right"><span class="badge"><%= scalar keys %{( $run->{'info'} || {} )} %></span> &nbsp; <a href="/projects/<%= $project_id %>/info.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/info.json"><i class="fa fa-download fa-lg"></i></a></span></td></tr>
+		    <tr><td><a href="/projects/<%= $project_id %>/metrics.html">Metrics</a> <span class="pull-right"><span class="badge"><%= scalar keys ( %{$run->{'metrics'} || {}} ) %></span> &nbsp; <a href="/projects/<%= $project_id %>/metrics.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/metrics.json"><i class="fa fa-download fa-lg"></i></a></span></td></tr>
+		    <tr><td><a href="/projects/<%= $project_id %>/attributes.html">Attributes</a> <span class="pull-right"><span class="badge"><%= scalar keys ( %{$run->{'attributes'} || {}} ) %></span> &nbsp; <a href="/projects/<%= $project_id %>/attributes.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/attributes.json"><i class="fa fa-download fa-lg"></i></a></span></td></tr>
+		    <tr><td><a href="/projects/<%= $project_id %>/recs.html">Recommendations</a> <span class="pull-right"><span class="badge"><%= scalar @{$run->{'recs'} || []} %></span> &nbsp; <a href="/projects/<%= $project_id %>/recs.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/recs.json"><i class="fa fa-download fa-lg"></i></a></span></td></tr>
+		    <tr><td><a href="/projects/<%= $project_id %>/qm.html">Quality Model</a> <span class="pull-right"><a href="/projects/<%= $project_id %>/qm.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/qm_full.json"><i class="fa fa-download fa-lg"></i></a></span></td></tr>
+		    </table>
+                </div>

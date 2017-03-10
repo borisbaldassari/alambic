@@ -1,0 +1,52 @@
+% layout 'default_empty';
+
+% use Data::Dumper;
+% my $project = app->al->get_project($project_id);
+% my $attributes = $project->attributes();
+% my $attributes_conf = $project->attributes_conf();
+% my $colours = ["#EBEBEB","#FFFF66","#CCF24D","#99E633","#66D91A","#33CC00"];
+
+<% my $comp_p = begin %>
+ % my $value = shift || 0;
+ % return $value * 20;
+<% end %>
+
+<% my $comp_c = begin %>
+ % my $value = shift || 0;
+ % return $colours->[int($value)];
+<% end %>
+
+                <div class="panel panel-default">
+		          <div class="panel-heading">Quality Model
+                    <span class="pull-right"><a href="/projects/<%= $project_id %>.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
+                    <span class="pull-right"><a href="/projects/<%= $project_id %>/qm.html"><i class="fa fa-sitemap fa-lg"></i></a>
+                  </div>
+                  <div class="panel-body">
+
+% my $attr = 'QM_QUALITY';
+                    <dt style="margin-bottom: 5px">Project Health &nbsp; <a href="/documentation/attributes.html#<%= $attr %>"><i class="fa fa-question-circle"></i></a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
+                    <dd>
+                      <div class="progress">
+			            <div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} || 0%> / 5</div>
+                      </div>
+                    </dd>
+		            <hr />
+
+% $attr = 'QM_ECOSYSTEM';
+                    <dt style="margin-bottom: 5px">Ecosystem &nbsp; <a href="/documentation/attributes.html#<%= $attr %>"><i class="fa fa-question-circle"></i></a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
+                    <dd>
+                      <div class="progress">
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} || '' %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} %> / 5</div>
+                      </div>
+                    </dd>
+
+% $attr = 'QM_PROCESS';
+                    <dt style="margin-bottom: 5px">Process &nbsp; <a href="/documentation/attributes.html#<%= $attr %>"><i class="fa fa-question-circle"></i></a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
+                    <dd>
+                      <div class="progress">
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} || '' %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} %> / 5</div>
+                      </div>
+                    </dd>
+
+                  </div>
+                </div>
