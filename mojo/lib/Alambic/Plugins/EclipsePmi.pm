@@ -160,7 +160,7 @@ sub _retrieve_data($$$) {
     if ($project_id =~ m!^polarsys!) {
         $url = $polarsys_url . $project_pmi;
         push( @log, "[Plugins::EclipsePmi] Using PolarSys PMI infra at [$url]." );
-        $content = $ua->get($url)->res->body;
+        $content = $ua->get($url)->res->body; sleep 1;
     } else {
         $url = $eclipse_url . $project_pmi;
         push( @log, "[Plugins::EclipsePmi] Using Eclipse PMI infra at [$url]." );
@@ -256,17 +256,17 @@ sub _compute_data($) {
 	}
     }	
     $metrics{"PMI_ITS_INFO"} = $pub_its_info;
-
+    
     # Retrieve information about source repos
     my $pub_scm_info = 0;
     if (scalar @{$raw_project->{"source_repo"}} > 0) {
-	if ($ua->head($info{"PMI_SOURCE_REPO_URL"})) {
+	if (defined($info{"PMI_SOURCE_REPO_URL"}) && $ua->head($info{"PMI_SOURCE_REPO_URL"})) {
 	    $pub_scm_info++;
 	}
 
     }
     $metrics{"PMI_SCM_INFO"} = $pub_scm_info;    
-        
+    
     my $ret_check;
     $ret_check->{'pmi'} = $raw_project;
     $ret_check->{'id_pmi'} = $project_pmi;
@@ -337,6 +337,7 @@ sub _compute_data($) {
         push( @{$check->{'results'}}, "Failed: no URL defined for create_url.");
     }
     $ret_check->{'checks'}->{'bugzilla_create_url'} = $check;
+    
     
     # Test Bugzilla query url
     $check = {};
@@ -564,7 +565,7 @@ sub _compute_data($) {
 	push( @recs, { 'rid' => 'PMI_EMPTY_UPDATE', 'severity' => 3, 'desc' => 'The update site URL is empty in the PMI. People need it if they want to use the product, and it should be filled.' } );	
     }
     $ret_check->{'checks'}->{'update_sites'} = $check;
-    
+
     
     # Test CI
     my $proj_ci = $raw_project->{'build_url'}->[0]->{'url'} || '';
@@ -572,6 +573,7 @@ sub _compute_data($) {
     $check->{'results'} = [];
     $check->{'value'} = $proj_ci;
     $check->{'desc'} = "Sends a get request to the given CI URL and looks at the headers in the response (200, 404..). Also checks if the URL is really a Hudson instance (through a call to its API).";
+
     if ($proj_ci =~ m!\S+! && $ua->get($proj_ci)) {
 	push( @{$check->{'results'}}, "OK. Fetched CI URL.");         
         my $url = $proj_ci . '/api/json?depth=1';
@@ -667,9 +669,9 @@ sub _check_url($$) {
     
     my $ua = Mojo::UserAgent->new;
     $ua->max_redirects(10);
-
+    
     my $fetch_result;
-    if ($ua->head($url)) {
+    if ( defined($url) && $url =~ m!^http! && $ua->head($url)) {
         $fetch_result = "OK: $str <a href=\"$url\">URL</a> could be successfully fetched.";
     } else { 
         $fetch_result = 'Failed: could not get $str URL [$url].'; 
