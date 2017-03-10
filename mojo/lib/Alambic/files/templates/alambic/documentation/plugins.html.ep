@@ -17,6 +17,7 @@
  % elsif ($ability =~ m!figs!) { $icon = "fa-picture-o" }
  % elsif ($ability =~ m!info!) { $icon = "fa-info" }
  % elsif ($ability =~ m!data!) { $icon = "fa-download" }
+ % elsif ($ability =~ m!user!) { $icon = "fa-users" }
  % elsif ($ability =~ m!recs!) { $icon = "fa-map-signs" }
  % elsif ($ability =~ m!viz!) { $icon = "fa-pie-chart" }
  % else { $icon = "fa-question" }
