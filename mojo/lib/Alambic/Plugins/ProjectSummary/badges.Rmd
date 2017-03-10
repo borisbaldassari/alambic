@@ -18,11 +18,9 @@ output:
 
 This plugin generates a number of badges and HTML snippets to embed in other pages to display the current status of the project. 
 
----
+Please note that the height of iframes may need some adjustment. 
 
-# Attributes export
-
-<div class="row"><div class="col-md-6">
+<div class="row"><div class="col-md-4">
 
 ## Main attributes
 
@@ -30,9 +28,22 @@ This plugin generates a number of badges and HTML snippets to embed in other pag
 
 ```<iframe src="/projects/`r project.id`/ProjectSummary/badge_qm" frameborder="0" style="width: 100%; height: 320px"></iframe>```
 
-</div><div class="col-md-6">
+</div><div class="col-md-4">
 
-## Individual attributes
+## Main data Downloads
+
+<iframe src="/projects/`r project.id`/ProjectSummary/badge_downloads" frameborder="1" style="width: 100%; height: 320px" scrolling="no"></iframe>
+
+```<iframe src="/projects/`r project.id`/ProjectSummary/badge_downloads" frameborder="0" style="width: 100%; height: 320px"></iframe>```
+
+</div><div class="col-md-4">
+
+## Plugins
+
+<iframe src="/projects/`r project.id`/ProjectSummary/badge_plugins" frameborder="1" style="width: 100%; height: 320px" scrolling="no"></iframe>
+
+```<iframe src="/projects/`r project.id`/ProjectSummary/badge_plugins" frameborder="0" style="width: 100%; height: 320px"></iframe>```
+
 
 </div></div>
 
@@ -48,7 +59,7 @@ This badge shows the main quality attribute evaluation. To use it simply embed t
 
 </div><div class="col-md-6">
 
-The same badge can be obtainer for direct subchildren of the root quality attribute. Just replace `alambic` with the name of the quality attribute.
+The same badge can be obtained for direct subchildren of the root quality attribute. Just replace `alambic` with the name of the quality attribute.
 
 </div></div>
 
