@@ -65,10 +65,6 @@ sub display_plugins {
 
     my $plugin_conf = $self->app->al->get_plugins()->get_plugin($plugin_id)->get_conf();
     
-    if ($plugin_conf->{'type'} =~ m!^cdata$!) {
-	
-    }
-    
     # Action depends on the type of file requested
     if ( grep( /$page_id/, keys %{$plugin_conf->{'provides_viz'}} ) ) {
 
@@ -90,7 +86,7 @@ sub display_plugins {
 	    $ret = 'projects/' . $project_id . '/output/' . $project_id . '_' . $page_id;
 
 	    # We can also build figures from html.ep templates.
-	    # If the static page doesn't exist, then try to render something.
+	    # If the static page doesn't exist, then try to render something in plugins/*.html.ep.
 	    if ( not -e $ret ) {
 		my $run = $self->app->al->get_project_last_run($project_id);
 		$self->stash( 
