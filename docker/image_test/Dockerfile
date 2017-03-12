@@ -10,7 +10,7 @@ USER alambic
 # Clone Alambic repository
 RUN echo "REBUILD ME now pleased!"
 RUN git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
-COPY alambic.conf /home/alambic/alambic/mojo/alambic.conf
+COPY /home/alambic/alambic/docker/image_test/alambic.conf /home/alambic/alambic/mojo/alambic.conf
 
 USER root
 
