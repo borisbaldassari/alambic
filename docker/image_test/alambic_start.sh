@@ -9,6 +9,7 @@ source ~/.bashrc
 perl -v
 
 cd /home/alambic/alambic/mojo
+cp /home/alambic/alambic/docker/image_test/alambic.conf .
 
 # Start main process for mojo
 hypnotoad bin/alambic

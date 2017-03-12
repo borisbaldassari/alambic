@@ -12,6 +12,8 @@ perl -v
 PGPASSWORD=pass4alambic psql -h postgres_ci < ~/alambic/resources/scripts/psql_init.sql
 
 cd /home/alambic/alambic/mojo
+cp /home/alambic/alambic/docker/image_ci/alambic.conf .
+
 cat alambic.conf
 
 # Initialise the app: create tables, init instance.

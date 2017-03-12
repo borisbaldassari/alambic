@@ -281,6 +281,9 @@ sub run_post() {
 	'project' => $self,
 	'models' => $models,
     };
+    print "###########################################\n";
+    print Dumper($conf);
+    print "###########################################\n";
     $ret = $plugins_module->run_post($project_id, $plugin_id, $conf);
 
     # Add retrieved values to the current project.
@@ -306,6 +309,10 @@ sub run_posts() {
 	'project' => $self,
 	'models' => $models,
     };
+
+    print "###########################################\n";
+    print Dumper($conf);
+    print "###########################################\n";
 
     my @post_plugins = sort grep { $plugins_module->get_plugin($_)->get_conf()->{'type'} =~ /^post$/ } keys %plugins;
     my $ret;
