@@ -26,5 +26,5 @@ The backup basically generates a SQL file which can be fed to another (or the sa
 
 There is an Alambic command for backups:
 
-    $ script/alambic alambic backup
+    $ bin/alambic alambic backup
     Database has been backed up in [backups/alambic_backup_201612271112.sql].

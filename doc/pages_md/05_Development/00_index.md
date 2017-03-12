@@ -6,17 +6,17 @@ navi_name: Development
 
 Mojolicious has a special feature to help developers write code. By executing the `morbo` command instead of hypnotoad, the application is restarted every time a file is modified. Go to the mojo directory and open a terminal (or command) and type in:
 
-    morbo script/alambic
+    morbo bin/alambic
 
 This will start the Mojolicious 'development' server.
 
 For production use Hypnotoad is recommended for its prefork ability. Learn more about the [development and production environments of Mojolicious](http://mojolicio.us/perldoc/Mojolicious/Guides/Cookbook#Morbo).
 
-    hypnotoad script/alambic
+    hypnotoad bin/alambic
 
 The hypnotoad server can be reloaded by re-executing the same launch command, and can be stopped using the -s flag:
 
-    hypnotoad -s script/alambic
+    hypnotoad -s bin/alambic
 
 From there everything can be done from the web interface. The dashboard is served by default on http://localhost:3010 if run under hypnotoad, and http://localhost:3000 if run under morbo. You can go to the Admin Panel and start creating projects, attach data source plugins to them, and run the analysis.
 
@@ -26,7 +26,7 @@ From there everything can be done from the web interface. The dashboard is serve
 
 You need to start a worker for minion to manage the queue and actually do the work. This is achieved by issuing in a command line:
 
-    script/alambic minion worker
+    bin/alambic minion worker
 
 # Updates
 

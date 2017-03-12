@@ -89,8 +89,8 @@ Edit the file `mojo/alambic.conf` to fill in the database parameters and optiona
 The application can be started by issuing the following command:
 
     boris@castalia alambic $ cd mojo/
-    boris@castalia mojo $ hypnotoad script/alambic
-    boris@castalia mojo $ script/alambic minion worker
+    boris@castalia mojo $ hypnotoad bin/alambic
+    boris@castalia mojo $ bin/alambic minion worker
 
 The first command (`hypnotoad`) starts the UI engine, and the second command (`minion worker`) starts a pool of workers to take care of jobs (i.e. project runs).
 

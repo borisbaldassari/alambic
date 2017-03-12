@@ -12,5 +12,5 @@ Alambic offers a command line interface for some of its features:
 
 On the file system, go to the `mojo` directory and issue the following commands:
 ```
-script/alambic alambic <command> <options>
+bin/alambic alambic <command> <options>
 ```
