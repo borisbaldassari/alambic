@@ -74,6 +74,24 @@ $t->get_ok('/admin/models')
         ->content_like(qr!<div class="panel-heading">Quality Model!i, 
 		       'Repo admin page contains quality model panel.');
 
+# Import quality model definition
+$t->get_ok('/admin/models/import?file=alambic_quality_model.json&type=qm')
+    ->status_is(200, 'Import quality model definition is 200.')
+    ->content_like(qr!File alambic_quality_model.json has been imported!i, 
+		   'Import quality model definition is ok.');
+
+# Import metrics definition
+$t->get_ok('/admin/models/import?file=alambic_metrics.json&type=metrics')
+    ->status_is(200, 'Import metrics definition is 200.')
+    ->content_like(qr!File alambic_metrics.json has been imported!i, 
+		   'Import metrics definition is ok.');
+
+# Import attributes definition
+$t->get_ok('/admin/models/import?file=alambic_attributes.json&type=attributes')
+    ->status_is(200, 'Import attributes definition is 200.')
+    ->content_like(qr!File alambic_attributes.json has been imported!i, 
+		   'Import attributes definition is ok.');
+
 # Check that we have the right admin Models page.
 $t->get_ok('/admin/jobs')
         ->status_is(200)

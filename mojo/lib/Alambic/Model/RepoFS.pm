@@ -4,6 +4,7 @@ use warnings;
 use strict;
 
 use File::Path qw( remove_tree );
+use Mojo::Home;
 use Mojo::JSON qw( decode_json encode_json );
 use POSIX;
 
@@ -189,12 +190,13 @@ sub read_backup($$) {
 sub write_models($$$) {
     my ($self, $type, $file_name, $content) = @_;
 
+    my $models = $self->home(Mojo::Home->new) . '/lib/Alambic/files/models';
     # Create models dir if it does not exist
-    if (not -d 'models/' ) { 
-        mkdir( 'models/' );
+    if (not -d $models ) { 
+        mkdir( $models );
     }
 
-    my $path = 'models/' . $type . '/' . $file_name;
+    my $path = $models . '/' . $type . '/' . $file_name;
     open my $fh, ">", $path;
     print $fh $content;
     close $fh;
@@ -246,7 +248,8 @@ sub read_models($$) {
     my ($self, $type, $file_name) = @_;
 
     my $content;
-    my $file = "models/" . $type . "/" . $file_name;
+    my $models = Mojo::Home->new . '/lib/Alambic/files/models';
+    my $file = $models . '/' . $type . "/" . $file_name;
     
     if (-e $file) {
 	do { 
