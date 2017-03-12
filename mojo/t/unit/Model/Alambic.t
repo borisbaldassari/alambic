@@ -97,8 +97,10 @@ $ret = $alambic->run_plugins('tools.cdt');
 ok( scalar(keys %$ret) == 4, "Run plugins." ) or diag explain $ret;
 
 note("Run project from Alambic.");
-$ret = $alambic->run_project('tools.cdt');
-ok( scalar(keys %$ret) == 4, "Adding run_project returns hash with 4 entries." ) or diag explain $ret;
+$ret = $alambic->run_project('tools.cdt'); print "# RET " . Dumper(keys %$ret);
+# 4 is when attributes are not defined (i.e. typically when the script is run by itself)
+# 6 when attributes are defined (i.e. when all tests are run in docker).
+ok( scalar(keys %$ret) == 6 or scalar(keys %$ret) == 4, "Adding run_project returns hash with 4 or 6 entries." ) or diag explain keys %$ret;
 
 # Restore previous backup and make sure the created project is not there.
 $alambic->restore($sql);
