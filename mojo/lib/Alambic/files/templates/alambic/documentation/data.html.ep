@@ -113,7 +113,6 @@
                     <ul>
 
 % foreach my $ds (sort keys %{$project_info}) {
-%   print "documentation.html " . Dumper($ds);
 %   my $conf = $plugins->get_plugin($ds)->get_conf();
 %   foreach my $fig (sort map { $_ } keys %{$conf->{'provides_data'}}) {
 	            <li><a href="/projects/<%= $proj %>/<%= $ds %>/<%= $fig %>">/projects/<%= $proj %>/<%= $ds %>/<%= $fig %></a></li>
