@@ -80,7 +80,7 @@ sub new {
     if (not &is_db_ok()) { 
          die "
 Database is not initialised. Please first execute:\n
-\$ script/alambic alambic init\n
+\$ bin/alambic alambic init\n
 And restart alambic.\n";
     } 
 	
