@@ -28,7 +28,7 @@
               <div class="form-group">
                 <label for="google-tracking" class="control-label col-xs-2">Google tracking code</label>
                 <div class="col-xs-10">
-                  <input type="text" class="form-control" name="google-tracking" id="google-tracking" value="<%== $tracking_code %>">
+                  <input type="text" class="form-control" name="google-tracking" id="google-tracking" value="<%== $tracking_code || '' %>">
                 </div>
               </div>
 
