@@ -14,7 +14,7 @@ my %conf = (
     "id" => "ProjectSummary",
     "name" => "Project summary",
     "desc" => [ 
-	"The Project Summary plugin creates a bunch of exportable HTML snippets and a PDF document.",
+	"The Project Summary plugin creates a bunch of exportable HTML snippets, images and badges.",
     ],
     "type" => "post",
     "ability" => [ 'figs', 'viz' ],
@@ -30,8 +30,10 @@ my %conf = (
     },
     "provides_figs" => {
 	"badge_attr_alambic.svg" => "A badge to display current value of main quality attribute on an external web site (uses shields.io)",
-        "psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
+#        "psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
         "badge_qm" => "A HTML snippet that displays main quality attributes.",
+        "badge_project_main" => "A HTML snippet that displays the name and description of the project.",
+        "badge_qm_viz" => "A HTML snippet that displays the quality model visualisation.",
         "badge_downloads" => "A HTML snippet that displays downloads for main data.",
         "badge_plugins" => "A HTML snippet that displays a list of plugins for the project.",
     },
