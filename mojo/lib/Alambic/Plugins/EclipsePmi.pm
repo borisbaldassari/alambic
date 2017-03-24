@@ -299,7 +299,7 @@ sub _compute_data($) {
         my $results = &_check_url($info{"PMI_MAIN_URL"}, 'Website');
         push( @{$check->{'results'}}, $results );
 	if ($results !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK_WEB', 'severity' => 3, 'desc' => 'The web site URL [$url] cannot be retrieved in the PMI. The URL should be checked.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_WEB', 'severity' => 3, 'desc' => "The web site URL [$url] cannot be retrieved in the PMI. The URL should be checked." } );
 	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for website_url.");
@@ -317,7 +317,7 @@ sub _compute_data($) {
         my $results = &_check_url($url, 'Wiki');
         push( @{$check->{'results'}}, $results );
 	if ($results !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK_WIKI', 'severity' => 3, 'desc' => 'The wiki URL [$url] in the PMI cannot be retrieved. It helps people understand and use the product and should be fixed.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_WIKI', 'severity' => 3, 'desc' => "The wiki URL [$url] in the PMI cannot be retrieved. It helps people understand and use the product and should be fixed." } );
 	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for wiki_url.");
@@ -362,7 +362,7 @@ sub _compute_data($) {
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Download') );
 	if ($check->{'results'}[-1] !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK_DOWNLOAD', 'severity' => 3, 'desc' => 'The download URL [$url] cannot be retrieved in the PMI. People need it to download, use, and contribute to the project and should be correctly filled.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_DOWNLOAD', 'severity' => 3, 'desc' => "The download URL [$url] cannot be retrieved in the PMI. People need it to download, use, and contribute to the project and should be correctly filled." } );
 }
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for download_url.");
@@ -380,7 +380,7 @@ sub _compute_data($) {
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Documentation') );
 	if ($check->{'results'}[-1] !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK_GETTING_STARTED', 'severity' => 1, 'desc' => 'The getting started URL [$url] cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_GETTING_STARTED', 'severity' => 1, 'desc' => "The getting started URL [$url] cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled." } );
 	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for gettingstarted_url.");
@@ -398,7 +398,7 @@ sub _compute_data($) {
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Documentation') );
 	if ($check->{'results'}[-1] !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK_DOC', 'severity' => 1, 'desc' => 'The documentation URL [$url] cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_DOC', 'severity' => 1, 'desc' => "The documentation URL [$url] cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled." } );
 	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for documentation_url.");
@@ -416,7 +416,7 @@ sub _compute_data($) {
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Plan') );
 	if ($check->{'results'}[-1] !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK_PLAN', 'severity' => 1, 'desc' => 'The plan document URL [$url] cannot be retrieved in the PMI. It helps people understand the roadmap of the project and should be correctly filled.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_PLAN', 'severity' => 1, 'desc' => "The plan document URL [$url] cannot be retrieved in the PMI. It helps people understand the roadmap of the project and should be correctly filled." } );
 	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for plan.");
@@ -433,7 +433,7 @@ sub _compute_data($) {
         $check->{'value'} = $url;
         push( @{$check->{'results'}}, &_check_url($url, 'Proposal') );
 	if ($check->{'results'}[-1] !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK_PROPOSAL', 'severity' => 1, 'desc' => 'The proposal document URL [$url] cannot be retrieved in the PMI. It helps people understand the genesis of the project and should be correctly filled.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_PROPOSAL', 'severity' => 1, 'desc' => "The proposal document URL [$url] cannot be retrieved in the PMI. It helps people understand the genesis of the project and should be correctly filled." } );
 	}
     } else {
         push( @{$check->{'results'}}, "Failed: no URL defined for proposal.");
@@ -452,7 +452,7 @@ sub _compute_data($) {
         my $results = &_check_url($url, 'Dev ML');
         push( @{$check->{'results'}}, $results );
 	if ($check->{'results'}[-1] !~ /^OK/) {
-	    push( @recs, { 'rid' => 'PMI_NOK_DEV_ML', 'severity' => 3, 'desc' => 'The developer mailing list URL [$url] in the PMI cannot be retrieved. It helps people know where to ask questions if they want to contribute.' } );
+	    push( @recs, { 'rid' => 'PMI_NOK_DEV_ML', 'severity' => 3, 'desc' => "The developer mailing list URL [$url] in the PMI cannot be retrieved. It helps people know where to ask questions if they want to contribute." } );
 	}
     } else {
         push( @{$check->{'results'}}, 'Failed: no dev mailing list defined.' );
@@ -501,7 +501,7 @@ sub _compute_data($) {
             }
             push( @{$check->{'results'}}, &_check_url($url, "Forum [$name]") );
 	    if ($check->{'results'}[-1] !~ /^OK/) {
-		push( @recs, { 'rid' => 'PMI_NOK_USER_ML', 'severity' => 3, 'desc' => 'The user mailing list / forum URL [$url] in the PMI cannot be retrieved. It helps people know where to ask questions if they want to use the product and should be fixed.' } );
+		push( @recs, { 'rid' => 'PMI_NOK_USER_ML', 'severity' => 3, 'desc' => "The user mailing list / forum URL [$url] in the PMI cannot be retrieved. It helps people know where to ask questions if they want to use the product and should be fixed." } );
 	    }
         }
     } else {
@@ -535,7 +535,7 @@ sub _compute_data($) {
         }
     } else {
         push( @{$check->{'results'}}, 'Failed. No source repo defined.' );
-	push( @recs, { 'rid' => 'PMI_EMPTY_SCM', 'severity' => 3, 'desc' => 'The source repository URL is empty in the PMI. People need it if they want to contribute to the product, and it should be filled.' } );	
+	push( @recs, { 'rid' => 'PMI_EMPTY_SCM', 'severity' => 3, 'desc' => "The source repository URL is empty in the PMI. People need it if they want to contribute to the product, and it should be filled." } );	
     }
     $ret_check->{'checks'}->{'source_repo'} = $check;
     
@@ -557,7 +557,7 @@ sub _compute_data($) {
             }
             push( @{$check->{'results'}}, &_check_url($url, "Update site [$title]") );
 	    if ($check->{'results'}[-1] !~ /^OK/) {
-		push( @recs, { 'rid' => 'PMI_NOK_UPDATE', 'severity' => 3, 'desc' => 'The update site URL [$url] in the PMI cannot be retrieved. People need it if they want to use the product, and it should be fixed.' } );
+		push( @recs, { 'rid' => 'PMI_NOK_UPDATE', 'severity' => 3, 'desc' => "The update site URL [$url] in the PMI cannot be retrieved. People need it if they want to use the product, and it should be fixed." } );
 	    }
         }
     } else {
@@ -594,7 +594,7 @@ sub _compute_data($) {
         }
     } else { 
         push( @{$check->{'results'}}, "Failed: could not get CI URL [$proj_ci]."); 
-	push( @recs, { 'rid' => 'PMI_EMPTY_CI', 'severity' => 3, 'desc' => 'The Hudson CI engine URL [$url] in the PMI is empty.' } );	
+	push( @recs, { 'rid' => 'PMI_EMPTY_CI', 'severity' => 3, 'desc' => "The Hudson CI engine URL [$url] in the PMI is empty." } );	
     }
     $ret_check->{'checks'}->{'build_url'} = $check;
     
