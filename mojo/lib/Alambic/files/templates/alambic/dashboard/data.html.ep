@@ -140,8 +140,8 @@
 %       my $vol = scalar @recs_;
 %       next if ($vol == 0);
               <tr>
-                <td><a href="/documentation/recs.html#<%= $pr %>"><%= $pr %></a></td>
-                <td><a href="/documentation/recs.html#<%= $pr %>"><%= $pr %></a></td>
+                <td><%= $pr %></td>
+                <td><%= $pr %></td>
                 <td><%= $recs_[0]{'desc'} %></td>
                 <td><%= $recs_[0]{'severity'} %></td>
                 <td><%= $vol %></td>
