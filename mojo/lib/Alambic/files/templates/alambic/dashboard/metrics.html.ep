@@ -7,10 +7,19 @@
             <br />
 
 %= include 'alambic/dashboard/dashboard_menu', current => '/projects/data', project_id => $project_id
-
             <br />
 
+            <div class="row">
+              <div class="col-sm-6">
             <p>This table lists all metrics retrieved from plugins, even if they are not defined in the metrics definition or in the quality model.</p>
+              </div>
+              <div class="col-sm-6">
+                <div class="list-group">
+                  <a class="list-group-item" href="/projects/<%= $project_id %>/metrics.json" role="button"><i class="fa fa-download"></i> &nbsp; Download metrics (JSON)</a>
+                </div>
+              </div>
+            </div>
+            <br />
 
 	    <p>Showing data for run <code><%= $run->{'id'} %></code>, executed on <code><%= $run->{'run_time'} %></code>.</p>
             <br />
