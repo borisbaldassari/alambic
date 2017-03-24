@@ -15,7 +15,7 @@ my %conf = (
     "id" => "EclipseScm",
     "name" => "Eclipse SCM",
     "desc" => [ 
-	"Retrieves configuration management data from the Eclipse dashboard repository. This plugin will look for a file named project-scm-prj-static.json on http://dashboard.eclipse.org/data/json/. This plugin is redundant with the EclipseGrimoire plugin",
+	"Retrieves configuration management data from the Eclipse dashboard repository. This plugin will look for a file named project-scm-prj-static.json on http://dashboard.eclipse.org/data/json/5y/. This plugin is redundant with the EclipseGrimoire plugin",
 	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseScm">the project\'s wiki</a> for more information.',
     ],
     "type" => "pre",
@@ -123,7 +123,7 @@ sub _retrieve_data($) {
     
     my @log;
 
-    my $url = "http://dashboard.eclipse.org/data/json/" 
+    my $url = "http://dashboard.eclipse.org/data/json/5y/" 
             . $project_grim . "-scm-prj-static.json";
 
     push( @log, "[Plugins::EclipseScm] Starting retrieval of data for [$project_id] url [$url]." );
@@ -138,7 +138,7 @@ sub _retrieve_data($) {
 	$repofs->write_output( $project_id, "import_scm.json", $content );
     }
     
-    $url = "http://dashboard.eclipse.org/data/json/" 
+    $url = "http://dashboard.eclipse.org/data/json/5y/" 
             . $project_grim . "-scm-prj-evolutionary.json";
     
     push( @log, "[Plugins::EclipseScm] Retrieving evol [$url] to input.\n" );

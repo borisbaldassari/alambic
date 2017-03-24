@@ -16,7 +16,7 @@ my %conf = (
     "id" => "EclipseIts",
     "name" => "Eclipse ITS",
     "desc" => [
-	'Eclipse ITS retrieves bug tracking system data from the Eclipse dashboard repository. This plugin will look for a file named project-its-prj-static.json on <a href="http://dashboard.eclipse.org/data/json/">the Eclipse dashboard</a>.',
+	'Eclipse ITS retrieves bug tracking system data from the Eclipse dashboard repository. This plugin will look for a file named project-its-prj-static.json on <a href="http://dashboard.eclipse.org/data/json/5y">the Eclipse dashboard</a>.',
 	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipseIts">the project\'s wiki</a> for more information.',
     ],
     "type" => "pre",
@@ -127,7 +127,7 @@ sub _retrieve_data($$$) {
     
     my @log;
 
-    my $url = "http://dashboard.eclipse.org/data/json/" 
+    my $url = "http://dashboard.eclipse.org/data/json/5y/" 
 	. $project_grim . "-its-prj-static.json";
 
     push( @log, "[Plugins::EclipseIts] Starting retrieval of data for [$project_id] url [$url]." );
@@ -144,7 +144,7 @@ sub _retrieve_data($$$) {
 	$repofs->write_output( $project_id, "import_its.json", $content );
     }
 
-    $url = "http://dashboard.eclipse.org/data/json/" 
+    $url = "http://dashboard.eclipse.org/data/json/5y/" 
             . $project_grim . "-its-prj-evolutionary.json";
     
     push( @log, "[Plugins::EclipseIts] Retrieving evol [$url] to input.\n" );
