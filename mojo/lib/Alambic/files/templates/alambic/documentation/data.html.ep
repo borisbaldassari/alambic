@@ -97,8 +97,10 @@
                     <ul>
 % my $project_info = app->al->get_project($proj)->get_plugins();
 % my $plugins = app->al->get_plugins();
+% my $plugins_list = $plugins->get_names_all();
 %
-% foreach my $ds (sort keys %{$project_info}) {
+% foreach my $ds (sort keys %{$project_info}) { 
+%   next if ( grep(/$ds/, keys %{$plugins_list}) == 0 );
 %   my $conf = $plugins->get_plugin($ds)->get_conf();
 %   foreach my $fig (sort keys %{$conf->{'provides_figs'}}) {
 	            <li><a href="/projects/<%= $proj %>/<%= $ds %>/<%= $fig %>">/projects/<%= $proj %>/<%= $ds %>/<%= $fig %></a></li>
@@ -113,6 +115,7 @@
                     <ul>
 
 % foreach my $ds (sort keys %{$project_info}) {
+%   next if ( grep(/$ds/, keys %{$plugins_list}) == 0 );
 %   my $conf = $plugins->get_plugin($ds)->get_conf();
 %   foreach my $fig (sort map { $_ } keys %{$conf->{'provides_data'}}) {
 	            <li><a href="/projects/<%= $proj %>/<%= $ds %>/<%= $fig %>">/projects/<%= $proj %>/<%= $ds %>/<%= $fig %></a></li>

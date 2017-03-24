@@ -143,7 +143,7 @@
                 <td><%= $pr %></td>
                 <td><%= $pr %></td>
                 <td><%= $recs_[0]{'desc'} %></td>
-                <td><%= $recs_[0]{'severity'} %></td>
+                <td><%= $recs_txt{ $recs_[0]{'severity'} } %> (<%= $recs_[0]{'severity'} %>)</td>
                 <td><%= $vol %></td>
               </tr>
 %     }
