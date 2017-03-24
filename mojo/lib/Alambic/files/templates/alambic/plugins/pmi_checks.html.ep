@@ -1,6 +1,6 @@
-% my $file_in = app->home->rel_dir( 'projects/' . $project_id . '/output/' . $project_id . '_pmi_checks.json' );
+% my $file_in = app->home->rel_file( 'projects/' . $project_id . '/output/' . $project_id . '_pmi_checks.json' );
 % my $content;
-% do { 
+% do {
 %   local $/;
 %   open my $fh, '<', $file_in or die "Could not open data file [$file_in].\n";
 %   $content = <$fh>;
@@ -8,8 +8,8 @@
 % };
 % my $p = decode_json($content);
 % sub ok_failed($) {
-%     my $str = shift;
-%     if ($str =~ m!^OK!) { 
+%     my $str = shift || '';
+%     if ($str =~ m!^OK!) {
 %         return '<span style="color: #9dbe59"><i class="fa fa-check-circle"></i> &nbsp; ' . $str . '</span>';
 %     }
 %     return '<span style="color: #e68570"><i class="fa fa-exclamation-circle"></i> &nbsp; ' . $str . '</span>';
@@ -71,7 +71,7 @@
   <tr>
     <td><b>Build URL</b></td>
     <td><%= $p->{'checks'}->{'build_url'}->{'value'} %></td>
-    <td><%== &ok_failed($p->{'checks'}->{'build_url'}->{'results'}->[0]) %><br /> 
+    <td><%== &ok_failed($p->{'checks'}->{'build_url'}->{'results'}->[0]) %><br />
       <%== &ok_failed($p->{'checks'}->{'build_url'}->{'results'}->[1]) %></td>
   </tr>
   <tr>
@@ -105,7 +105,7 @@
 % foreach my $ml ( @{$p->{'checks'}->{'forums'}->{'results'}} ) {
 %   $ret = &ok_failed($ml);
 %   my $name;
-%   if ($ml =~ m!Forum \[([^]]+)\]!) { $name = $1; } 
+%   if ($ml =~ m!Forum \[([^]]+)\]!) { $name = $1; }
   <tr>
     <td><b>Forums</b></td>
     <td>Forum [<%= $name %>]</td>
@@ -115,7 +115,7 @@
 % foreach my $ml ( @{$p->{'checks'}->{'mailing_lists'}->{'results'}} ) {
 %   $ret = &ok_failed($ml);
 %   my $name;
-%   if ($ml =~ m!\[([^]]+)\] ML!) { $name = $1; } 
+%   if ($ml =~ m!\[([^]]+)\] ML!) { $name = $1; }
   <tr>
     <td><b>Other mailing list</b></td>
     <td>ML [<%= $name %>]</td>
@@ -168,7 +168,7 @@
 % foreach my $ml ( @{$p->{'checks'}->{'update_sites'}->{'results'}} ) {
 %   my $ret = &ok_failed($ml);
 %   my $name;
-%   if ($ml =~ m!Update site \[([^]]+)\]!) { $name = $1; } 
+%   if ($ml =~ m!Update site \[([^]]+)\]!) { $name = $1; }
   <tr>
     <td><b>Update sites</b></td>
     <td>Update site [<%= $name %>]</td>
