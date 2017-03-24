@@ -17,9 +17,9 @@
 
 %= include 'alambic/admin/admin_menu', current => '/admin/repo'
 % my $fa_icon; my $link_init = '';
-% if (app->al->is_db_ok) { 
+% if (app->al->is_db_ok) {
 %   $fa_icon = '<i class="fa fa-check-circle-o fa-lg"></i>';
-% } else { 
+% } else {
 %   $fa_icon = '<a href="/admin/repo/init"><i class="fa fa-exclamation-circle fa-lg"></i></a>';
 %   $link_init = '<a href="/admin/repo/init">Init</a>';
 % }
@@ -27,8 +27,9 @@
 
             <div class="row">
               <div class="col-sm-6">
-		<p>All projects and configuration data is stored in a Postgres database. An Alambic instance can be entirely restored from its database backup, including history, attributes, metrics and indicators, since the file system only holds generated files.</p>
-
+		        <p>All projects and configuration data is stored in a Postgres database. An Alambic instance can be entirely restored from its database backup, including history, attributes, metrics and indicators, since the file system only holds generated files.</p>
+		        <p>Please note that a database restore brings back history and current data, but some visualisations, figures and data files need file system results. It is therefore recommended to rerun all projects after a restore to generate all required pages and prevent 404s.</p>
+		        <p>The minion database only contains job information, and it is not required to backup or restore it -- only impact is job ids that will start from 1.</p>
 		<br />
 	      </div>
 	      <div class="col-sm-6">
@@ -37,11 +38,11 @@
                 </div>
 
               </div>
-            </div>	    
+            </div>
 
             <div class="row">
               <div class="col-lg-12">
-		
+
                 <div class="panel panel-default">
                   <div class="panel-heading">Databases</div>
                   <table class="table table-striped">
@@ -52,7 +53,7 @@
 				</div>
 			  </div>
 			</div>
-                
+
             <div class="row">
               <div class="col-lg-12">
                 <div class="panel panel-default">
@@ -76,5 +77,5 @@
 
 
 
-	    
-            
+
+
