@@ -5,6 +5,7 @@ use warnings;
 
 use File::Path qw(make_path remove_tree);
 use Test::More;
+use File::Copy;
 
 BEGIN { use_ok( 'Alambic::Tools::R' ); }
 
@@ -22,6 +23,10 @@ make_path( 'projects/test.project/output/' );
 
 # Knit documents from the EclipseIts plugin
 note( "Executing EclipseIts Rmd file." );
+copy "t/resources/test.project_its.csv", "lib/Alambic/Plugins/EclipseIts/" 
+    or die "Cannot copy project_its.csv.";
+copy "t/resources/test.project_its_evol.csv", "lib/Alambic/Plugins/EclipseIts/" 
+    or die "Cannot copy project_its_evol.csv.";
 $log = $tool->knit_rmarkdown_inc( 'EclipseIts', 'test.project', 'eclipse_its.Rmd' );
 ok( grep( /^\[Tools::R\] Exec \[Rscript/, @{$log} ), "Rscript is called in log." ) or diag explain $log;
 ok( -e 'projects/test.project/output/test.project_eclipse_its.inc', "eclipse_its.inc file is generated." ) or diag explain $log;
@@ -37,11 +42,18 @@ $log = $tool->knit_rmarkdown_html( 'EclipseIts', 'test.project', 'its_evol_summa
 ok( grep( /^\[Tools::R\] Exec \[Rscript/, @{$log} ), "Rscript is called in log." ) or diag explain $log;
 ok( -e 'projects/test.project/output/test.project_its_evol_summary.html', "its_evol_summary.html file is generated." ) or diag explain $log;
 
+# Remove files that were copied to tests
+unlink "lib/Alambic/Plugins/EclipseIts/test.project_its.csv";
+unlink "lib/Alambic/Plugins/EclipseIts/test.project_its_evol.csv";
+
 # Knit documents from the EclipseIts plugin
-note( "Executing EclipseIts Rmd figure file." );
+note( "Executing PMD Analysis R figure file." );
+copy "t/resources/test.project_pmd_analysis_files.csv", "lib/Alambic/Plugins/PmdAnalysis/" 
+    or die "Cannot copy project_pmd_analysis_files.csv.";
 $log = $tool->knit_rmarkdown_images( 'PmdAnalysis', 'test.project', 'pmd_analysis_files_ncc1.r', [ "pmd_analysis_files_ncc1.svg" ] );
 ok( grep( /^\[Tools::R\] Exec \[Rscript/, @{$log} ), "Rscript is called in log." ) or diag explain $log;
 ok( -e 'projects/test.project/output/test.project_pmd_analysis_files_ncc1.svg', "pmd_analysis_files_ncc1.svg file is generated." ) or diag explain $log;
+unlink "lib/Alambic/Plugins/PmdAnalysis/test.project_pmd_analysis_files.csv";
 
     
 done_testing();
