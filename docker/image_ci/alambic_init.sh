@@ -1,8 +1,8 @@
 
 # Script to initialise Alambic for the ci docker image.
 echo "# Alambic script for init."
-echo "Waiting 20 seconds for the db to init correctly."
-sleep 20
+echo "Waiting 30 seconds for the db to init correctly."
+sleep 30
 
 # Make sure we use the right perl from perlbrew
 source ~/.bashrc

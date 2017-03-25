@@ -43,7 +43,7 @@ steps:
           -postgres
         command:
           - su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
-          - su - alambic -c "sh /home/alambic/alambic/resources/scripts/alambic_test_ui.sh"
+          - su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test_ui.sh"
 
   push_test_to_registry:
     title: Pushing to Docker Registry
