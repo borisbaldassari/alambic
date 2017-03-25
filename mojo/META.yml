@@ -1,0 +1,48 @@
+---
+abstract: 'A software development data management framework'
+author:
+  - 'Boris Baldassari'
+build_requires:
+  Test::More: '0'
+configure_requires:
+  Module::Build: '0.38'
+dynamic_config: 0
+generated_by: 'Module::Build version 0.422, CPAN::Meta::Converter version 2.150010'
+license: unknown
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Alambic
+no_index:
+  file:
+    - README.pod
+requires:
+  Crypt::PBKDF2: '0'
+  Date::Parse: '0'
+  DateTime: '0'
+  File::Basename: '0'
+  File::Copy: '0'
+  File::Path: '0'
+  File::ShareDir: '1.00'
+  File::chdir: '0'
+  File::stat: '0'
+  Git::Repository: '0'
+  IO::Socket::SSL: '0'
+  JIRA::REST: '0'
+  List::MoreUtils: '0'
+  List::Util: '0'
+  Minion: '0'
+  Mojo::JSON: '0'
+  Mojo::Pg: '0'
+  Mojo::UserAgent: '0'
+  Mojolicious: '7.28'
+  Mojolicious::Plugin::Mail: '0'
+  Net::IDN::Encode: '0'
+  Time::localtime: '0'
+  XML::LibXML: '0'
+  perl: v5.24.0
+resources:
+  bugtracker: http://github.com/jberger/Galileo/issues
+  repository: http://github.com/jberger/Galileo
+version: '3.3'
+x_serialization_backend: 'CPAN::Meta::YAML version 0.018'
