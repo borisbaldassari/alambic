@@ -25,14 +25,14 @@ RUN adduser alambic \
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm; \
     yum install -y R;
 COPY alambic_install_r_deps.sh /root/alambic_install_r_deps.sh
-RUN chmod +x /root/alambic_install_r_deps.sh
-RUN /bin/bash -c "/root/alambic_install_r_deps.sh"
+RUN chmod +x /root/alambic_install_r_deps.sh \
+    && /bin/bash -c "/root/alambic_install_r_deps.sh"
 
 # Copy perl deps file for alambic
 RUN echo "REBUILD ME now please! "
 COPY alambic_install_perl_deps.sh /home/alambic/alambic_install_perl_deps.sh
-RUN chmod +x /home/alambic/alambic_install_perl_deps.sh
-RUN chown alambic /home/alambic/alambic_install_perl_deps.sh
+RUN chmod +x /home/alambic/alambic_install_perl_deps.sh \
+    && chown alambic /home/alambic/alambic_install_perl_deps.sh
 
 # Install pandoc
 RUN yum -y install pandoc; yum clean all
