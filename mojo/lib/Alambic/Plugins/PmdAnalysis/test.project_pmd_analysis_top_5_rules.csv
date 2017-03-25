@@ -1,6 +1,0 @@
-"Mnemo","priority","vol"
-"DoubleCheckedLocking",1,2
-"BooleanInstantiation",2,3
-"AbstractClassWithoutAnyMethod",1,5
-"BrokenNullCheck",2,11
-"AvoidBranchingStatementAsLastInLoop",2,46
