@@ -8,9 +8,9 @@ This plugins retrieves issue tracking information from the [Eclipse Dashboard's 
 
 All data from the Eclipse dashboard can be downloaded from the server in JSON format at the following url:
 
-* All files: http://dashboard.eclipse.org/data/json/
-* Project-specific file (last metrics): http://dashboard.eclipse.org/data//json/modeling.sirius-its-prj-static.json
-* Project-specific file (evolution metrics): http://dashboard.eclipse.org/data//json/modeling.sirius-its-prj-evolutionary.json
+* All files: [http://dashboard.eclipse.org/data/json/5y/](http://dashboard.eclipse.org/data/json/5y/)
+* Project-specific file (last metrics): [http://dashboard.eclipse.org/data//json/5y/modeling.sirius-its-prj-static.json](http://dashboard.eclipse.org/data//json/5y/modeling.sirius-its-prj-static.json)
+* Project-specific file (evolution metrics): [http://dashboard.eclipse.org/data//json/5y/modeling.sirius-its-prj-evolutionary.json](http://dashboard.eclipse.org/data//json/5y/modeling.sirius-its-prj-evolutionary.json)
 
 -----
 

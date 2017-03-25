@@ -6,6 +6,8 @@ navi_name: Install
 
 Alambic is written in Perl and uses the [Mojolicious](http://mojolicio.us) web framework. It relies on a database to store configuration and projects information. As for now only PostgreSQL is supported as a back-end database.
 
+-----
+
 # Dependencies and requirements
 
 Note: you may want to install [perlbrew](http://perlbrew.pl/) to have separate perl instances. Even better, perlbrew can be setup with a basic Unix user account.
@@ -38,6 +40,8 @@ You also need to install the following Perl modules from CPAN:
 
 Note that plugins may have different specific requirements. As an example the StackOverflow plugin requires a R installation and a few packages (knitr for the weaving, snowballc for the wordcloud, etc.). See the documentation of plugins for more information.
 
+-----
+
 
 # Download and setup the application
 
@@ -64,6 +68,9 @@ You have to create a Postgresql database for Alambic. Database name is `alambic_
     CREATE DATABASE
     postgres=# CREATE DATABASE minion_db OWNER alambic;
     CREATE DATABASE
+
+
+-----
 
 # Initialise the application
 
