@@ -8,11 +8,19 @@ use Test::Mojo;
 
 use Data::Dumper;
 
-my $t = Test::Mojo->new('Alambic');
+my $t;
+# If no database is defined, skip all tests.
+eval {
+    $t = Test::Mojo->new('Alambic');
+};
+
+if ($@) {
+    plan skip_all => 'Test irrelevant when no database is defined.';
+}
 
 # Enable redirects (used e.g. for login)
 $t->ua->max_redirects(5);
-
+print "# 1 \n";
 # Check that we have the right home page.
 $a = $t->get_ok('/')->status_is(200)
     ->content_like(qr!<h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>!i, 
@@ -31,6 +39,7 @@ $a = $t->get_ok('/')->status_is(200)
 		   'Main page contains documentation panel.')
     ->content_like(qr!Administration tools</a>!i, 
 		   'Main page contains administration tools panel.');
+print "# 1 \n";
 
 
 # Login

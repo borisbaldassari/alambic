@@ -8,7 +8,15 @@ use Test::Mojo;
 use FindBin;
 use Data::Dumper;
 
-my $t = Test::Mojo->new('Alambic');
+my $t;
+# If no database is defined, skip all tests.
+eval {
+    $t = Test::Mojo->new('Alambic');
+};
+
+if ($@) {
+    plan skip_all => 'Test irrelevant when no database is defined.';
+}
 
 # Enable redirects (used e.g. for login)
 $t->ua->max_redirects(5);
