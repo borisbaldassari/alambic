@@ -100,7 +100,7 @@ fi
 
 
 # Checking if all modules are installed
-echo perlbrew use perl-$PB_V
+perlbrew use perl-$PB_V
 
 echo "# Installing perl modules.."
 echo "# Installing perl modules.." >> $LOG
@@ -113,8 +113,8 @@ fi
 
 # If alambic.conf exists, use its values
 if [ -e alambic.conf ]; then
-    print "# Found alambic.conf."
-    print "# Found alambic.conf." >> $LOG
+    echo "# Found alambic.conf."
+    echo "# Found alambic.conf." >> $LOG
 else
     echo "# Configuring Postgresql database..."
     read -p "  * Postgresql server name: [localhost] " PG_HOST
@@ -158,6 +158,9 @@ CMDS="BH DBI NLP R6 RColorBrewer Rcpp SnowballC assertthat backports base64enc b
 for c in $CMDS; do
     _check_r_prerequisite $c;
 done
+
+# Everything is fine, we can simply install Alambic now.
+echo "Everything seems to be fine. You can now run Alambic.\n"
 
 #perlbrew off
 
