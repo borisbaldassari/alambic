@@ -45,7 +45,7 @@ my %conf = (
   },
   "provides_metrics" =>
     {"PMI_ITS_INFO" => "PMI_ITS_INFO", "PMI_SCM_INFO" => "PMI_SCM_INFO",},
-  "provides_figs" => {},
+    "provides_figs" => {},
   "provides_recs" => [
     "PMI_EMPTY_BUGZILLA_CREATE", "PMI_NOK_BUGZILLA_CREATE",
     "PMI_EMPTY_BUGZILLA_QUERY",  "PMI_NOK_BUGZILLA_QUERY",
@@ -366,7 +366,8 @@ sub _compute_data($) {
   $check->{'desc'}
     = "Sends a get request to the project wiki URL and looks at the headers in the response (200, 404..).";
   if (exists($raw_project->{'wiki_url'}->[0]->{'url'})) {
-    $info{"PMI_WIKI_URL"} = $raw_project->{'wiki_url'}->[0]->{'url'};
+    my $url = $raw_project->{'wiki_url'}->[0]->{'url'};
+    $info{"PMI_WIKI_URL"} = $url;
     $check->{'value'} = $info{"PMI_WIKI_URL"};
     my $results = &_check_url($url, 'Wiki');
     push(@{$check->{'results'}}, $results);
