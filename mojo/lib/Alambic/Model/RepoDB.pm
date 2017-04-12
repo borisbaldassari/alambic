@@ -143,6 +143,7 @@ sub is_db_defined() {
 }
 
 
+# Checks if the database is ready to be used.
 sub is_db_ok() {
   my $rows = $pg->db->query(
     "SELECT tablename FROM pg_catalog.pg_tables 
@@ -150,6 +151,25 @@ sub is_db_ok() {
   )->rows;
 
   return $rows == 10 ? 1 : 0;
+}
+
+
+# Checks if the database contains project definitions.
+sub is_db_empty() {
+  my $rows = $pg->db->query(
+    "SELECT tablename FROM pg_catalog.pg_tables 
+      WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';"
+  )->rows;
+
+  if ( $rows != 10 ) {
+      return undef;
+  }
+
+  $rows = $pg->db->query(
+    "SELECT COUNT(*) FROM projects_conf;"
+  )->rows;
+
+  return $rows == 0 ? 1 : 0; 
 }
 
 
