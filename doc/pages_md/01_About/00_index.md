@@ -1,5 +1,5 @@
 title: About Alambic
-navi_name: Alambic
+navi_name: About
 
 # Welcome to the Alambic project
 
