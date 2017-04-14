@@ -46,6 +46,8 @@ sub startup {
 
   # Use POD renderer
   #$self->plugin('PODRenderer');
+
+  # Used to make alambic installable and Build::Module compatible
   $self->plugin('InstallablePaths');
 
   # Use Minion for job queuing.

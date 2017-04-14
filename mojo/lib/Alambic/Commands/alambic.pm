@@ -11,18 +11,18 @@ sub run {
 
  # Initialise the database:create tables, and use dumb values for name and desc.
  # See RepoDB::_db_init for more information
-  if ($args[0] eq 'init') {
+    if ($args[0] eq 'init') {
+	
     my $config     = $self->app->plugin('Config');
     my $pg_alambic = $config->{'conf_pg_alambic'};
     my $repodb     = Alambic::Model::RepoDB->new($pg_alambic);
 
-    print "DBG\n";
     # We don't want to empty the database if it already contains data
     if ($repodb->is_db_empty() ) {
 	print "Initialising the database.\n";
 	$repodb->init_db();
     } else {
-	print "The database is not empty. Cowardly refusing to initialise it.";
+	print "The database is not empty. Cowardly refusing to initialise it.\n\n";
 	exit;
     }
 
@@ -34,7 +34,8 @@ sub run {
     # Set administrator parameters.
     print "Creating administrator account.\n";
     my $project = $self->app->al->set_user('administrator', 'Administrator',
-      'alambic@castalia.solutions', 'password', ['Admin'], {}, {});
+					   'alambic@castalia.solutions', 'password', ['Admin'], {}, {});
+    
   }
   elsif ($args[0] eq 'backup') {
 
@@ -55,11 +56,19 @@ sub run {
       say $self->app->mode;
   } else {
       
-    my $usage = "Usage: alambic command
+    my $usage = "
+Welcome to the Alambic application. 
 
-Commands: 
-* init          Initialise the database.
-* backup        Backup the database.
+Usage: bin/alambic alambic <command>
+
+Alambic commands: 
+* bin/alambic alambic init     Initialise the database.
+* bin/alambic alambic backup   Backup the database.
+
+Other Mojolicious commands: 
+* bin/alambic minion           Manage job queuing system.
+* bin/alambic daemon           Run application in development mode.
+* bin/alambic prefork          Run application in production (multithreaded) mode.
 
 ";
     print $usage;
