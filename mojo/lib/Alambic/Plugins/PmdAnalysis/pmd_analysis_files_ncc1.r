@@ -26,13 +26,9 @@ pmd.files.list.50 <- head(pmd.files.list, n=50)
 
 names(pmd.files.list.50) <- c("File", "NCC P1", "NCC P2")
 
-
-
-#pmd.files.list <- pmd.files[pmd.files$NCC_1 > 0 | pmd.files$NCC_2 > 0,c("File", "NCC_1", "NCC_2")]
-#pmd.files.list$NCC_12 <- pmd.files$NCC_1 + pmd.files$NCC_2
-
 pmd.files.list.30 <- head(pmd.files.list, n=30)
 names(pmd.files.list.30) <- c("File", "NCC P1", "NCC P2")
+
 
 pmd.files.ncc1 <- pmd.files.list.30[,c(1,2)]
 pmd.files.ncc1$Priority <- 1
@@ -41,7 +37,6 @@ names(pmd.files.ncc1) <- c("File", "NCC", "Priority")
 pmd.files.ncc2 <- pmd.files.list.30[,c(1,3)]
 pmd.files.ncc2$Priority <- 2
 names(pmd.files.ncc2) <- c("File", "NCC", "Priority")
-# XXX
 
 pmd.files.ncc <- rbind(pmd.files.ncc1, pmd.files.ncc2)
 
