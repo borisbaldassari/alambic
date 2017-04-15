@@ -2,8 +2,12 @@ alambic.conf
 backups/.keepme
 bin/alambic
 Build.PL
+Changes
 lib/Alambic.pm
 lib/Alambic/Commands/alambic.pm
+lib/Alambic/Commands/backup.pm
+lib/Alambic/Commands/help.pm
+lib/Alambic/Commands/init.pm
 lib/Alambic/Controller/Admin.pm
 lib/Alambic/Controller/Alambic.pm
 lib/Alambic/Controller/Dashboard.pm
@@ -193,8 +197,9 @@ lib/Alambic/Wizards/EclipsePmi.pm
 log/.keepme
 MANIFEST			This list of files
 projects/.keepme
-t/basic.t.noexec
-t/scenarii/001_simple_project_and_plugins.t.noexec
+t/resources/test.project_its.csv
+t/resources/test.project_its_evol.csv
+t/resources/test.project_pmd_analysis_files.csv
 t/ui/001_basic.t
 t/ui/002_documentation.t
 t/ui/010_admin.t
@@ -209,7 +214,5 @@ t/unit/Model/Tools.t
 t/unit/Plugins/EclipseIts.t
 t/unit/Plugins/EclipseMls.t
 t/unit/Plugins/EclipsePmi.t
-t/unit/Plugins/ProjectSummary.t.noexec
-t/unit/Plugins/StackOverflow.t.noexec
 t/unit/Tools/Git.t
 t/unit/Tools/R.t
