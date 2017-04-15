@@ -1,15 +1,15 @@
-package Alambic::Commands::help;
+package Alambic::Commands::about;
 use Mojo::Base 'Mojolicious::Command';
 
 use Alambic::Model::RepoDB;
 
 has description => 'Command line help for Alambic';
-has usage       => "Usage: alambic help\n";
+has usage       => "Usage: alambic about\n";
 
 sub run {
-    my ($self, @args) = @_;
-    
-    my $usage = "
+  my ($self, @args) = @_;
+
+  my $usage = "
 Welcome to the Alambic application. 
 
 Usage: alambic <command>
@@ -24,9 +24,8 @@ Other Mojolicious commands:
 * bin/alambic prefork    Run application in production (multithreaded) mode.
 
 ";
-    print $usage;
-    
-  }
+  print $usage;
+
 }
 
 
