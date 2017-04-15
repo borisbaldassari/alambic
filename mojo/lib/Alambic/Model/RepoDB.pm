@@ -161,15 +161,13 @@ sub is_db_empty() {
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';"
   )->rows;
 
-  if ( $rows != 10 ) {
-      return undef;
+  if ($rows != 10) {
+    return undef;
   }
 
-  $rows = $pg->db->query(
-    "SELECT COUNT(*) FROM projects_conf;"
-  )->rows;
+  $rows = $pg->db->query("SELECT COUNT(*) FROM projects_conf;")->rows;
 
-  return $rows == 0 ? 1 : 0; 
+  return $rows == 0 ? 1 : 0;
 }
 
 

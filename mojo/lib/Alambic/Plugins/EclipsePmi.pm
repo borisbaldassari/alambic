@@ -45,7 +45,7 @@ my %conf = (
   },
   "provides_metrics" =>
     {"PMI_ITS_INFO" => "PMI_ITS_INFO", "PMI_SCM_INFO" => "PMI_SCM_INFO",},
-    "provides_figs" => {},
+  "provides_figs" => {},
   "provides_recs" => [
     "PMI_EMPTY_BUGZILLA_CREATE", "PMI_NOK_BUGZILLA_CREATE",
     "PMI_EMPTY_BUGZILLA_QUERY",  "PMI_NOK_BUGZILLA_QUERY",

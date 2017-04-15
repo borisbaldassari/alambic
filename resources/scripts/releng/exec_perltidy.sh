@@ -4,6 +4,7 @@ IS_MOJO=$(basename `pwd`)
 if [ $IS_MOJO = "mojo" ]; then
     echo "Tidy all files in lib/."
     for f in `find lib/ -name "*.pm"`; do
+	echo $f
 	perltidy -pro=../resources/scripts/releng/perltidyrc ${f} > ${f}_;
     done
     for f in `find lib/ -name "*.pm"`; do
@@ -11,6 +12,7 @@ if [ $IS_MOJO = "mojo" ]; then
     done
     echo "Tidy all files in t/."
     for f in `find t/ -name "*.t"`; do
+	echo $f
 	perltidy -pro=../resources/scripts/releng/perltidyrc ${f} > ${f}_;
     done
     for f in `find t/ -name "*.t"`; do
