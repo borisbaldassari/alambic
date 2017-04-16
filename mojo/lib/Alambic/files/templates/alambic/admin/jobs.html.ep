@@ -19,7 +19,7 @@
 % my $stats = app->minion->stats; 
             <div class="row">
               <div class="col-sm-6">
-		<p>This is the list of jobs registered in Alambic. There are currently <%= $stats->{active_jobs} %> active jobs, <%= $stats->{active_workers} %> active workers, <%= $stats->{inactive_jobs} %> inactive jobs. Jobs are removed from the list after one day.</p>
+		<p>This is the list of jobs registered in Alambic. There are currently <%= $stats->{active_jobs} %> active jobs, <%= $stats->{active_workers} %> active workers, <%= $stats->{inactive_jobs} %> inactive jobs. Successful jobs are removed from the list after one day.</p>
               </div>
               <div class="col-sm-6">
                 <div class="list-group">
