@@ -16,13 +16,12 @@ sub run {
   my $repodb     = Alambic::Model::RepoDB->new($pg_alambic);
 
   # We don't want to empty the database if it already contains data
-  if ($repodb->is_db_empty()) {
-    print "Initialising the database.\n";
-    $repodb->init_db();
-  }
-  else {
-    print "The database is not empty. Cowardly refusing to initialise it.\n\n";
-    exit;
+  if ( $repodb->is_db_ok() and not $repodb->is_db_empty()) {
+      print "Database is initialised and is not empty. Cowardly refusing to clear it.\n\n";
+      exit;
+  } else {
+      print "Database is nok or is empty.\nInitialising database.\n";
+      $repodb->init_db();
   }
 
   # Set instance parameters

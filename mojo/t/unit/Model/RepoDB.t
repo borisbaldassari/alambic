@@ -203,11 +203,6 @@ SKIP: {
       "get_metrics() Get all metrics returns METRIC1."
     ) or diag explain $metric;
 
-    $metric = $repodb->get_metrics();
-    is_deeply($metric, $metric_ref,
-      "get_metrics() Get all metrics returns empty hash when there is none.")
-      or diag explain $metric;
-
     # Check projects_conf information
     note("Check projects_conf information.");
     $ret

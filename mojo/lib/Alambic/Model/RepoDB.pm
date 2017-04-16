@@ -156,6 +156,7 @@ sub is_db_ok() {
 
 # Checks if the database contains project definitions.
 sub is_db_empty() {
+
   my $rows = $pg->db->query(
     "SELECT tablename FROM pg_catalog.pg_tables 
       WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';"
@@ -165,9 +166,10 @@ sub is_db_empty() {
     return undef;
   }
 
-  $rows = $pg->db->query("SELECT COUNT(*) FROM projects_conf;")->rows;
+  $rows = $pg->db->query("SELECT COUNT(*) FROM projects_conf;");
 
-  return $rows == 0 ? 1 : 0;
+  return $rows->rows == 0 ? 1 : 0;
+
 }
 
 
