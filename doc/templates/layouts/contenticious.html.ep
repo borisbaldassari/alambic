@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    % my $t = join ' - ' => grep { $_ } stash('title'), config('name');
+    <title><%= $t || 'contenticious!' %></title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="<%= rel_url_for 'styles.css' %>">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="<%= rel_url_for 'content', cpath => '' %>">
+            <%= config('name') // 'contenticious!' %>
+        </a></p>
+%= include 'navi', only => 1
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+%= include 'navi', only_not => 1
+<div id="content">
+%= content
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    % if (config 'copyright') {
+    <p id="copyright">
+        &copy;
+        <%= 1900 + (localtime)[5] %>
+        <%= config 'copyright' %>
+    </p>
+    % }
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

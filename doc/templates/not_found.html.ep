@@ -1,0 +1,6 @@
+% my $url = $self->req->url;
+% layout 'contenticious', title => 'File not found!';
+<h1>File not found!</h1>
+<p>I'm sorry, but I couldn't find what you were looking for:</p>
+<p><strong><%= $url %></strong></p>
+

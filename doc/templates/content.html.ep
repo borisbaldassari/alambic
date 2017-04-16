@@ -1,0 +1,7 @@
+% layout 'contenticious', title => $content_node->title;
+% if (defined $content_node->html) {
+%== $content_node->html
+% } else {
+%= include 'list', content_node => $content_node
+% }
+
