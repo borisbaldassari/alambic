@@ -17,7 +17,7 @@ cp /home/alambic/alambic/docker/image_ci/alambic.conf .
 cat alambic.conf
 
 # Initialise the app: create tables, init instance.
-bin/alambic alambic init
+bin/alambic init
 
 # Start main process for mojo
 hypnotoad bin/alambic
