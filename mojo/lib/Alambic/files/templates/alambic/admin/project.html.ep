@@ -33,11 +33,11 @@
 % my @figs_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_figs()} ) } keys %$project_plugins;
 % my ($data_vol, $figs_vol) = (0, 0);
 % foreach my $dp (@data_plugins) {
-%   next if not ( grep( /^$dp$/, $plugins->get_list_plugins_data() ) );
+%   next if not ( grep( /^$dp$/, @{$plugins->get_list_plugins_data()} ) );
 %   $data_vol += scalar keys %{$plugins->get_plugin($dp)->get_conf()->{'provides_data'}};
 % }
 % foreach my $fp (@figs_plugins) {
-%   next if not ( grep( /^$fp$/, $plugins->get_list_plugins_figs() ) );
+%   next if not ( grep( /^$fp$/, @{$plugins->get_list_plugins_figs()} ) );
 %   $figs_vol += scalar keys %{$plugins->get_plugin($fp)->get_conf()->{'provides_figs'}};
 % }
 % my $by = exists($runs->[-1]) ? $runs->[-1]->{'run_user'} : 'Unknown';
