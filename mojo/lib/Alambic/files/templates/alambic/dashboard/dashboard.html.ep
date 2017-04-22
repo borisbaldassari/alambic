@@ -227,10 +227,11 @@
                       <th width="10%">Confidence</th>
 		    </tr>
 % foreach my $attr (sort keys %{$attributes}) {
+%   my $myattr = defined($models->get_attribute($attr)) ? $models->get_attribute($attr)->{'name'} : $attr;
 		    <tr>
-                      <td><a href="/documentation/attributes.html#<%= $attr %>"><%= defined($models->get_attribute($attr)) ? $models->get_attribute($attr)->{'name'} : $attr %></a></td>
+                      <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $myattr %></a></td>
                       <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attr %></a></td>
-                      <td><%== $models->get_attribute($attr)->{'description'}->[0] %></td>
+                      <td><%== defined($models->get_attribute($attr)) ? $models->get_attribute($attr)->{'description'}->[0] : '' %></td>
                       <td><%= $attributes->{$attr} %></td>
                       <td><%= $attributes_conf->{$attr} %></td>
 		    </tr>
