@@ -12,7 +12,7 @@
         "scale": [2,5,13,121]
       },
       {
-        "name": "Files committed",
+        "name": "SCM Files committed",
         "mnemo": "SCM_FILES",
         "desc": [
             "Total number of files touched by commits in source code management repositories dated during the last three months.",
