@@ -8,7 +8,7 @@ RUN yum -y update; yum clean all
 
 # Install openssh
 RUN yum -y install openssh-server passwd wget libcurl-devel passwd perl-CPAN gcc \
-    make bzip2 git libxml2-devel openssl openssl-devel; yum clean all
+    make bzip2 git libxml2-devel openssl openssl-devel cairo-devel; yum clean all
 RUN mkdir /var/run/sshd && ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 
 # Install postgresql 9.5 client
