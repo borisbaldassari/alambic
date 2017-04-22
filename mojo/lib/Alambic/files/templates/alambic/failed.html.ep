@@ -15,4 +15,4 @@
 
 
 	    <p>The Administration section requires authentication.</p>
-        <p>Two options here: either <a href="/login">login</a> or <a href="/contact.html">contact the administrator</a> of this Alambic instance.</p>
+        <p>Two options here: either <a href="/login">login</a> or <a href="/about.html">contact the administrator</a> of this Alambic instance.</p>
