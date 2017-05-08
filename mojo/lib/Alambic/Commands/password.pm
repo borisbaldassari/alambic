@@ -17,15 +17,15 @@ Welcome to the Alambic application.
 Usage: alambic <command>
 
 Alambic commands: 
-* bin/alambic about           Initialise the database.
-* bin/alambic init            Initialise the database.
-* bin/alambic backup          Backup the database.
-* bin/alambic password mypass Reset the administrator password database.
+* bin/alambic about                 Initialise the database.
+* bin/alambic init                  Initialise the database.
+* bin/alambic backup                Backup the database.
+* bin/alambic password user mypass  Reset password for user.
 
 Other Mojolicious commands: 
-* bin/alambic minion          Manage job queuing system.
-* bin/alambic daemon          Run application in development mode.
-* bin/alambic prefork         Run application in production (multithreaded) mode.
+* bin/alambic minion                Manage job queuing system.
+* bin/alambic daemon                Run application in development mode.
+* bin/alambic prefork               Run application in production (multithreaded) mode.
 
 ";
       print $usage;
