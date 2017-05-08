@@ -50,13 +50,13 @@ jobs.nok <- jobs[jobs$color == 'red',]
 <div class="row">
 <div class="col-md-6">
 
-## Hudson Continuous Integration Engine
+<h2>Hudson Continuous Integration Engine</h2>
 
 Hudson instance [``r main$name``] is located at ``r main$url``. 
 
 There are ``r metrics$CI_JOBS`` jobs defined on this instance. ``r metrics$CI_JOBS_GREEN`` are green (stable), ``r metrics$CI_JOBS_YELLOW`` are yellow (unstable), ``r metrics$CI_JOBS_RED`` are red (failing).
 
-## Metrics
+<h2>Metrics</h2>
 
 The following metrics are available:
 
