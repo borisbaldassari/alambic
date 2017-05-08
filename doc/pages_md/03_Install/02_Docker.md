@@ -34,6 +34,16 @@ In the root of the Alambic repository, execute:
 
     $ docker-compose -f docker-compose.test.yml run alambic_test
 
+## Using a different port for Alambic
+
+By default Alambic listens to port 3010. The Docker image for Alambic basically exposes this same port to the host, but it can be easily changed to use another port (e.g. 80).
+
+    $ docker run XXX
+
+
+# Building Docker images
+
+
 ## Building the base image
 
 The base image is continuously built on codefresh, and pushed to the docker hub at [https://hub.docker.com/r/bbaldassari/alambic_base_centos/](https://hub.docker.com/r/bbaldassari/alambic_base_centos/)

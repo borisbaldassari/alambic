@@ -1,37 +1,109 @@
 title: About Alambic
 navi_name: Alambic
 
-# Welcome to the Alambic project
 
-CHECKME
+<div class="row">
+  <div class="col-lg-6">
 
-**Alambic** is an **open-source platform and service** for the management and visualisation of software engineering data. This wiki specifically targets version 3.x of Alambic.
+  <h1>Welcome to the Alambic project</h1>
 
-[ ![Codeship Status for BorisBaldassari/alambic](https://app.codeship.com/projects/8f5ae970-a10d-0134-6d00-664a346b6816/status?branch=master)](https://app.codeship.com/projects/189806)
+  <p class="lead"><b>Alambic</b> is an <b>open-source platform and service</b> for the management and visualisation of software engineering data. </p>
+  <p><a href="https://app.codeship.com/projects/189806"><img src="https://app.codeship.com/projects/8f5ae970-a10d-0134-6d00-664a346b6816/status?branch=master" alt="CI status" /></a></p>
+
+    <br />
+
+    <p>It basically <b>retrieves data from many various repositories</b> (code metrics, scm, its, mailing lists, stack overflow questions, etc.) and <b>makes them available for custom plugins to produce analysis, numbers, graphics, and data sets</b>.</p>
+
+    <p>Alambic notably runs the following web sites:</p>
+
+    <ul>
+      <li>The PolarSys dashboard: <a href="http://dashboard.polarsys.org">http://dashboard.polarsys.org</a></li>
+      <li>The Eclipse Alambic instance: <a href="http://eclipse.castalia.camp">http://eclipse.castalia.camp</a></li>
+    </ul>
+  </div>
+  <div class="col-lg-6" style="font-size: 100%">
+      <img src="/images/alambic.jpg" align="left" width="100%" style="margin:10px; max-width:600px" alt="alambic" />
+  </div>
+</div>
+
+-----
+
+<div class="row">
+  <div class="col-lg-3 text-center">
+    <a href="https://bitbucket.org/BorisBaldassari/alambic"><i class="fa fa-bitbucket fa-2x"></i><br />
+      Project Home
+    </a>
+  </div>
+  <div class="col-lg-3 text-center">
+    <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?status=new&status=open"><i class="fa fa-bug fa-2x"></i><br />
+    Issues
+    </a>
+  </div>
+  <div class="col-lg-3 text-center">
+    <a href="https://bitbucket.org/BorisBaldassari/alambic/src"><i class="fa fa-git fa-2x"></i><br />
+    Source
+    </a>
+  </div>
+  <div class="col-lg-3 text-center">
+    <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki"><i class="fa fa-question-circle fa-2x"></i><br />
+    Documentation
+    </a>
+  </div>
+</div>
+
+
+-----
 
 # Alambic main features
 
-* Retrieves data from any source, aggregates and displays them in a custom dashboard.
-* Alambic is entirely Web-based, althought it is very easy to understand how files are organised.
-* Plugins can be used to add new automatic data sources, custom data sources and visualisation units.
-* Custom Data plugins allow to enter manual data (e.g. surveys) and compute custom metrics from them.
+## A single place for all development data
 
-It basically **retrieves data from many various repositories** (code metrics, scm, its, mailing lists, stack overflow questions, etc.) and **makes them available for custom plugins to produce analysis, numbers, graphics, and data sets**.
+<div class="row">
+  <div class="col-lg-6">
+    <img class="img-responsive" src="/images/alambic_data_center.png" alt="Single data repository" />
+  </div>
+  <div class="col-lg-6" style="font-size: 100%">
+    <p>Centralise <b>all project development data in a single place</b> in ready-to use formats (CSV, JSON). Generated <b>data sets</b> can easily be downloaded for futher investigation, and generated figures can be exported in an external web site. Dashboard applications like <a href="https://plot.ly/dashboards">plot.ly</a> or <a href="https://www.liferay.com">Liferay</a> can easily reuse data and graphics to create personalised perspectives.</p>
+  </div>
+</div>
 
-A **flexible plugin system** allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs). Examples of plugins ready to use include PMD Results Analysis, StackOverflow questions and PMI Checks for Eclipse projects.
+-----
 
-Measures are aggregated in a tree-like **quality model** structure to better organise and understand the information. The [[Quality Model]] can be entirely customised, and almost any type of data source can be added through plugins. Check [this image](images/alambic_project_qm.png) for a visual example of the result.
+## Quality model &amp; Recommendations
 
-Alambic notably runs the following web sites:
+<div class="row">
+  <div class="col-lg-6">
+  <p>Measures are aggregated in a tree-like <b>quality model structure</b> to better organise and understand the information. The Quality model can be entirely customised, and almost any type of data source can be added through plugins. </p>
+    <p>Plugins emit <b>recommendations</b> that allow team members and users to easily pick up the next right thing to do, thus enabling steady and practical improvement of practices for the team and quality for the project.</p>
+  </div>
+  <div class="col-lg-6" style="font-size: 100%">
+    <img class="img-responsive" src="/images/qm_structure.png" alt="Quality Model" />
+  </div>
+</div>
 
-* The PolarSys dashboard: [http://dashboard.polarsys.org](http://dashboard.polarsys.org)
-* The Eclipse Alambic instance: [http://eclipse.castalia.camp](http://eclipse.castalia.camp)
+-----
+
+## An extensible plugin system
+
+<div class="row">
+  <div class="col-lg-6" style="font-size: 100%">
+    <img class="img-responsive" src="/images/so_questions.png" alt="StackOverflow questions" />
+  </div>
+  <div class="col-lg-6">
+    <p>A <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs).  Examples of plugins ready to use include <a href="/Plugins/PmdAnalysis.html">PMD Results Analysis</a>, <a href="/Plugins/StackOverflow.html">StackOverflow questions</a> and <a href="/Plugins/EclipsePmi.html">PMI Checks for Eclipse projects</a>.</p>
+
+    <p>Plugins provide nice <b>visualisation</b>, adapted to the context of software engineering. Visualisation can easily be exported and reused on external web sites (html snippets, png, jpeg, svg), in third-party data munging tools (e.g. Tableau, Plotly, Excel) or in dashboards (e.g. liferay, plotly).</p>
+  </div>
+</div>
+
+-----
+
 
 # Where to go from here?
 
 ## User documentation
 
-* Check the [plugins](Plugins/3.x/Plugins) documentation.
+* Check the [plugins](/Plugins/) documentation.
 * Using the [[CLI commands]].
 * [[Using autogenerated pictures]].
 * [Setting up my project](Setup a project) (WIP) on Alambic
