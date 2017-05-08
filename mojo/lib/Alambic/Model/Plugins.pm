@@ -163,7 +163,7 @@ sub run_plugin($$$) {
   my $ret = $plugins{$plugin_id}->run_plugin($project_id, $conf);
 
   # Add the plugin ID to each rec.
-  foreach my $rec (@{$ret->{'recs'}}) {
+  foreach my $rec (@{$ret->{'recs'} || []}) {
     $rec->{'src'} = $plugin_id;
   }
 
