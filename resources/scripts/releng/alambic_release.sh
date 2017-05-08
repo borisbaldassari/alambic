@@ -13,18 +13,19 @@ else
 fi
 
 # Create temp directory in /tmp
-echo "----- Creating tmp directory: $AL_TMP."
 AL_TMP=`mktemp -d`
+echo "----- Creating tmp directory: $AL_TMP."
+echo ""
 
 # Create log file
-AL_LOG=resources/scripts/releng/alambic_checks.txt
+AL_LOG=${PWD}/resources/scripts/releng/alambic_checks.txt
 echo "----- Creating log file: $AL_LOG."
 echo "\nHi. working on version [$AL_V] of Alambic.\n" > $AL_LOG
 
 
 # Checking that alambic.conf has the correct version
-echo "" | tee $AL_LOG
-echo "----- Checking Alambic version." | tee $AL_LOG
+echo "" | tee -a $AL_LOG
+echo "----- Checking Alambic version." | tee -a $AL_LOG
 
 cd mojo
 TMP_V=`grep alambic_version alambic.conf | cut -d\" -f4`
