@@ -5,7 +5,6 @@ use strict;
 
 use Scalar::Util 'weaken';
 use List::MoreUtils qw(uniq);
-use Mojo::JSON qw( decode_json encode_json );
 use Data::Dumper;
 
 

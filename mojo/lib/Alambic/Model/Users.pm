@@ -3,7 +3,6 @@ package Alambic::Model::Users;
 use warnings;
 use strict;
 
-use Mojo::JSON qw( decode_json encode_json );
 use Data::Dumper;
 use Crypt::PBKDF2;
 

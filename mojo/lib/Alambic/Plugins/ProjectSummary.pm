@@ -120,8 +120,8 @@ sub run_post($$) {
 }
 
 sub _create_badge() {
-  my $name  = shift;
-  my $value = shift;
+  my $name  = shift || "";
+  my $value = shift || 0;
 
   my @colours = ("red", "oragne", "yellow", "green", "brightgreen");
 

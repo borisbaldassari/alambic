@@ -7,12 +7,6 @@ use Data::Dumper;
 sub summary {
   my $self = shift;
 
-# # Check that the connected user has the access rights for this
-# if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/jobs' ) ) {
-#     $self->redirect_to( '/login' );
-#     return;
-# }
-
   $self->render(template => 'alambic/admin/jobs');
 
 }
@@ -22,12 +16,6 @@ sub display {
   my $self = shift;
 
   my $job_id = $self->param('id');
-
-# Check that the connected user has the access rights for this
-# if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/jobs' ) ) {
-#     $self->redirect_to( '/login' );
-#     return;
-# }
 
   # Prepare data for template and render.
   $self->stash(job_id => $job_id);
@@ -39,12 +27,6 @@ sub display {
 sub redo {
   my $self   = shift;
   my $job_id = $self->param('id');
-
-# Check that the connected user has the access rights for this
-# if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/jobs' ) ) {
-#     $self->redirect_to( '/login' );
-#     return;
-# }
 
   # Enqueue job
   my $job_info = $self->minion->backend->job_info($job_id);
@@ -60,12 +42,6 @@ sub redo {
 sub delete {
   my $self   = shift;
   my $job_id = $self->param('id');
-
-# Check that the connected user has the access rights for this
-# if ( not $self->users->is_user_authenticated($self->session->{session_user}, '/admin/jobs' ) ) {
-#     $self->redirect_to( '/login' );
-#     return;
-# }
 
   $self->minion->backend->remove_job($job_id);
 

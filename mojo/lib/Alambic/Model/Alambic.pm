@@ -12,7 +12,6 @@ use Alambic::Model::Models;
 use Alambic::Model::Users;
 use Alambic::Model::Tools;
 
-use Mojo::JSON qw (decode_json encode_json);
 use Data::Dumper;
 use DateTime;
 use POSIX;
@@ -518,8 +517,8 @@ sub get_project_run($$) {
 #      "log" => ['log entry'],
 #    }
 sub run_project($) {
-  my ($self, $project_id, $user) = @_;
-
+    my ($self, $project_id, $user) = @_;
+	
   my $time_start       = DateTime->now();
   my $time_start_epoch = $time_start->epoch();
   my $run              = {
