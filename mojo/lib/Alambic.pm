@@ -72,6 +72,23 @@ sub startup {
   $self->minion->add_task(
     run_project => sub {
       my ($job, $project_id, $user) = @_;
+      
+      # Check that the project is not currently run
+      print "#######d \n";
+      my $jobs = $self->minion->backend->list_jobs;
+      foreach my $j (@$jobs) {
+	  if ( $j->{'args'}[0] =~ m!^$project_id$! && 
+	       $j->{'task'} =~ 'run_project' &&
+	       $j->{'state'} =~ 'active' && $j->{'id'} != $job->{'id'} ) {
+	      my $ret;
+	      push( @{$ret->{'result'}{'log'}}, 
+		    "It is not a good idea to run twice the same project concurrently. Aborting the job." );
+	      return $ret;
+	  }
+      }
+
+      print "Creating job.\n";
+      
       my $ret = $self->al->run_project($project_id, $user);
       $job->finish($ret);
     }
