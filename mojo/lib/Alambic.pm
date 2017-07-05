@@ -45,7 +45,14 @@ sub startup {
   $self->defaults(layout => 'default');
 
   # Use POD renderer
-  #$self->plugin('PODRenderer');
+  if ( $self->config('perldoc') ) {
+      print "Gotcha! prldoc is in the place!\n";
+  } else {
+      print "Oh nooo! no perldoc!\n";
+  }
+  $self->plugin('PODRenderer') if $self->config('perldoc');
+#  $self->plugin('perldoc');
+#  $self->plugin('PODRenderer');
 
   # Used to make alambic installable and Build::Module compatible
   $self->plugin('InstallablePaths');
@@ -74,20 +81,17 @@ sub startup {
       my ($job, $project_id, $user) = @_;
       
       # Check that the project is not currently run
-      print "#######d \n";
       my $jobs = $self->minion->backend->list_jobs;
       foreach my $j (@$jobs) {
-	  if ( $j->{'args'}[0] =~ m!^$project_id$! && 
-	       $j->{'task'} =~ 'run_project' &&
-	       $j->{'state'} =~ 'active' && $j->{'id'} != $job->{'id'} ) {
-	      my $ret;
-	      push( @{$ret->{'result'}{'log'}}, 
-		    "It is not a good idea to run twice the same project concurrently. Aborting the job." );
-	      return $ret;
+	  if ( $j->{'args'}[0] =~ m!^${project_id}$! && 
+	       $j->{'state'} =~ 'active' && 
+	       $j->{'id'} != $job->{'id'} ) {
+	      print "- Job state " . $j->{'state'} . ".\n";
+	      $job->fail( "It is not a good idea to run twice the"
+			  . " same project concurrently. Aborting the job."); 
+	      return;
 	  }
       }
-
-      print "Creating job.\n";
       
       my $ret = $self->al->run_project($project_id, $user);
       $job->finish($ret);
@@ -309,6 +313,8 @@ Alambic - Main class for Alambic
 
 =head1 SYNOPSIS
 
+bla
+
   # Lowercase command name
   package Mojolicious::Command::mycommand;
   use Mojo::Base 'Mojolicious::Command';
@@ -327,14 +333,14 @@ Alambic - Main class for Alambic
 
   1;
 
-  =head1 SYNOPSIS
+=head1 SYNOPSIS
 
-    Usage: APPLICATION mycommand [OPTIONS]
+  Usage: APPLICATION mycommand [OPTIONS]
 
-    Options:
-      -s, --something   Does something
+  Options:
+    -s, --something   Does something
 
-  =cut
+=cut
 
 =head1 DESCRIPTION
 
@@ -370,106 +376,6 @@ Short description of command, used for the command list.
   $command = $command->quiet($bool);
 
 Limited command output.
-
-=head2 usage
-
-  my $usage = $command->usage;
-  $command  = $command->usage('Foo');
-
-Usage information for command, used for the help screen.
-
-=head1 METHODS
-
-L<Mojolicious::Command> inherits all methods from L<Mojo::Base> and implements
-the following new ones.
-
-=head2 chmod_file
-
-  $command = $command->chmod_file('/home/sri/foo.txt', 0644);
-
-Change mode of a file.
-
-=head2 chmod_rel_file
-
-  $command = $command->chmod_rel_file('foo/foo.txt', 0644);
-
-Portably change mode of a file relative to the current working directory.
-
-=head2 create_dir
-
-  $command = $command->create_dir('/home/sri/foo/bar');
-
-Create a directory.
-
-=head2 create_rel_dir
-
-  $command = $command->create_rel_dir('foo/bar/baz');
-
-Portably create a directory relative to the current working directory.
-
-=head2 extract_usage
-
-  my $usage = $command->extract_usage;
-
-Extract usage message from the SYNOPSIS section of the file this method was
-called from with L<Mojo::Util/"extract_usage">.
-
-=head2 help
-
-  $command->help;
-
-Print usage information for command.
-
-=head2 rel_file
-
-  my $path = $command->rel_file('foo/bar.txt');
-
-Return a L<Mojo::File> object relative to the current working directory.
-
-=head2 render_data
-
-  my $data = $command->render_data('foo_bar');
-  my $data = $command->render_data('foo_bar', @args);
-
-Render a template from the C<DATA> section of the command class with
-L<Mojo::Loader> and L<Mojo::Template>.
-
-=head2 render_to_file
-
-  $command = $command->render_to_file('foo_bar', '/home/sri/foo.txt');
-  $command = $command->render_to_file('foo_bar', '/home/sri/foo.txt', @args);
-
-Render a template from the C<DATA> section of the command class with
-L<Mojo::Template> to a file and create directory if necessary.
-
-=head2 render_to_rel_file
-
-  $command = $command->render_to_rel_file('foo_bar', 'foo/bar.txt');
-  $command = $command->render_to_rel_file('foo_bar', 'foo/bar.txt', @args);
-
-Portably render a template from the C<DATA> section of the command class with
-L<Mojo::Template> to a file relative to the current working directory and
-create directory if necessary.
-
-=head2 run
-
-  $command->run;
-  $command->run(@ARGV);
-
-Run command. Meant to be overloaded in a subclass.
-
-=head2 write_file
-
-  $command = $command->write_file('/home/sri/foo.txt', 'Hello World!');
-
-Write text to a file and create directory if necessary.
-
-=head2 write_rel_file
-
-  $command = $command->write_rel_file('foo/bar.txt', 'Hello World!');
-
-Portably write text to a file relative to the current working directory and
-create directory if necessary.
 
 =head1 SEE ALSO
 
