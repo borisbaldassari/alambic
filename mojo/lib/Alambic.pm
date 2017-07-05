@@ -242,6 +242,7 @@ sub startup {
   $r_admin->get('/models/init')->to(action => 'models_init');
 
   my $r_admin_projects = $r_admin->any('/projects')->to(controller => 'admin');
+  $r_admin_projects->get('/runall')->to(action => 'projects_runall');
   $r_admin_projects->get('/new')->to(action => 'projects_new');
   $r_admin_projects->post('/new')->to(action => 'projects_new_post');
 
@@ -284,6 +285,7 @@ sub startup {
   $r_admin->get('/jobs/#id')->to('jobs#display');
   $r_admin->get('/jobs/#id/del')->to('jobs#delete');
   $r_admin->get('/jobs/#id/run')->to('jobs#redo');
+  $r_admin->get('/jobs/runall')->to('jobs#redo');
 
   # Tools management
   $r_admin->get('/tools')->to('tools#summary');

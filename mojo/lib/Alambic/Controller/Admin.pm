@@ -395,6 +395,29 @@ sub projects_run {
 }
 
 
+# Run all projects at once
+sub projects_runall {
+  my $self       = shift;
+
+  my $user = $self->session('session_user');
+
+  my $projects = $self->app->al->get_projects_list( 1 );
+  print Dumper($projects);
+
+  # Start minion job
+  for my $p (keys %$projects) {
+      my $job = $self->minion->enqueue(
+	  run_project => [$p, $user] => {delay => 0}
+	  );
+  }
+
+  my $msg = "Started runs for all [" . scalar( keys %$projects ) . "] active projects.";
+
+  $self->flash(msg => $msg);
+  $self->redirect_to('/admin/jobs/');
+}
+
+
 # Delete project screen for Alambic admin.
 sub projects_del {
   my $self       = shift;

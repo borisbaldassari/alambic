@@ -19,11 +19,12 @@
 % my $stats = app->minion->stats; 
             <div class="row">
               <div class="col-sm-6">
-		<p>This is the list of jobs registered in Alambic. There are currently <%= $stats->{active_jobs} %> active jobs, <%= $stats->{active_workers} %> active workers, <%= $stats->{inactive_jobs} %> inactive jobs. Successful jobs are removed from the list after one day.</p>
+		<p>This is the list of jobs registered in Alambic. There are currently <code><%= $stats->{active_jobs} %></code> active jobs, <code><%= $stats->{active_workers} %></code> active workers, <code><%= $stats->{inactive_jobs} %></code> inactive jobs. Successful jobs are removed from the list after one day.</p>
               </div>
               <div class="col-sm-6">
                 <div class="list-group">
                   <a class="list-group-item" href="/admin/jobs/" role="button"><i class="fa fa-bars"></i> &nbsp; TODO Purge jobs</a>
+                  <a class="list-group-item" href="/admin/projects/runall" role="button"><i class="fa fa-bars"></i> &nbsp; Run all active projects</a>
                 </div>
               </div>
             </div>
