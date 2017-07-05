@@ -5,6 +5,9 @@ use Alambic::Model::Alambic;
 
 use Minion;
 use Data::Dumper;
+use Cwd;
+use Digest::MD5 qw(md5_hex);
+
 
 
 has al => sub {
@@ -20,13 +23,19 @@ has al => sub {
 sub startup {
   my $self = shift;
 
+  # Set the secret passphrase (notably used in cookies)
+  my $hostname = `hostname`;
+  chomp $hostname;
+  my $secrets1 = md5_hex( "Alambic Powah " . getcwd() . " " . $hostname );
+  my $secrets2 = md5_hex( "Data Metrics " . getcwd() . " " . $hostname );
+  my $secrets3 = md5_hex( "Mojolicious " . getcwd() . " " . $hostname );
+  $self->secrets([$secrets1, $secrets2, $secrets3]);
+
   # Get config from alambic.conf
   my $config = $self->plugin('Config');
 
   # Add another namespace to load commands from
   push @{$self->commands->namespaces}, 'Alambic::Commands';
-
-  $self->secrets(['Secrets of Alambic']);
 
   # Use application logger
   $self->log->info(
@@ -44,16 +53,7 @@ sub startup {
   # Set layout for pages.
   $self->defaults(layout => 'default');
 
-  # Use POD renderer
-  if ( $self->config('perldoc') ) {
-      print "Gotcha! prldoc is in the place!\n";
-  } else {
-      print "Oh nooo! no perldoc!\n";
-  }
-  $self->plugin('PODRenderer') if $self->config('perldoc');
-#  $self->plugin('perldoc');
-#  $self->plugin('PODRenderer');
-
+  
   # Used to make alambic installable and Build::Module compatible
   $self->plugin('InstallablePaths');
 
