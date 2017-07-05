@@ -88,4 +88,4 @@ It creates an image called `bbaldassari/alambic_ci` with Alambic installed and r
 
 You can also get individually from docker like this:
 
-    docker pull bbaldassari/alambic_ci
+    $ docker pull bbaldassari/alambic_ci
