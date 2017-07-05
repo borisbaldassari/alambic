@@ -230,6 +230,9 @@ sub startup {
   $r_admin->post('/edit')->to(action => 'edit_post');
   $r_admin->get('/summary')->to(action => 'summary');
   $r_admin->get('/projects')->to(action => 'projects');
+  
+  $r_admin->get('/purgejobs')->to(action => 'jobs_purge');
+  
   $r_admin->get('/users')->to(action => 'users');
   $r_admin->get('/users/new')->to(action => 'users_new');
   $r_admin->post('/users/new')->to(action => 'users_new_post');
@@ -285,7 +288,6 @@ sub startup {
   $r_admin->get('/jobs/#id')->to('jobs#display');
   $r_admin->get('/jobs/#id/del')->to('jobs#delete');
   $r_admin->get('/jobs/#id/run')->to('jobs#redo');
-  $r_admin->get('/jobs/runall')->to('jobs#redo');
 
   # Tools management
   $r_admin->get('/tools')->to('tools#summary');

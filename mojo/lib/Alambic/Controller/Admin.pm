@@ -418,6 +418,28 @@ sub projects_runall {
 }
 
 
+# Purge all finished and failed jobs
+sub jobs_purge {
+  my $self       = shift;
+
+  my $user = $self->session('session_user');
+  
+  foreach my $job ( @{$self->minion->backend->list_jobs()} ) {
+      print Dumper($job);
+      # Remove minion job if state == failed or finished.
+      if ($job->{'state'} =~ m!^failed$! or
+	  $job->{'state'} =~ m!^finished$! ) {
+	      my $job = $self->minion->backend->remove_job( $job->{'id'} );
+      }
+  }
+
+  my $msg = "Purged all finished and failed jobs in the queue.";
+
+  $self->flash(msg => $msg);
+  $self->redirect_to('/admin/jobs/');
+}
+
+
 # Delete project screen for Alambic admin.
 sub projects_del {
   my $self       = shift;

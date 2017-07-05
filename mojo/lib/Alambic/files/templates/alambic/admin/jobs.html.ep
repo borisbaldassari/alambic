@@ -23,7 +23,7 @@
               </div>
               <div class="col-sm-6">
                 <div class="list-group">
-                  <a class="list-group-item" href="/admin/jobs/" role="button"><i class="fa fa-bars"></i> &nbsp; TODO Purge jobs</a>
+                  <a class="list-group-item" href="/admin/purgejobs" role="button"><i class="fa fa-bars"></i> &nbsp; Purge jobs</a>
                   <a class="list-group-item" href="/admin/projects/runall" role="button"><i class="fa fa-bars"></i> &nbsp; Run all active projects</a>
                 </div>
               </div>
