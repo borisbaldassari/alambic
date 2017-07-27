@@ -6,8 +6,6 @@ use warnings;
 use Test::More;
 use Data::Dumper;
 
-use Alambic::Commands::init;
-
 BEGIN { use_ok('Alambic::Model::Alambic'); }
 
 my $file_conf = "alambic.conf";

@@ -8,7 +8,7 @@ EXPOSE 3000
 USER alambic
 
 # Clone Alambic repository
-RUN echo "REBUILD ME now please! f2p1"
+RUN echo "REBUILD ME now please! 2p1"
 RUN git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
 
 USER root

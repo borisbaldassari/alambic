@@ -56,6 +56,8 @@ if ($exec_cloning) {
 
 $log = $tool->git_clone_or_pull('Test', 'test.project',
   'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
+$log = $tool->git_clone_or_pull('Test', 'test.project',
+  'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
 ok(grep(/^\[Tools::Git\] Directory /, @{$log}), "Log has Directory.")
   or diag explain $log;
 ok(grep(/Version is /, @{$log}), "Log has Version.") or diag explain $log;

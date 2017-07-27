@@ -26,6 +26,7 @@ make_path('projects/test.project/output/');
 
 # Knit documents from the Hudson plugin
 note("Executing Hudson Rmd file.");
+print Dumper(`ls t/resources/`); 
 copy "t/resources/test.project_hudson_builds.csv", "lib/Alambic/Plugins/Hudson/"
   or die "Cannot copy project_hudson_builds.csv.";
 copy "t/resources/test.project_hudson_jobs.csv", "lib/Alambic/Plugins/Hudson/"
@@ -59,7 +60,7 @@ $log = $tool->knit_rmarkdown_html('Hudson', 'test.project',
 ok(grep(/^\[Tools::R\] Exec \[Rscript/, @{$log}), "Rscript is called in log.")
   or diag explain $log;
 ok(-e 'projects/test.project/output/test.project_hudson_pie.html',
-  "its_hudson_pie.html file is generated.")
+  "test.project_hudson_pie.html file is generated.")
   or diag explain $log;
 
 # Remove files that were copied to tests
