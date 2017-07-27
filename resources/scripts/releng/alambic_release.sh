@@ -32,19 +32,19 @@ TMP_V=`grep alambic_version alambic.conf | cut -d\" -f4`
 TMP_V=${TMP_V:-none}
 
 if [ $AL_V = $TMP_V ]; then
-    echo "[OK]  Checking that alambic.conf has the correct version." | tee $AL_LOG
+    echo "[OK]  Checking that alambic.conf has the correct version." | tee -a $AL_LOG
 else
-    echo "[ERR] Conf file alambic.conf has a wrong version [$TMP_V]." | tee $AL_LOG
+    echo "[ERR] Conf file alambic.conf has a wrong version [$TMP_V]." | tee -a $AL_LOG
 fi
 
 # Generate SLOC reports
-echo "" | tee $AL_LOG
-echo "----- Executing SLOCCount on Alambic code." | tee $AL_LOG
+echo "" | tee -a $AL_LOG
+echo "----- Executing SLOCCount on Alambic code." | tee -a $AL_LOG
 sloccount --addlang html lib/ t/ 2>/dev/null | grep -i "perl=" > $AL_TMP/sloccount_report.txt
 SLOC_PERL_LIB=`perl -ne 'if ( m!^\d+\s+lib\s+.*perl=(\d+)$! ) { print "$1" }' $AL_TMP/sloccount_report.txt`
 SLOC_PERL_T=`perl -ne 'if ( m!^\d+\s+t\s+.*perl=(\d+)$! ) { print "$1" }' $AL_TMP/sloccount_report.txt`
-echo "  * Found $SLOC_PERL_LIB lines of Perl code in lib dir." | tee $AL_LOG
-echo "  * Found $SLOC_PERL_T lines of Perl code in test (t/) dir." | tee $AL_LOG
+echo "  * Found $SLOC_PERL_LIB lines of Perl code in lib dir." | tee -a $AL_LOG
+echo "  * Found $SLOC_PERL_T lines of Perl code in test (t/) dir." | tee -a $AL_LOG
 
 cd ..
 

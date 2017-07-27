@@ -7,7 +7,7 @@ use Module::Build::Mojolicious clean_install => 1;
 
 my $builder = Module::Build::Mojolicious->new(
     module_name => 'Alambic',
-    dist_version => '3.3',
+    dist_version => '3.3.2',
     dist_author => 'Boris Baldassari',
     dist_abstract => 'A software development data management framework',
     license => 'EPL',
@@ -50,12 +50,12 @@ my $builder = Module::Build::Mojolicious->new(
     
     meta_merge => {
 	resources  => {
-	    repository => "http://github.com/jberger/Galileo",
-	    bugtracker => "http://github.com/jberger/Galileo/issues",
+	    repository => "https://bitbucket.org/BorisBaldassari/alambic.git",
+	    bugtracker => "https://bitbucket.org/BorisBaldassari/alambic/issues",
 	},
-	no_index => {
-	    file      => [ 'README.pod' ],
-	},
+#	no_index => {
+#	    file      => [ 'README.pod' ],
+#	},
     }
     );
 
