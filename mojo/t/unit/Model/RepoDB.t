@@ -95,22 +95,22 @@ SKIP: {
     while (my $next = $results->hash) {
       $values{$next->{'param'}} = $next->{'val'};
     }
-    is($values{'name'}, "Default CLI init", "Name in DB is Default CLI init.")
+    is($values{'name'}, "MyDBNameInit", "Name in DB is MyDBNameInit.")
       or diag explain %values;
     is(
       $values{'desc'},
-      "Default CLI Init description",
-      "Desc in DB is Default CLI Init description."
+      "MyDBDescInit",
+      "Desc in DB is MyDBDescInit."
     ) or diag explain %values;
 
     my $name = $repodb->name();
-    is($name, 'Default CLI init', "Name from module is Default CLI init.")
+    is($name, 'MyDBNameInit', "Name from module is MyDBNameInit.")
       or diag explain $name;
     my $desc = $repodb->desc();
     is(
       $desc,
-      'Default CLI Init description',
-      "Desc from module is Default CLI Init description."
+      'MyDBDescInit',
+      "Desc from module is MyDBDescInit."
     ) or diag explain $name;
 
     # Check instance information.

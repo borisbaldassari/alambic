@@ -24,16 +24,13 @@ print "# 1 \n";
 # Check that we have the right home page.
 $a
   = $t->get_ok('/')->status_is(200)
-  ->content_like(
-  qr!<h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>!i,
-  'Main page contains the Alambic Dashboard text.')->content_like(
-  qr!<i class="fa fa-user fa-fw fa-lg">!i,
-  'Main page contains the login icon.'
-  )->content_like(
-  qr!<li><a href="/"><i class="fa fa-home fa-fw" style="color: orange;"></i> Home</a></li>!i,
-  'Main page contains the Home menu entry.'
-  )->content_like(
-  qr!<a href="/admin/summary"><i class="fa fa-wrench fa-fw" style="color: orange;"></i> Admin panel</a></li>!i,
+    ->content_like(qr!<h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>!i,
+		   'Main page contains the Alambic Dashboard text.')
+    ->content_like(qr!<i class="fa fa-user fa-fw fa-lg">!i,
+    'Main page contains the login icon.')
+    ->content_like(qr!<li><a href="/"><i class="fa fa-home fa-fw" style="color: orange;"></i> Home</a></li>!i,
+  'Main page contains the Home menu entry.')
+    ->content_like(qr!<a href="/admin/summary"><i class="fa fa-wrench fa-fw" style="color: orange;"></i> Admin panel</a></li>!i,
   'Main page contains the Admin menu entry.'
   )->content_like(
   qr!<blockquote>Default CLI Init description</blockquote>!i,

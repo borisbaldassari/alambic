@@ -6,6 +6,8 @@ use warnings;
 use Test::More;
 use Data::Dumper;
 
+use Alambic::Commands::init;
+
 BEGIN { use_ok('Alambic::Model::Alambic'); }
 
 my $file_conf = "alambic.conf";
@@ -20,23 +22,27 @@ my $conf_al;
 my $conf_e = eval $conf_al;
 my %conf   = (
   "conf_pg_alambic" => $conf_e->{'conf_pg_alambic'},
-  "alambic_version" => '3.2-test',
+  "alambic_version" => 'alambic-test',
 );
 
 SKIP: {
   # If no database is defined, skip all tests.
-  my $alambic;
-  eval { $alambic = Alambic::Model::Alambic->new(\%conf); };
+    my $alambic;
+
+  # Initialise the db.
+  note("Initialising database.");
+    my $repodb = Alambic::Model::RepoDB->new();
+    my $is_defined = $repodb->is_db_defined();
+    $repodb->init_db();
+  eval { 
+      $alambic = Alambic::Model::Alambic->new(\%conf); 
+  };
 
   if ($@) {
     skip 'Tests irrelevant when no database is defined.', 25;
   }
 
   isa_ok($alambic, 'Alambic::Model::Alambic');
-
-  # Initialise the db.
-  note("Initialising database.");
-  $alambic->init();
 
   my $db_ok = $alambic->is_db_ok();
   ok($db_ok == 1, "Is db ok alambic returns 1.") or diag explain $db_ok;
@@ -45,20 +51,17 @@ SKIP: {
     or diag explain $db_m_ok;
 
   my $conf = $alambic->instance_name();
-  is($conf, 'Default CLI init', "Instance has correct default name")
+  is($conf, 'MyDBNameInit', "Instance has correct default name")
     or diag explain $conf;
   $conf = $alambic->instance_desc();
-  is($conf, 'Default CLI Init description', "Instance has correct default desc")
+  is($conf, 'MyDBDescInit', "Instance has correct default desc")
     or diag explain $conf;
 
-#my $version = $alambic->instance_version();
-#is( $version, '3.2-dev', "Alambic version is $version, considered ok.") or diag explain $version;
+  my $version = $alambic->instance_version();
+  ok( $version =~ m!^alambic-test$!, "Alambic version is $version, considered ok.") or diag explain $version;
 
   my $model = $alambic->get_models();
   isa_ok($model, 'Alambic::Model::Models');
-
-  my $repodb = $alambic->get_repo_db();
-  isa_ok($repodb, 'Alambic::Model::RepoDB');
 
   my $repofs = $alambic->get_repo_fs();
   isa_ok($repofs, 'Alambic::Model::RepoFS');
@@ -79,12 +82,12 @@ SKIP: {
   ) or diag explain $sql;
   ok(
     $sql
-      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', 'Default CLI init'\);!,
+      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', 'MyDBNameInit'\);!,
     "SQL backup has insert for name."
   ) or diag explain $sql;
   ok(
     $sql
-      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', 'Default CLI Init description'\);!,
+      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', 'MyDBDescInit'\);!,
     "SQL backup has insert for desc."
   ) or diag explain $sql;
   ok($sql !~ /tools.cdt/, "SQL backup has still NOT tools.cdt.")
@@ -121,10 +124,16 @@ SKIP: {
 
   my $plugins      = $alambic->get_plugins();
   my $plugins_list = $plugins->get_list_plugins_pre();
-  my $pv           = 7;
+  my $pv           = 4;
   ok(scalar @{$plugins_list} == $pv, "Plugins pre list has $pv entries.")
     or diag explain $plugins_list;
+  ok(grep(/^EclipsePmi$/, @{$plugins_list}) == 1, "Plugins pre list has EclipsePmi.")
+    or diag explain $plugins_list;
   ok(grep(/^Hudson$/, @{$plugins_list}) == 1, "Plugins pre list has Hudson.")
+    or diag explain $plugins_list;
+  ok(grep(/^PmdAnalysis$/, @{$plugins_list}) == 1, "Plugins pre list has PmdAnalysis.")
+    or diag explain $plugins_list;
+  ok(grep(/^StackOverflow$/, @{$plugins_list}) == 1, "Plugins pre list has StackOverflow.")
     or diag explain $plugins_list;
 
   my $projects_list = $alambic->get_projects_list();

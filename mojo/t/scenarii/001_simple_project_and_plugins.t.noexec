@@ -25,12 +25,6 @@ note("Running EclipsePmi plugin.");
 my $ret = $project->run_plugin( 'EclipsePmi' );
 diag($ret);
 
-note("Adding EclipseIts plugin.");
-$project->add_plugin( 'EclipseIts', {'project_grim' => 'tools.cdt'} );
-note("Running EclipseIts plugin.");
-$ret = $project->run_plugin( 'EclipseIts' );
-diag($ret);
-
 
 
 done_testing();

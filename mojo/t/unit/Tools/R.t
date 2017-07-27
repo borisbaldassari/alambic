@@ -24,45 +24,51 @@ ok(grep(/^OK: Rscript exec found in PATH/, @{$log}), "Rscript bin is in path")
 # Create output dir for test.project
 make_path('projects/test.project/output/');
 
-# Knit documents from the EclipseIts plugin
-note("Executing EclipseIts Rmd file.");
-copy "t/resources/test.project_its.csv", "lib/Alambic/Plugins/EclipseIts/"
-  or die "Cannot copy project_its.csv.";
-copy "t/resources/test.project_its_evol.csv", "lib/Alambic/Plugins/EclipseIts/"
-  or die "Cannot copy project_its_evol.csv.";
+# Knit documents from the Hudson plugin
+note("Executing Hudson Rmd file.");
+copy "t/resources/test.project_hudson_builds.csv", "lib/Alambic/Plugins/Hudson/"
+  or die "Cannot copy project_hudson_builds.csv.";
+copy "t/resources/test.project_hudson_jobs.csv", "lib/Alambic/Plugins/Hudson/"
+  or die "Cannot copy project_hudson_jobs.csv.";
+copy "t/resources/test.project_hudson_main.csv", "lib/Alambic/Plugins/Hudson/"
+  or die "Cannot copy project_hudson_main.csv.";
+copy "t/resources/test.project_hudson_metrics.csv", "lib/Alambic/Plugins/Hudson/"
+  or die "Cannot copy project_hudson_metrics.csv.";
 $log
-  = $tool->knit_rmarkdown_inc('EclipseIts', 'test.project', 'eclipse_its.Rmd');
+  = $tool->knit_rmarkdown_inc('Hudson', 'test.project', 'hudson.Rmd');
 ok(grep(/^\[Tools::R\] Exec \[Rscript/, @{$log}), "Rscript is called in log.")
   or diag explain $log;
-ok(-e 'projects/test.project/output/test.project_eclipse_its.inc',
-  "eclipse_its.inc file is generated.")
+ok(-e 'projects/test.project/output/test.project_hudson.inc',
+  "test.project_hudson.inc file is generated.")
   or diag explain $log;
 
 #diag explain $log;
 
-# Knit documents from the EclipseIts plugin
-note("Executing EclipseIts Rmd figure file.");
-$log = $tool->knit_rmarkdown_html('EclipseIts', 'test.project',
-  'its_evol_changed.rmd');
+# Knit documents from the Hudson plugin
+note("Executing Hudson Rmd figure file.");
+$log = $tool->knit_rmarkdown_html('Hudson', 'test.project',
+  'hudson_hist.rmd');
 ok(grep(/^\[Tools::R\] Exec \[Rscript/, @{$log}), "Rscript is called in log.")
   or diag explain $log;
-ok(-e 'projects/test.project/output/test.project_its_evol_changed.html',
-  "its_evol_changed.html file is generated.")
+ok(-e 'projects/test.project/output/test.project_hudson_hist.html',
+  "test.project_hudson_hist.html file is generated.")
   or diag explain $log;
 
-$log = $tool->knit_rmarkdown_html('EclipseIts', 'test.project',
-  'its_evol_summary.rmd');
+$log = $tool->knit_rmarkdown_html('Hudson', 'test.project',
+  'hudson_pie.rmd');
 ok(grep(/^\[Tools::R\] Exec \[Rscript/, @{$log}), "Rscript is called in log.")
   or diag explain $log;
-ok(-e 'projects/test.project/output/test.project_its_evol_summary.html',
-  "its_evol_summary.html file is generated.")
+ok(-e 'projects/test.project/output/test.project_hudson_pie.html',
+  "its_hudson_pie.html file is generated.")
   or diag explain $log;
 
 # Remove files that were copied to tests
-unlink "lib/Alambic/Plugins/EclipseIts/test.project_its.csv";
-unlink "lib/Alambic/Plugins/EclipseIts/test.project_its_evol.csv";
+unlink "lib/Alambic/Plugins/Hudson/test.project_hudson_builds.csv";
+unlink "lib/Alambic/Plugins/Hudson/test.project_hudson_jobs.csv";
+unlink "lib/Alambic/Plugins/Hudson/test.project_hudson_main.csv";
+unlink "lib/Alambic/Plugins/Hudson/test.project_hudson_metrics.csv";
 
-# Knit documents from the EclipseIts plugin
+# Knit documents from the PmdAnalysis plugin
 note("Executing PMD Analysis R figure file.");
 copy "t/resources/test.project_pmd_analysis_files.csv",
   "lib/Alambic/Plugins/PmdAnalysis/"

@@ -129,8 +129,6 @@ $a
   'Documentation plugins pre page contains exporting figures section.')
   ->content_like(qr!<h3>Data source plugins</h3>!i,
   'Documentation plugins pre page contains data source plugins section.')
-  ->content_like(qr!<h4 id="EclipseIts">Eclipse ITS</h4>!i,
-  'Documentation plugins pre page contains EclipseIts plugin.')
   ->content_like(qr!<h4 id="Hudson">Hudson CI</h4>!i,
   'Documentation plugins pre page contains Hudson plugin.');
 

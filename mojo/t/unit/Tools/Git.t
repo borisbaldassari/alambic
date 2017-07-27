@@ -66,14 +66,13 @@ ok(grep(/Already up-to-date/, @{$log}), "Pull is already up-to-date.")
   or diag explain $log;
 
 my $commits = $tool->git_commits();
-ok(ref($commits) eq 'ARRAY',      'Commits is an array.');
-ok(exists($commits->[0]{'mod'}),  'Commit has mod attribute.');
-ok(exists($commits->[0]{'auth'}), 'Commit has auth attribute.');
-ok(exists($commits->[0]{'msg'}),  'Commit has msg attribute.');
-ok(exists($commits->[0]{'cmtr'}), 'Commit has cmtr attribute.');
-ok(exists($commits->[0]{'time'}), 'Commit has time attribute.');
-ok(exists($commits->[0]{'add'}),  'Commit has add attribute.');
-ok(exists($commits->[0]{'id'}),   'Commit has id attribute.');
+ok(ref($commits) eq 'ARRAY',      'Commits is an array.') or diag explain $commits;
+ok(exists($commits->[0]{'mod'}),  'Commit has mod attribute.') or diag explain $commits;
+ok(exists($commits->[0]{'auth'}), 'Commit has auth attribute.') or diag explain $commits;
+ok(exists($commits->[0]{'msg'}),  'Commit has msg attribute.') or diag explain $commits;
+ok(exists($commits->[0]{'cmtr'}), 'Commit has cmtr attribute.') or diag explain $commits;
+ok(exists($commits->[0]{'time'}), 'Commit has time attribute.') or diag explain $commits;
+ok(exists($commits->[0]{'id'}),   'Commit has id attribute.') or diag explain $commits;
 
 $log = $tool->git_log('Test', 'test.project');
 ok(grep(/^\[Tools::Git\] Getting Git log for /, @{$log}),
