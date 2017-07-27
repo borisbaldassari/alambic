@@ -47,6 +47,7 @@ my $pg;
 sub new {
   my ($class, $alambic_db, $args) = @_;
 
+  # Used for tests as a fallback.
   my $db_url = "postgresql://alambic:pass4alambic@/alambic_db";
 
   if (defined($alambic_db) && $alambic_db =~ /^postgres/) {
@@ -277,7 +278,8 @@ sub get_metric($) {
       = $pg->db->query("SELECT * FROM models_metrics WHERE mnemo=?;", ($mnemo));
   };
 
-  if ($@) { print "# In RepoDB::get_metric Exception.\n" . Dumper($@); }
+  if ($@) { #print "# In RepoDB::get_metric Exception.\n" . Dumper($@); 
+  }
 
   # Process one row at a time
   while (my $next = $results->hash) {
@@ -644,8 +646,8 @@ sub add_project_run($$$$$$$) {
   };
 
   if ($@) {
-    print "# In RepoDB::add_project_run projects_info Exception "
-      . Dumper($@) . "\n";
+      #print "# In RepoDB::add_project_run projects_info Exception "
+      #. Dumper($@) . "\n";
   }
 
   # Execute insert in db.
@@ -667,8 +669,8 @@ sub add_project_run($$$$$$$) {
   };
 
   if ($@) {
-    print "# In RepoDB::add_project_run projects_runs Exception "
-      . Dumper($@) . "\n";
+    #print "# In RepoDB::add_project_run projects_runs Exception "
+    #  . Dumper($@) . "\n";
   }
 
   return $id;

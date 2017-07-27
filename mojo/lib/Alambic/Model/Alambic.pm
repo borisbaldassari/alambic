@@ -64,7 +64,7 @@ my $al_version;
 # Create a new Alambic object.
 sub new {
   my ($class, $config_opt) = @_;
-
+  
   $config = $config_opt;
   my $pg_alambic = $config->{'conf_pg_alambic'};
   $al_version = $config->{'alambic_version'};
@@ -79,7 +79,7 @@ sub new {
   if (not &is_db_ok()) {
     die "
 Database is not initialised. Please first execute:\n
-\$ bin/alambic alambic init\n
+\$ bin/alambic init\n
 And restart alambic.\n";
   }
 
@@ -91,13 +91,6 @@ And restart alambic.\n";
     $plugins->get_conf_all());
 
   return bless {}, $class;
-}
-
-
-# Deletes and re-creates tables in the database.
-# Use with caution.
-sub init() {
-  $repodb->init_db();
 }
 
 
