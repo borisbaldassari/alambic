@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use File::Path qw(make_path remove_tree);
 use Test::More;
 use File::Copy;
