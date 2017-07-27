@@ -28,9 +28,9 @@ SKIP: {
     my $alambic;
 
   # Initialise the db.
-  note("Initialising database.");
     my $repodb = Alambic::Model::RepoDB->new();
     my $is_defined = $repodb->is_db_defined();
+    note("Initialising database (defined: $is_defined).");
     # If database is not ok, init it.
     # This will fail if the database is already populated.
     $repodb->init_db();
