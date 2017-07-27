@@ -841,7 +841,7 @@ sub get_project_all_runs() {
 }
 
 
-# Crreates all tables in the database, plus a few default values for conf.
+# Creates all tables in the database, plus a few default values for conf.
 sub _db_init() {
 
   my $migrations = $pg->migrations();
@@ -852,6 +852,9 @@ sub _db_init() {
 INSERT INTO conf VALUES ('name', 'MyDBNameInit');
 INSERT INTO conf VALUES ('desc', 'MyDBDescInit');
 -- 1 down
+TRUNCATE conf, users, projects_conf, projects_runs, 
+  projects_info, projects_cdata, models_metrics, 
+  models_attributes, models_qms;
 DROP TABLE IF EXISTS conf;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS projects_conf;

@@ -17,7 +17,7 @@ my %conf = (
   ],
   "params" => {},
   "plugins" =>
-    ["EclipseIts", "EclipseMls", "EclipsePmi", "EclipseScm", "Hudson",],
+    ["EclipsePmi", "Hudson",],
 );
 
 my $eclipse_url  = "https://projects.eclipse.org/json/project/";
@@ -77,10 +77,7 @@ sub run_wizard($$) {
   my $project_ci = $project_pmi->{'build_url'}->[0]->{'url'};
 
   my $plugins_conf = {
-    "EclipseIts" => {'project_grim' => $project_id},
-    "EclipseMls" => {'project_grim' => $project_id},
     "EclipsePmi" => {'project_pmi'  => $project_id},
-    "EclipseScm" => {'project_grim' => $project_id},
     "Hudson"     => {'hudson_url'   => $project_ci},
   };
 

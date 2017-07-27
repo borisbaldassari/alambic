@@ -21,7 +21,7 @@ my $conf_al;
 
 my $conf_e = eval $conf_al;
 my %conf   = (
-  "conf_pg_alambic" => $conf_e->{'conf_pg_alambic'},
+  "conf_pg_alambic" => $conf_e->{'conf_pg_alambic_test'},
   "alambic_version" => 'alambic-test',
 );
 
@@ -33,9 +33,14 @@ SKIP: {
   note("Initialising database.");
     my $repodb = Alambic::Model::RepoDB->new();
     my $is_defined = $repodb->is_db_defined();
+    # If database is not ok, init it.
+    # This will fail if the database is already populated.
     $repodb->init_db();
+    
   eval { 
       $alambic = Alambic::Model::Alambic->new(\%conf); 
+    # If the database was previously populated, then clean it.
+    $repodb->init_db();
   };
 
   if ($@) {
@@ -50,9 +55,11 @@ SKIP: {
   ok($db_m_ok == 0, "Is db minion ok returns 0 (db was not defined).")
     or diag explain $db_m_ok;
 
+  $alambic->instance_name('MyDBNameInit');
   my $conf = $alambic->instance_name();
   is($conf, 'MyDBNameInit', "Instance has correct default name")
     or diag explain $conf;
+  $alambic->instance_desc('MyDBDescInit');
   $conf = $alambic->instance_desc();
   is($conf, 'MyDBDescInit', "Instance has correct default desc")
     or diag explain $conf;
@@ -82,12 +89,12 @@ SKIP: {
   ) or diag explain $sql;
   ok(
     $sql
-      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', 'MyDBNameInit'\);!,
+      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', !,
     "SQL backup has insert for name."
   ) or diag explain $sql;
   ok(
     $sql
-      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', 'MyDBDescInit'\);!,
+      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', !,
     "SQL backup has insert for desc."
   ) or diag explain $sql;
   ok($sql !~ /tools.cdt/, "SQL backup has still NOT tools.cdt.")

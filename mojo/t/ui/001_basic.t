@@ -33,7 +33,7 @@ $a
     ->content_like(qr!<a href="/admin/summary"><i class="fa fa-wrench fa-fw" style="color: orange;"></i> Admin panel</a></li>!i,
   'Main page contains the Admin menu entry.'
   )->content_like(
-  qr!<blockquote>Default CLI Init description</blockquote>!i,
+  qr!<blockquote>.*esc.*</blockquote>!i,
   'Main page contains the description blockquote.'
   )->content_like(qr!Projects</div>!i, 'Main page contains projects panel.')
   ->content_like(qr!Documentation</a>!i,
@@ -92,12 +92,12 @@ $a
   = $t->get_ok('/about.html')->status_is(200)
   ->content_like(qr!<h1 class="al-h1"><small>About</small> This web site</h1>!i,
   'About page contains the correct title.')->content_like(
-  qr!<p><b>Name</b> <br />\s*Default CLI init</p>!i,
-  'About page contains correct instance name.'
+  qr!<p><b>Name</b> <br />!i,
+  'About page contains instance name.'
   )
   ->content_like(
-  qr!<p><b>Description</b> <br />\s*Default CLI Init description</p>!i,
-  'About page contains correct instance description.')->content_like(
+  qr!<p><b>Description</b> <br />!i,
+  'About page contains instance description.')->content_like(
   qr!<strong>Send message to administrator!i,
   'About main page contains contact form.'
   )->element_exists('input[name=name][type=text]')

@@ -22,7 +22,7 @@ my $conf;
 }
 
 my $conf_e  = eval $conf;
-my $conf_db = $conf_e->{'conf_pg_alambic'};
+my $conf_db = $conf_e->{'conf_pg_alambic_test'};
 
 # If no database is defined, skip all tests.
 my ($pg, $repodb, $is_init);
@@ -146,7 +146,7 @@ SKIP: {
 
 
     my $metric = $repodb->get_metrics();
-    is_deeply($metric, {},
+    is_ok(ref($metric)  =~ m!^HASH$!,
       "get_metrics() Get all metrics returns empty hash when there is none.")
       or diag explain $metric;
 
