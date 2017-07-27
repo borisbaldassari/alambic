@@ -28,7 +28,7 @@ SKIP: {
     my $alambic;
 
   # Initialise the db.
-    my $repodb = Alambic::Model::RepoDB->new();
+    my $repodb = Alambic::Model::RepoDB->new($conf{'conf_pg_alambic'});
     my $is_defined = $repodb->is_db_defined();
     note("Initialising database (defined: $is_defined).");
     # If database is not ok, init it.
