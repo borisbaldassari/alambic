@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Controller::Documentation;
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -73,3 +87,27 @@ sub welcome {
 }
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Controller::Documentation> - Routing logic for the Alambic documentation pages.
+
+=head1 SYNOPSIS
+
+Routing logic for all online documentation-related actions in the Alambic web ui. This is automatically called by the Mojolicious framework.
+
+=head1 METHODS
+
+=head2 C<welcome()>
+
+Main page for Alambic documentation.
+
+
+=head1 SEE ALSO
+
+L<Alambic>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<Mojolicious>.
+
+=cut

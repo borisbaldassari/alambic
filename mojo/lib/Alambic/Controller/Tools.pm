@@ -1,9 +1,23 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Controller::Tools;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
 
-# Displays a list of jobs with information and actions
+# Displays a list of tools with information and actions
 sub summary {
   my $self = shift;
 
@@ -11,7 +25,7 @@ sub summary {
 
 }
 
-# Displays information about a single job.
+# Displays information about a single tool.
 sub display {
   my $self = shift;
 
@@ -24,3 +38,29 @@ sub display {
 }
 
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Controller::Tools> - Routing logic for Alambic tools management UI.
+
+=head1 SYNOPSIS
+
+Routing logic for all tools-related administration actions in the Alambic web ui. This is automatically called by the Mojolicious routing framework.
+
+=head1 METHODS
+
+=head2 C<summary()> 
+
+Main screen for Alambic Tools management.
+
+=head2 C<display()> 
+
+Display information about a specific tool.
+
+=head1 SEE ALSO
+
+L<Alambic>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<Mojolicious>.
+
+=cut

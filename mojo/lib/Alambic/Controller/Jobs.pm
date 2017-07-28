@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Controller::Jobs;
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -50,4 +64,40 @@ sub delete {
 
 }
 
+
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Controller::Jobs> - Routing logic for Alambic jobs management.
+
+=head1 SYNOPSIS
+
+Routing logic for all jobs-related actions in the Alambic web ui. This is automatically called by the Mojolicious framework.
+
+=head1 METHODS
+
+=head2 C<summary()>
+
+Displays a list of jobs with information and actions.
+
+=head2 C<display()>
+
+Display information about a single job.
+
+=head2 C<redo()>
+
+Re-cycle a job (re-start it).
+
+=head2 C<delete()>
+
+Delete a job.
+
+=head1 SEE ALSO
+
+L<Alambic>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<Mojolicious>.
+
+=cut

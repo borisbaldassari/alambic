@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Controller::Dashboard;
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -57,6 +71,7 @@ sub display_history {
 }
 
 
+# Display figures and visualisations of plugins.
 sub display_plugins {
   my $self = shift;
 
@@ -90,8 +105,8 @@ sub display_plugins {
       $ret
         = 'projects/' . $project_id . '/output/' . $project_id . '_' . $page_id;
 
-# We can also build figures from html.ep templates.
-# If the static page doesn't exist, then try to render something in plugins/*.html.ep.
+      # We can also build figures from html.ep templates.
+      # If the static page doesn't exist, then try to render something in plugins/*.html.ep.
       if (not -e $ret) {
         my $run = $self->app->al->get_project_last_run($project_id);
         $self->stash(project_id => $project_id, run => $run,);
@@ -105,7 +120,7 @@ sub display_plugins {
     }
     elsif (grep(/$page_id/, keys %{$plugin_conf->{'provides_data'}})) {
 
-# If the page is a data, reply static file under 'projects/output' or 'projects/input'
+      # If the page is a data, reply static file under 'projects/output' or 'projects/input'
       my $file_out
         = '../../../../projects/'
         . $project_id
@@ -167,16 +182,7 @@ sub display_figures {
 }
 
 
-# Manages custom data post requests
-sub display_plugins_post {
-  my $self = shift;
-
-  my $project_id = $self->param('id');
-  my $plugin_id  = $self->param('plugin');
-  my $page_id    = $self->param('page') || '';
-}
-
-
+# sub method to specifically display project information in JSON format.
 sub _display_project_json($$) {
   my ($self, $project_id, $page_id) = @_;
 
@@ -250,6 +256,7 @@ sub _display_project_json($$) {
 
 }
 
+# sub method to specifically display project information in HTML format.
 sub _display_project_html($$) {
   my ($self, $project_id, $page_id) = @_;
 
@@ -360,6 +367,7 @@ sub _display_project_html($$) {
 }
 
 
+# sub method to specifically display project history in JSON format.
 sub _display_project_history_json($$$$) {
   my ($self, $project_id, $plugin_id, $build_id, $page_id) = @_;
 
@@ -415,6 +423,7 @@ sub _display_project_history_json($$$$) {
 
 }
 
+# sub method to specifically display project history in HTML format.
 sub _display_project_history_html($$$$) {
   my ($self, $project_id, $plugin_id, $build_id, $page_id) = @_;
 
@@ -467,3 +476,44 @@ sub _display_project_history_html($$$$) {
 
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Controller::Dashboard> - Routing logic for the Alambic dashboard.
+
+=head1 SYNOPSIS
+
+Routing logic for all dashboard-related actions in the Alambic web ui. This is automatically called by the Mojolicious framework.
+
+=head1 METHODS
+
+=head2 C<display_summary()>
+
+Main page for project dashboard.
+
+=head2 C<display_project()>
+
+Secondary dashboard pages for a specific project.
+
+=head2 C<display_history()>
+
+Main page for project history.
+
+=head2 C<display_plugins()>
+
+Display figures and visualisations of plugins.
+
+=head2 C<display_figures()>
+
+Is used only for backward compatibility and robustness.
+R reports often use figures/ by default for the generated plots.
+We want to support that for people developing R books.
+
+=head1 SEE ALSO
+
+L<Alambic>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<Mojolicious>.
+
+=cut

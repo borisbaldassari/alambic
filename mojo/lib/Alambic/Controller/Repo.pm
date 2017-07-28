@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Controller::Repo;
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -101,3 +115,47 @@ sub delete() {
 
 
 1;
+
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Controller::Repo> - Routing logic for Alambic administration UI.
+
+=head1 SYNOPSIS
+
+Routing logic for all repository-related administration actions in the Alambic web ui. This is automatically called by the Mojolicious framework.
+
+=head1 METHODS
+
+=head2 C<summary()> 
+
+Main screen for Alambic repo admin.
+
+=head2 C<init()> 
+
+Initalisation of DB for Alambic admin.
+
+=head2 C<backup()> 
+
+Backup database for Alambic instance.
+
+=head2 C<dl()> 
+
+Download SQL backup file.
+
+=head2 C<restore()> 
+
+Restore DB for Alambic admin.
+
+=head2 C<delete()> 
+
+Delete a backup file on the server.
+
+=head1 SEE ALSO
+
+L<Alambic>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<Mojolicious>.
+
+=cut

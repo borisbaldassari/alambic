@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Controller::Admin;
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -191,7 +205,7 @@ sub users_edit_post {
   $self->redirect_to('/admin/users');
 }
 
-# Add a user.
+# Delete a user from the database.
 sub users_del {
   my $self = shift;
 
@@ -255,20 +269,21 @@ sub models_import {
 }
 
 # Models display screen for Alambic admin.
-sub models_init {
-  my $self = shift;
+# TODO 
+# sub models_init {
+#   my $self = shift;
 
-  my $repodb = $self->app->al->get_repo_db();
-  $self->app->al->get_models()->init_models(
-    $repodb->get_metrics(),
-    $repodb->get_attributes(),
-    $repodb->get_qm(), $self->app->al->get_plugins()->get_conf_all()
-  );
+#   my $repodb = $self->app->al->get_repo_db();
+#   $self->app->al->get_models()->init_models(
+#     $repodb->get_metrics(),
+#     $repodb->get_attributes(),
+#     $repodb->get_qm(), $self->app->al->get_plugins()->get_conf_all()
+#   );
 
-  my $msg = "Models have been re-read.";
-  $self->flash(msg => $msg);
-  $self->redirect_to('/admin/models');
-}
+#   my $msg = "Models have been re-read.";
+#   $self->flash(msg => $msg);
+#   $self->redirect_to('/admin/models');
+# }
 
 
 # Projects screen for Alambic admin.
@@ -321,7 +336,7 @@ sub projects_new {
 }
 
 
-# New project screen for Alambic admin.
+# New project screen for Alambic admin - post processing.
 sub projects_new_post {
   my $self = shift;
 
@@ -440,7 +455,7 @@ sub jobs_purge {
 }
 
 
-# Delete project screen for Alambic admin.
+# Delete a project for Alambic admin.
 sub projects_del {
   my $self       = shift;
   my $project_id = $self->param('pid');
@@ -470,7 +485,7 @@ sub projects_edit {
     is_active => $project_active,
   );
 
-  # Render template for main admin section
+  # Render template
   $self->render(template => 'alambic/admin/project_set');
 }
 
@@ -512,7 +527,7 @@ sub projects_add_plugin {
     conf_project => $conf_project,
   );
 
-  # Render template for main admin section
+  # Render template
   $self->render(template => 'alambic/admin/project_plugin_add');
 }
 
@@ -539,7 +554,7 @@ sub projects_add_plugin_post {
 }
 
 
-# Run project screen for Alambic admin.
+# Run specific plugin on a project.
 sub projects_run_plugin {
   my $self       = shift;
   my $project_id = $self->param('pid');
@@ -558,7 +573,7 @@ sub projects_run_plugin {
 }
 
 
-# Edit project screen for Alambic admin.
+# Run pre plugins on a project.
 sub projects_run_pre {
   my $self       = shift;
   my $project_id = $self->param('pid');
@@ -574,7 +589,7 @@ sub projects_run_pre {
 }
 
 
-# Edit project screen for Alambic admin.
+# Run quality model for a project.
 sub projects_run_qm {
   my $self       = shift;
   my $project_id = $self->param('pid');
@@ -589,7 +604,7 @@ sub projects_run_qm {
 }
 
 
-# Edit project screen for Alambic admin.
+# Run post plugins on a project
 sub projects_run_posts {
   my $self       = shift;
   my $project_id = $self->param('pid');
@@ -604,7 +619,7 @@ sub projects_run_posts {
 }
 
 
-# Edit project screen for Alambic admin.
+# Delete a plugin from a project.
 sub projects_del_plugin {
   my $self       = shift;
   my $project_id = $self->param('pid');
@@ -618,7 +633,7 @@ sub projects_del_plugin {
   $self->redirect_to('/admin/projects/' . $project_id);
 }
 
-
+# Delete a file from the input data directory on the file system
 sub del_input_file() {
   my $self = shift;
 
@@ -639,6 +654,7 @@ sub del_input_file() {
 }
 
 
+# Delete a file from the output data directory on the file system
 sub del_output_file() {
   my $self = shift;
 
@@ -660,3 +676,158 @@ sub del_output_file() {
 
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Controller::Admin> - Routing logic for Alambic administration UI.
+
+=head1 SYNOPSIS
+
+Routing logic for all administration actions in the Alambic web ui. This is automatically called by the Mojolicious framework.
+
+=head1 METHODS
+
+=head2 C<summary()> 
+
+Main screen for Alambic admin.
+
+=head2 C<edit()> 
+
+Edit information about the instance.
+
+=head2 C<edit_post()> 
+
+Edit information about the instance -- post processing.
+
+=head2 C<data_models()> 
+
+JSON access for models data.
+
+=head2 C<models()> 
+
+Models display screen for Alambic admin.
+
+=head2 C<users()> 
+
+Display list of users for Alambic admin.
+
+=head2 C<users_new()> 
+
+Add a new user.
+
+=head2 C<users_new_post()> 
+
+Add a new user -- post processing.
+
+=head2 C<users_edit()> 
+
+Edit a user's parameters.
+
+=head2 C<users_edit_post()> 
+
+Edit a user's parameters -- post processing.
+
+=head2 C<users_del()> 
+
+Delete a user from the database.
+
+=head2 C<models_import()> 
+
+Models import for Alambic admin.
+
+=head2 C<models_init()> 
+
+Reread all models. Models display screen for Alambic admin.
+
+=head2 C<projects()> 
+
+Projects screen for Alambic admin.
+
+=head2 C<projects_show()> 
+
+Display specific project screen for Alambic admin.
+
+=head2 C<projects_new()> 
+
+New project screen for Alambic admin.
+
+=head2 C<projects_new_post()> 
+
+New project screen for Alambic admin - post processing.
+
+=head2 C<projects_wizards_new_init()> 
+
+New project from wizard screen for Alambic admin.
+
+=head2 C<projects_wizards_new_init_post()> 
+
+New project from wizard screen for Alambic admin -- post processing.
+
+=head2 C<projects_run()> 
+
+Run (enqueue) a specific project.
+
+=head2 C<projects_runall()> 
+
+Run (enqueue) all projects.
+
+=head2 C<jobs_purge()> 
+
+Purge all finished and failed jobs
+
+=head2 C<projects_del()> 
+
+Delete a project for Alambic admin.
+
+=head2 C<projects_edit()> 
+
+Edit project screen for Alambic admin.
+
+=head2 C<projects_edit_post()> 
+
+Edit project screen for Alambic admin -- post processing.
+
+=head2 C<projects_add_plugin()> 
+
+Add plugin to project screen for Alambic admin.
+
+=head2 C<projects_add_plugin_post()> 
+
+Add plugin to project screen for Alambic admin -- post processing.
+
+=head2 C<projects_run_plugin()> 
+
+Run specific plugin on a project.
+
+=head2 C<projects_run_pre()> 
+
+Run pre plugins on a project.
+
+=head2 C<projects_run_qm()> 
+
+Run quality model for a project.
+
+=head2 C<projects_run_posts()> 
+
+Run post plugins for a project.
+
+=head2 C<projects_del_plugin()> 
+
+Delete a plugin from a project.
+
+=head2 C<del_input_file()> 
+
+Delete a file from the input data directory on the file system.
+
+=head2 C<del_output_file()> 
+
+Delete a file from the output data directory on the file system.
+
+=head1 SEE ALSO
+
+L<Alambic>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<Mojolicious>.
+
+=cut
