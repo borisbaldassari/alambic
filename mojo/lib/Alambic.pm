@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic;
 use Mojo::Base 'Mojolicious';
 
@@ -60,6 +74,7 @@ sub startup {
   # Use Minion for job queuing.
   $self->plugin(Minion => {Pg => $config->{'conf_pg_minion'}});
 
+  
   # MINION management
 
   # Set parameters.
@@ -86,7 +101,6 @@ sub startup {
 	  if ( $j->{'args'}[0] =~ m!^${project_id}$! && 
 	       $j->{'state'} =~ 'active' && 
 	       $j->{'id'} != $job->{'id'} ) {
-	      print "- Job state " . $j->{'state'} . ".\n";
 	      $job->fail( "It is not a good idea to run twice the"
 			  . " same project concurrently. Aborting the job."); 
 	      return;
@@ -98,8 +112,8 @@ sub startup {
     }
   );
 
-# Add task to run a single plugin
-# Partial runs are not recorded in the db and can only be viewed in the job log.
+  # Add task to run a single plugin
+  # Partial runs are not recorded in the db and can only be viewed in the job log.
   $self->minion->add_task(
     run_plugin => sub {
       my ($job, $project_id, $plugin_id) = @_;
@@ -155,16 +169,6 @@ sub startup {
   # Router
   my $r = $self->routes;
 
-  # # Catch all routes only if the instance is not initialised.
-  # # Now is initialised by command.
-  # if ( $self->app->al->instance_name() eq 'MyDBNameInit' ) {
-  # 	print "### Executing Install procedure.\n";
-  # 	$r->post('/install')->to( 'alambic#install_post' );
-  # 	$r->any('/')->to( 'alambic#install' );
-  # 	$r->any('*')->to( 'alambic#install' );
-  # 	return;
-  # }
-
   # Normal route to controller
   $r->get('/')->to('alambic#welcome');
 
@@ -185,7 +189,8 @@ sub startup {
   $r_projects->get('/#id/history/#build/#page')
     ->to(action => 'display_history');
   $r_projects->get('/#id/#plugin/#page')->to(action => 'display_plugins');
-  $r_projects->post('/#id/#plugin/#page')->to(action => 'display_plugins_post');
+  # TODO Remove me, or use me to setup the post plugins.
+  #$r_projects->post('/#id/#plugin/#page')->to(action => 'display_plugins_post');
   $r_projects->get('/#id/#plugin/figures/#page')
     ->to(action => 'display_figures');
 
@@ -242,6 +247,7 @@ sub startup {
 
   $r_admin->get('/models')->to(action => 'models');
   $r_admin->get('/models/import')->to(action => 'models_import');
+  # TODO remove init? still useful?
   $r_admin->get('/models/init')->to(action => 'models_init');
 
   my $r_admin_projects = $r_admin->any('/projects')->to(controller => 'admin');
@@ -313,76 +319,56 @@ sub startup {
 
 =head1 NAME
 
-Alambic - Main class for Alambic
+B<Alambic> - An open-source platform and service for the management and 
+visualisation of software engineering data.
 
 =head1 SYNOPSIS
 
-bla
+Start the application in prefork mode (production mode, multi-threaded):
 
-  # Lowercase command name
-  package Mojolicious::Command::mycommand;
-  use Mojo::Base 'Mojolicious::Command';
+  $ hypnotoad bin/alambic
+  Server available at http://127.0.0.1:3010
+  $ 
 
-  # Short description
-  has description => 'My first Mojo command';
+Start the application in daemon mode (development mode, automatic reload of files):
 
-  # Usage message from SYNOPSIS
-  has usage => sub { shift->extract_usage };
+  $ morbo bin/alambic
+  Server available at http://127.0.0.1:3000
 
-  sub run {
-    my ($self, @args) = @_;
+Start a worker thread (used for long-running tasks, e.g. project analysis):
 
-    # Magic here! :)
-  }
+  $ bin/alambic minion worker
 
-  1;
-
-=head1 SYNOPSIS
-
-  Usage: APPLICATION mycommand [OPTIONS]
-
-  Options:
-    -s, --something   Does something
-
-=cut
 
 =head1 DESCRIPTION
 
-L<Alambic> is a framework and a service for software development data management.
+B<Alambic> is an open-source framework and service for the management and 
+visualisation of software engineering data. 
 
-See L<Mojolicious::Commands/"COMMANDS"> for a list of commands that are
-available by default.
+The official web site with complete documentation is L<http://alambic.io>. 
+
+Project is developed on BitBucket at L<https://bitbucket.org/BorisBaldassari/alambic>.
+
+See L<Alambic::Commands/"COMMANDS"> for a list of commands that are available.
 
 =head1 ATTRIBUTES
 
-L<Mojolicious::Command> implements the following attributes.
+L<Alambic> implements the following attributes.
 
-=head2 app
+=head2 C<al>
 
-  my $app  = $command->app;
-  $command = $command->app(Mojolicious->new);
+  my $app  = $self->al;
 
-Application for command, defaults to a L<Mojo::HelloWorld> object.
+=head1 METHODS
 
-  # Introspect
-  say "Template path: $_" for @{$command->app->renderer->paths};
+L<Alambic> implements the following methods.
 
-=head2 description
+=head2 C<startup>
 
-  my $description = $command->description;
-  $command        = $command->description('Foo');
-
-Short description of command, used for the command list.
-
-=head2 quiet
-
-  my $bool = $command->quiet;
-  $command = $command->quiet($bool);
-
-Limited command output.
+The default method to start the application.
 
 =head1 SEE ALSO
 
-L<Mojolicious>, L<Mojolicious::Guides>, L<http://mojolicious.org>.
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 
 =cut
