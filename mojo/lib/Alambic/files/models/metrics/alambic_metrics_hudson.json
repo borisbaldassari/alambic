@@ -4,7 +4,7 @@
     "children": [
       {
         "name": "Number of jobs",
-        "mnemo": "JOBS",
+        "mnemo": "CI_JOBS",
         "desc": [
             "The total number of jobs defined on the Hudson engine."
         ],
@@ -12,7 +12,7 @@
       },
       {
         "name": "Number of failed jobs",
-        "mnemo": "JOBS_FAILED_1W",
+        "mnemo": "CI_JOBS_FAILED_1W",
         "desc": [
             "The number of jobs that failed during last week on the Hudson engine."
         ],
@@ -20,7 +20,7 @@
       },
       {
         "name": "Number of green jobs",
-        "mnemo": "JOBS_GREEN",
+        "mnemo": "CI_JOBS_GREEN",
         "desc": [
             "The number of green(successful) jobs on the Hudson engine.",
 	    "Green (or blue) jobs in Hudson define successful builds."
@@ -29,7 +29,7 @@
       },
       {
         "name": "Number of yellow jobs",
-        "mnemo": "JOBS_YELLOW",
+        "mnemo": "CI_JOBS_YELLOW",
         "desc": [
             "The number of yellow (unstable) jobs on the Hudson engine.",
 	    "Yellow jobs in Hudson define unstable builds. According to Hudson's documentation, a build is unstable if it was built successfully and one or more publishers report it unstable. For example if the JUnit publisher is configured and a test fails then the build will be marked unstable."
@@ -38,7 +38,7 @@
       },
       {
         "name": "Number of red jobs",
-        "mnemo": "JOBS_RED",
+        "mnemo": "CI_JOBS_RED",
         "desc": [
             "The number of red (failed) jobs on the Hudson engine.",
 	    "Red jobs in Hudson define failed builds."
