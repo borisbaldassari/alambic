@@ -179,7 +179,8 @@ ok( exists( $ret->{'attrs_conf'}{'ATTR1'} ),
     "There should be an attribute called ATTR1." ) or diag explain $ret;
 ok( $ret->{'attrs_conf'}{'ATTR1'} =~ m!^2 / 2$!, 
     "ATTR1 attribute conf is '2 / 2'." ) or diag explain $ret;
-ok( exists($ret->{'attrs'}{'ATTR1'}), "After qm run attr1 is in ret." ) or diag explain $ret;
+ok( exists($ret->{'attrs'}{'ATTR1'}), 
+    "After qm run attr1 is in ret." ) or diag explain $ret;
 ok( $ret->{'attrs'}{'ATTR1'} =~ m!^3.0$!, 
     "ATTR1 attribute value is '3.0'." ) or diag explain $ret;
 ok( exists($ret->{'inds'}{'PMI_ITS_INFO'}), "After qm run inds its_closed is in ret." ) or diag explain $ret;
@@ -188,5 +189,14 @@ ok( $ret->{'inds'}{'PMI_ITS_INFO'} == 5,
 ok( exists($ret->{'inds'}{'PMI_SCM_INFO'}), "After qm run inds its_closers is in ret." ) or diag explain $ret;
 ok( $ret->{'inds'}{'PMI_SCM_INFO'} == 1, 
     "PMI_SCM_INFO indicator value is 1." ) or diag explain $ret;
+
+$ret = $project->recs();
+print "RECS " . Dumper($ret); 
+
+note("Run project.");
+# TODO this fails. why?
+#$ret = $project->run_project($models);
+#print "RUN PROJ " . Dumper($ret); exit;
+#$ret = $project->get_qm(); print "GET QM " . Dumper($ret);
 
 done_testing(30);
