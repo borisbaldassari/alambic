@@ -204,8 +204,8 @@ sub get_list_plugins_viz() {
 
 # Get the Alambic::Plugins::Plugin object for the provided id.
 sub get_plugin($) {
-    my ($self, $plugin_id) = @_;
-    print "GET_PLUGIN " . Dumper($plugins{$plugin_id});
+  my ($self, $plugin_id) = @_;
+
   return $plugins{$plugin_id};
 }
 

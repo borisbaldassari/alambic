@@ -156,8 +156,6 @@ sub last_run() {
     $project_last_run = $last_run;
   }
 
-  print "LAST_RUN " . Dumper($project_last_run);
-
   return $project_last_run;
 }
 
@@ -336,7 +334,6 @@ sub run_post() {
 # Run all post plugins for this project
 #
 # Params:
-#   - $plugin_id the identifier of the post plugin to be executed
 #   - $models a ref to a Models.pm object
 sub run_posts() {
   my ($self, $models) = @_;
@@ -765,44 +762,154 @@ in the list of projects in the dashboard and menu.
 
     my $run = $project->last_run();
 
+Return results from the last run of the project.
+
+=head2 C<get_plugins()>
+
+    my $plugins = $project->get_plugins();
+
+Return the list of plugins defined on the project.
+
+=head2 C<get_qm()>
+
+    my $qm = $project->get_qm();
+
+Return the populated quality model with values.
+
+=head2 C<info()>
+
+    my $info = $project->info();
+    $project->info( {'PMI_TITLE' => 'Awesome Project'} );
+
+Get or set the list of current 'info' on the project.
+
+=head2 C<metrics()>
+
+    my $metrics = $project->metrics();
+    $project->metrics( {'METRIC1' => '1433'} );
+
+Get or set the list of current 'metrics' on the project.
+
+=head2 C<indicators()>
+
+    my $inds = $project->indicators();
+    $project->indicators( {'IND1' => '3.2'} );
+
+Get or set the list of current indicators on the project.
+
+=head2 C<attributes()>
+
+    my $attrs = $project->attributes();
+    $project->attributes( {'ATTR1' => '3.2'} );
+
+Get or set the list of current 'attributes' on the project.
+
+=head2 C<attributes_conf()>
+
+    my $attrs_conf = $project->attributes_conf();
+    $project->attributes_conf( {'ATTR1' => '2 / 2'} );
+
+Get or set the list of current attributes confidence on the project.
+
+=head2 C<recs()>
+
+    my $recs = $project->recs();
+    $project->recs(
+      {
+        'rid' => 'PMI_EMPTY_TITLE',
+        'src' => 'EclipsePmi',
+        'severity' => 2,
+        'desc' => 'The title entry is empty in the PMI.'
+      }
+    )
+
+Get or set the list of 'recs' on the project.
+
+=head2 C<run_plugin()>
+
+    my $results = $project->run_plugin('EclipsePmi');
+
+Runs a pre-type plugin and returns result.
+
+    {
+      "info"    => \%info,
+      "metrics" => \%metrics,
+      "recs"    => \@recs,
+      "log"     => \@log
+    }
+
+=head2 C<run_plugins()>
+
+    my $results = $project->run_plugin();
+
+Runs all pre-type plugins and returns result.
+
+    {
+      'info'    => \%info,
+      'metrics' => \%metrics,
+      'recs'    => \@recs,
+      'log'     => \@log
+    }
+
+=head2 C<run_qm()>
+
+    my $models = $alambic->get_models();
+    my $results = $project->run_qm($models);
+
+Run a qm analysis: generate indicators and attributes for the project.
+
+    {
+      'log' => [ '[Model::Project] Aggregating data from leaves up to attributes.' ],
+      'inds' => {
+        'PMI_SCM_INFO' => 1,
+        'PMI_ITS_INFO' => 5
+      },
+      'attrs' => { 'ATTR1' => '3.0' }
+      'attrs_conf' => { 'ATTR1' => '2 / 2' },
+    };
+
+=head2 C<run_post()>
+
+    my $models = $alambic->get_models();
+    my $results = $project->run_post('ProjectSummary', $models);
+
+Run a specific post plugin for this project and returns results.
+
+    {
+      'info'    => \%info,
+      'metrics' => \%metrics,
+      'recs'    => \@recs,
+      'log'     => \@log
+    }
+
+=head2 C<run_posts()>
+
+    my $models = $alambic->get_models();
+    my $results = $project->run_posts($models);
+
+Run all post plugins for this project and returns results.
+
+    {
+      'info'    => \%info,
+      'metrics' => \%metrics,
+      'recs'    => \@recs,
+      'log'     => \@log
+    }
+
+=head2 C<run_project()>
+
+    my $models = $alambic->get_models();
+    my $results = $project->run_project($models);
 
 
-=head2 C<()>
+Run a full project analysis: run plugins, qm, and post.
 
-    
-
-
-
-=head2 C<()>
-
-    
-
-
-
-=head2 C<()>
-
-    
-
-
-
-=head2 C<()>
-
-    
-
-
-
-=head2 C<()>
-
-    
-
-
-
-=head2 C<()>
-
-    
-
-
-
+    {
+      'info'    => \%info,
+      'metrics' => \%metrics,
+      'recs'    => \@recs,
+      'log'     => \@log
+    }
 
 =head1 SEE ALSO
 

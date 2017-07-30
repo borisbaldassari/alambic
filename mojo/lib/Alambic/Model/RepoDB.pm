@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Model::RepoDB;
 
 use warnings;
@@ -17,6 +31,7 @@ our @EXPORT_OK = qw(
   clean_db
   is_db_defined
   is_db_ok
+  is_db_empty
   name
   desc
   conf
@@ -30,14 +45,17 @@ our @EXPORT_OK = qw(
   get_user
   get_users
   add_user
+  del_user
   get_qm
   set_qm
   set_project_conf
   delete_project
   get_project_conf
   get_projects_list
+  get_active_projects_list
   add_project_run
   get_project_last_run
+  get_project_run
   get_project_all_runs
 );
 
@@ -45,7 +63,7 @@ my $pg;
 
 # Create a new RepoDB object.
 sub new {
-  my ($class, $alambic_db, $args) = @_;
+  my ($class, $alambic_db) = @_;
 
   # Used for tests as a fallback.
   my $db_url = "postgresql://alambic:pass4alambic@/alambic_db";
@@ -59,12 +77,12 @@ sub new {
   return bless {}, $class;
 }
 
-
+# Initialise the database with all tables.
 sub init_db() {
   &_db_init();
 }
 
-
+# Start a backup of the Alambic database.
 sub backup_db() {
   my ($self) = @_;
 
@@ -94,7 +112,8 @@ sub backup_db() {
   return $sql_out;
 }
 
-
+# Restore a backup by executing the SQL export, re-initialise the 
+# sequence ids for auto-increment columns.
 sub restore_db($) {
   my ($self, $sql_in) = @_;
 
@@ -121,19 +140,19 @@ sub restore_db($) {
   return 1;
 }
 
-
+# Get the PostGres version.
 sub get_pg_version() {
   return $pg->db->query('select version() as version;')->hash->{'version'};
 }
 
-
+# Clean the database. Boils down to migrating down the schemas.
 sub clean_db() {
   my $active = $pg->migrations()->active;
   $pg->migrations()->migrate(0);
   $active = $pg->migrations()->active;
 }
 
-
+# Get the database status: is the connection string filled in?
 sub is_db_defined() {
   if (defined $pg) {
     return 1;
@@ -144,7 +163,8 @@ sub is_db_defined() {
 }
 
 
-# Checks if the database is ready to be used.
+# Checks if the database is ready to be used, i.e. has the correct number 
+# of tables defined.
 sub is_db_ok() {
   my $rows = $pg->db->query(
     "SELECT tablename FROM pg_catalog.pg_tables 
@@ -155,7 +175,8 @@ sub is_db_ok() {
 }
 
 
-# Checks if the database contains project definitions.
+# Checks if the database contains data (counts number of project 
+# run records). Returns undef if tables do not exist (db is not ok).
 sub is_db_empty() {
 
   my $rows = $pg->db->query(
@@ -210,7 +231,9 @@ sub desc($) {
 }
 
 
-# Get or set the Alambic instance configuration, exposed as a hash.
+# Get or set the Alambic instance configuration.
+# When getting (no argument provided), the full hash is returned.
+# When setting, specify param and value.
 sub conf($$$) {
   my ($self, $param, $value) = @_;
 
@@ -232,7 +255,7 @@ sub conf($$$) {
 }
 
 
-# Get all info for a project from db
+# Get all info for a project from db.
 sub get_info($) {
   my ($self, $project_id) = @_;
 
@@ -251,7 +274,7 @@ sub get_info($) {
 }
 
 
-# Get all metrics definition from db
+# Get all metrics definition from db.
 sub get_metrics($) {
   my $results = $pg->db->query("SELECT * FROM models_metrics;");
   my $ret;
@@ -288,6 +311,8 @@ sub get_metric($) {
       = decode_json($next->{'description'});
     $ret->{$next->{'mnemo'}}->{'scale'} = decode_json($next->{'scale'});
   }
+
+  print "METRIC " . Dumper($ret);
 
   return $ret;
 }
@@ -331,7 +356,7 @@ sub get_attribute($) {
 }
 
 
-# Get all attributes definition from db
+# Get all attributes definition from db;
 sub get_attributes($) {
   my $results = $pg->db->query("SELECT * FROM models_attributes;");
   my $ret;
@@ -353,7 +378,7 @@ sub set_attribute($) {
   my $mnemo = shift;
   my $name  = shift || '';
   my $desc  = encode_json(shift || []);
-
+  
   my $query
     = "INSERT INTO models_attributes (mnemo, name, description) VALUES "
     . "(?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description) "
@@ -365,7 +390,7 @@ sub set_attribute($) {
 }
 
 
-# Get all users from db
+# Get all users from db.
 sub get_users() {
   my $results = $pg->db->query("SELECT * FROM users;");
   my $ret;
@@ -382,7 +407,7 @@ sub get_users() {
 }
 
 
-# Get a specific user from db
+# Get a specific user from db.
 sub get_user($) {
   my $self = shift;
   my $user = shift;
@@ -402,7 +427,7 @@ sub get_user($) {
 }
 
 
-# Get a specific user from db
+# Add a user to the db.
 sub add_user($$$$$$) {
   my $self     = shift;
   my $id       = shift;
@@ -436,7 +461,7 @@ sub add_user($$$$$$) {
 }
 
 
-# Get a specific user from db
+# delete a specific user from the db.
 sub del_user($) {
   my $self = shift;
   my $uid  = shift;
@@ -764,15 +789,16 @@ sub get_project_last_run() {
 # }
 #
 # Params
-#  - $id the id of the project, e.g. modeling.sirus.
+#  - $project_id the id of the project, e.g. modeling.sirus.
+#  - $run_id the id of the run, e.g. 4.
 sub get_project_run($$) {
-  my ($self, $project_id, $id) = @_;
+  my ($self, $project_id, $run_id) = @_;
 
   my %project;
 
   # Execute select in db.
   my $results = $pg->db->query(
-    "SELECT * FROM projects_runs WHERE id=? ORDER BY id DESC LIMIT 1", ($id));
+    "SELECT * FROM projects_runs WHERE id=? ORDER BY id DESC LIMIT 1", ($run_id));
   while (my $next = $results->hash) {
     $project{'id'}              = $next->{'id'};
     $project{'project_id'}      = $next->{'project_id'};
@@ -787,8 +813,9 @@ sub get_project_run($$) {
   }
 
   # Execute select in info table.
+  # TODO check that works.
   $results = $pg->db->query("SELECT info FROM projects_info WHERE project_id=?",
-    ($id));
+    ($project_id));
   while (my $next = $results->hash) {
     $project{'info'} = decode_json($next->{'info'});
   }
@@ -967,4 +994,301 @@ CREATE TABLE IF NOT EXISTS projects_info (
 }
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Model::RepoDB> - Interface to all database-related actions and
+information defined in Alambic.
+
+=head1 SYNOPSIS
+
+    my $repodb = Alambic::Model::RepoDB->new(
+      "postgresql://alambic:pass4alambic@/alambic_db"
+    );
+    
+    $repodb->backup();
+
+=head1 DESCRIPTION
+
+B<Alambic::Model::RepoDB> provides a complete interface to all database 
+operations within Alambic. As for now only Postgres is supported, but
+other database systems may be added in the future while keeping this 
+interface mostly as it is. 
+
+=head1 METHODS
+
+=head2 C<new()>
+
+    my $repodb = Alambic::Model::RepoDB->new(
+      "postgresql://alambic:pass4alambic@/alambic_db"
+    );
+
+Create a new L<Alambic::Model::RepoDB> object and optionally initialise it 
+with a database connection.
+
+=head2 C<init_db()>
+
+    $repodb->init_db();
+
+Initialise the database with all tables.
+
+=head2 C<backup_db()>
+
+    $repodb->backup();
+
+Start a backup of the Alambic database. This produces a SQL file with all
+data that can be easily re-imported in PostGresql server. Returns a big
+SQL file.
+
+=head2 C<restore_db()>
+
+    $repodb->restore_db('INSERT INTO....');
+
+Restore a backup by executing the SQL export, re-initialise the 
+sequence ids for auto-increment columns.
+
+=head2 C<get_pg_version()>
+
+    my $version = $repodb->get_pg_version();
+
+Get the PostGres version. Returns a string, e.g. PostgreSQL 9.5.
+
+=head2 C<clean_db()>
+
+    $repodb->clean_db();
+
+Clean the database. Boils down to migrating down the schemas.
+
+=head2 C<is_db_defined()>
+
+    if ($repodb->is_db_defined()) { print "defined!" }
+
+Get the database status: is the connection string filled in? 
+
+=head2 C<is_db_ok()>
+
+    if ($repodb->is_db_ok()) { print "ok!" }
+
+Checks if the database is ready to be used, i.e. has the correct number 
+of tables defined.
+
+=head2 C<is_db_empty()>
+
+    if ($repodb->is_db_empty()) { print "empty!" }
+
+Checks if the database contains data (counts number of project 
+run records). Returns undef if tables do not exist (db is not ok).
+
+=head2 C<name()>
+
+    my $name = $repodb->name();
+    $repodb->name('New name');
+
+Get or set the Alambic instance name.
+
+=head2 C<desc()>
+
+    my $name = $repodb->desc();
+    $repodb->desc('New description');
+
+Get or set the Alambic instance name.
+
+=head2 C<conf()>
+
+    my $params = $repodb->conf();
+    # Returns a hash ref
+    $repodb('param1', 'value1');
+
+Get or set the Alambic instance configuration.
+When getting (no argument provided), the full hash is returned.
+When setting, specify param and value.
+
+=head2 C<get_info()>
+
+    my $info $repodb->get_info();
+
+Get all info for a project from db.
+
+=head2 C<get_metrics()>
+
+    my $metrics = $repodb->get_metrics();
+
+Get all metrics definition from db.
+
+=head2 C<get_metric()>
+
+    my $metric = epodb->get_metric('METRIC1');
+
+Get a single metric definition from db.
+
+=head2 C<get_attribute()>
+
+    my $attr = $repodb->get_attribute('ATTR1');
+
+Get a single attribute definition from db.
+
+=head2 C<get_attributes()>
+
+    my $attrs = $repodb->get_attributes();
+
+Get all attributes definition from db.
+
+=head2 C<set_attribute()>
+
+    $repodb->set_attribute(
+      'MNEMO', 'ATTR_NAME', ['desc', 'desc']
+    );
+
+Set a attribute definition in the db.
+
+=head2 C<get_users()>
+
+    my $users = $repodb->get_users();
+
+Get all users from db.
+
+=head2 C<get_user()>
+
+    my $user = $repodb->get_user('boris');
+
+Get a specific user from db.
+
+=head2 C<add_user()>
+
+    $repodb->add_user(
+      'boris', 'Boris Baldassari', 'boris@domain.com',
+      'password', ['Admin'], {}, {}
+    )
+
+Add a user to the database.
+
+=head2 C<del_user()>
+
+    $repodb->del_user('boris');
+
+Delete a user from the database.
+
+=head2 C<get_qm()>
+
+    my $qm = $repodb->get_qm();
+
+Get a single qm definition from db (the first record as for now).
+
+=head2 C<set_qm()>
+
+    $repodb->set_qm(
+      'MNENMO', 'My Model Name', {}
+    );
+
+Set a qm definition in the db.
+
+=head2 C<set_project_conf()>
+
+    $repodb->set_project_conf(
+      'project_id', 'Project Name', 
+      'Project Desc', { 'PLUG1' => {} }
+    );
+
+Add or edit a project in the list of projects, with its name, desc, and plugins.
+
+=head2 C<delete_project()>
+
+    $repodb->delete_project('modeling.sirius');
+
+Delete from db all entries relatives to a project.
+
+=head2 C<get_project_conf()>
+
+    my $project_conf = $repodb->get_project_conf('modeling.sirius');
+
+Get the configuration of a project as a hash.
+
+=head2 C<get_projects_list()>
+
+    my $list = $repodb->get_projects_list();
+
+
+
+=head2 C<get_active_projects_list()>
+
+    my $list = $repodb->get_active_projects_list();
+
+Returns a hash of projects id/names defined in the db.
+
+=head2 C<add_project_run()>
+
+    $repodb->add_project_run(
+      'project_id', \%run_info, 
+      \%info, \%metrics, \%indicators
+      \%atttributes, \Mattributes_conf
+      \%recs
+    );
+
+Stores the results of a job run in Alambic.
+
+=head2 C<get_project_last_run()>
+
+    my $last_run = $repodb->get_project_last_run();
+
+Returns the results of the last job run in Alambic for the specified project.
+
+    {
+      'attributes' => { 'MYATTR' => 18 },
+      'id' => 2,
+      'indicators' => { 'MYINDIC' => 16 },
+      'metrics' => { 'MYMETRIC' => 15 },
+      'project_id' => 'modeling.sirius',
+      'recs' => [
+        {
+          'desc' => 'This is a description.',
+          'severity' => 3,
+          'rid' => 'REC_PMI_11'
+        }
+      ],
+      'run_delay' => 113,
+      'run_time' => '2016-05-08 16:53:57',
+      'run_user' => 'none'
+    }
+
+
+=head2 C<get_project_run()>
+
+    my $run = $repodb->get_project_run('modeling.sirius', 5);
+
+Returns the results of the specified job run in Alambic for the specified project.
+
+=head2 C<get_project_all_runs()>
+
+    my $runs = $repodb->get_project_all_runs($project_id);
+
+Returns an array of basic information of all runs in Alambic 
+for the specified project.
+    
+    [
+      {
+        'id' => 2,
+        'project_id' => 'modeling.sirius',
+        'run_delay' => 113,
+        'run_time' => '2016-05-08 16:53:20',
+        'run_user' => 'none'
+      },
+      {
+        'id' => 1,
+        'project_id' => 'modeling.sirius',
+        'run_delay' => 13,
+        'run_time' => '2016-05-08 16:53:20',
+        'run_user' => 'none'
+      }
+    ]
+
+
+
+=head1 SEE ALSO
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+=cut
 
