@@ -65,8 +65,8 @@ sub dl {
 
   my $file_sql = $self->param('file');
 
-  # If the page is a fig, reply static file under 'backups/'
-  $self->reply->static('../backups/' . $file_sql);
+  # Reply with the sql backup file.
+  $self->reply->static('../../../../backups/' . $file_sql);
 }
 
 
