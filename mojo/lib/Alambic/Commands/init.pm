@@ -108,6 +108,6 @@ remove tables manually (or re-create the database) and re-execute the command.
 
 =head1 SEE ALSO
 
-L<Alambic>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<Mojolicious>.
+L<Alambic>, L<Alambic::Model::Alambic>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<Mojolicious>.
 
 =cut

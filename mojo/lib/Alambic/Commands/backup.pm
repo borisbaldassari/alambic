@@ -79,6 +79,6 @@ Start a complete backup of the Alambic instance:
 
 =head1 SEE ALSO
 
-L<Alambic>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<Mojolicious>.
+L<Alambic>, L<Alambic::Model::Alambic>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<Mojolicious>.
 
 =cut
