@@ -363,7 +363,7 @@ L<Alambic> implements the following attributes.
 
 L<Alambic> implements the following methods.
 
-=head2 C<startup>
+=head2 C<startup()>
 
 The default method to start the application.
 
