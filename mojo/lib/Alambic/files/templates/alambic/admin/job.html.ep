@@ -26,6 +26,7 @@
 %                join( '<br />', @{$job_info->{'result'}{'log'}} ) :
 %                $job_info->{'result'}{'log'} ) :
 %              "No result found.";
+%     no warnings;
 %     $metrics = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'metrics'}{$_} } sort keys %{$job_info->{'result'}{'metrics'}} ) . ".";
 %     $info = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'info'}{$_} } sort keys %{$job_info->{'result'}{'info'}} ) . ".";
 %     $attrs = join( ', ', map { "<code>" . $_ . "</code>: " . $job_info->{'result'}{'attrs'}{$_} } sort keys %{$job_info->{'result'}{'attrs'}} ) . "."; 
