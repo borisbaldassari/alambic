@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Model::Project;
 
 use warnings;
@@ -58,7 +72,7 @@ my @recs            = ();
 # A ref to the Plugins module.
 my $plugins_module;
 
-# Constructor
+# Constructor to create a new Alambic::Model::Project object.
 sub new {
   my ($class, $id, $name, $active, $last_run, $plugins, $data) = @_;
 
@@ -96,10 +110,12 @@ sub new {
   return bless {}, $class;
 }
 
+# Get project ID.
 sub get_id() {
   return $project_id;
 }
 
+# Get or set the project name.
 sub name() {
   my ($self, $name) = @_;
 
@@ -110,6 +126,7 @@ sub name() {
   return $project_name;
 }
 
+# Get or set the project description.
 sub desc() {
   my ($self, $desc) = @_;
 
@@ -120,6 +137,7 @@ sub desc() {
   return $project_desc;
 }
 
+# Get or set the active flag for the project.
 sub active() {
   my ($self, $active) = @_;
 
@@ -130,6 +148,7 @@ sub active() {
   return $project_active;
 }
 
+# Return results from the last run of the project.
 sub last_run() {
   my ($self, $last_run) = @_;
 
@@ -137,13 +156,17 @@ sub last_run() {
     $project_last_run = $last_run;
   }
 
+  print "LAST_RUN " . Dumper($project_last_run);
+
   return $project_last_run;
 }
 
+# Return the list of plugins defined on the project.
 sub get_plugins() {
   return \%plugins;
 }
 
+# Return the populated quality model with values.
 sub get_qm($) {
   my ($self, $qm, $attributes, $metrics) = @_;
 
@@ -152,6 +175,7 @@ sub get_qm($) {
   return $qm;
 }
 
+# Get or set the list of current 'info' on the project.
 sub info() {
   my ($self, $info) = @_;
 
@@ -160,6 +184,7 @@ sub info() {
   return \%info;
 }
 
+# Get or set the list of current 'metrics' on the project.
 sub metrics() {
   my ($self, $metrics) = @_;
 
@@ -168,6 +193,7 @@ sub metrics() {
   return \%metrics;
 }
 
+# Get or set the list of current indicators on the project.
 sub indicators() {
   my ($self, $indicators) = @_;
 
@@ -176,6 +202,7 @@ sub indicators() {
   return \%indicators;
 }
 
+# Get or set the list of 'attributes' on the project.
 sub attributes() {
   my ($self, $attributes) = @_;
 
@@ -184,6 +211,7 @@ sub attributes() {
   return \%attributes;
 }
 
+# Get or set the list of attributes confidence on the project.
 sub attributes_conf() {
   my ($self, $attributes_conf) = @_;
 
@@ -192,6 +220,7 @@ sub attributes_conf() {
   return \%attributes_conf;
 }
 
+# Get or set the list of 'recs' on the project.
 sub recs() {
   my ($self, $recs) = @_;
 
@@ -288,9 +317,6 @@ sub run_post() {
   # If plugin is a type post
   my $conf = {'main' => $main, 'project' => $self, 'models' => $models,};
 
-#    print "###########################################\n";
-#    print Dumper($conf);
-#    print "###########################################\n";
   $ret = $plugins_module->run_post($project_id, $plugin_id, $conf);
 
   # Add retrieved values to the current project.
@@ -317,10 +343,6 @@ sub run_posts() {
 
   my $conf = {'last_run' => $project_last_run, 'project' => $self,
     'models' => $models,};
-
-#    print "###########################################\n";
-#    print Dumper($conf);
-#    print "###########################################\n";
 
   my @post_plugins
     = sort
@@ -662,3 +684,129 @@ sub _populate_qm($$$$$) {
 
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Model::Project> - Interface to all project-related actions and
+information defined in Alambic.
+
+=head1 SYNOPSIS
+
+    my $project = Alambic::Model::Project->new(
+      $id,
+      $project_conf->{'name'},
+      $project_conf->{'is_active'},
+      $project_conf->{'last_run'},
+      $project_conf->{'plugins'},
+      $project_data
+    );
+    $project->desc('this is my desc');
+    
+    my $metrics = $project->metrics();
+
+=head1 DESCRIPTION
+
+B<Alambic::Model::Project> provides a complete interface to a project within 
+Alambic. This includes information (metrics, attributes, configuration, etc.)
+as well as actions (run_project, run_qm, run_plugins, etc.)
+
+=head1 METHODS
+
+=head2 C<new()>
+
+    my $project = Alambic::Model::Project->new(
+      $id,
+      $project_conf->{'name'},
+      $project_conf->{'is_active'},
+      $project_conf->{'last_run'},
+      $project_conf->{'plugins'},
+      $project_data
+    );
+    
+    my $project = Alambic::Model::Project->new($id, $name);
+    $project->desc($desc);
+    $project->active($active);
+
+Create a new L<Alambic::Model::Project> object and optionally initialises it 
+with all information.
+
+=head2 C<get_id()>
+
+    my $id = $project->get_id();
+
+Get the ID of the project.
+
+=head2 C<name()>
+
+    my $name = $project->name();
+    $project->name('My New Name');
+
+Get or set the name of the project.
+
+=head2 C<desc()>
+
+    my $desc = $project->desc();
+    $project->desc('My New Desc');
+
+Get or set the description of the project.
+
+=head2 C<active()>
+
+    my $is_active = $project->active();
+    $project->active(1);
+
+Get or set the is_active flag on the project. Active projects are displayed
+in the list of projects in the dashboard and menu.
+
+=head2 C<last_run()>
+
+    my $run = $project->last_run();
+
+
+
+=head2 C<()>
+
+    
+
+
+
+=head2 C<()>
+
+    
+
+
+
+=head2 C<()>
+
+    
+
+
+
+=head2 C<()>
+
+    
+
+
+
+=head2 C<()>
+
+    
+
+
+
+=head2 C<()>
+
+    
+
+
+
+
+=head1 SEE ALSO
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+=cut
+

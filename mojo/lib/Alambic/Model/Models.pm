@@ -366,12 +366,6 @@ application: metrics definition, quality attribute definition, quality model tre
 
 =head2 C<new()>
 
-    
-
-Creates a new Alambic object to interact with the Alambic instance and features.
-
-=head2 C<()>
-
     my $models = Alambic::Model::Models->new(
       $metrics, $attributes, $qm, $plugins
     );
