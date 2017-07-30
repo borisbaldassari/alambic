@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Model::RepoFS;
 
 use warnings;
@@ -207,7 +221,28 @@ sub write_models($$$) {
   close $fh;
 }
 
-# Read user operations to the projects/<project_id>/users/ directory.
+# Read a file from the models directory.
+sub read_models($$) {
+  my ($self, $type, $file_name) = @_;
+
+  my $content;
+  my $models = Mojo::Home->new . '/lib/Alambic/files/models';
+  my $file   = $models . '/' . $type . "/" . $file_name;
+
+  if (-e $file) {
+    do {
+      local $/;
+      open my $fh, '<', $file or return 0;
+      $content = <$fh>;
+      close $fh;
+    };
+  }
+
+  return $content;
+}
+
+
+# Write user operations to the projects/<project_id>/users/ directory.
 sub write_users($$$) {
   my ($self, $plugin_id, $project_id, $content) = @_;
 
@@ -248,27 +283,6 @@ sub read_users($$$) {
   return \%users;
 }
 
-# Read a file from the models directory.
-sub read_models($$) {
-  my ($self, $type, $file_name) = @_;
-
-  my $content;
-  my $models = Mojo::Home->new . '/lib/Alambic/files/models';
-  my $file   = $models . '/' . $type . "/" . $file_name;
-
-  if (-e $file) {
-    do {
-      local $/;
-      open my $fh, '<', $file or return 0;
-      $content = <$fh>;
-      close $fh;
-    };
-  }
-
-  return $content;
-}
-
-
 # Delete the complete hierarchy of files in projects/<project_id>.
 sub delete_project($) {
   my ($self, $project_id) = @_;
@@ -278,3 +292,135 @@ sub delete_project($) {
 
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Model::RepoFS> - Interface to all file-system-related actions and
+information defined in Alambic.
+
+=head1 SYNOPSIS
+
+    my $repofs = Alambic::Model::RepoFS->new();
+    
+    $repofs->delete_project('modeling.sirius');
+
+=head1 DESCRIPTION
+
+B<Alambic::Model::RepoFS> provides autility methods for all operations 
+related to file system: read and copy files, delete projects, etc.
+
+=head1 METHODS
+
+=head2 C<new()>
+
+    my $repofs = Alambic::Model::RepoFS->new();
+
+Create a new L<Alambic::Model::RepoFS> object.
+
+=head2 C<write_input()>
+
+    $repofs->write_input(
+      'modeling.sirius', 
+      'myfilename.txt'
+      $content
+    );
+
+Write a file to the project input directory.
+
+=head2 C<read_input()>
+
+    $repofs->read_input('modeling.sirius', 'myfile.txt');
+    
+Read a file from the project input directory.
+
+=head2 C<write_output()>
+
+    $repofs->write_output(
+      'modeling.sirius', 
+      'myfilename.txt'
+      $content
+    );
+
+Write a file to the project output directory.
+
+=head2 C<read_output()>
+
+    $repofs->read_output('modeling.sirius', 'myfile.txt');
+    
+Read a file from the project output directory.
+
+=head2 C<write_plugin()>
+
+    $repofs->write_plugin(
+      'EclipsePmi', 
+      'myfilename.txt'
+      $content
+    );
+
+Write a file to the plugin directory.
+
+=head2 C<read_plugin()>
+
+    $repofs->read_plugin('EclipsePmi', 'myfile.txt');
+    
+Read a file from the plugin directory.
+
+=head2 C<write_backup()>
+
+    $repofs->write_backup(
+      $content
+    );
+
+Write a file to the backup directory.
+
+=head2 C<read_backup()>
+
+    $repofs->read_backup('mybackup.sql');
+    
+Read a file from the backup directory.
+
+=head2 C<write_models()>
+
+    $repofs->write_models(
+      'metrics', 
+      'myfilename.txt'
+      $content
+    );
+
+Write a file to the models directory.
+
+=head2 C<read_models()>
+
+    $repofs->read_models('metrics', 'myfile.txt');
+    
+Read a file from the models directory.
+
+=head2 C<write_users()>
+
+    $repofs->write_users(
+      'EclipsePmi', 'modeling.sirius', $content
+    );
+
+Write user operations to the projects/<project_id>/users/ directory.
+
+=head2 C<read_users()>
+
+    my $users = $repofs->read_users('modeling.sirius');
+
+Read user operations to the projects/<project_id>/users/ directory.
+
+=head2 C<delete_project()>
+
+    $repofs->delete_project('modeling.sirius');
+
+Delete the complete hierarchy of files in projects/<project_id>.
+
+
+=head1 SEE ALSO
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+=cut

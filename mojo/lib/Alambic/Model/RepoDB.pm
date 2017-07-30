@@ -1284,8 +1284,6 @@ for the specified project.
       }
     ]
 
-
-
 =head1 SEE ALSO
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
