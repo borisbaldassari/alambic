@@ -44,7 +44,7 @@ my %conf = (
     "pmi_checks.csv"  => "The list of PMI checks and their results (CSV).",
   },
   "provides_metrics" =>
-    {"PMI_ITS_INFO" => "PMI_ITS_INFO", "PMI_SCM_INFO" => "PMI_SCM_INFO",},
+    {"PMI_ITS_INFO" => "PMI_ITS_INFO", "PMI_SCM_INFO" => "PMI_SCM_INFO", "PMI_REL_VOL" => "PMI_REL_VOL"},
   "provides_figs" => {},
   "provides_recs" => [
     "PMI_EMPTY_BUGZILLA_CREATE", "PMI_NOK_BUGZILLA_CREATE",
@@ -890,7 +890,9 @@ sub _compute_data($) {
   $check->{'results'} = [];
   $check->{'desc'}    = 'Checks if the releases have been correctly filled.';
   if (exists($raw_project->{'releases'})) {
-    my @rels = @{$raw_project->{'releases'}};
+      my @rels = @{$raw_project->{'releases'}};
+      $metrics{"PMI_REL_VOL"} = scalar @rels;
+
     if (scalar @rels > 0) {
       foreach my $rel (@rels) {
         my $title      = $rel->{'title'};
