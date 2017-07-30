@@ -154,8 +154,8 @@ SKIP: {
   note("Run project from Alambic.");
   $ret = $alambic->run_project('tools.cdt');
 
-# 4 is when attributes are not defined (i.e. typically when the script is run by itself)
-# 6 when attributes are defined (i.e. when all tests are run in docker).
+  # 4 is when attributes are not defined (i.e. typically when the script is run by itself)
+  # 6 when attributes are defined (i.e. when all tests are run in docker).
   my $k = scalar(keys %$ret);
   ok(($k == 6) || ($k == 4),
     "Adding run_project returns hash with 4 or 6 entries.")
@@ -165,6 +165,49 @@ SKIP: {
   $alambic->restore($sql);
   $project = $alambic->get_project('tools.cdt');
   is($project, undef, "Get project tools.cdt returns undef after restore.");
+
+  # Now restore a backup to test history
+  note("Restoring database with Sirius history.");
+  my $file_sql = 'alambic_backup_201707290902.sql';
+  $sql    = $repofs->read_backup($file_sql);
+  $alambic->restore($sql);
+  my $hist = $alambic->get_project_hist('modeling.sirius');
+  ok( scalar(@$hist) == 3, "History has 3 items after restore.") 
+      or diag explain $hist;
+  ok( $hist->[2]{'run_delay'} == 47, "First item in history has run_delay 47.") 
+      or diag explain $hist;
+  ok( $hist->[2]{'id'} == 1, "First item in history has id 1.") 
+      or diag explain $hist;
+  ok( $hist->[2]{'run_time'} =~ m!^2017-07-29!, "First item in history has correct run_time.") 
+      or diag explain $hist->[2];
+
+    my $run = $alambic->get_project_last_run('modeling.sirius');
+    
+  ok( $run->{'run_delay'} == 49, 
+      "Last run has correct run_delay from backup.") 
+      or diag explain $run;
+  ok( $run->{'metrics'}{'CI_JOBS_RED'} == 8, 
+      "Last run has correct metric CI_JOBS_RED from backup.") 
+      or diag explain $run;
+  ok( $run->{'info'}{'PMI_ID'} =~ m!^modeling.sirius$!, 
+      "Last run has correct info PMI_ID from backup.") 
+      or diag explain $run;
+  ok( $run->{'recs'}[0]{'rid'} =~ m!^PMI_EMPTY_TITLE$!, 
+      "Last run has correct rec PMI_EMPTY_TITLE from backup.") 
+      or diag explain $run;
+  ok( $run->{'project_id'} =~ m!^modeling.sirius$!, 
+      "Last run has correct project_id from backup.") 
+      or diag explain $run;
+  ok( $run->{'id'} == 3, 
+      "Last run has correct id from backup.") 
+      or diag explain $run;
+  ok( $run->{'run_time'} =~ m!^2017-07-29!, 
+      "Last run has correct run_time from backup.") 
+      or diag explain $run;
+  ok( $run->{'run_user'} =~ m!^administrator$!, 
+      "Last run has correct run_user from backup.") 
+      or diag explain $run;
+    
 }
 
 done_testing();
