@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Model::Users;
 
 use warnings;
@@ -15,7 +29,7 @@ our @EXPORT_OK = qw(
   get_users
   get_projects_for_user
   validate_user
-  generate_password
+  generate_passwd
 
 );
 
@@ -23,6 +37,7 @@ our @EXPORT_OK = qw(
 my %users;
 my @roles = ('Admin', 'Project', 'Guest');
 
+# Constructor to build a new L<Alambic::Model::Users> object.
 sub new {
   my $class = shift;
   my $users = shift || {};
@@ -31,6 +46,7 @@ sub new {
   return bless {}, $class;
 }
 
+# Check that the user exists and the password is correct.
 sub validate_user($$$) {
   my $self   = shift;
   my $uid    = shift || "";
@@ -46,6 +62,7 @@ sub validate_user($$$) {
   return undef;
 }
 
+# Encrypt a password using L<Crypto::PBKDF2>.
 sub generate_passwd($) {
   my $self   = shift;
   my $passwd = shift;
@@ -56,6 +73,8 @@ sub generate_passwd($) {
   return $hash;
 }
 
+# Get information about a user. 
+# Return a hash reference.
 sub get_user($) {
   my $self = shift;
   my $user = shift || "";
@@ -63,10 +82,14 @@ sub get_user($) {
   return exists $users{$user} ? $users{$user} : undef;
 }
 
+# Get information about all users.
+# Return a hash reference.
 sub get_users() {
   return \%users;
 }
 
+# Get list of all roles.
+# Return a 
 sub get_roles() {
   return \@roles;
 }
@@ -82,3 +105,75 @@ sub get_projects_for_user($) {
 }
 
 1;
+
+
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Model::Users> - A class to manage, and get information about, users.
+
+=head1 SYNOPSIS
+
+    my $users = Alambic::Model::Users->new();    
+    my $list = $users->get_roles();
+
+=head1 DESCRIPTION
+
+B<Alambic::Model::Users> provides a common interface to manage, and get 
+information about, users in Alambic.
+
+=head1 METHODS
+
+=head2 C<new()>
+
+    my $users = Alambic::Model::Users->new();    
+
+Creates a new L<Alambic::Model::Users> object to interact with users of 
+Alambic.
+
+=head2 C<()>
+
+    
+
+
+=head2 C<()>
+
+    
+
+
+=head2 C<()>
+
+    
+
+
+=head2 C<()>
+
+    
+
+
+=head2 C<get_roles()>
+
+    my $list = $users->get_roles();
+
+Get the list of roles defined in this instance.
+
+    [
+      'Admin',
+      'Project',
+      'Guest'
+    ];
+
+=head2 C<get_projects_for_user()>
+
+    
+
+
+=head1 SEE ALSO
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+=cut
+
