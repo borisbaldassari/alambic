@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Wizards::EclipsePmi;
 
 use strict;
@@ -100,35 +114,31 @@ sub run_wizard($) {
 
 =head1 NAME
 
-B<Alambic::Model::Wizards> - Interface to all wizards plugins in Alambic.
-
-=head1 SYNOPSIS
-
-    my $wizards = Alambic::Model::Wizards->new();
-    my $ret = $wizards->get_names_all();
+B<Alambic::Wizards::EclipsePmi> - A wizard plugin to add a project 
+from the Eclipse forge.
 
 =head1 DESCRIPTION
 
-B<Alambic::Model::Wizards> provides a complete interface to the Wizards 
-used the Alambic. 
+B<Alambic::Model::Plugins> provides a way to easily initialise a project
+from the Eclipse forge. 
 
-=head1 METHODS
+Parameters:
 
-=head2 C<new()>
+=over
 
-    my $wizards = Alambic::Model::Wizards->new();
+=item * Eclipse project ID - e.g. modeling.sirius or tools.cdt.
 
-Create a new L<Alambic::Model::Wizards> object.
+=back
 
-=head2 C<init_wizards()>
+Plugins automatically initialised with this wizard:
 
-    my $wizards = Alambic::Model::Wizards->new();
-    $wizards = ->init_wizards( $metrics, $attributes, 
-      $qm, $plugins->get_conf_all());
-    );
+=over
 
+=item * EclipsePmi - Get project information from the 
 
+=item * Hudson - e.g. modeling.sirius or tools.cdt.
 
+=back
 
 =head1 SEE ALSO
 
