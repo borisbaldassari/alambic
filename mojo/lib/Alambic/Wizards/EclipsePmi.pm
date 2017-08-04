@@ -4,6 +4,8 @@ use strict;
 use warnings;
 
 use Mojo::JSON qw( decode_json encode_json );
+use Mojo::UserAgent;
+use Alambic::Model::Project;
 use Data::Dumper;
 
 
@@ -38,7 +40,7 @@ sub get_conf() {
 
 
 # Run plugin: retrieves data + compute_data
-sub run_wizard($$) {
+sub run_wizard($) {
   my ($self, $project_id) = @_;
 
   my @log;
@@ -90,3 +92,47 @@ sub run_wizard($$) {
 
 
 1;
+
+
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Model::Wizards> - Interface to all wizards plugins in Alambic.
+
+=head1 SYNOPSIS
+
+    my $wizards = Alambic::Model::Wizards->new();
+    my $ret = $wizards->get_names_all();
+
+=head1 DESCRIPTION
+
+B<Alambic::Model::Wizards> provides a complete interface to the Wizards 
+used the Alambic. 
+
+=head1 METHODS
+
+=head2 C<new()>
+
+    my $wizards = Alambic::Model::Wizards->new();
+
+Create a new L<Alambic::Model::Wizards> object.
+
+=head2 C<init_wizards()>
+
+    my $wizards = Alambic::Model::Wizards->new();
+    $wizards = ->init_wizards( $metrics, $attributes, 
+      $qm, $plugins->get_conf_all());
+    );
+
+
+
+
+=head1 SEE ALSO
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+=cut
+
