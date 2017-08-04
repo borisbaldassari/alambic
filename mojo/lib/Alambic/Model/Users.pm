@@ -89,11 +89,12 @@ sub get_users() {
 }
 
 # Get list of all roles.
-# Return a 
+# Return a array ref of strings.
 sub get_roles() {
   return \@roles;
 }
 
+# Get list of projects for a user.
 sub get_projects_for_user($) {
   my ($self, $user) = @_;
 
@@ -104,9 +105,8 @@ sub get_projects_for_user($) {
   return undef;
 }
 
+
 1;
-
-
 
 
 =encoding utf8
@@ -134,25 +134,54 @@ information about, users in Alambic.
 Creates a new L<Alambic::Model::Users> object to interact with users of 
 Alambic.
 
-=head2 C<()>
+=head2 C<validate_user()>
 
-    
+    if ($users->validate_user('boris', 'password') {
+      print "Yeah\n";
+    }
 
+Check that the user exists and the password is correct. 
+Returns the user ID if ok, undef otherwise.
 
-=head2 C<()>
+=head2 C<generate_passwd()>
 
-    
+    my $hash = $user->generate_passwd('mypassword');
 
+Encrypt a password using L<Crypto::PBKDF2>. Returns a hash.
 
-=head2 C<()>
+=head2 C<get_user()>
 
-    
+    my $u = $users->get_user('boris');
 
+Get information about a user. Returns a hash reference.
 
-=head2 C<()>
+    {
+      'notifs' => {},
+      'name' => 'Administrator',
+      'roles' => ['Admin'],
+      'email' => 'alambic@castalia.solutions',
+      'passwd' => '{X-PBKDF2}HMACSHA1:AAAD6A:5R2HIw==:3c7E0POr1PCmC7XQdahjgr/PDus=',
+      'projects' => {},
+      'id' => 'administrator'
+    }
 
-    
+=head2 C<get_users()>
 
+    my $u = $users->get_users(),
+
+Get information about all users. Returns a hash reference.
+
+    {
+      'administrator' => {
+        'notifs' => {},
+        'name' => 'Administrator',
+        'roles' => ['Admin'],
+        'email' => 'alambic@castalia.solutions',
+        'passwd' => '{X-PBKDF2}HMACSHA1:AAAD6A:5R2HIw==:3c7E0POr1PCmC7XQdahjgr/PDus=',
+        'projects' => {},
+        'id' => 'administrator'
+      }
+    }
 
 =head2 C<get_roles()>
 
@@ -168,8 +197,9 @@ Get the list of roles defined in this instance.
 
 =head2 C<get_projects_for_user()>
 
-    
+    my $list = $users->get_projects_for_user('boris');
 
+Get list of projects for a user.
 
 =head1 SEE ALSO
 
