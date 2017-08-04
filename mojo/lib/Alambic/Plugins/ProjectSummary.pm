@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Plugins::ProjectSummary;
 
 use strict;
@@ -191,3 +205,30 @@ sub _create_psum_attrs() {
 
 
 1;
+
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Plugins::ProjectSummary> - A plugin to display badges 
+and exportable snippets about the project's analysis.
+
+=head1 DESCRIPTION
+
+B<Alambic::Plugins::ProjectSummary> provides exportable html snippets 
+and images about the project's analysis results.
+
+Parameters: None
+
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/ProjectSummary.html>.
+
+=head1 SEE ALSO
+
+L<https://alambic.io/Plugins/ProjectSummary.html>,
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+
+=cut

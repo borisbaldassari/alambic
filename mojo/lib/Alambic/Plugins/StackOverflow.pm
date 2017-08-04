@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Plugins::StackOverflow;
 
 use strict;
@@ -281,3 +295,35 @@ sub _compute_data() {
 }
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Plugins::StackOverflow> - A plugin to fetch information from the
+Stack Overflow question/answer web site.
+
+=head1 DESCRIPTION
+
+B<Alambic::Plugins::StackOverflow> retrieves information from the questions 
+asked about the project on the Stack Overflow question/answer web site.
+
+Parameters:
+
+=over
+
+=item * StackOverflow tag - e.g. C<eclipse-sirius> or C<eclipse-cdt>.
+
+=back
+
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/StackOverflow.html>.
+
+=head1 SEE ALSO
+
+L<https://alambic.io/Plugins/StackOverflow.html>, L<https://stackoverflow.com>,
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+
+=cut

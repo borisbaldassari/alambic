@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Plugins::EclipsePmi;
 
 use strict;
@@ -70,19 +84,20 @@ my $eclipse_url  = "https://projects.eclipse.org/json/project/";
 my $polarsys_url = "https://polarsys.org/json/project/";
 
 
-# Constructor
+# Constructor to build a new EclipsePmi object.
 sub new {
   my ($class) = @_;
 
   return bless {}, $class;
 }
 
+# Get Wizard plugin configuration.
 sub get_conf() {
   return \%conf;
 }
 
 
-# Run plugin: retrieves data + compute_data
+# Run wizard plugin: retrieves data + compute_data.
 sub run_plugin($$) {
   my ($self, $project_id, $conf) = @_;
 
@@ -1001,3 +1016,37 @@ sub _check_url($$) {
 
 
 1;
+
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Plugins::EclipsePmi> - A plugin to fetch information from the
+Eclipse PMI repository.
+
+=head1 DESCRIPTION
+
+B<Alambic::Plugins::EclipsePmi> retrieves information from the 
+L<Eclipse PMI repository|https://wiki.eclipse.org/Project_Management_Infrastructure>.
+
+Parameters:
+
+=over
+
+=item * Eclipse project ID - e.g. C<modeling.sirius> or C<tools.cdt>.
+
+=back
+
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/EclipsePmi.html>.
+
+=head1 SEE ALSO
+
+L<https://alambic.io/Plugins/EclipsePmi.html>, L<https://wiki.eclipse.org/Project_Management_Infrastructure>,
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+
+=cut
+

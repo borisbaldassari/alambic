@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Plugins::PmdAnalysis;
 
 use strict;
@@ -688,3 +702,38 @@ sub _read_pmd_xml_files($) {
 }
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Plugins::PmdAnalysis> - A plugin to analyse PMD results and 
+help improve the configuration of the tool.
+
+=head1 DESCRIPTION
+
+B<Alambic::Plugins::PmdAnalysis> helps people better understand the results
+of the PMD tool.
+
+Parameters:
+
+=over
+
+=item * C<url_pmd_xml> An URL that points to the PMD XML configuration file.
+
+=item * C<url_pmd_conf> An URL that points to the PMD XML results file.
+
+=back
+
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/PmdAnalysis.html>.
+
+=head1 SEE ALSO
+
+L<https://alambic.io/Plugins/PmdAnalysis.html>, L<https://pmd.github.io/>,
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+
+=cut
+

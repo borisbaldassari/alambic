@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Plugins::Hudson;
 use base 'Mojolicious::Plugin';
 
@@ -308,3 +322,36 @@ sub _compute_data($) {
 
 
 1;
+
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Plugins::Hudson> - A plugin to fetch information from the
+Eclipse PMI repository.
+
+=head1 DESCRIPTION
+
+B<Alambic::Plugins::Hudson> retrieves information from a Hudson instance.
+
+Parameters:
+
+=over
+
+=item * Hudson URL A link to the root of the project's Hudson instance.
+
+=back
+
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Hudson.html>.
+
+=head1 SEE ALSO
+
+L<https://alambic.io/Plugins/Hudson.html>, L<https://hudson.eclipse.org>,
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+
+=cut
+
