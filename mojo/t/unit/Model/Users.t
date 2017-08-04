@@ -49,16 +49,32 @@ ok( $ret =~ m!^administrator!, "Validate user returns administrator." )
     or diag explain $ret;
 
 $ret = $users->get_roles();
-#print "ROLES " . Dumper($ret);
 ok( grep(/^Admin/, @{$ret}), "List of roles contains Admin" )
     or diag explain $ret;
-ok( grep(/^est/, @{$ret}), "List of roles contains Guest" )
+ok( grep(/^Guest/, @{$ret}), "List of roles contains Guest" )
     or diag explain $ret;
-ok( grep(/^Projects/, @{$ret}), "List of roles contains Projects" )
+ok( grep(/^Project/, @{$ret}), "List of roles contains Project" )
     or diag explain $ret;
 
-$users->get_projects_for_user('administrator');
-is_deeply( $ret, {}, "Get projects returns empty hash.");
+$ret = $users->get_user('administrator');
+ok( $ret->{'name'} =~ m!^Administrator!, "Get user admin returns correct name." )
+    or diag explain $ret;
+ok( $ret->{'id'} =~ m!^administrator!, "Get user admin returns correct id." )
+    or diag explain $ret;
+ok( $ret->{'email'} =~ m!^alambic.castalia.solutions!, "Get user admin returns correct email." )
+    or diag explain $ret;
+ok( grep(/^Admin/, @{$ret->{'roles'}}), "Get user admin list of roles contains Admin" )
+    or diag explain $ret;
+
+$ret = $users->get_users();
+ok( exists($ret->{'administrator'}), "Get users returns administrator hash key." )
+    or diag explain($ret);
+ok( $ret->{'administrator'}{'name'} =~ m!^Administrator!, "Get users returns administrator hash content." )
+    or diag explain $ret;
+
+my $ret = $users->get_projects_for_user('administrator');
+is_deeply( $ret, {}, "Get projects returns empty hash ref.");
+
 done_testing();
 
 
