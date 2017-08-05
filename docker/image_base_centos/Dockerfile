@@ -15,7 +15,6 @@ RUN mkdir /var/run/sshd && ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 RUN rpm -Uvh https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86_64/pgdg-centos95-9.5-3.noarch.rpm \
     && yum install -y postgresql95 postgresql95-devel
 
-
 # Create user alambic, password passpass
 RUN adduser alambic \
     && echo passpass | passwd alambic --stdin
@@ -24,12 +23,14 @@ RUN adduser alambic \
 # Install R and all dependencies
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm; \
     yum install -y R;
-COPY alambic_install_r_deps.sh /root/alambic_install_r_deps.sh
-RUN chmod +x /root/alambic_install_r_deps.sh \
-    && /bin/bash -c "/root/alambic_install_r_deps.sh"
+COPY alambic_install_r_deps.sh /home/alambic/alambic_install_r_deps.sh
+
+RUN chmod +x /home/alambic/alambic_install_r_deps.sh \
+    && /bin/bash -c "/home/alambic/alambic_install_r_deps.sh"
+
+RUN echo "REBUILD ME now please! pf921"
 
 # Copy perl deps file for alambic
-RUN echo "REBUILD ME now please! "
 COPY alambic_install_perl_deps.sh /home/alambic/alambic_install_perl_deps.sh
 RUN chmod +x /home/alambic/alambic_install_perl_deps.sh \
     && chown alambic /home/alambic/alambic_install_perl_deps.sh
