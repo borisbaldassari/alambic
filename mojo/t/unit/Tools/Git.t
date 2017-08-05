@@ -44,7 +44,7 @@ if (-d $dir_src && $exec_cloning) {
 
 if ($exec_cloning) {
   note("Cloning Alambic.");
-  $log = $tool->git_clone('Test', 'test.project',
+  $log = $tool->git_clone('test.project',
     'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
   ok(grep(/^\[Tools::Git\] Cloning /, @{$log}), "Log has Ok cloning.")
     or diag explain $log;
@@ -52,11 +52,9 @@ if ($exec_cloning) {
     or diag explain $log;
 }
 
-#diag explain $log;
-
-$log = $tool->git_clone_or_pull('Test', 'test.project',
+$log = $tool->git_clone_or_pull('test.project',
   'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
-$log = $tool->git_clone_or_pull('Test', 'test.project',
+$log = $tool->git_clone_or_pull('test.project',
   'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
 ok(grep(/^\[Tools::Git\] Directory /, @{$log}), "Log has Directory.")
   or diag explain $log;
@@ -76,9 +74,12 @@ ok(exists($commits->[0]{'cmtr'}), 'Commit has cmtr attribute.') or diag explain 
 ok(exists($commits->[0]{'time'}), 'Commit has time attribute.') or diag explain $commits;
 ok(exists($commits->[0]{'id'}),   'Commit has id attribute.') or diag explain $commits;
 
-$log = $tool->git_log('Test', 'test.project');
+$log = $tool->git_log('test.project'); 
 ok(grep(/^\[Tools::Git\] Getting Git log for /, @{$log}),
   "Log has Getting log.")
   or diag explain $log;
+ok(-e "projects/test.project/input/test.project_tool_git_log.txt", 
+   "Log file has been created in input directory.")
+    or diag explain $log;
 
 done_testing();

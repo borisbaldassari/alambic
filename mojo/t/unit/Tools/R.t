@@ -15,7 +15,7 @@ my $tool = Alambic::Tools::R->new();
 isa_ok($tool, 'Alambic::Tools::R');
 
 note("Executing module self-test.");
-my $log = $tool->test();
+my $log = $tool->test(); 
 ok(grep(!/^ERROR/, @{$log}), "Tool test() returns no ERROR")
   or diag explain $log;
 ok(grep(/^OK: R exec found in PATH/, @{$log}), "R bin is in path")
@@ -28,7 +28,6 @@ make_path('projects/test.project/output/');
 
 # Knit documents from the Hudson plugin
 note("Executing Hudson Rmd file.");
-print Dumper(`ls t/resources/`); 
 copy "t/resources/test.project_hudson_builds.csv", "lib/Alambic/Plugins/Hudson/"
   or die "Cannot copy project_hudson_builds.csv.";
 copy "t/resources/test.project_hudson_jobs.csv", "lib/Alambic/Plugins/Hudson/"
@@ -38,14 +37,12 @@ copy "t/resources/test.project_hudson_main.csv", "lib/Alambic/Plugins/Hudson/"
 copy "t/resources/test.project_hudson_metrics.csv", "lib/Alambic/Plugins/Hudson/"
   or die "Cannot copy project_hudson_metrics.csv.";
 $log
-  = $tool->knit_rmarkdown_inc('Hudson', 'test.project', 'hudson.Rmd');
+    = $tool->knit_rmarkdown_inc('Hudson', 'test.project', 'hudson.Rmd'); 
 ok(grep(/^\[Tools::R\] Exec \[Rscript/, @{$log}), "Rscript is called in log.")
   or diag explain $log;
 ok(-e 'projects/test.project/output/test.project_hudson.inc',
   "test.project_hudson.inc file is generated.")
-  or diag explain $log;
-
-#diag explain $log;
+    or diag explain $log;
 
 # Knit documents from the Hudson plugin
 note("Executing Hudson Rmd figure file.");
