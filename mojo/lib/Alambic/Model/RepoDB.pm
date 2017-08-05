@@ -112,7 +112,7 @@ sub backup_db() {
   return $sql_out;
 }
 
-# Restore a backup by executing the SQL export, re-initialise the 
+# Restore a backup by executing the SQL export, re-initialise the
 # sequence ids for auto-increment columns.
 sub restore_db($) {
   my ($self, $sql_in) = @_;
@@ -163,7 +163,7 @@ sub is_db_defined() {
 }
 
 
-# Checks if the database is ready to be used, i.e. has the correct number 
+# Checks if the database is ready to be used, i.e. has the correct number
 # of tables defined.
 sub is_db_ok() {
   my $rows = $pg->db->query(
@@ -175,7 +175,7 @@ sub is_db_ok() {
 }
 
 
-# Checks if the database contains data (counts number of project 
+# Checks if the database contains data (counts number of project
 # run records). Returns undef if tables do not exist (db is not ok).
 sub is_db_empty() {
 
@@ -301,7 +301,7 @@ sub get_metric($) {
       = $pg->db->query("SELECT * FROM models_metrics WHERE mnemo=?;", ($mnemo));
   };
 
-  if ($@) { #print "# In RepoDB::get_metric Exception.\n" . Dumper($@); 
+  if ($@) {    #print "# In RepoDB::get_metric Exception.\n" . Dumper($@);
   }
 
   # Process one row at a time
@@ -378,7 +378,7 @@ sub set_attribute($) {
   my $mnemo = shift;
   my $name  = shift || '';
   my $desc  = encode_json(shift || []);
-  
+
   my $query
     = "INSERT INTO models_attributes (mnemo, name, description) VALUES "
     . "(?, ?, ?) ON CONFLICT (mnemo) DO UPDATE SET (mnemo, name, description) "
@@ -671,8 +671,9 @@ sub add_project_run($$$$$$$) {
   };
 
   if ($@) {
-      #print "# In RepoDB::add_project_run projects_info Exception "
-      #. Dumper($@) . "\n";
+
+    #print "# In RepoDB::add_project_run projects_info Exception "
+    #. Dumper($@) . "\n";
   }
 
   # Execute insert in db.
@@ -694,6 +695,7 @@ sub add_project_run($$$$$$$) {
   };
 
   if ($@) {
+
     #print "# In RepoDB::add_project_run projects_runs Exception "
     #  . Dumper($@) . "\n";
   }
@@ -797,8 +799,10 @@ sub get_project_run($$) {
   my %project;
 
   # Execute select in db.
-  my $results = $pg->db->query(
-    "SELECT * FROM projects_runs WHERE id=? ORDER BY id DESC LIMIT 1", ($run_id));
+  my $results
+    = $pg->db->query(
+    "SELECT * FROM projects_runs WHERE id=? ORDER BY id DESC LIMIT 1",
+    ($run_id));
   while (my $next = $results->hash) {
     $project{'id'}              = $next->{'id'};
     $project{'project_id'}      = $next->{'project_id'};

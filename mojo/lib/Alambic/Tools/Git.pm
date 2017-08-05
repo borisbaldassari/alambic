@@ -29,6 +29,7 @@ my %conf = (
   "name"    => "Git Tool",
   "desc"    => "Provides Git commands and features.",
   "ability" => [
+
 #	"install",
     "methods", "project"
   ],
@@ -37,8 +38,9 @@ my %conf = (
   "provides_methods" => {
     "git_clone" => "Clone a project git repository locally.",
     "git_pull"  => "Execute a pull from a git repository.",
-    "git_clone_or_pull"  => "Execute a pull from a git repository, clone if it doesn't exist.",
-    "git_log"   => "Retrieves log from a local git repository.",
+    "git_clone_or_pull" =>
+      "Execute a pull from a git repository, clone if it doesn't exist.",
+    "git_log"     => "Retrieves log from a local git repository.",
     "git_commits" => "Retrieves commits for a git repository.",
   },
 );
@@ -128,7 +130,7 @@ sub test() {
 }
 
 
-# Function to get a git repository locally, not even knowing if 
+# Function to get a git repository locally, not even knowing if
 # it's already there or not. If it exists, it will be pulld.
 # If it doesn't, it will be cloned.
 #
@@ -182,7 +184,6 @@ sub git_clone($$$) {
 
   return \@log;
 }
-
 
 
 # Function to get the log from a git repository. It assumes the repository
@@ -279,7 +280,6 @@ sub git_pull() {
 
 
 1;
-
 
 
 =encoding utf8

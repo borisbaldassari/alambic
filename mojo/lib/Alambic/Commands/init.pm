@@ -23,8 +23,8 @@ has usage       => "Usage: alambic init\n";
 sub run {
   my ($self, @args) = @_;
 
-  if ( scalar(@args) != 0 ) {
-      my $usage = "
+  if (scalar(@args) != 0) {
+    my $usage = "
 Welcome to the Alambic application. 
 
 See http://alambic.io for more information about the project. 
@@ -43,8 +43,8 @@ Other Mojolicious commands:
 * alambic prefork               Run application in production (multithreaded) mode.
 
 ";
-      print $usage;
-      exit;
+    print $usage;
+    exit;
   }
 
  # Initialise the database:create tables, and use dumb values for name and desc.
@@ -54,12 +54,14 @@ Other Mojolicious commands:
   my $repodb     = Alambic::Model::RepoDB->new($pg_alambic);
 
   # We don't want to empty the database if it already contains data
-  if ( $repodb->is_db_ok() and not $repodb->is_db_empty()) {
-      print "Database is initialised and is not empty. Cowardly refusing to clear it.\n\n";
-      exit;
-  } else {
-      print "Database is nok or is empty.\nInitialising database.\n";
-      $repodb->init_db();
+  if ($repodb->is_db_ok() and not $repodb->is_db_empty()) {
+    print
+      "Database is initialised and is not empty. Cowardly refusing to clear it.\n\n";
+    exit;
+  }
+  else {
+    print "Database is nok or is empty.\nInitialising database.\n";
+    $repodb->init_db();
   }
 
   # Set instance parameters

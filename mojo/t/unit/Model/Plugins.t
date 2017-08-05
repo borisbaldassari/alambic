@@ -66,7 +66,7 @@ $pv   = 1;
 ok(scalar(@{$list}) == $pv, "List info has $pv entries.")
   or explain Dumper @$list;
 
-$list = $plugins->get_list_plugins_recs(); 
+$list = $plugins->get_list_plugins_recs();
 $pv   = 4;
 ok(scalar(@{$list}) == $pv, "List recs has $pv entries.")
   or explain Dumper @$list;

@@ -23,7 +23,6 @@ use Cwd;
 use Digest::MD5 qw(md5_hex);
 
 
-
 has al => sub {
   my $self = shift;
 
@@ -40,9 +39,9 @@ sub startup {
   # Set the secret passphrase (notably used in cookies)
   my $hostname = `hostname`;
   chomp $hostname;
-  my $secrets1 = md5_hex( "Alambic Powah " . getcwd() . " " . $hostname );
-  my $secrets2 = md5_hex( "Data Metrics " . getcwd() . " " . $hostname );
-  my $secrets3 = md5_hex( "Mojolicious " . getcwd() . " " . $hostname );
+  my $secrets1 = md5_hex("Alambic Powah " . getcwd() . " " . $hostname);
+  my $secrets2 = md5_hex("Data Metrics " . getcwd() . " " . $hostname);
+  my $secrets3 = md5_hex("Mojolicious " . getcwd() . " " . $hostname);
   $self->secrets([$secrets1, $secrets2, $secrets3]);
 
   # Get config from alambic.conf
@@ -67,14 +66,14 @@ sub startup {
   # Set layout for pages.
   $self->defaults(layout => 'default');
 
-  
+
   # Used to make alambic installable and Build::Module compatible
   $self->plugin('InstallablePaths');
 
   # Use Minion for job queuing.
   $self->plugin(Minion => {Pg => $config->{'conf_pg_minion'}});
 
-  
+
   # MINION management
 
   # Set parameters.
@@ -94,26 +93,27 @@ sub startup {
   $self->minion->add_task(
     run_project => sub {
       my ($job, $project_id, $user) = @_;
-      
+
       # Check that the project is not currently run
       my $jobs = $self->minion->backend->list_jobs;
       foreach my $j (@$jobs) {
-	  if ( $j->{'args'}[0] =~ m!^${project_id}$! && 
-	       $j->{'state'} =~ 'active' && 
-	       $j->{'id'} != $job->{'id'} ) {
-	      $job->fail( "It is not a good idea to run twice the"
-			  . " same project concurrently. Aborting the job."); 
-	      return;
-	  }
+        if ( $j->{'args'}[0] =~ m!^${project_id}$!
+          && $j->{'state'} =~ 'active'
+          && $j->{'id'} != $job->{'id'})
+        {
+          $job->fail("It is not a good idea to run twice the"
+              . " same project concurrently. Aborting the job.");
+          return;
+        }
       }
-      
+
       my $ret = $self->al->run_project($project_id, $user);
       $job->finish($ret);
     }
   );
 
-  # Add task to run a single plugin
-  # Partial runs are not recorded in the db and can only be viewed in the job log.
+# Add task to run a single plugin
+# Partial runs are not recorded in the db and can only be viewed in the job log.
   $self->minion->add_task(
     run_plugin => sub {
       my ($job, $project_id, $plugin_id) = @_;
@@ -189,8 +189,9 @@ sub startup {
   $r_projects->get('/#id/history/#build/#page')
     ->to(action => 'display_history');
   $r_projects->get('/#id/#plugin/#page')->to(action => 'display_plugins');
-  # TODO Remove me, or use me to setup the post plugins.
-  #$r_projects->post('/#id/#plugin/#page')->to(action => 'display_plugins_post');
+
+ # TODO Remove me, or use me to setup the post plugins.
+ #$r_projects->post('/#id/#plugin/#page')->to(action => 'display_plugins_post');
   $r_projects->get('/#id/#plugin/figures/#page')
     ->to(action => 'display_figures');
 
@@ -235,9 +236,9 @@ sub startup {
   $r_admin->post('/edit')->to(action => 'edit_post');
   $r_admin->get('/summary')->to(action => 'summary');
   $r_admin->get('/projects')->to(action => 'projects');
-  
+
   $r_admin->get('/purgejobs')->to(action => 'jobs_purge');
-  
+
   $r_admin->get('/users')->to(action => 'users');
   $r_admin->get('/users/new')->to(action => 'users_new');
   $r_admin->post('/users/new')->to(action => 'users_new_post');
@@ -247,6 +248,7 @@ sub startup {
 
   $r_admin->get('/models')->to(action => 'models');
   $r_admin->get('/models/import')->to(action => 'models_import');
+
   # TODO remove init? still useful?
   $r_admin->get('/models/init')->to(action => 'models_init');
 

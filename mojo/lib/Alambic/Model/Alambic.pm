@@ -84,7 +84,7 @@ my $al_version;
 # Create a new Alambic object.
 sub new {
   my ($class, $config_opt) = @_;
-  
+
   $config = $config_opt;
   my $pg_alambic = $config->{'conf_pg_alambic'};
   $al_version = $config->{'alambic_version'};
@@ -123,7 +123,7 @@ sub backup() {
 # Restore a SQL string into the Alambic DB.
 sub restore($) {
   my ($self, $sql) = @_;
-    
+
   $repodb->restore_db($sql);
 }
 
@@ -533,8 +533,8 @@ sub get_project_run($$) {
 #      "log" => ['log entry'],
 #    }
 sub run_project($) {
-    my ($self, $project_id, $user) = @_;
-	
+  my ($self, $project_id, $user) = @_;
+
   my $time_start       = DateTime->now();
   my $time_start_epoch = $time_start->epoch();
   my $run              = {
@@ -651,7 +651,7 @@ sub run_globals() {
 
 }
 
-# Delete a project from the Alambic instance. 
+# Delete a project from the Alambic instance.
 # This removes database records and all files associated
 # to the project on the file system.
 sub delete_project($) {

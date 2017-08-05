@@ -64,7 +64,7 @@ sub _read_tools() {
 }
 
 
-# Get a list of all tools. 
+# Get a list of all tools.
 # Returns an array ref of tool IDs.
 sub get_list_all() {
   my @list = sort keys %tools;
@@ -80,7 +80,6 @@ sub get_tool($) {
 }
 
 1;
-
 
 
 =encoding utf8

@@ -269,7 +269,7 @@ sub models_import {
 }
 
 # Models display screen for Alambic admin.
-# TODO 
+# TODO
 # sub models_init {
 #   my $self = shift;
 
@@ -403,7 +403,8 @@ sub projects_run {
   my $job = $self->minion->enqueue(
     run_project => [$project_id, $user] => {delay => 0});
 
-  my $msg = "Project run for $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
+  my $msg
+    = "Project run for $project_id has been enqueued [<a href=\"/admin/jobs/$job\">$job</a>].";
 
   $self->flash(msg => $msg);
   $self->redirect_to('/admin/projects/' . $project_id);
@@ -412,21 +413,21 @@ sub projects_run {
 
 # Run all projects at once
 sub projects_runall {
-  my $self       = shift;
+  my $self = shift;
 
   my $user = $self->session('session_user');
 
-  my $projects = $self->app->al->get_projects_list( 1 );
+  my $projects = $self->app->al->get_projects_list(1);
   print Dumper($projects);
 
   # Start minion job
   for my $p (keys %$projects) {
-      my $job = $self->minion->enqueue(
-	  run_project => [$p, $user] => {delay => 0}
-	  );
+    my $job
+      = $self->minion->enqueue(run_project => [$p, $user] => {delay => 0});
   }
 
-  my $msg = "Started runs for all [" . scalar( keys %$projects ) . "] active projects.";
+  my $msg
+    = "Started runs for all [" . scalar(keys %$projects) . "] active projects.";
 
   $self->flash(msg => $msg);
   $self->redirect_to('/admin/jobs/');
@@ -435,17 +436,17 @@ sub projects_runall {
 
 # Purge all finished and failed jobs
 sub jobs_purge {
-  my $self       = shift;
+  my $self = shift;
 
   my $user = $self->session('session_user');
-  
-  foreach my $job ( @{$self->minion->backend->list_jobs()} ) {
-      print Dumper($job);
-      # Remove minion job if state == failed or finished.
-      if ($job->{'state'} =~ m!^failed$! or
-	  $job->{'state'} =~ m!^finished$! ) {
-	      my $job = $self->minion->backend->remove_job( $job->{'id'} );
-      }
+
+  foreach my $job (@{$self->minion->backend->list_jobs()}) {
+    print Dumper($job);
+
+    # Remove minion job if state == failed or finished.
+    if ($job->{'state'} =~ m!^failed$! or $job->{'state'} =~ m!^finished$!) {
+      my $job = $self->minion->backend->remove_job($job->{'id'});
+    }
   }
 
   my $msg = "Purged all finished and failed jobs in the queue.";

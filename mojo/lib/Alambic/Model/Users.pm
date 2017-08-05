@@ -73,7 +73,7 @@ sub generate_passwd($) {
   return $hash;
 }
 
-# Get information about a user. 
+# Get information about a user.
 # Return a hash reference.
 sub get_user($) {
   my $self = shift;

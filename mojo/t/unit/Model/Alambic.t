@@ -25,18 +25,20 @@ my %conf   = (
 
 SKIP: {
   # If no database is defined, skip all tests.
-    my $alambic;
+  my $alambic;
 
   # Initialise the db.
-    my $repodb = Alambic::Model::RepoDB->new($conf{'conf_pg_alambic'});
-    my $is_defined = $repodb->is_db_defined();
-    note("Initialising database (defined: $is_defined).");
-    # If database is not ok, init it.
-    # This will fail if the database is already populated.
-    $repodb->init_db();
-    
-  eval { 
-      $alambic = Alambic::Model::Alambic->new(\%conf); 
+  my $repodb     = Alambic::Model::RepoDB->new($conf{'conf_pg_alambic'});
+  my $is_defined = $repodb->is_db_defined();
+  note("Initialising database (defined: $is_defined).");
+
+  # If database is not ok, init it.
+  # This will fail if the database is already populated.
+  $repodb->init_db();
+
+  eval {
+    $alambic = Alambic::Model::Alambic->new(\%conf);
+
     # If the database was previously populated, then clean it.
     $repodb->init_db();
   };
@@ -63,7 +65,9 @@ SKIP: {
     or diag explain $conf;
 
   my $version = $alambic->instance_version();
-  ok( $version =~ m!^alambic-test$!, "Alambic version is $version, considered ok.") or diag explain $version;
+  ok($version =~ m!^alambic-test$!,
+    "Alambic version is $version, considered ok.")
+    or diag explain $version;
 
   my $model = $alambic->get_models();
   isa_ok($model, 'Alambic::Model::Models');
@@ -85,16 +89,12 @@ SKIP: {
     $sql =~ m!CREATE TABLE IF NOT EXISTS conf!,
     "SQL backup has create table for conf."
   ) or diag explain $sql;
-  ok(
-    $sql
-      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', !,
-    "SQL backup has insert for name."
-  ) or diag explain $sql;
-  ok(
-    $sql
-      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', !,
-    "SQL backup has insert for desc."
-  ) or diag explain $sql;
+  ok($sql =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', !,
+    "SQL backup has insert for name.")
+    or diag explain $sql;
+  ok($sql =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', !,
+    "SQL backup has insert for desc.")
+    or diag explain $sql;
   ok($sql !~ /tools.cdt/, "SQL backup has still NOT tools.cdt.")
     or diag explain $sql;
 
@@ -132,14 +132,20 @@ SKIP: {
   my $pv           = 4;
   ok(scalar @{$plugins_list} == $pv, "Plugins pre list has $pv entries.")
     or diag explain $plugins_list;
-  ok(grep(/^EclipsePmi$/, @{$plugins_list}) == 1, "Plugins pre list has EclipsePmi.")
-    or diag explain $plugins_list;
+  ok(
+    grep(/^EclipsePmi$/, @{$plugins_list}) == 1,
+    "Plugins pre list has EclipsePmi."
+  ) or diag explain $plugins_list;
   ok(grep(/^Hudson$/, @{$plugins_list}) == 1, "Plugins pre list has Hudson.")
     or diag explain $plugins_list;
-  ok(grep(/^PmdAnalysis$/, @{$plugins_list}) == 1, "Plugins pre list has PmdAnalysis.")
-    or diag explain $plugins_list;
-  ok(grep(/^StackOverflow$/, @{$plugins_list}) == 1, "Plugins pre list has StackOverflow.")
-    or diag explain $plugins_list;
+  ok(
+    grep(/^PmdAnalysis$/, @{$plugins_list}) == 1,
+    "Plugins pre list has PmdAnalysis."
+  ) or diag explain $plugins_list;
+  ok(
+    grep(/^StackOverflow$/, @{$plugins_list}) == 1,
+    "Plugins pre list has StackOverflow."
+  ) or diag explain $plugins_list;
 
   my $projects_list = $alambic->get_projects_list();
   ok($projects_list->{'tools.cdt'} =~ m!^Tools CDT$!,
@@ -154,8 +160,8 @@ SKIP: {
   note("Run project from Alambic.");
   $ret = $alambic->run_project('tools.cdt');
 
-  # 4 is when attributes are not defined (i.e. typically when the script is run by itself)
-  # 6 when attributes are defined (i.e. when all tests are run in docker).
+# 4 is when attributes are not defined (i.e. typically when the script is run by itself)
+# 6 when attributes are defined (i.e. when all tests are run in docker).
   my $k = scalar(keys %$ret);
   ok(($k == 6) || ($k == 4),
     "Adding run_project returns hash with 4 or 6 entries.")
@@ -169,45 +175,50 @@ SKIP: {
   # Now restore a backup to test history
   note("Restoring database with Sirius history.");
   my $file_sql = 'alambic_backup_201707290902.sql';
-  $sql    = $repofs->read_backup($file_sql);
+  $sql = $repofs->read_backup($file_sql);
   $alambic->restore($sql);
   my $hist = $alambic->get_project_hist('modeling.sirius');
-  ok( scalar(@$hist) == 3, "History has 3 items after restore.") 
-      or diag explain $hist;
-  ok( $hist->[2]{'run_delay'} == 47, "First item in history has run_delay 47.") 
-      or diag explain $hist;
-  ok( $hist->[2]{'id'} == 1, "First item in history has id 1.") 
-      or diag explain $hist;
-  ok( $hist->[2]{'run_time'} =~ m!^2017-07-29!, "First item in history has correct run_time.") 
-      or diag explain $hist->[2];
+  ok(scalar(@$hist) == 3, "History has 3 items after restore.")
+    or diag explain $hist;
+  ok($hist->[2]{'run_delay'} == 47, "First item in history has run_delay 47.")
+    or diag explain $hist;
+  ok($hist->[2]{'id'} == 1, "First item in history has id 1.")
+    or diag explain $hist;
+  ok(
+    $hist->[2]{'run_time'} =~ m!^2017-07-29!,
+    "First item in history has correct run_time."
+  ) or diag explain $hist->[2];
 
-    my $run = $alambic->get_project_last_run('modeling.sirius');
-    
-  ok( $run->{'run_delay'} == 49, 
-      "Last run has correct run_delay from backup.") 
-      or diag explain $run;
-  ok( $run->{'metrics'}{'CI_JOBS_RED'} == 8, 
-      "Last run has correct metric CI_JOBS_RED from backup.") 
-      or diag explain $run;
-  ok( $run->{'info'}{'PMI_ID'} =~ m!^modeling.sirius$!, 
-      "Last run has correct info PMI_ID from backup.") 
-      or diag explain $run;
-  ok( $run->{'recs'}[0]{'rid'} =~ m!^PMI_EMPTY_TITLE$!, 
-      "Last run has correct rec PMI_EMPTY_TITLE from backup.") 
-      or diag explain $run;
-  ok( $run->{'project_id'} =~ m!^modeling.sirius$!, 
-      "Last run has correct project_id from backup.") 
-      or diag explain $run;
-  ok( $run->{'id'} == 3, 
-      "Last run has correct id from backup.") 
-      or diag explain $run;
-  ok( $run->{'run_time'} =~ m!^2017-07-29!, 
-      "Last run has correct run_time from backup.") 
-      or diag explain $run;
-  ok( $run->{'run_user'} =~ m!^administrator$!, 
-      "Last run has correct run_user from backup.") 
-      or diag explain $run;
-    
+  my $run = $alambic->get_project_last_run('modeling.sirius');
+
+  ok($run->{'run_delay'} == 49, "Last run has correct run_delay from backup.")
+    or diag explain $run;
+  ok($run->{'metrics'}{'CI_JOBS_RED'} == 8,
+    "Last run has correct metric CI_JOBS_RED from backup.")
+    or diag explain $run;
+  ok(
+    $run->{'info'}{'PMI_ID'} =~ m!^modeling.sirius$!,
+    "Last run has correct info PMI_ID from backup."
+  ) or diag explain $run;
+  ok(
+    $run->{'recs'}[0]{'rid'} =~ m!^PMI_EMPTY_TITLE$!,
+    "Last run has correct rec PMI_EMPTY_TITLE from backup."
+  ) or diag explain $run;
+  ok(
+    $run->{'project_id'} =~ m!^modeling.sirius$!,
+    "Last run has correct project_id from backup."
+  ) or diag explain $run;
+  ok($run->{'id'} == 3, "Last run has correct id from backup.")
+    or diag explain $run;
+  ok(
+    $run->{'run_time'} =~ m!^2017-07-29!,
+    "Last run has correct run_time from backup."
+  ) or diag explain $run;
+  ok(
+    $run->{'run_user'} =~ m!^administrator$!,
+    "Last run has correct run_user from backup."
+  ) or diag explain $run;
+
 }
 
 done_testing();

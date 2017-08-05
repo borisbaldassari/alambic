@@ -24,8 +24,8 @@ sub run() {
 
   my ($self, @args) = @_;
 
-  if ( scalar(@args) != 0 ) {
-      my $usage = "
+  if (scalar(@args) != 0) {
+    my $usage = "
 Welcome to the Alambic application. 
 
 See http://alambic.io for more information about the project. 
@@ -44,8 +44,8 @@ Other Mojolicious commands:
 * alambic prefork               Run application in production (multithreaded) mode.
 
 ";
-      print $usage;
-      exit;
+    print $usage;
+    exit;
   }
 
   say "Starting database backup.";

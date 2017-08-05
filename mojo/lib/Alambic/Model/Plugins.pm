@@ -49,7 +49,7 @@ my %plugins;
 my %plugins_type;
 my %plugins_ability;
 
-# Constructor to build a new Alambic::Model::Plugins object and 
+# Constructor to build a new Alambic::Model::Plugins object and
 # initialise the list of plugins.
 sub new {
   my ($class) = @_;
@@ -108,7 +108,7 @@ sub get_names_all() {
 }
 
 # Get configuration hashes for all plugins.
-# { 
+# {
 #   'ProjectSummary' => {
 #     'name' => 'Project summary',
 #     'type' => 'post',
@@ -231,7 +231,6 @@ sub run_post($$$) {
 }
 
 1;
-
 
 
 =encoding utf8

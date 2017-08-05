@@ -24,8 +24,8 @@ has usage       => "Usage: alambic password user newpassword\n";
 sub run {
   my ($self, @args) = @_;
 
-  if ( scalar(@args) != 2 ) {
-      my $usage = "
+  if (scalar(@args) != 2) {
+    my $usage = "
 Welcome to the Alambic application. 
 
 See http://alambic.io for more information about the project. 
@@ -44,21 +44,22 @@ Other Mojolicious commands:
 * alambic prefork               Run application in production (multithreaded) mode.
 
 ";
-      print $usage;
-      exit;
+    print $usage;
+    exit;
   }
 
-  my $user = shift @args;
-  my $passwd = shift @args;
+  my $user    = shift @args;
+  my $passwd  = shift @args;
   my $al_user = $self->app->al->users->get_user($user);
-  
-  my $project = $self->app->al->set_user( 
-      $al_user->{'id'}, $al_user->{'name'}, $al_user->{'email'}, 
-      $passwd, $al_user->{'roles'}, $al_user->{'projects'},
-      $al_user->{'notifs'});
-  
-  say "Successfully changed password for user [$al_user->{'name'}] id [$al_user->{'id'}].\n";
-  
+
+  my $project
+    = $self->app->al->set_user($al_user->{'id'}, $al_user->{'name'},
+    $al_user->{'email'}, $passwd, $al_user->{'roles'}, $al_user->{'projects'},
+    $al_user->{'notifs'});
+
+  say
+    "Successfully changed password for user [$al_user->{'name'}] id [$al_user->{'id'}].\n";
+
 }
 
 

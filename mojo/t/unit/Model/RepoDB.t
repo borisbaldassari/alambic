@@ -112,21 +112,15 @@ SKIP: {
     }
     is($values{'name'}, "MyDBNameInit", "Name in DB is MyDBNameInit.")
       or diag explain %values;
-    is(
-      $values{'desc'},
-      "MyDBDescInit",
-      "Desc in DB is MyDBDescInit."
-    ) or diag explain %values;
+    is($values{'desc'}, "MyDBDescInit", "Desc in DB is MyDBDescInit.")
+      or diag explain %values;
 
     my $name = $repodb->name();
     is($name, 'MyDBNameInit', "Name from module is MyDBNameInit.")
       or diag explain $name;
     my $desc = $repodb->desc();
-    is(
-      $desc,
-      'MyDBDescInit',
-      "Desc from module is MyDBDescInit."
-    ) or diag explain $name;
+    is($desc, 'MyDBDescInit', "Desc from module is MyDBDescInit.")
+      or diag explain $name;
 
     # Check instance information.
     note("Check instance information.");
@@ -161,7 +155,7 @@ SKIP: {
 
 
     my $metric = $repodb->get_metrics();
-    is_ok(ref($metric)  =~ m!^HASH$!,
+    is_ok(ref($metric) =~ m!^HASH$!,
       "get_metrics() Get all metrics returns empty hash when there is none.")
       or diag explain $metric;
 

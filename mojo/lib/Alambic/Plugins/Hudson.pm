@@ -324,7 +324,6 @@ sub _compute_data($) {
 1;
 
 
-
 =encoding utf8
 
 =head1 NAME
