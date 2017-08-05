@@ -317,11 +317,11 @@ Parameters:
 
 =back
 
-For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/StackOverflow.html>.
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/StackOverflow.html>.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/StackOverflow.html>, L<https://stackoverflow.com>,
+L<https://alambic.io/Plugins/Pre/StackOverflow.html>, L<https://stackoverflow.com>,
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 
