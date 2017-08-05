@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Alambic::Tools::R &mdash; Alambic Perldoc</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
+  <h1 class="t1">Alambic Perldoc</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Alambic</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Alambic Perldoc</a> &gt; Perl Modules &gt;
+  Alambic::Tools::R
+</div>
+<div>
+<a href="../../src/Alambic/Tools/R.pm">Source</a>
+</div>
+
+<div class="pod">
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+      <li><a href="#get_conf">get_conf()</a></li>
+      <li><a href="#version">version()</a></li>
+      <li><a href="#test">test()</a></li>
+      <li><a href="#knit_rmarkdown_inc">knit_rmarkdown_inc()</a></li>
+      <li><a href="#knit_rmarkdown_pdf">knit_rmarkdown_pdf()</a></li>
+      <li><a href="#knit_rmarkdown_html">knit_rmarkdown_html()</a></li>
+      <li><a href="#knit_rmarkdown_images">knit_rmarkdown_images()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>Alambic::Tools::R</b> - A plugin to interact with the R engine.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><b>Alambic::Tools::R</b> provides an interface to the R statistical engine. It specifically provides methods to compute R script files and knit R markdown documents.</p>
+
+<p>TODO Find the R project web page + rstudio.</p>
+
+<p>For the complete configuration see the user documentation on the web site: <a href="https://alambic.io/Plugins/Tools/R.html">https://alambic.io/Plugins/Tools/R.html</a>.</p>
+
+<h2 id="new"><code>new()</code></h2>
+
+<pre><code>    my $tool = Alambic::Tools::R-&gt;new();
+    $tool-&gt;test();</code></pre>
+
+<p>Build a new R tool object.</p>
+
+<h2 id="get_conf"><code>get_conf()</code></h2>
+
+<pre><code>    my $conf = $r-&gt;get_conf();</code></pre>
+
+<p>Get configuration for this Git plugin instance.</p>
+
+<h2 id="version"><code>version()</code></h2>
+
+<pre><code>    my $version = $r-&gt;version();</code></pre>
+
+<p>Return R version as a string.</p>
+
+<h2 id="test"><code>test()</code></h2>
+
+<pre><code>    my $results = </code></pre>
+
+<p>Self-test method for the tool.</p>
+
+<pre><code>    [
+      &#39;OK: R exec found in PATH at [/home/boris/applis/R-3.3.2/bin/R].&#39;,
+      &#39;OK: Rscript exec found in PATH at [/home/boris/applis/R-3.3.2/bin/Rscript].&#39;
+    ]</code></pre>
+
+<h2 id="knit_rmarkdown_inc"><code>knit_rmarkdown_inc()</code></h2>
+
+<pre><code>    my $log = $tool-&gt;knit_rmarkdown_inc(&#39;Hudson&#39;, &#39;test.project&#39;, 
+      &#39;hudson.Rmd&#39;, [], \%params);</code></pre>
+
+<p>Function to knit a rmarkdown document to a html snippet.</p>
+
+<p>It goes into the plugin&#39;s directory, creates required directories (e.g. figures/) and executes Rscript. The plugin assumes that the input files needed are already present in the directory. Returns the log of the transformation.</p>
+
+<pre><code>    [
+      &#39;[Tools::R] Exec [Rscript -e &quot;library(rmarkdown); project.id &lt;- 
+        \&#39;test.project\&#39;; plugin.id &lt;- \&#39;Hudson\&#39;; rmarkdown::render(\&#39;
+        hudson.Rmd\&#39;, output_format=\&#39;html_fragment\&#39;, output_file=
+        \&#39;test.project_hudson.inc\&#39;)&quot;].&#39;,
+      &#39;[Tools::R] Moved main file from [lib/Alambic/Plugins/Hudson/
+        test.project_hudson.inc] to [projects/test.project/output/]. ret [1].&#39;
+    ]</code></pre>
+
+<h2 id="knit_rmarkdown_pdf"><code>knit_rmarkdown_pdf()</code></h2>
+
+<pre><code>    my $log = $tool-&gt;knit_rmarkdown_pdf(&#39;Hudson&#39;, &#39;test.project&#39;, 
+      &#39;hudson.Rmd&#39;, \%params);</code></pre>
+
+<p>Function to knit a rmarkdown document to a pdf document.</p>
+
+<p>It goes into the plugin&#39;s directory, creates required directories (e.g. figures/) and executes Rscript. The plugin assumes that the input files needed are already present in the directory. Returns the log of the transformation.</p>
+
+<h2 id="knit_rmarkdown_html"><code>knit_rmarkdown_html()</code></h2>
+
+<pre><code>    $log = $tool-&gt;knit_rmarkdown_html(&#39;Hudson&#39;, &#39;test.project&#39;,
+      &#39;hudson_hist.rmd&#39;, [], \%params);</code></pre>
+
+<p>Function to knit a rmarkdown document to a full html document.</p>
+
+<p>It goes into the plugin&#39;s directory, creates required directories (e.g. figures/) and executes Rscript. The plugin assumes that the input files needed are already present in the directory. Returns the log of the transformation.</p>
+
+<h2 id="knit_rmarkdown_images"><code>knit_rmarkdown_images()</code></h2>
+
+<pre><code>    $log = $tool-&gt;knit_rmarkdown_images(&#39;PmdAnalysis&#39;, &#39;test.project&#39;,
+      &#39;pmd_analysis_files_ncc1.r&#39;, [&quot;pmd_analysis_files_ncc1.svg&quot;]);</code></pre>
+
+<p>Function to knit a rmarkdown document to image(s).</p>
+
+<p>It goes into the plugin&#39;s directory, creates required directories (e.g. figures/) and executes Rscript. The plugin assumes that the input files needed are already present in the directory. Returns the log of the transformation.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="https://alambic.io/Plugins/Tools/R.html">https://alambic.io/Plugins/Tools/R.html</a>, <a href="https://www.r-project.org">https://www.r-project.org</a>,</p>
+
+<p><a href="http://search.cpan.org/perldoc?Mojolicious">Mojolicious</a>, <a href="http://alambic.io">http://alambic.io</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a></p>
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

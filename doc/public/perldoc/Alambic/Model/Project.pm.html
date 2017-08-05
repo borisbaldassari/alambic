@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Alambic::Model::Project &mdash; Alambic Perldoc</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
+  <h1 class="t1">Alambic Perldoc</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Alambic</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Alambic Perldoc</a> &gt; Perl Modules &gt;
+  Alambic::Model::Project
+</div>
+<div>
+<a href="../../src/Alambic/Model/Project.pm">Source</a>
+</div>
+
+<div class="pod">
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+      <li><a href="#get_id">get_id()</a></li>
+      <li><a href="#name">name()</a></li>
+      <li><a href="#desc">desc()</a></li>
+      <li><a href="#active">active()</a></li>
+      <li><a href="#last_run">last_run()</a></li>
+      <li><a href="#get_plugins">get_plugins()</a></li>
+      <li><a href="#get_qm">get_qm()</a></li>
+      <li><a href="#info">info()</a></li>
+      <li><a href="#metrics">metrics()</a></li>
+      <li><a href="#indicators">indicators()</a></li>
+      <li><a href="#attributes">attributes()</a></li>
+      <li><a href="#attributes_conf">attributes_conf()</a></li>
+      <li><a href="#recs">recs()</a></li>
+      <li><a href="#run_plugin">run_plugin()</a></li>
+      <li><a href="#run_plugins">run_plugins()</a></li>
+      <li><a href="#run_qm">run_qm()</a></li>
+      <li><a href="#run_post">run_post()</a></li>
+      <li><a href="#run_posts">run_posts()</a></li>
+      <li><a href="#run_project">run_project()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>Alambic::Model::Project</b> - Interface to all project-related actions and information defined in Alambic.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    my $project = Alambic::Model::Project-&gt;new(
+      $id,
+      $project_conf-&gt;{&#39;name&#39;},
+      $project_conf-&gt;{&#39;is_active&#39;},
+      $project_conf-&gt;{&#39;last_run&#39;},
+      $project_conf-&gt;{&#39;plugins&#39;},
+      $project_data
+    );
+    $project-&gt;desc(&#39;this is my desc&#39;);
+    
+    my $metrics = $project-&gt;metrics();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><b>Alambic::Model::Project</b> provides a complete interface to a project within Alambic. This includes information (metrics, attributes, configuration, etc.) as well as actions (run_project, run_qm, run_plugins, etc.)</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="new"><code>new()</code></h2>
+
+<pre><code>    my $project = Alambic::Model::Project-&gt;new(
+      $id,
+      $project_conf-&gt;{&#39;name&#39;},
+      $project_conf-&gt;{&#39;is_active&#39;},
+      $project_conf-&gt;{&#39;last_run&#39;},
+      $project_conf-&gt;{&#39;plugins&#39;},
+      $project_data
+    );
+    
+    my $project = Alambic::Model::Project-&gt;new($id, $name);
+    $project-&gt;desc($desc);
+    $project-&gt;active($active);</code></pre>
+
+<p>Create a new <a href="Project.pm.html">Alambic::Model::Project</a> object and optionally initialises it with all information.</p>
+
+<h2 id="get_id"><code>get_id()</code></h2>
+
+<pre><code>    my $id = $project-&gt;get_id();</code></pre>
+
+<p>Get the ID of the project.</p>
+
+<h2 id="name"><code>name()</code></h2>
+
+<pre><code>    my $name = $project-&gt;name();
+    $project-&gt;name(&#39;My New Name&#39;);</code></pre>
+
+<p>Get or set the name of the project.</p>
+
+<h2 id="desc"><code>desc()</code></h2>
+
+<pre><code>    my $desc = $project-&gt;desc();
+    $project-&gt;desc(&#39;My New Desc&#39;);</code></pre>
+
+<p>Get or set the description of the project.</p>
+
+<h2 id="active"><code>active()</code></h2>
+
+<pre><code>    my $is_active = $project-&gt;active();
+    $project-&gt;active(1);</code></pre>
+
+<p>Get or set the is_active flag on the project. Active projects are displayed in the list of projects in the dashboard and menu.</p>
+
+<h2 id="last_run"><code>last_run()</code></h2>
+
+<pre><code>    my $run = $project-&gt;last_run();</code></pre>
+
+<p>Return results from the last run of the project.</p>
+
+<h2 id="get_plugins"><code>get_plugins()</code></h2>
+
+<pre><code>    my $plugins = $project-&gt;get_plugins();</code></pre>
+
+<p>Return the list of plugins defined on the project.</p>
+
+<h2 id="get_qm"><code>get_qm()</code></h2>
+
+<pre><code>    my $qm = $project-&gt;get_qm();</code></pre>
+
+<p>Return the populated quality model with values.</p>
+
+<h2 id="info"><code>info()</code></h2>
+
+<pre><code>    my $info = $project-&gt;info();
+    $project-&gt;info( {&#39;PMI_TITLE&#39; =&gt; &#39;Awesome Project&#39;} );</code></pre>
+
+<p>Get or set the list of current &#39;info&#39; on the project.</p>
+
+<h2 id="metrics"><code>metrics()</code></h2>
+
+<pre><code>    my $metrics = $project-&gt;metrics();
+    $project-&gt;metrics( {&#39;METRIC1&#39; =&gt; &#39;1433&#39;} );</code></pre>
+
+<p>Get or set the list of current &#39;metrics&#39; on the project.</p>
+
+<h2 id="indicators"><code>indicators()</code></h2>
+
+<pre><code>    my $inds = $project-&gt;indicators();
+    $project-&gt;indicators( {&#39;IND1&#39; =&gt; &#39;3.2&#39;} );</code></pre>
+
+<p>Get or set the list of current indicators on the project.</p>
+
+<h2 id="attributes"><code>attributes()</code></h2>
+
+<pre><code>    my $attrs = $project-&gt;attributes();
+    $project-&gt;attributes( {&#39;ATTR1&#39; =&gt; &#39;3.2&#39;} );</code></pre>
+
+<p>Get or set the list of current &#39;attributes&#39; on the project.</p>
+
+<h2 id="attributes_conf"><code>attributes_conf()</code></h2>
+
+<pre><code>    my $attrs_conf = $project-&gt;attributes_conf();
+    $project-&gt;attributes_conf( {&#39;ATTR1&#39; =&gt; &#39;2 / 2&#39;} );</code></pre>
+
+<p>Get or set the list of current attributes confidence on the project.</p>
+
+<h2 id="recs"><code>recs()</code></h2>
+
+<pre><code>    my $recs = $project-&gt;recs();
+    $project-&gt;recs(
+      {
+        &#39;rid&#39; =&gt; &#39;PMI_EMPTY_TITLE&#39;,
+        &#39;src&#39; =&gt; &#39;EclipsePmi&#39;,
+        &#39;severity&#39; =&gt; 2,
+        &#39;desc&#39; =&gt; &#39;The title entry is empty in the PMI.&#39;
+      }
+    )</code></pre>
+
+<p>Get or set the list of &#39;recs&#39; on the project.</p>
+
+<h2 id="run_plugin"><code>run_plugin()</code></h2>
+
+<pre><code>    my $results = $project-&gt;run_plugin(&#39;EclipsePmi&#39;);</code></pre>
+
+<p>Runs a pre-type plugin and returns result.</p>
+
+<pre><code>    {
+      &quot;info&quot;    =&gt; \%info,
+      &quot;metrics&quot; =&gt; \%metrics,
+      &quot;recs&quot;    =&gt; \@recs,
+      &quot;log&quot;     =&gt; \@log
+    }</code></pre>
+
+<h2 id="run_plugins"><code>run_plugins()</code></h2>
+
+<pre><code>    my $results = $project-&gt;run_plugin();</code></pre>
+
+<p>Runs all pre-type plugins and returns result.</p>
+
+<pre><code>    {
+      &#39;info&#39;    =&gt; \%info,
+      &#39;metrics&#39; =&gt; \%metrics,
+      &#39;recs&#39;    =&gt; \@recs,
+      &#39;log&#39;     =&gt; \@log
+    }</code></pre>
+
+<h2 id="run_qm"><code>run_qm()</code></h2>
+
+<pre><code>    my $models = $alambic-&gt;get_models();
+    my $results = $project-&gt;run_qm($models);</code></pre>
+
+<p>Run a qm analysis: generate indicators and attributes for the project.</p>
+
+<pre><code>    {
+      &#39;log&#39; =&gt; [ &#39;[Model::Project] Aggregating data from leaves up to attributes.&#39; ],
+      &#39;inds&#39; =&gt; {
+        &#39;PMI_SCM_INFO&#39; =&gt; 1,
+        &#39;PMI_ITS_INFO&#39; =&gt; 5
+      },
+      &#39;attrs&#39; =&gt; { &#39;ATTR1&#39; =&gt; &#39;3.0&#39; }
+      &#39;attrs_conf&#39; =&gt; { &#39;ATTR1&#39; =&gt; &#39;2 / 2&#39; },
+    };</code></pre>
+
+<h2 id="run_post"><code>run_post()</code></h2>
+
+<pre><code>    my $models = $alambic-&gt;get_models();
+    my $results = $project-&gt;run_post(&#39;ProjectSummary&#39;, $models);</code></pre>
+
+<p>Run a specific post plugin for this project and returns results.</p>
+
+<pre><code>    {
+      &#39;info&#39;    =&gt; \%info,
+      &#39;metrics&#39; =&gt; \%metrics,
+      &#39;recs&#39;    =&gt; \@recs,
+      &#39;log&#39;     =&gt; \@log
+    }</code></pre>
+
+<h2 id="run_posts"><code>run_posts()</code></h2>
+
+<pre><code>    my $models = $alambic-&gt;get_models();
+    my $results = $project-&gt;run_posts($models);</code></pre>
+
+<p>Run all post plugins for this project and returns results.</p>
+
+<pre><code>    {
+      &#39;info&#39;    =&gt; \%info,
+      &#39;metrics&#39; =&gt; \%metrics,
+      &#39;recs&#39;    =&gt; \@recs,
+      &#39;log&#39;     =&gt; \@log
+    }</code></pre>
+
+<h2 id="run_project"><code>run_project()</code></h2>
+
+<pre><code>    my $models = $alambic-&gt;get_models();
+    my $results = $project-&gt;run_project($models);</code></pre>
+
+<p>Run a full project analysis: run plugins, qm, and post.</p>
+
+<pre><code>    {
+      &#39;info&#39;    =&gt; \%info,
+      &#39;metrics&#39; =&gt; \%metrics,
+      &#39;recs&#39;    =&gt; \@recs,
+      &#39;log&#39;     =&gt; \@log
+    }</code></pre>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="http://search.cpan.org/perldoc?Mojolicious">Mojolicious</a>, <a href="http://alambic.io">http://alambic.io</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a></p>
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+
