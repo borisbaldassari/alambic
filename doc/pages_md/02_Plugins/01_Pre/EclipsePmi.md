@@ -29,21 +29,24 @@ See the project's wiki for more information.
 
 # Provides
 
+## Downloads
+
+* pmi.json: The PMI file as returned by the Eclipse repository (JSON).
+* pmi_checks.csv: The list of PMI checks and their results (CSV).
+* pmi_checks.json: The list of PMI checks and their results (JSON).
+
+## Figures
+
 ## Information
 
 MLS_DEV_URL, MLS_USR_URL, PMI_BUGZILLA_COMPONENT, PMI_BUGZILLA_CREATE_URL, PMI_BUGZILLA_PRODUCT, PMI_BUGZILLA_QUERY_URL, PMI_CI_URL, PMI_DESC, PMI_DOCUMENTATION_URL, PMI_DOWNLOAD_URL, PMI_GETTINGSTARTED_URL, PMI_ID, PMI_MAIN_URL, PMI_SCM_URL, PMI_TITLE, PMI_UPDATESITE_URL, PMI_WIKI_URL
 
 ## Metrics
 
-PMI_ITS_INFO, PMI_SCM_INFO
-
-## Figures
-
-## Downloads
-
-* pmi.json: The PMI file as returned by the Eclipse repository (JSON).
-* pmi_checks.csv: The list of PMI checks and their results (CSV).
-* pmi_checks.json: The list of PMI checks and their results (JSON).
+* PMI_ITS_INFO,
+  The quantity of ITS-related information made available through the PMI.
+* PMI_SCM_INFO
+  The quantity of SCM-related information made available through the PMI.
 
 ## Recommendations
 
@@ -51,7 +54,7 @@ PMI_EMPTY_BUGZILLA_CREATE, PMI_EMPTY_BUGZILLA_QUERY, PMI_EMPTY_CI, PMI_EMPTY_DEV
 
 ## Visualisation
 
-Eclipse PMI Checks
+* Eclipse PMI Checks
 
 # PMI Checks
 
