@@ -726,11 +726,11 @@ Parameters:
 
 =back
 
-For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/PmdAnalysis.html>.
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/PmdAnalysis.html>.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/PmdAnalysis.html>, L<https://pmd.github.io/>,
+L<https://alambic.io/Plugins/Pre/PmdAnalysis.html>, L<https://pmd.github.io/>,
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 
