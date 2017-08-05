@@ -27,12 +27,13 @@ use Mojolicious::Renderer;
 use Data::Dumper;
 
 # Main configuration hash for the plugin
+# TODO update all links to bitbucket.
 my %conf = (
   "id"   => "EclipsePmi",
   "name" => "Eclipse PMI",
   "desc" => [
     "Eclipse PMI Retrieves meta data about the project from the Eclipse PMI infrastructure.",
-    'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipsePmi">the project\'s wiki</a> for more information.',
+    'See <a href="https://alambic.io/Plugins/Pre/EclipsePmi.html">the project\'s documentation</a> for more information.',
   ],
   "type"    => "pre",
   "ability" => ["metrics", "info", 'data', "recs", "viz"],
@@ -1039,11 +1040,11 @@ Parameters:
 
 =back
 
-For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/EclipsePmi.html>.
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/EclipsePmi.html>.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/EclipsePmi.html>, L<https://wiki.eclipse.org/Project_Management_Infrastructure>,
+L<https://alambic.io/Plugins/Pre/EclipsePmi.html>, L<https://wiki.eclipse.org/Project_Management_Infrastructure>,
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 

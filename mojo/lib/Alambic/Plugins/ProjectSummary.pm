@@ -222,11 +222,11 @@ and images about the project's analysis results.
 
 Parameters: None
 
-For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/ProjectSummary.html>.
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/ProjectSummary.html>.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/ProjectSummary.html>,
+L<https://alambic.io/Plugins/Pre/ProjectSummary.html>,
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 
