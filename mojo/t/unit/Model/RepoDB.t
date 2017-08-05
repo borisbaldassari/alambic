@@ -110,16 +110,20 @@ SKIP: {
     while (my $next = $results->hash) {
       $values{$next->{'param'}} = $next->{'val'};
     }
-    is($values{'name'}, "MyDBNameInit", "Name in DB is MyDBNameInit.")
+    ok($values{'name'} =~ /MyDBNameInit/ || $values{'name'} =~ /Default CLI init/, 
+      "Name in DB is ok.")
       or diag explain %values;
-    is($values{'desc'}, "MyDBDescInit", "Desc in DB is MyDBDescInit.")
+    ok($values{'desc'} =~ /MyDBDescInit/ || $values{'desc'} =~ /Default CLI Init description/, 
+      "Desc in DB is ok.")
       or diag explain %values;
 
     my $name = $repodb->name();
-    is($name, 'MyDBNameInit', "Name from module is MyDBNameInit.")
+    ok($name =~ /MyDBNameInit/ || $name =~ /Default CLI init/, 
+      "Name from module is MyDBNameInit.")
       or diag explain $name;
     my $desc = $repodb->desc();
-    is($desc, 'MyDBDescInit', "Desc from module is MyDBDescInit.")
+    ok($desc =~ /MyDBDescInit/ || $desc =~ /Default CLI Init description/, 
+      "Desc from module is MyDBDescInit.")
       or diag explain $name;
 
     # Check instance information.

@@ -78,7 +78,7 @@ ok(
   "Get users returns administrator hash content."
 ) or diag explain $ret;
 
-my $ret = $users->get_projects_for_user('administrator');
+$ret = $users->get_projects_for_user('administrator');
 is_deeply($ret, {}, "Get projects returns empty hash ref.");
 
 done_testing();
