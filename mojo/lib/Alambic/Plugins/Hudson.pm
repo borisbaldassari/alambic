@@ -344,11 +344,11 @@ Parameters:
 
 =back
 
-For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Hudson.html>.
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/Hudson.html>.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/Hudson.html>, L<https://hudson.eclipse.org>,
+L<https://alambic.io/Plugins/Pre/Hudson.html>, L<https://hudson.eclipse.org>,
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 
