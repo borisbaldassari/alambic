@@ -128,7 +128,7 @@
               </div>
               <div class="col-lg-4">
                 <div class="panel panel-default">
-		  <div class="panel-heading">Plugins</div>
+		  <div class="panel-heading">Data providers</div>
 		  <ul class="list-group">
 % foreach my $p ( sort keys %{$project->get_plugins()} ) {
 %   next if not ( grep $_ eq $p, @{$plugins->get_list_plugins_pre()} );
