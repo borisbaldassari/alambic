@@ -32,7 +32,7 @@ RUN echo "REBUILD ME now please! pf921"
 
 # Copy perl deps file for alambic
 COPY alambic_install_perl_deps.sh /home/alambic/alambic_install_perl_deps.sh
-RUN bash chown alambic /home/alambic/alambic_install_perl_deps.sh
+RUN chown alambic /home/alambic/alambic_install_perl_deps.sh
 # bash chmod +x /home/alambic/alambic_install_perl_deps.sh \ &&
 
 # Install pandoc
