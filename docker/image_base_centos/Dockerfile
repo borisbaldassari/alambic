@@ -25,15 +25,15 @@ RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.
     yum install -y R;
 COPY alambic_install_r_deps.sh /home/alambic/alambic_install_r_deps.sh
 
-RUN bash chmod +x /home/alambic/alambic_install_r_deps.sh \
-    && /bin/bash -c "/home/alambic/alambic_install_r_deps.sh"
+RUN /bin/bash /home/alambic/alambic_install_r_deps.sh
+# chmod +x /home/alambic/alambic_install_r_deps.sh \ && 
 
 RUN echo "REBUILD ME now please! pf921"
 
 # Copy perl deps file for alambic
 COPY alambic_install_perl_deps.sh /home/alambic/alambic_install_perl_deps.sh
-RUN bash chmod +x /home/alambic/alambic_install_perl_deps.sh \
-    && bash chown alambic /home/alambic/alambic_install_perl_deps.sh
+RUN bash chown alambic /home/alambic/alambic_install_perl_deps.sh
+# bash chmod +x /home/alambic/alambic_install_perl_deps.sh \ &&
 
 # Install pandoc
 RUN yum -y install pandoc; yum clean all
@@ -42,7 +42,7 @@ RUN yum -y install pandoc; yum clean all
 USER alambic
 
 # Install Perl, Mojolicious and all dependencies
-RUN /bin/bash -c  "/home/alambic/alambic_install_perl_deps.sh"
+RUN /bin/bash /home/alambic/alambic_install_perl_deps.sh
 
 # Switch back to user root
 USER root
