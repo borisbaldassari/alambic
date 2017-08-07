@@ -77,11 +77,6 @@
 	      <li>When all pre- plugins are executed, Alambic computes the attributes and quality model and executes the <b>post- plugins</b>. These have access to all information, custom data, metrics, attributes and recommendations retrieved and computed by pre plugins, and are a good fit for project-level reports. </li>
 	      <li>When all projects have been executed, the <b>global plugins</b> are run. They have access to all information from all projects and are a good fit for installation-wide reports.</li>
 	    </ul>
-            <p>Two other types of plugins independent of project analysis are further defined:</p>
-	    <ul>
-	      <li><b>Custom data plugins</b> provide information entered by users, like comments or surveys. As such the data they provide is not synchronised with project runs, altough they still provide the same type of output (metrics, downloads, figures, etc.).</li>
-	      <li><b>Wizards</b> provide an easy way to setup a project with a predefined set of plugins. Wizards can execute code to initialise the plugins with the correct parameters and check consistency of entries.</li>
-	    </ul>
 	    <hr />
 
 % if ( not defined($type) or $type =~ /^pre/ ) {
