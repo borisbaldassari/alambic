@@ -1,5 +1,6 @@
 title: Administration pages
 navi_name: AdminPages
+mytag: My test tag
 
 # Administration pages
 

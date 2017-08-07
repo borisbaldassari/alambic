@@ -14,7 +14,7 @@ navi_name: Alambic
 
     <p>It basically <b>retrieves data from many various repositories</b> (code metrics, scm, its, mailing lists, stack overflow questions, etc.) and <b>makes them available for custom plugins to produce analysis, numbers, graphics, and data sets</b>.</p>
 
-    <p>A **flexible plugin system** allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs). Examples of plugins ready to use include PMD Results Analysis, StackOverflow questions and PMI Checks for Eclipse projects.</p> 
+<p>A **flexible plugin system** allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs). Examples of plugins ready to use include PMD Results Analysis, StackOverflow questions and PMI Checks for Eclipse projects.</p>
 
     <p>Measures are aggregated in a tree-like **quality model** structure to better organise and understand the information. The [[Quality Model]] can be entirely customised, and almost any type of data source can be added through plugins. Check [this image](images/alambic_project_qm.png) for a visual example of the result.</p>
   </div>
