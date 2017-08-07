@@ -1,7 +1,13 @@
 % layout 'contenticious', title => $content_node->title;
+% use Data::Dumper; print "DBGTOTAL " . Dumper($content_node);
+% 
 % if (defined $content_node->html) {
-%== $content_node->html
-% } else {
+%   if (defined $content_node->meta->{'al_list_items'}) {
 %= include 'list', content_node => $content_node
+%   } else {
+%== $content_node->html
+%   }
+% } else {
+%= include 'list_empty', content_node => $content_node
 % }
 
