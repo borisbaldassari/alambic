@@ -1,16 +1,13 @@
 
 <h1><%= $content_node->path %></h1>
 
-<div class="pull-right" style="width: 50%">
-  <div class="list-group">
+<div class="list-group">
 % foreach my $c (@{$content_node->children}) {
 %   next if ($c->name =~ /^index/);
 %   my $url = rel_url_for 'content', cpath => $c->path, format => 'html';
-      <a href="<%= $url %>" class="list-group-item"><%= $c->title %></a>
+  <a href="<%= $url %>" class="list-group-item"><%= $c->title %></a>
 % }
-    </div>
 </div>
 
-<%== $content_node->html %>
 
 

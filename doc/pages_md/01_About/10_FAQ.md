@@ -1,4 +1,4 @@
-title: About Alambic
+title: Frequently Asked Questions
 navi_name: F.A.Q.
 
 # Frquently Asked Questions

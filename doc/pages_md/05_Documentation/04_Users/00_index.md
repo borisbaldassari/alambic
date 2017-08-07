@@ -1,8 +1,7 @@
-title: Administration pages
-navi_name: AdminPages
-mytag: My test tag
+title: User manual
+navi_name: Users
 
-# Administration pages
+# User manual
 
 The administration pages are restricted to Alambic administrators (i.e. users with role Admin).
 

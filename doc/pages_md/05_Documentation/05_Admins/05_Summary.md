@@ -1,0 +1,18 @@
+title: Admin Summary
+navi_name: Summary
+
+# Admin > Summary
+
+## Instance information
+
+Every instance has to set some parameters:
+
+* **Name**: the name of this very instance, is displayed in the title, on the top left corner, and on the main page.
+* **Description**: a text describing why this setup was installed, and a bit of context for people to better understand what is done here. Description is displayed on the main page of the instance.
+* **Google tracking code**: a google analytics tracking code that will be inserted in all generated pages. If no code is provided then the tracking mechanism is disabled (and the script is not integrated into the generated pages).
+
+## Summary
+
+A page to show brief insights of all admin tasks.
+
+![Alambic Admin Web UI](/images/alambic_admin_summary.png)

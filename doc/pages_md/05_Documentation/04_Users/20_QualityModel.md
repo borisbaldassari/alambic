@@ -53,27 +53,3 @@ It should be noted that:
 ## Metrics
 
 Metrics are the base measures used to assess the quality model. Examples of metrics include `Number of emails sent on the developer mailing list during last week` or `Number of commits during last week`.
-
-
-# File format
-
-The quality model is defined as a json file. A working example of a JSON quality model is provided in the source code at `/mojo/lib/Alambic/files/models/qm`.
-
-    {
-        "name": "Alambic Quality Model",
-        "version": "0.1",
-        "children": [
-          {
-            "mnemo" => "ATTR1",
-            "type" => "attribute",
-            "active": "true",
-            "children" => [
-              {
-                "mnemo" => "METRIC1",
-                "type" => "metric",
-                "active": "true",
-              }
-            ]
-          }
-        ];
-    }
