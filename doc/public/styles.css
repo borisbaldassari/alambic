@@ -129,7 +129,7 @@ p { margin: .66em 0; padding: 0 }
 #content h3 { font-size: 1.2em }
 
 #content a {
-    text-decoration : underline;
+    text-decoration : none;
     color           : #039;
 }
 
