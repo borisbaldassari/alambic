@@ -92,15 +92,6 @@ Initialise the database and set basic settings for Alambic:
   $ bin/alambic init
   Database is nok or is empty.
   Initialising database.
-  NOTICE:  la table « conf » n'existe pas, poursuite du traitement
-  NOTICE:  la table « users » n'existe pas, poursuite du traitement
-  NOTICE:  la table « projects_conf » n'existe pas, poursuite du traitement
-  NOTICE:  la table « projects_runs » n'existe pas, poursuite du traitement
-  NOTICE:  la table « projects_info » n'existe pas, poursuite du traitement
-  NOTICE:  la table « projects_cdata » n'existe pas, poursuite du traitement
-  NOTICE:  la table « models_metrics » n'existe pas, poursuite du traitement
-  NOTICE:  la table « models_attributes » n'existe pas, poursuite du traitement
-  NOTICE:  la table « models_qms » n'existe pas, poursuite du traitement
   Initialising instance parameters.
   Creating administrator account.
   $

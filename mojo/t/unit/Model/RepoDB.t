@@ -110,19 +110,23 @@ SKIP: {
     while (my $next = $results->hash) {
       $values{$next->{'param'}} = $next->{'val'};
     }
-    ok($values{'name'} =~ /MyDBNameInit/ || $values{'name'} =~ /Default CLI init/, 
-      "Name in DB is ok.")
-      or diag explain %values;
-    ok($values{'desc'} =~ /MyDBDescInit/ || $values{'desc'} =~ /Default CLI Init description/, 
-      "Desc in DB is ok.")
-      or diag explain %values;
+    ok(
+      $values{'name'} =~ /MyDBNameInit/
+        || $values{'name'} =~ /Default CLI init/,
+      "Name in DB is ok."
+    ) or diag explain %values;
+    ok(
+      $values{'desc'} =~ /MyDBDescInit/
+        || $values{'desc'} =~ /Default CLI Init description/,
+      "Desc in DB is ok."
+    ) or diag explain %values;
 
     my $name = $repodb->name();
-    ok($name =~ /MyDBNameInit/ || $name =~ /Default CLI init/, 
+    ok($name =~ /MyDBNameInit/ || $name =~ /Default CLI init/,
       "Name from module is MyDBNameInit.")
       or diag explain $name;
     my $desc = $repodb->desc();
-    ok($desc =~ /MyDBDescInit/ || $desc =~ /Default CLI Init description/, 
+    ok($desc =~ /MyDBDescInit/ || $desc =~ /Default CLI Init description/,
       "Desc from module is MyDBDescInit.")
       or diag explain $name;
 
