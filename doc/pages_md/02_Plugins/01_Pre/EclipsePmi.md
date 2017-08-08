@@ -7,11 +7,11 @@ This plugin retrieves information from [the PMI repository](http://projects.ecli
 
 The Project Management Infrastructure is described in the Eclipse wiki:
 
-* https://wiki.eclipse.org/Project_Management_Infrastructure
-* https://wiki.eclipse.org/Project_Management_Infrastructure/Overview
-* https://wiki.eclipse.org/Project_Management_Infrastructure/Development
-* https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices
-* https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design
+* [https://wiki.eclipse.org/Project_Management_Infrastructure](https://wiki.eclipse.org/Project_Management_Infrastructure)
+* [https://wiki.eclipse.org/Project_Management_Infrastructure/Overview](https://wiki.eclipse.org/Project_Management_Infrastructure/Overview)
+* [https://wiki.eclipse.org/Project_Management_Infrastructure/Development](https://wiki.eclipse.org/Project_Management_Infrastructure/Development)
+* [https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices](https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices)
+* [https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design](https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design)
 
 -----
 
@@ -23,7 +23,7 @@ The Project Management Infrastructure is described in the Eclipse wiki:
   Eclipse PMI Retrieves meta data about the project from the Eclipse PMI infrastructure.
 See the project's wiki for more information.
 * **Parameters**:
-    * project_pmi The project ID used to identify the project on the PMI server. Look for it in the URL of the project on http://projects.eclipse.org.
+    * project_pmi The project ID used to identify the project on the PMI server. Look for it in the URL of the project on [http://projects.eclipse.org](http://projects.eclipse.org).
 
 -----
 

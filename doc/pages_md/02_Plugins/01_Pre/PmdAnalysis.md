@@ -4,7 +4,16 @@ navi_name: PmdAnalysis
 
 # PMD Analysis and Configuration
 
-This plugin summarises the output of a PMD run, provides hints to better understand and user it, and defines a pragmatic strategy to fix violations in an efficient way. It also provides guidance on how to configure PMD and select rules for a better, more focused analysis.
+# Purpose
+
+This plugin summarises the output of a PMD run, provides hints to better understand and use it, and defines a pragmatic strategy to fix violations in an efficient way. It also provides guidance on how to configure PMD and select rules for a better, more focused analysis. More precisely, this document:
+
+* Lists the rulesets used, with the associated number and priority of violations. It help users understand the scope of the different rulesets they use.
+* Proposes to remove from the configuration a list of rules that have a huge number of violations associated with a low priority. Such rules are useless, because the project does not have the maturity to tackle it yet, and it clutters the results. Not to speak about the despair it induces in teams.
+* Proposes steps for continuous improvement, once the former has been addressed.
+
+Note on rules: There should be a rules directory where the plugin is, with the definition of the PMD rulesets to be analysed. You can extract them from the PMD jars (e.g. lib/pmd-java-5.2.3/rulesets/java*.xml) to match the version of PMD you are using.
+
 Please note that this plugin only reads the XML configuration and output files of a PMD run. One has to execute it on a regular basis &em; ideally in a continuous integration job &em; and provide the XML files URLs to the plugin.
 
 -----
