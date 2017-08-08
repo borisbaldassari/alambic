@@ -32,6 +32,12 @@ The application is also self-documented, and any Alambic instance has a `/docume
 
 * <a href="http://eclipse.alambic.io/documentation/main.html"><i class="fa fa-flask fa-lg"></i> &nbsp; https://eclipse.alambic.io/documentation/main.html</a>
 
+## Docker images
+
+All docker images can be found on Docker Hub:
+
+* <a href="https://hub.docker.com/r/bbaldassari"><i class="fa fa-cloud-download fa-lg"></i> &nbsp; https://hub.docker.com/r/bbaldassari</a>
+
 ## Chat room
 
 We are using a HipChat room, both as a collaborative space and as a logbook of all actions -- including continuous integration builds, CI environments availability, etc. You can freely join at
