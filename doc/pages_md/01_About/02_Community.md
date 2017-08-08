@@ -3,39 +3,37 @@ navi_name: Community
 
 # Community
 
-## BitBucket
+Alambic is entirely open-source (under the [Eclipse Public Licence v1.0](https://www.eclipse.org/legal/epl-v10.html) and is currently developed on the [BitBucket forge](https://bitbucket.org).
 
-Alambic is entirely open-source ([EPL v1.0](https://www.eclipse.org/legal/epl-v10.html) and is currently developed on the [BitBucket forge](https://bitbucket.org).
+* <a href="https://bitbucket.org/BorisBaldassari/alambic"><i class="fa fa-bitbucket fa-lg"></i> &nbsp; Project Development Home</a>
 
------
 
-<div class="row">
-  <div class="col-lg-3 text-center">
-    <a href="https://bitbucket.org/BorisBaldassari/alambic"><i class="fa fa-bitbucket fa-2x"></i><br />
-      Project Development Home
-    </a>
-  </div>
-  <div class="col-lg-3 text-center">
-    <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?status=new&status=open"><i class="fa fa-bug fa-2x"></i><br />
-    Issues
-    </a>
-  </div>
-  <div class="col-lg-3 text-center">
-    <a href="https://bitbucket.org/BorisBaldassari/alambic/src"><i class="fa fa-git fa-2x"></i><br />
-    Source
-    </a>
-  </div>
-  <div class="col-lg-3 text-center">
-    <a href="/About"><i class="fa fa-flask fa-2x"></i><br />
-    About Alambic
-    </a>
-  </div>
-</div>
+## Source code
 
---
+Source code for Alambic is hosted on [BitBucket](https://bitbucket.org/BorisBaldassari/alambic) and mirrored on [GitHub](https://github.com/borisbaldassari/alambic) for dissemination. Regarding collaboration, **sending Pull requests** on BitBucket is preferred but GitHub will be considered too.
 
-## Mailing lists
+* <a href="https://bitbucket.org/BorisBaldassari/alambic/src"><i class="fa fa-bitbucket fa-lg"></i> &nbsp; https://bitbucket.org/BorisBaldassari/alambic/src</a>
+* <a href="https://github.com/borisbaldassari/alambic"><i class="fa fa-github fa-lg"></i> &nbsp; https://github.com/borisbaldassari/alambic</a>
 
-There are 2 mailing lists available to get help or information about Alambic:
+## Issues
 
-[Developers mailing list](http://kewl.mistur.org/cgi-bin/mailman/listinfo/dev) is `dev@alambic.io`. To subscribe, send an email to dev-subscribe@alambic.io.
+Issues are managed with BitBucket's bug tracker:
+
+* <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?status=new&status=open"><i class="fa fa-bug fa-lg"></i> &nbsp; https://bitbucket.org/BorisBaldassari/alambic/issues</a>
+
+## Documentation
+
+The official documentation for Alambic can be found on the [project's web site](https://alambic.io) and in the git repository.
+
+* <a href="https://alambic.io/"><i class="fa fa-flask fa-lg"></i> &nbsp; https://alambic.io/</a>
+* <a href="https://alambic.io/perldoc/"><i class="fa fa-flask fa-lg"></i> &nbsp; https://alambic.io/perldoc/</a>
+
+The application is also self-documented, and any Alambic instance has a `/documentation/*.html` URL with a lot of information.
+
+* <a href="http://eclipse.alambic.io/documentation/main.html"><i class="fa fa-flask fa-lg"></i> &nbsp; https://eclipse.alambic.io/documentation/main.html</a>
+
+## Chat room
+
+We are using a HipChat room, both as a collaborative space and as a logbook of all actions -- including continuous integration builds, CI environments availability, etc. You can freely join at
+
+* <a href="https://www.hipchat.com/glj5PFEbN"><i class="fa fa-comments-o fa-lg"></i> &nbsp; https://www.hipchat.com/glj5PFEbN</a>
