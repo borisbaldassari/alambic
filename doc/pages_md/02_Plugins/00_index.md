@@ -2,7 +2,6 @@ title: Alambic plugins
 navi_name: Plugins
 al_list_items: true
 
-# Plugins
 
 **Pre-plugins** basically collect data from a repository, and run single-source analysis on it. Plugins first collect the data and then optionnaly run checks and actions, then compute metrics or visualisation objects. Once all pre-plugins have been executed, the attributes are computed and the quality model is populated.
 
