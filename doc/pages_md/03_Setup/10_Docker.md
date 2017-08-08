@@ -12,7 +12,7 @@ A few Docker images are setup:
 
 The official repository for Alambic images is:
 
-* [https://hub.docker.com/r/bbaldassari/alambic/](https://hub.docker.com/r/bbaldassari/alambic/)
+* [https://hub.docker.com/r/bbaldassari/](https://hub.docker.com/r/bbaldassari/)
 
 Please note that both test and ci images need a postgresql container to run. A compose file is provided to run the complete setup in one single neat command.
 
@@ -33,12 +33,6 @@ The `docker-compose.test.yml` file at the root of the repository provides an int
 In the root of the Alambic repository, execute:
 
     $ docker-compose -f docker-compose.test.yml run alambic_test
-
-## Using a different port for Alambic
-
-By default Alambic listens to port 3010. The Docker image for Alambic basically exposes this same port to the host, but it can be easily changed to use another port (e.g. 80).
-
-    $ docker run XXX
 
 
 # Building Docker images
@@ -62,9 +56,11 @@ You can also get the image directly from docker hub with the docker cli, like th
 
     docker pull bbaldassari/alambic_base_centos
 
-## Building the test image
+## Building the latest Alambic test image
 
-The test image is continuously built on codefresh, and pushed to the docker hub: [https://hub.docker.com/r/bbaldassari/alambic_test](https://hub.docker.com/r/bbaldassari/alambic_test)
+The test image is continuously built on codefresh, and pushed to the docker hub:
+
+* [https://hub.docker.com/r/bbaldassari/alambic_test](https://hub.docker.com/r/bbaldassari/alambic_test)
 
 In the `$AL_HOME/docker/image_test` directory, execute:
 

@@ -29,6 +29,10 @@ For development, it is easier to use `morbo`. [Morbo](http://mojolicious.org/per
 
     morbo bin/alambic
 
+Note: this is the same as using the prefork command within Alambic:
+
+    bin/alambic daemon
+
 ## Minion job queueing
 
 The above commands start the UI daemon, but all long-running operations (e.g. project analyses) use a job queueing system, [Minion](http://mojolicious.org/perldoc/Minion). One needs to start a minion worker to actually do the work:

@@ -1,10 +1,10 @@
-title: Install Alambic
+title: Installing Alambic
 navi_name: Install
 
 
 # Installing Alambic
 
-WARNING: Check first that the [prerequisites](/Setup/Prerequisites) have been installed.
+<span class="label label-warning">Warning</span> &nbsp; Check first that the [prerequisites](/Setup/Prerequisites) have been installed.
 
 -----
 

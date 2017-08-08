@@ -6,7 +6,7 @@ navi_name: Prerequisites
 
 Alambic is written in Perl and uses the [Mojolicious](https://mojolicio.us) web framework. It relies on a database to store configuration and projects information. As for now only PostgreSQL is supported as a back-end database.
 
-Note: you may want to install [perlbrew](http://perlbrew.pl/) to have separate perl instances. Even better, perlbrew can be setup with a basic Unix user account.
+<span class="label label-info">Note</span> &nbsp; You may want to install [perlbrew](http://perlbrew.pl/) to have separate perl instances. Even better, perlbrew can be setup with a basic Unix user account.
 
 The [docker image](/Setup/Docker) serves as a use case test for installation of Alambic. As such, the list of requirements used to build the `image_base_centos` in `$ALAMBIC_HOME/Alambic/docker/image_base_centos` can be used as a reference for the dependencies.
 

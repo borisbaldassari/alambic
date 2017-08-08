@@ -4,11 +4,13 @@ navi_name: Upgrade
 
 # Upgrading Alambic
 
-Any running instance of Alambic can be updated from the Alambic project repository without losing any information. Of course, it is recommended to make a backup prior to any update.
+Since all data is stored into the database, any running instance of Alambic can be updated from the Alambic project repository without losing any information.
+
+<span class="label label-warning">Warning</span> &nbsp; As usual in this situation, it is highly recommended to make a backup prior to any update.
 
 To do the update go to the alambic directory and issue a git pull command:
 
-    boris@camp ~/alambic$ git pull
+    boris@camp ~/alambic $ git pull
     remote: Counting objects: 6, done.
     remote: Compressing objects: 100% (6/6), done.
     remote: Total 6 (delta 3), reused 0 (delta 0)
@@ -21,4 +23,9 @@ To do the update go to the alambic directory and issue a git pull command:
      1 file changed, 0 insertions(+), 0 deletions(-)
      create mode 100644 mojo/public/images/alambic_presentation_data.jpg
 
-Then restart hypnotoad if needed and the instance should have been updated. If anything goes wrong, you can still restore the last backup file. Check the [documentation on backup](Backups) for more information.
+Then restart (hot-reload) hypnotoad:
+
+    boris@midkemia mojo $ hypnotoad bin/alambic
+    Starting hot deployment for Hypnotoad server 21981.
+
+If anything goes wrong, you can still get back to the previous git commit and (if things went *really* wrong) restore the last backup file. Check the [documentation on backup](Backups) for more information.
