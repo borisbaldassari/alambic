@@ -29,7 +29,6 @@ my %conf = (
   "name"    => "Git Tool",
   "desc"    => "Provides Git commands and features.",
   "ability" => [
-
 #	"install",
     "methods", "project"
   ],
@@ -199,7 +198,7 @@ sub git_log($) {
   my $output = $git->run(('log'));
   $repofs->write_input($project_id, "tool_git_log.txt", $output);
   push(@log,
-    "[Tools::Git] Getting Git log for [$project_id] in [${project_id}_tool_git_log.txt]."
+    "[Tools::Git] Getting Git log for [$project_id] in [${project_id}_git_log.txt]."
   );
 
   return \@log;

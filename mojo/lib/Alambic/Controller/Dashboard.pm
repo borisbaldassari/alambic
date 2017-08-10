@@ -122,18 +122,18 @@ sub display_plugins {
 
 # If the page is a data, reply static file under 'projects/output' or 'projects/input'
       my $file_out
-        = '../../../../projects/'
+        = 'projects/'
         . $project_id
         . '/output/'
         . $project_id . "_"
         . $page_id;
       my $file_in
-        = '../../../../projects/'
+        = 'projects/'
         . $project_id
         . '/input/'
         . $project_id . "_"
         . $page_id;
-
+      print "DBG " . `pwd` . " file_in $file_in file_out $file_out.\n";
       if (-e $file_out) {
         $ret
           = '../../../../projects/'

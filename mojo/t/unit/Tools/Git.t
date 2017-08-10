@@ -84,8 +84,8 @@ $log = $tool->git_log('test.project');
 ok(grep(/^\[Tools::Git\] Getting Git log for /, @{$log}),
   "Log has Getting log.")
   or diag explain $log;
-ok(-e "projects/test.project/input/test.project_tool_git_log.txt",
+ok(-e "projects/test.project/input/test.project_git_log.txt",
   "Log file has been created in input directory.")
-  or diag explain $log;
+    or diag explain $log;
 
 done_testing();
