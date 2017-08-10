@@ -5,6 +5,7 @@ use warnings;
 
 use Test::More;
 use Mojo::JSON qw( decode_json);
+use Data::Dumper;
 
 BEGIN { use_ok( 'Alambic::Plugins::JiraIts' ); }
 
