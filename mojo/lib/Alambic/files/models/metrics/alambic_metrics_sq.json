@@ -1,0 +1,196 @@
+  {
+    "name": "Alambic Metrics SonarQube",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Number of lines of code",
+        "mnemo": "SQ_NCLOC",
+        "desc": [
+            "Number of physical lines that contain at least one character which is neither a whitespace or a tabulation or part of a comment.",
+            "For Cobol, generated lines of code and pre-processing instructions (SKIP1, SKIP2, SKIP3, COPY, EJECT, REPLACE) are not counted as lines of code."
+        ],
+        "scale": [500,1000,10000,50000]
+      },
+      {
+        "name": "Number of files",
+        "mnemo": "SQ_FILES",
+        "desc": [
+            "The total number of files analysed."
+        ],
+        "scale": [100,500,1000,5000]
+      },
+      {
+        "name": "Number of functions",
+        "mnemo": "SQ_FUNCS",
+        "desc": [
+            "Number of functions. Depending on the language, a function is either a function or a method or a paragraph.",
+            "For Java, constructors are considered as methods and accessors are considered as methods if the sonar.squid.analyse.property.accessors property is set to false.",
+            "For Cobol, it is the number of paragraphs."
+        ],
+        "scale": [300,500,3000,5000]
+      },
+      {
+        "name": "Number of statements",
+        "mnemo": "SQ_STATEMENTS",
+        "desc": [
+            "Number of statements.",
+            "For Java, it is the number of statements as defined in the Java Language Specification but without block definitions. Statements counter gets incremented by one each time a following keyword is encountered: <code>if, else, while, do, for, switch, break, continue, return, throw, synchronized, catch, finally.</code></p><p>Statements counter is not incremented by a class, method, field, annotation definition, package declaration and import declaration.",
+            "For Cobol, a statement is one of <code>move, if, accept, add, alter, call, cancel, close, compute, continue, delete, display, divide, entry, evaluate, exitProgram, goback, goto, initialize, inspect, merge, multiply, open, perform, read, release, return, rewrite, search, set, sort, start, stop, string, subtract, unstring, write, exec, ibmXmlParse, ibmXmlGenerate, readyReset, mfCommit, mfRollback</code>."
+        ],
+        "scale": [500,1000,10000,50000]
+      },
+      {
+        "name": "Number of comment lines",
+        "mnemo": "SQ_COMMENT_LINES",
+        "desc": [
+            "Number of lines containing either comment or commented-out code.",
+            "Non-significant comment lines (empty comment lines, comment lines containing only special characters, etc.) do not increase the number of comment lines.",
+            "For Java, file headers are not counted as comment lines (as they usually define the license).",
+            "Lines containing the following instructions are counted both as comments and lines of code: AUTHOR, INSTALLATION, DATE-COMPILED, DATE-WRITTEN, SECURITY."
+        ],
+        "scale": [500,1000,10000,50000]
+      },
+      {
+        "name": "Comment lines density",
+        "mnemo": "SQ_COMR",
+        "desc": [
+            "Density of comment lines = Comment lines / (Lines of code + Comment lines) * 100.",
+            "With such a formula, 50% means that the number of lines of code equals the number of comment lines and 100% means that the file only contains comment lines"
+        ],
+        "scale": [10,20,30,40]
+      },
+      {
+        "name": "Total complexity",
+        "mnemo": "SQ_CPX",
+        "desc": [
+            "It is the complexity calculated based on the number of paths through the code. Whenever the control flow of a function splits, the complexity counter gets incremented by one. Each function has a minimum complexity of 1. This calculation varies slightly by language because keywords and functionalities do.",
+            "For more information on line counting for each language, see <a href=\"https://docs.sonarqube.org/display/SONAR/Metrics+-+Complexity\">https://docs.sonarqube.org/display/SONAR/Metrics+-+Complexity</a>."
+        ]
+      },
+      {
+        "name": "File complexity",
+        "mnemo": "SQ_CPX_FILE_IDX",
+        "desc": [
+            "Average complexity by file."
+        ],
+        "scale": [10,20,30,40]
+      },
+      {
+        "name": "Public documented API (%)",
+        "mnemo": "SQ_PUBLIC_API_DOC_DENSITY",
+        "desc": [
+            "Density of public documented API = (Public API - Public undocumented API) / Public API * 100"
+        ],
+        "scale": [40,30,20,10]
+      },
+      {
+        "name": "Commented code",
+        "mnemo": "SQ_COM_CODE",
+        "desc": [
+            "Commented lines of code",
+            "See more information about commented code on <a href=\"https://blog.sonarsource.com/commented-out-code-eradication-with-sonar/\">SonarQube doc web site</a>. There is a well-documented debate on <a href=\"http://softwareengineering.stackexchange.com/questions/190096/can-commented-out-code-be-valuable-documentation\">Stack Overflow</a> as well."
+        ],
+        "scale": [40,30,20,10]
+      },
+      {
+        "name": "Duplicated lines (%)",
+        "mnemo": "SQ_DUPLICATED_LINES_DENSITY",
+        "desc": [
+            "Density of duplication = Duplicated lines / Lines * 100."
+        ],
+        "scale": [40,30,20,10]
+      },
+
+
+      {
+        "name": "Public API",
+        "mnemo": "SQ_PUBLIC_API",
+        "desc": [
+            "Number of public Classes + number of public Functions + number of public Properties"
+        ],
+        "scale": [500,1000,5000,10000]
+      },
+      {
+        "name": "Maintainability rating",
+        "mnemo": "SQ_SQALE_RATING",
+        "desc": [
+            "Rating given to your project related to the value of your Technical Debt Ratio. The default Maintainability Rating grid is: A=0-0.05, B=0.06-0.1, C=0.11-0.20, D=0.21-0.5, E=0.51-1.",
+            "The Maintainability Rating scale can be alternately stated by saying that if the outstanding remediation cost depends on the time that has already gone into the application: A &lt;=5% , B between 6 to 10%, C between 11 to 20%, D between 21 to 50%, and anything over 50% is an E."
+        ],
+        "scale": [0.05,0.1,0.2,0.5]
+      },
+      {
+        "name": "Technical debt",
+        "mnemo": "SQ_SQALE_INDEX",
+        "desc": [
+            "Effort to fix all maintainability issues. The measure is stored in minutes in the DB."
+        ],
+        "scale": [5000,1000,500,100]
+      },
+      {
+        "name": "Test coverage",
+        "mnemo": "SQ_COVERAGE",
+        "desc": [
+            "Overall test coverage."
+        ],
+        "scale": [10,20,40,50]
+      },
+      {
+        "name": "Line coverage",
+        "mnemo": "SQ_COVERAGE_LINE",
+        "desc": [
+            "Line test coverage."
+        ],
+        "scale": [10,20,40,50]
+      },
+      {
+        "name": "Branch coverage",
+        "mnemo": "SQ_COVERAGE_BRANCH",
+        "desc": [
+            "Branch test coverage."
+        ],
+        "scale": [10,20,40,50]
+      },
+      {
+        "name": "Number of blocker issues",
+        "mnemo": "SQ_VIOLATIONS_BLOCKER",
+        "desc": [
+            "The total number of issues (violations) found by SonarQube with a severity equal to BLOCKER."
+        ],
+        "scale": [100,50,10,1]
+      },
+      {
+        "name": "Number of critical issues",
+        "mnemo": "SQ_VIOLATIONS_CRITICAL",
+        "desc": [
+            "The total number of issues (violations) found by SonarQube with a severity equal to CRITICAL."
+        ],
+        "scale": [500,100,50,10]
+      },
+      {
+        "name": "Number of major issues",
+        "mnemo": "SQ_VIOLATIONS_MAJOR",
+        "desc": [
+            "The total number of issues (violations) found by SonarQube with a severity equal to MAJOR."
+        ],
+        "scale": [500,100,50,10]
+      },
+      {
+        "name": "Number of minor issues",
+        "mnemo": "SQ_VIOLATIONS_MINOR",
+        "desc": [
+            "The total number of issues (violations) found by SonarQube with a severity equal to MINOR."
+        ],
+        "scale": [500,100,50,10]
+      },
+      {
+        "name": "Number of info issues",
+        "mnemo": "SQ_VIOLATIONS_INFO",
+        "desc": [
+            "The total number of issues (violations) found by SonarQube with a severity equal to INFO."
+        ],
+        "scale": [5000,1000,500,100]
+      }
+    ]
+  }
+
