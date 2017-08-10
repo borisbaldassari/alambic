@@ -116,8 +116,8 @@ sub _setup_repo($$$) {
 
   my $log = ["[Plugins:Git] Setup local repository for [$project_id]."];
 
-  $log = $g->git_clone_or_pull("Git", $project_id);
-  push(@$log, @{$g->git_log("Git", $project_id)});
+  $log = $g->git_clone_or_pull($project_id);
+  push(@$log, @{$g->git_log($project_id)});
 
   return $log;
 }
