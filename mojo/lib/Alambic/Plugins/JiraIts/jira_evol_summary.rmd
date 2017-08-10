@@ -1,0 +1,25 @@
+---
+output: html_document
+---
+<div class="row"><div class="col-md-12">
+```{r init, echo=FALSE, fig.height=3, message=FALSE, warning=FALSE}
+library(plotly)
+library(reshape2)
+
+#project.id <- 'modeling.gendoc'
+file.evol = paste("", project.id, "_jira_evol.csv", sep="")
+evol <- read.csv(file=file.evol, header=T)
+evol[is.na(evol)] <- 0
+evol <- evol[cumsum(abs(evol$issues_created + evol$authors)) != 0 & complete.cases(evol),]
+
+evol.i <- data.frame(seq(1:nrow(evol)), evol[,c('date','issues_created', 'authors')])
+names(evol.i)[1] <- 'index'
+
+p <- plot_ly(data=evol.i, x=~index, y=~issues_created, text= ~paste('Date: ', date), 
+		name="Issues Created", type='scatter', mode='lines', width=800, height=350)  %>% 
+	  add_trace(y=~authors, name='Authors', mode='lines') %>% 
+    layout(autosize = F,
+		yaxis = list( title = "Value" ))
+p
+```
+</div></div>
