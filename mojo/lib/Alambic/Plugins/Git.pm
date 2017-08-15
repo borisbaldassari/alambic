@@ -5,6 +5,7 @@ use warnings;
 
 use Alambic::Model::RepoFS;
 use Alambic::Tools::Git;
+use Alambic::Tools::R;
 
 use Date::Parse;
 use Time::Piece;
@@ -93,7 +94,7 @@ sub run_plugin($$) {
 
   # Create a Tools::Git object for all our manipulations
   my $git_url = $conf->{'git_url'};
-  $g = Alambic::Tools::Git->new($git_url);
+  $g = Alambic::Tools::Git->new($project_id, $git_url);
 
   # Create or update local working copy
   push(@{$ret{'log'}}, @{&_setup_repo($project_id, $git_url, $repofs)});
