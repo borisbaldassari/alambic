@@ -41,6 +41,17 @@ echo "----- Creating log file: $AL_LOG."
 echo "\nHi. working on version [$AL_V] of Alambic.\n" > $AL_LOG
 
 
+# Check TODOs
+
+echo "" | tee -a $AL_LOG
+echo "----- Checking the number of TODOs." | tee -a $AL_LOG
+TODOS=`grep -Ri todo mojo/lib mojo/t doc/ | wc -l`
+if [ $TODOS -gt 0 ]; then
+    echo "[ERR] Found $TODOS TODOs." | tee -a $AL_LOG
+else
+    echo "[OK]  Found zero TODO." | tee -a $AL_LOG
+fi
+
 # Checking that alambic.conf has the correct version
 
 echo "" | tee -a $AL_LOG
@@ -55,6 +66,7 @@ if [ $AL_V = $TMP_V ]; then
 else
     echo "[ERR] Conf file alambic.conf has a wrong version [$TMP_V]." | tee -a $AL_LOG
 fi
+
 
 # Generate SLOC reports
 
@@ -107,7 +119,6 @@ rm -rf $AL_DIR_PERLDOC
 pod2projdocs -out $AL_DIR_PERLDOC -lib mojo/lib/ -title "Alambic Perldoc" -desc $AL_DESC
 
 # Finished!
-
 
 echo "" | tee -a $AL_LOG
 echo "----- Processing completed. Have a good day!" | tee -a $AL_LOG
