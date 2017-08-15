@@ -9,9 +9,8 @@ use File::Path qw( remove_tree );
 
 BEGIN { use_ok('Alambic::Tools::Git'); }
 
-my $tool = Alambic::Tools::Git->new(
-    'test.project', 
-    'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
+my $tool = Alambic::Tools::Git->new('test.project',
+  'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
 isa_ok($tool, 'Alambic::Tools::Git');
 
 my $version = $tool->version();
