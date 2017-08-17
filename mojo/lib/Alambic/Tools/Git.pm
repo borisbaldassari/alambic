@@ -29,6 +29,7 @@ my %conf = (
   "name"    => "Git Tool",
   "desc"    => "Provides Git commands and features.",
   "ability" => [
+
 #	"install",
     "methods", "project"
   ],
