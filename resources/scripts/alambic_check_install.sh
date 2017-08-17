@@ -67,7 +67,10 @@ fi
 # Using perlbrew, install cpanm, recent version of perl, and all modules
 
 # Get last perl version from 5.24 series
-PB_V=`perlbrew list | grep  " perl-$PB_V" | cut -d- -f2`
+PB_V_R=`perlbrew list | grep  " perl-$PB_V" | cut -d- -f2`
+
+echo "# Identifying available perls: found [$PB_V_R]."
+echo "# Identifying available perls: found [$PB_V_R]." >> $LOG
 
 # Checking if cpanm is installed
 printf "  * Checking if cpanm is installed..."
@@ -91,16 +94,15 @@ perl --version | grep $PB_V > /dev/null
 if [ $? -ne 0 ]; then
     echo " Nope.\n  * Installing cpanm and perl $PB_V."
     echo " Nope.\n  * Installing cpanm and perl $PB_V." >> $LOG
-    perlbrew --notest install perl-$PB_V
+    perlbrew --notest install perl-$PB_V_R
 else
     echo " OK."
     echo " OK." >> $LOG
 fi
 
 
-
 # Checking if all modules are installed
-perlbrew switch perl-$PB_V
+perlbrew switch perl-$PB_V_R
 
 echo "# Installing perl modules.."
 echo "# Installing perl modules.." >> $LOG
