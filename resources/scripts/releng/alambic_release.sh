@@ -78,7 +78,7 @@ else
 fi
 
 # Checking version in alambic_test image..
-TMP_V=`grep alambic_version ../docker/image_test/alambic.conf | cut -d\" -d\' -f4`
+TMP_V=`grep alambic_version ../docker/image_test/alambic.conf | cut -d\" -f4`
 TMP_V=${TMP_V:-none}
 
 if [ $AL_V = $TMP_V ]; then
