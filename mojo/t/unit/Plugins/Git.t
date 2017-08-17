@@ -113,20 +113,61 @@ ok($ret->{'metrics'}{'SCM_COMMITS_1Y'} =~ /\d+/, "Metrics has SCM_COMMITS_1Y");
 
 # Check that files have been created.
 note("Check that files have been created. ");
-ok(-e "projects/tools.cdt/input/tools.cdt_import_pmi.json",
-  "Check that file import_pmi.json exists.");
+ok(-e "projects/alambic.test/input/alambic.test_git_log.txt",
+  "Check that file git_log.txt exists.");
 ok(
-  -e "projects/tools.cdt/output/tools.cdt_pmi.json",
-  "Check that file tools.cdt_metrics_pmi.json exists."
+  -e "projects/alambic.test/output/alambic.test_git_commits.csv",
+  "Check that file alambic.test_git_commits.csv exists."
 );
 ok(
-  -e "projects/tools.cdt/output/tools.cdt_pmi_checks.json",
-  "Check that file tools.cdt_metrics_pmi_checks.json exists."
+  -e "projects/alambic.test/output/alambic.test_git_scm.inc",
+  "Check that file alambic.test_git_scm.inc exists."
 );
 ok(
-  -e "projects/tools.cdt/output/tools.cdt_pmi_checks.csv",
-  "Check that file tools.cdt_metrics_pmi_checks.csv exists."
+  -e "projects/alambic.test/output/alambic.test_metrics_git.json",
+  "Check that file alambic.test_metrics_metrics_git.json exists."
+);
+ok(
+  -e "projects/alambic.test/output/alambic.test_metrics_git.csv",
+  "Check that file alambic.test_metrics_git.csv exists."
 );
 
+# Checking *_authors files
+ok(
+  -e "projects/alambic.test/output/alambic.test_git_evol_authors.html",
+  "Check that file alambic.test_git_evol_authors.html exists."
+);
+ok(
+  -e "projects/alambic.test/output/alambic.test_git_evol_authors.png",
+  "Check that file alambic.test_git_evol_authors.png exists."
+);
+ok(
+  -e "projects/alambic.test/output/alambic.test_git_evol_authors.svg",
+  "Check that file alambic.test_git_evol_authors.svg exists."
+);
+
+# Checking *_commits files
+ok(
+  -e "projects/alambic.test/output/alambic.test_git_evol_commits.svg",
+  "Check that file alambic.test_git_evol_commits.svg exists."
+);
+ok(
+  -e "projects/alambic.test/output/alambic.test_git_evol_commits.svg",
+  "Check that file alambic.test_git_evol_commits.svg exists."
+);
+ok(
+  -e "projects/alambic.test/output/alambic.test_git_evol_commits.html",
+  "Check that file alambic.test_git_evol_commits.html exists."
+);
+
+# Checking *_summary files
+ok(
+  -e "projects/alambic.test/output/alambic.test_git_evol_summary.html",
+  "Check that file alambic.test_git_evol_summary.html exists."
+);
+ok(
+  -e "projects/alambic.test/output/alambic.test_git_summary.html",
+  "Check that file alambic.test_git_summary.html exists."
+);
 
 done_testing();

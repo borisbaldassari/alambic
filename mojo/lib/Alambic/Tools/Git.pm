@@ -53,8 +53,8 @@ my $repofs;
 # Constructor to build a new Git object.
 #
 # Params:
-#   - $url: the url of the git repository to clone
 #   - $project_id: the id of the project analysed.
+#   - $git_url: the url of the git repository to clone
 sub new {
   my $class = shift;
   $project_id = shift;
@@ -63,12 +63,12 @@ sub new {
   my $dir = &_get_src_path($class, $project_id);
 
   # Create projects input dir if it does not exist
-  if (not -d $dir) {
-    make_path($dir);
+  if (not &_is_a_git_directory($dir)) {
+    Git::Repository->run( clone => $git_url => $dir );
   }
 
   # Now create Git object with dir.
-  $git = Git::Repository->new({'cwd' => $dir});
+  $git = Git::Repository->new( work_tree => $dir );
   $repofs = Alambic::Model::RepoFS->new();
 
   return bless {}, $class;
@@ -154,7 +154,7 @@ sub git_clone_or_pull() {
 
   my $dir = &_get_src_path($self, $project_id);
 
-  if (-e $dir) {
+  if ( &_is_a_git_directory($dir) ) {
 
     # start from an existing working copy
     eval {
@@ -170,6 +170,17 @@ sub git_clone_or_pull() {
   }
 
   return \@log;
+}
+
+# Utility to know if a directory is a git repo.
+sub _is_a_git_directory($) {
+    my ($dir) = @_;
+    
+    if (-e "$dir/.git/") {
+	return 1;
+    } else {
+	return 0;
+    }
 }
 
 
@@ -307,7 +318,11 @@ For the complete configuration see the user documentation on the web site: L<htt
     'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
     my $version = $tool->version();
 
-Build a new Git object.
+Build a new Git object. 
+
+
+If the git directory exists, the plugin will use it. Otherwise a clone will be 
+automatically executed at object startup.
 
 =head2 C<get_conf()>
 
@@ -353,8 +368,7 @@ Self-test method for the tool. Returns a log as an array reference.
 
 =head2 C<git_clone_or_pull()>
 
-    $log = $tool->git_clone_or_pull('test.project',
-      'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
+    $log = $tool->git_clone_or_pull();
 
 Function to get a git repository locally, not even knowing if 
 it's already there or not. If it exists, it will be pulld.

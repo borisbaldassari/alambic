@@ -52,6 +52,7 @@ if ($exec_cloning) {
     or diag explain $log;
 }
 
+note("Clone-or-pull Alambic.");
 $log = $tool->git_clone_or_pull();
 $log = $tool->git_clone_or_pull();
 ok(grep(/^\[Tools::Git\] Directory /, @{$log}), "Log has Directory.")
@@ -63,6 +64,7 @@ ok(grep(/^\[Tools::Git\] Pulling from origin/, @{$log}),
 ok(grep(/Already up-to-date/, @{$log}), "Pull is already up-to-date.")
   or diag explain $log;
 
+note("Get commits.");
 my $commits = $tool->git_commits();
 ok(ref($commits) eq 'ARRAY', 'Commits is an array.') or diag explain $commits;
 ok(exists($commits->[0]{'mod'}), 'Commit has mod attribute.')
@@ -78,6 +80,7 @@ ok(exists($commits->[0]{'time'}), 'Commit has time attribute.')
 ok(exists($commits->[0]{'id'}), 'Commit has id attribute.')
   or diag explain $commits;
 
+note("Get log.");
 $log = $tool->git_log();
 ok(grep(/^\[Tools::Git\] Getting Git log for /, @{$log}),
   "Log has Getting log.")

@@ -18,14 +18,14 @@ my %conf = (
   "id"   => "Git",
   "name" => "Git",
   "desc" => [
-    "Retrieves configuration management data from a git local repository. This plugin uses the Git Tool in Alambic, so please make sure ",
-    'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/Git">the project\'s wiki</a> for more information.',
+    "Retrieves configuration management data from a git local repository. This plugin uses the Git Tool in Alambic.",
+    'See <a href="http://alambic.io/Plugins/Pre/Git">the project\'s wiki</a> for more information.',
   ],
   "type"    => "pre",
   "ability" => ['info', 'metrics', 'data', 'recs', 'figs', 'viz', 'users'],
   "params"  => {
     "git_url" =>
-      'The git server URL, e.g. https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git.',
+      'The git repository URL, e.g. https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git.',
   },
   "provides_cdata" => [],
   "provides_info"  => ["GIT_SERVER",],
