@@ -4,7 +4,7 @@
 #  * 1 if dependencies not met
 
 
-PB_V=5.24
+PB_V=5.24.2
 VERSION=3.2-dev
 LOG=alambic_install.log
 
@@ -100,7 +100,7 @@ fi
 
 
 # Checking if all modules are installed
-perlbrew use perl-$PB_V
+perlbrew switch perl-$PB_V
 
 echo "# Installing perl modules.."
 echo "# Installing perl modules.." >> $LOG
