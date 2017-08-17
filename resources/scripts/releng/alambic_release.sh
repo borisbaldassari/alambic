@@ -67,6 +67,26 @@ else
     echo "[ERR] Conf file alambic.conf has a wrong version [$TMP_V]." | tee -a $AL_LOG
 fi
 
+# Checking version in alambic_ci image..
+TMP_V=`grep alambic_version ../docker/image_ci/alambic.conf | cut -d\" -f4`
+TMP_V=${TMP_V:-none}
+
+if [ $AL_V = $TMP_V ]; then
+    echo "[OK]  Checking that image_ci/alambic.conf has the correct version." | tee -a $AL_LOG
+else
+    echo "[ERR] Conf file image_ci/alambic.conf has a wrong version [$TMP_V]." | tee -a $AL_LOG
+fi
+
+# Checking version in alambic_test image..
+TMP_V=`grep alambic_version ../docker/image_test/alambic.conf | cut -d\" -f4`
+TMP_V=${TMP_V:-none}
+
+if [ $AL_V = $TMP_V ]; then
+    echo "[OK]  Checking that image_test/alambic.conf has the correct version." | tee -a $AL_LOG
+else
+    echo "[ERR] Conf file image_test/alambic.conf has a wrong version [$TMP_V]." | tee -a $AL_LOG
+fi
+
 
 # Generate SLOC reports
 
