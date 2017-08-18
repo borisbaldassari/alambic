@@ -1,10 +1,24 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 
 # Return code:
 #  * 0 if ok
 #  * 1 if dependencies not met
 
 
-PB_V=5.24
+PB_V=5.24.2
 VERSION=3.2-dev
 LOG=alambic_install.log
 
@@ -67,7 +81,10 @@ fi
 # Using perlbrew, install cpanm, recent version of perl, and all modules
 
 # Get last perl version from 5.24 series
-PB_V=`perlbrew list | grep  " perl-$PB_V" | cut -d- -f2`
+PB_V_R=`perlbrew list | grep  " perl-$PB_V" | cut -d- -f2`
+
+echo "# Identifying available perls: found [$PB_V_R]."
+echo "# Identifying available perls: found [$PB_V_R]." >> $LOG
 
 # Checking if cpanm is installed
 printf "  * Checking if cpanm is installed..."
@@ -91,16 +108,15 @@ perl --version | grep $PB_V > /dev/null
 if [ $? -ne 0 ]; then
     echo " Nope.\n  * Installing cpanm and perl $PB_V."
     echo " Nope.\n  * Installing cpanm and perl $PB_V." >> $LOG
-    perlbrew --notest install perl-$PB_V
+    perlbrew --notest install perl-$PB_V_R
 else
     echo " OK."
     echo " OK." >> $LOG
 fi
 
 
-
 # Checking if all modules are installed
-perlbrew use perl-$PB_V
+perlbrew switch perl-$PB_V_R
 
 echo "# Installing perl modules.."
 echo "# Installing perl modules.." >> $LOG

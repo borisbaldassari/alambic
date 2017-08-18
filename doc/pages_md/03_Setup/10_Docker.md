@@ -24,7 +24,7 @@ In the root of the Alambic repository, execute:
 
     $ docker-compose -f docker-compose.run.yml up
 
-Then head up to [http://localhost:3000](http://localhost:3000) and play with Alambic. Default login/password is administrator/password
+Then head up to [http://localhost:3000](http://localhost:3000) and play with Alambic. Default login/password is `administrator`/`password`. Note that in some (docker corner) cases one needs to identify the container's network interface, e.g. [http://172.19.0.3:3000](http://172.19.0.3:3000).
 
 ## Running Alambic tests using compose
 
@@ -35,12 +35,37 @@ In the root of the Alambic repository, execute:
     $ docker-compose -f docker-compose.test.yml run alambic_test
 
 
+## Using Docker volumes
+
+The test and CI Docker images both export a set of volumes:
+
+* alambic_db is the directory of the PostgreSQL cluster
+* alambic_fs is the directory of the Alambic code itself. It also contains file-system visualisations and data files for all analysed projects.
+
+These volumes can easily be identified using the `docker volumes list` command:
+
+    $ docker volume list
+    DRIVER              VOLUME NAME
+    local               alambic_db
+    local               alambic_fs
+
+Volumes can be directly accessed on the host filesystem, usually in the docker lib directory: `/var/lib/docker/volumes/`.
+
+When run without the compose file, the docker image can be started with a volume using the following command:
+
+    docker run -P --network=bbalambic_default --mount \
+      source=alambic_fs,target=/home/alambic \
+      bbaldassari/alambic_ci
+
+
 # Building Docker images
 
 
 ## Building the base image
 
-The base image is continuously built on codefresh, and pushed to the docker hub at [https://hub.docker.com/r/bbaldassari/alambic_base_centos/](https://hub.docker.com/r/bbaldassari/alambic_base_centos/)
+The base image is continuously built on codefresh, and pushed to the docker hub at
+
+* [https://hub.docker.com/r/bbaldassari/alambic_base_centos/](https://hub.docker.com/r/bbaldassari/alambic_base_centos/)
 
 In the `$AL_HOME/docker/image_base_centos directory`, execute:
 
@@ -74,7 +99,9 @@ You can also get individually from docker like this:
 
 ## Building the latest Alambic CI image
 
-The ci image is continuously built on codefresh, and pushed to the docker hub: [https://hub.docker.com/r/bbaldassari/alambic_ci](https://hub.docker.com/r/bbaldassari/alambic_ci)
+The ci image is continuously built on codefresh, and pushed to the docker hub:
+
+* [https://hub.docker.com/r/bbaldassari/alambic_ci](https://hub.docker.com/r/bbaldassari/alambic_ci)
 
 In the `$AL_HOME/docker/image_ci` directory, execute:
 

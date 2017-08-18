@@ -54,7 +54,9 @@
 
 <h2 id="new"><code>new()</code></h2>
 
-<pre><code>    my $tool = Alambic::Tools::Git-&gt;new();
+<pre><code>    my $tool = Alambic::Tools::Git-&gt;new(
+    &#39;test.project&#39;, 
+    &#39;https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git&#39;);
     my $version = $tool-&gt;version();</code></pre>
 
 <p>Build a new Git object.</p>

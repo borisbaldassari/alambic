@@ -1,0 +1,34 @@
+---
+output: html_document
+---
+
+```{r init, echo=FALSE, message=FALSE}
+
+#project.id <- 'modeling.sirius'
+plugin.id <- 'Git'
+file.metrics = paste("", project.id, "_git.csv", sep="")
+
+metrics <- read.csv(file=file.metrics, header=T)
+```
+
+### <a name="quick-summary"></a>Quick Summary
+
+``r ncol(metrics)`` metrics have been retrieved from Git SCM.
+
+* Total number of commits ([SCM_COMMITS](/documentation/metrics#SCM_COMMITS)): ``r metrics[['SCM_COMMITS']]``
+* Number of commits during last week ([SCM_COMMITS_1W](/documentation/metrics#SCM_COMMITS_1W)): ``r metrics[['SCM_COMMITS_1W']]``
+* Number of commits during last month ([SCM_COMMITS_1M](/documentation/metrics#SCM_COMMITS_1M)): ``r metrics[['SCM_COMMITS_1M']]``
+* Number of commits during last year ([SCM_COMMITS_1Y](/documentation/metrics#SCM_COMMITS_1Y)): ``r metrics[['SCM_COMMITS_1Y']]``
+
+* Total number of authors ([SCM_AUTHORS](/documentation/metrics#SCM_AUTHORS)): ``r metrics[['SCM_AUTHORS']]``
+* Number of distinct authors during last week ([SCM_AUTHORS_1W](/documentation/metrics#SCM_AUTHORS_1W)): ``r metrics[['SCM_AUTHORS_1W']]``
+* Number of distinct authors during last month ([SCM_AUTHORS_1M](/documentation/metrics#SCM_AUTHORS_1M)): ``r metrics[['SCM_AUTHORS_1M']]``
+* Number of distinct authors during last year ([SCM_AUTHORS_1Y](/documentation/metrics#SCM_AUTHORS_1Y)): ``r metrics[['SCM_AUTHORS_1Y']]``
+
+* Total number of committers ([SCM_COMMITTERS](/documentation/metrics#SCM_COMMITTERS)): ``r metrics[['SCM_COMMITTERS']]``
+* Number of distinct committers during last week ([SCM_COMMITTERS_1W](/documentation/metrics#SCM_COMMITTERS_1W)): ``r metrics[['SCM_COMMITTERS_1W']]``
+* Number of distinct committers during last month ([SCM_COMMITTERS_1M](/documentation/metrics#SCM_COMMITTERS_1M)): ``r metrics[['SCM_COMMITTERS_1M']]``
+* Number of distinct committers during last year ([SCM_COMMITTERS_1Y](/documentation/metrics#SCM_COMMITTERS_1Y)): ``r metrics[['SCM_COMMITTERS_1Y']]``
+
+The Git plugin analysis for project ``r project.id`` is available on the [Alambic dashboard](/projects/`r project.id`/Git/git_scm.html)).
+
