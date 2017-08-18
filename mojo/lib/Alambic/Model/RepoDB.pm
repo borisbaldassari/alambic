@@ -312,8 +312,6 @@ sub get_metric($) {
     $ret->{$next->{'mnemo'}}->{'scale'} = decode_json($next->{'scale'});
   }
 
-  print "METRIC " . Dumper($ret);
-
   return $ret;
 }
 
