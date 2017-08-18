@@ -81,8 +81,10 @@ my $ret = $plugin->run_plugin(
   }
 );
 
-ok(grep(m!GIT_URL!, keys %{$ret->{'info'}}), "Ret has info > GIT_URL");
-
+ok(grep(m!GIT_URL!, keys %{$ret->{'info'}}), "Ret has info > GIT_URL.");
+ok($ret->{'info'}{'GIT_URL'} =~ m!^https://BorisBaldassari\@bitbucket.org/BorisBaldassari/alambic.git$!, 
+   "Ret has correct GIT_URL.");
+    
 ok(grep(m!\[Tools::Git\] Getting Git log!, @{$ret->{'log'}}),
   "Ret has log > Getting Git log");
 ok(grep(m!\[Plugins::Git\] Parsing git log:!, @{$ret->{'log'}}),

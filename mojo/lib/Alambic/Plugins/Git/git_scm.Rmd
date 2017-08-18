@@ -114,7 +114,7 @@ Evolution of commits
 The visualisations used in this document rely on a number of flat CSV and JSON data files. You can download and play with them if you want to thereafter:
 
 * Raw text of git log [ <a href="import_git.txt">Download JSON</a> ]
-* Current metrics for the SCM Git plugin [ <a href="metrics_git.json">Download JSON</a> ]
+* Current metrics for the SCM Git plugin [ <a href="metrics_git.json">Download JSON</a> | <a href="metrics_git.csv">Download CSV</a> ]
 * Evolution of number of commits and authors by day [ <a href="git_commits.csv">Download CSV</a> ]
 
 

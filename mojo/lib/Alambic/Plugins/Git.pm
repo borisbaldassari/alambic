@@ -28,10 +28,11 @@ my %conf = (
       'The git repository URL, e.g. https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git.',
   },
   "provides_cdata" => [],
-  "provides_info"  => ["GIT_SERVER",],
+  "provides_info"  => ["GIT_URL",],
   "provides_data"  => {
     "import_git.txt" =>
       "The original git log file as retrieved from git (TXT).",
+    "metrics_git.csv" => "Current metrics for the SCM Git plugin (CSV).",
     "metrics_git.json" => "Current metrics for the SCM Git plugin (JSON).",
     "git_commits.csv" =>
       "Evolution of number of commits and authors by day (CSV)."
@@ -61,7 +62,7 @@ my %conf = (
     'git_evol_commits.svg'  => "SVG export of Git SCM commits evolution.",
     'git_evol_commits.html' => "HTML export of Git commits evolution.",
   },
-  "provides_recs" => ["SCM_LOW_ACTIVITY", "SCM_ZERO_ACTIVITY",],
+  "provides_recs" => ["SCM_LOW_ACTIVITY", "SCM_ZERO_ACTIVITY","SCM_LOW_DIVERSITY",],
   "provides_viz" => {"git_scm.html" => "Git SCM",},
 );
 
@@ -268,31 +269,41 @@ sub _compute_data($$) {
     @log, @{$r->knit_rmarkdown_html('Git', $project_id, 'git_evol_summary.rmd')}
   );
   @log
-    = (@log, @{$r->knit_rmarkdown_html('Git', $project_id, 'git_summary.rmd')});
-
-
-  # # Execute checks and fill recs.
-
-# # If less than 5 commits during last year, consider the project inactive.
-# if ( ( $metrics_new->{'SCM_COMMITS_365'} || 0 ) < 2 ) {
-# 	push( @recs, { 'rid' => 'SCM_LOW_ACTIVITY',
-# 		       'severity' => 0,
-# 		       'src' => 'EclipseScm',
-# 		       'desc' => 'There have been only ' . $metrics_new->{'SCM_COMMITS_365'}
-# 		       . ' commits during last year. The project is considered inactive.'
-# 	      }
-# 	    );
-# } elsif ( ( $metrics_new->{'SCM_COMMITS_365'} || 0 ) < 12 ) {
-# 	push( @recs, { 'rid' => 'SCM_LOW_ACTIVITY',
-# 		       'severity' => 0,
-# 		       'src' => 'EclipseScm',
-# 		       'desc' => 'There have been only ' . $metrics_new->{'SCM_COMMITS_365'}
-# 		       . ' commits during last year. The project has a very low activity.'
-# 	      }
-# 	      );
-# 	}
-
-
+      = (@log, @{$r->knit_rmarkdown_html('Git', $project_id, 'git_summary.rmd')});
+  
+  
+  # Execute checks and fill recs.
+  
+  # If less than 12 commits during last year, consider the project inactive.
+  if ( ( $metrics{'SCM_COMMITS_1Y'} || 0 ) < 12 ) {
+      push( @recs, { 'rid' => 'SCM_LOW_ACTIVITY',
+		     'severity' => 0,
+		     'src' => 'Git',
+		     'desc' => 'There have been only ' . $metrics{'SCM_COMMITS_1Y'}
+		     . ' commits during last year. The project is considered inactive.'
+	    }
+	  );
+  } elsif ( ( $metrics{'SCM_COMMITS_1Y'} || 0 ) == 0 ) {
+      push( @recs, { 'rid' => 'SCM_ZERO_ACTIVITY',
+		     'severity' => 0,
+		     'src' => 'Git',
+		     'desc' => 'There has been zero'
+			 . ' commits during last year. The project seems to be dormant.'
+	    }
+	  );
+  }
+  
+  if ( ( $metrics{'SCM_AUTHORS_1Y'} || 0 ) < 2 ) {
+      push( @recs, { 'rid' => 'SCM_LOW_DIVERSITY',
+		     'severity' => 0,
+		     'src' => 'Git',
+		     'desc' => 'There have been only ' . $metrics{'SCM_AUTHORS_1Y'}
+		       . ' authors during last year. This is a low numbers for authors, and'
+		       . ' it represents a risk for the sustainability of the project.'
+	    }
+	  );
+  }
+  
   return {"metrics" => \%metrics, "recs" => \@recs, "log" => \@log,};
 }
 
