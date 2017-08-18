@@ -1,5 +1,5 @@
-title: Community
-navi_name: Community
+title: Resources
+navi_name: Resources
 
 # Community
 

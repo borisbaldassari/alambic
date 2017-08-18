@@ -12,6 +12,12 @@ Issues and pull requests will be treated diligently.
 
 GitHub is used for dissemination only, there should be no issue filled there. Pull requests however will be monitored and treated.
 
+## Perldoc
+
+All Alambic Perl modules have perldoc embedded; the output can be found on this web site (perldoc is updated daily from the code).
+
+* [[/perldoc/index.html]]
+
 
 ## Environment
 
@@ -42,7 +48,7 @@ Main points:
 
 All tests should be placed into the `mojo/t/` directory, and use the `.t` extension. This way they are automatically run by Alambic (and the continuous integration system, btw).
 
-To run all Alambic tests, simply execute the Alambic command:
+To run all Alambic tests, simply execute the Alambic `test` command:
 
     boris@midkemia mojo $ bin/alambic test
     Running tests from "/home/boris/Projects/bb_alambic/mojo/bin/../t".
@@ -97,7 +103,7 @@ To execute single tests, use the `prove` command:
     Files=1, Tests=21,  0 wallclock secs ( 0.01 usr  0.00 sys +  0.03 cusr  0.01 csys =  0.05 CPU)
     Result: PASS
 
-Using `perl` instead:
+Note that you can also use the `perl` command instead:
 
     boris@midkemia mojo $ perl -I lib t/unit/Model/Models.t
     ok 1 - use Alambic::Model::Models;
@@ -122,3 +128,7 @@ Using `perl` instead:
     ok 20 - Single metric retrieved is ok.
     ok 21 - Metrics retrieved are ok.
     1..21
+
+HTML reports can be generated using [TAP::Formatter::HTML](http://search.cpan.org/~spurkis/TAP-Formatter-HTML-0.11/):
+
+prove -P HTML=outfile:test_output.html,force_inline_css:1,force_inline_js:1 -Ilib -r --timer -Q t/
