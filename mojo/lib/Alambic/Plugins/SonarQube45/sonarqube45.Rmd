@@ -52,7 +52,7 @@ names(violations) <- c('Values', 'Severity')
 
 <div class="row"><div class="col-sm-7">
 
-[SonarQube](http://www.sonarqube.org/) is a great and widely-used source code analyzer .
+[SonarQube](http://www.sonarqube.org/) is a widely-used source code analyzer .
 
 You can learn more about this module on its [documentation page](http://alambic.io/Plugins/Pre/SonarQube45.html) on the project wiki.
 

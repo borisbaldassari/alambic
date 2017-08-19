@@ -33,7 +33,7 @@ my %conf = (
   "name" => "SonarQube 4.5.x",
   "desc" => [
     "Retrieves information from a SonarQube 4.5.x instance (i.e. metrics and violations), and visualises them.",
-    "Check the documentation for this plugin on the project wiki: <a href=\"https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/SonarQube45\">https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/SonarQube45</a>."
+    "Check the documentation for this plugin on the project wiki: <a href=\"http://alambic.io/Plugins/Pre/SonarQube45.html\">http://alambic.io/Plugins/Pre/SonarQube45.html</a>."
   ],
   "type"    => "pre",
   "ability" => ['metrics', 'info', 'data', 'viz', 'figs'],
@@ -474,15 +474,17 @@ Parameters:
 
 =over
 
-=item * C<SonarQube server URL> The URL
+=item * B<SonarQube server URL> The URL of the SonarQube server, e.g. https://sonar.eclipse.org or http://localhost:9000.
+
+=item * B<Project ID> The ID of the project within the SonarQube instance, e.g. log4j or org.polarsys:org.polarsys.capella.
 
 =back
 
-For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/Hudson.html>.
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/SonarQube45.html>.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/Pre/Hudson.html>, L<https://hudson.eclipse.org>,
+L<https://alambic.io/Plugins/Pre/SonarQube45.html>, L<https://www.sonarqube.org>,
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 
