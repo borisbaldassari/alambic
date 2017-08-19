@@ -1,3 +1,18 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Thales 
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Plugins::SonarQube45;
 use base 'Mojolicious::Plugin';
 
@@ -21,7 +36,7 @@ my %conf = (
     "Check the documentation for this plugin on the project wiki: <a href=\"https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/SonarQube45\">https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/SonarQube45</a>."
   ],
   "type"    => "pre",
-  "ability" => ['metrics', 'viz', 'figs', 'recs'],
+  "ability" => ['metrics', 'info', 'data', 'viz', 'figs'],
   "params"  => {
     "sonar_url" =>
       "The base URL for the SonarQube instance (e.g. http://localhost:9000).",
@@ -97,13 +112,13 @@ my %conf = (
   },
   "provides_figs" => {
 
-#        'sonarqube_violations_bar.svg' => "Repartition of violations severity (SVG)",
-    'sonarqube_violations_pie.html' =>
-      "Pie chart of repartition of violations severity (HTML)",
-    'sonarqube_summary.html'    => "Summary of main SonarQube metrics (HTML)",
-    'sonarqube_violations.html' => "Summary of SonarQube violations (HTML)",
-
-#        'sonarqube_coverage.html' => "Bar plot of the different coverage metrics of SonarQube",
+      'sonarqube_violations_bar.svg' => "Repartition of violations severity (SVG)",
+      'sonarqube_violations_pie.html' =>
+	  "Pie chart of repartition of violations severity (HTML)",
+      'sonarqube_summary.html'    => "Summary of main SonarQube metrics (HTML)",
+      'sonarqube_violations.html' => "Summary of SonarQube violations (HTML)",
+	  
+#      'sonarqube_coverage.html' => "Bar plot of the different coverage metrics of SonarQube",
   },
   "provides_recs" => [
 
@@ -383,7 +398,6 @@ sub run_plugin($$) {
     $csv_out
       .= $content->[0]{'sonar_info'}{'Version'} . ","
       . $ret{'metrics'}{'SQ_RULES'} . ","
-      . $content->[0]{'sonar_info'}{'Version'} . ","
       . $content->[0]{'system_info'}{'JVM Vendor'} . ","
       . $content->[0]{'system_info'}{'JVM Name'} . ","
       . $content->[0]{'system_statistics'}{'Total Memory'} . ","
@@ -398,7 +412,7 @@ sub run_plugin($$) {
     $csv_out
       .= "Unknown,"
       . $ret{'metrics'}{'SQ_RULES'}
-      . ",Unknown,Unknown,Unknown,Unknown,Unknown,Unknown\n";
+      . ",Unknown,Unknown,Unknown,Unknown,Unknown\n";
   }
   $repofs->write_plugin('SonarQube45', $project_id . "_sq_info.csv", $csv_out);
 
@@ -441,3 +455,37 @@ sub run_plugin($$) {
 
 
 1;
+
+
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Plugins::SonarQube45> - A plugin to fetch information from a 
+SonarQube 4.5.x instance.
+
+=head1 DESCRIPTION
+
+B<Alambic::Plugins::SonarQube45> retrieves information from a SonarQube 4.5.x instance.
+
+Parameters:
+
+=over
+
+=item * C<SonarQube server URL> The URL
+
+=back
+
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/Hudson.html>.
+
+=head1 SEE ALSO
+
+L<https://alambic.io/Plugins/Pre/Hudson.html>, L<https://hudson.eclipse.org>,
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+
+=cut
+

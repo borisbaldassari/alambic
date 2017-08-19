@@ -1,4 +1,18 @@
 #! perl -I../../lib/
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 
 use strict;
 use warnings;
@@ -15,10 +29,14 @@ isa_ok($plugin, 'Alambic::Plugins::SonarQube45');
 note("Checking the plugin parameters. ");
 my $conf = $plugin->get_conf();
 
-ok(grep(m!sonar_coverage.html!, keys %{$conf->{'provides_figs'}}),
-  "Conf has provides_figs > sonar_coverage");
-ok(grep(m!sonar_rules.html!, keys %{$conf->{'provides_figs'}}),
-  "Conf has provides_figs > sonar_rules");
+ok(grep(m!sonarqube_violations_bar.svg!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > sonarqube_violations_bar");
+ok(grep(m!sonarqube_violations_pie.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > sonarqube_violations_pie");
+ok(grep(m!sonarqube_summary.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > sonarqube_summary");
+ok(grep(m!sonarqube_violations.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > sonarqube_violations");
 
 ok(grep(m!public_api!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > public_api");
@@ -42,8 +60,9 @@ ok(grep(m!public_documented_api_density!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > public_documented_api_density");
 
 ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
-ok(grep(m!recs!,    @{$conf->{'ability'}}), "Conf has ability > recs");
 ok(grep(m!figs!,    @{$conf->{'ability'}}), "Conf has ability > figs");
+ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
+ok(grep(m!info!,    @{$conf->{'ability'}}), "Conf has ability > info");
 ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
 
 ok(grep(m!sonar_project!, keys %{$conf->{'params'}}),
@@ -51,20 +70,20 @@ ok(grep(m!sonar_project!, keys %{$conf->{'params'}}),
 ok(grep(m!sonar_project!, keys %{$conf->{'params'}}),
   "Conf has params > sonar_url");
 
-ok(grep(m!sonar.html!, keys %{$conf->{'provides_viz'}}),
-  "Conf has provides_figs > sonar_coverage");
+ok(grep(m!sonarqube45.html!, keys %{$conf->{'provides_viz'}}),
+  "Conf has provides_viz > sonarqube45");
 
-my $in_sonar_url     = "http://localhost:9000";
-my $in_sonar_project = "log4j";
+my $in_sonar_url     = "https://sonar.eclipse.org";
+my $in_sonar_project = "org.eclipse.sirius:sirius-parent";
 
-note("Executing the plugin with log4j project. ");
+note("Executing the plugin with Sirius project. ");
 my $ret = $plugin->run_plugin("test.project",
   {'sonar_url' => $in_sonar_url, 'sonar_project' => $in_sonar_project});
 
 # Test log
 my @log = @{$ret->{'log'}};
 ok(grep(!/^ERROR/, @log), "Log returns no ERROR") or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Get issues from \[http://localhost!, @log),
+ok(grep(m!^\[Plugins::SonarQube45\] Get issues from \[http!, @log),
   "Log returns get issues.")
   or diag explain @log;
 ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] blocker issues.!, @log),
@@ -76,16 +95,16 @@ ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] critical issues.!, @log),
 ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] major issues.!, @log),
   "Log returns got major issues.")
   or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Got \[37\] rules.!, @log),
-  "Log returns 37 rules.")
+ok(grep(m!^\[Plugins::SonarQube45\] Got \[35\] rules.!, @log),
+  "Log returns 35 rules.")
   or diag explain @log;
 ok(
-  grep(m!^\[Plugins::SonarQube45\] Get resources from \[http://localhost!,
+  grep(m!^\[Plugins::SonarQube45\] Get resources from \[http!,
     @log),
   "Log returns get resources."
 ) or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Got \[12\] metrics.!, @log),
-  "Log returns got 12 metrics.")
+ok(grep(m!^\[Plugins::SonarQube45\] Got \[33\] metrics.!, @log),
+  "Log returns got 33 metrics.")
   or diag explain @log;
 
 # Test metrics
@@ -121,35 +140,3 @@ ok($ret->{'metrics'}{'SQ_FUNCS'},
 done_testing();
 exit;
 
-note("Check that files have been created. ");
-ok(-e "projects/tools.cdt/input/tools.cdt_import_its.json",
-  "Check that file import_its.json exists.");
-ok(-e "projects/tools.cdt/input/tools.cdt_import_its_evol.json",
-  "Check that file import_its_evol.json exists.");
-ok(
-  -e "projects/tools.cdt/output/its_evol_changed.html",
-  "Check that file its_evol_changed.html exists."
-);
-ok(
-  -e "projects/tools.cdt/output/eclipse_its.inc",
-  "Check that file EclipseIts.inc exists."
-);
-ok(
-  -e "projects/tools.cdt/output/its_evol_opened.html",
-  "Check that file its_evol_opened.html exists."
-);
-ok(
-  -e "projects/tools.cdt/output/its_evol_people.html",
-  "Check that file its_evol_people.html exists."
-);
-ok(
-  -e "projects/tools.cdt/output/its_evol_summary.html",
-  "Check that file its_evol_summary.html exists."
-);
-ok(
-  -e "projects/tools.cdt/output/tools.cdt_metrics_its.json",
-  "Check that file tools.cdt_metrics_its.json exists."
-);
-
-
-done_testing(19);
