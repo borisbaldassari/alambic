@@ -39,8 +39,8 @@ ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
 ok(grep(m!users!,   @{$conf->{'ability'}}), "Conf has not ability > users");
 
 ok(
-  grep(m!GIT_SERVER!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > MLS_DEV_URL"
+  grep(m!GIT_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > GIT_URL"
 );
 
 ok(grep(m!import_git.txt!, keys %{$conf->{'provides_data'}}),
