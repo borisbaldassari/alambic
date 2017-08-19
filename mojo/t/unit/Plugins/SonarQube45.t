@@ -137,6 +137,40 @@ ok($ret->{'metrics'}{'SQ_FUNCS'},
   "Metric FUNCS is " . $ret->{'metrics'}{'SQ_FUNCS'} . ".")
   or diag explain $ret;
 
+
+
+# Checking output/*_sq_ files
+ok(
+  -e "projects/test.project/output/test.project_import_sq_issues_blocker.csv",
+  "Check that file test.project_import_sq_issues_blocker.csv exists."
+);
+ok(
+  -e "projects/test.project/output/test.project_import_sq_issues_critical.csv",
+  "Check that file test.project_import_sq_issues_critical.csv exists."
+);
+ok(
+  -e "projects/test.project/output/test.project_import_sq_issues_major.csv",
+  "Check that file test.project_import_sq_issues_major.csv exists."
+    );
+ok(
+  -e "projects/test.project/output/test.project_sq_issues_blocker.csv",
+  "Check that file test.project_sq_issues_blocker.csv exists."
+);
+ok(
+  -e "projects/test.project/output/test.project_sq_issues_critical.csv",
+  "Check that file test.project_sq_issues_critical.csv exists."
+);
+ok(
+  -e "projects/test.project/output/test.project_sq_issues_major.csv",
+  "Check that file test.project_sq_issues_major.csv exists."
+    );
+
+# Checking sq_metrics file
+ok(
+  -e "projects/test.project/output/test.project_sq_metrics.csv",
+  "Check that file test.project_sq_metrics.csv exists."
+);
+
 done_testing();
 exit;
 

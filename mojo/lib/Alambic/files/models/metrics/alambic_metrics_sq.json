@@ -34,7 +34,8 @@
         "mnemo": "SQ_STATEMENTS",
         "desc": [
             "Number of statements.",
-            "For Java, it is the number of statements as defined in the Java Language Specification but without block definitions. Statements counter gets incremented by one each time a following keyword is encountered: <code>if, else, while, do, for, switch, break, continue, return, throw, synchronized, catch, finally.</code></p><p>Statements counter is not incremented by a class, method, field, annotation definition, package declaration and import declaration.",
+            "For Java, it is the number of statements as defined in the Java Language Specification but without block definitions. Statements counter gets incremented by one each time a following keyword is encountered: <code>if, else, while, do, for, switch, break, continue, return, throw, synchronized, catch, finally.</code>.",
+	    "Statements counter is not incremented by a class, method, field, annotation definition, package declaration and import declaration.",
             "For Cobol, a statement is one of <code>move, if, accept, add, alter, call, cancel, close, compute, continue, delete, display, divide, entry, evaluate, exitProgram, goback, goto, initialize, inspect, merge, multiply, open, perform, read, release, return, rewrite, search, set, sort, start, stop, string, subtract, unstring, write, exec, ibmXmlParse, ibmXmlGenerate, readyReset, mfCommit, mfRollback</code>."
         ],
         "scale": [500,1000,10000,50000]
