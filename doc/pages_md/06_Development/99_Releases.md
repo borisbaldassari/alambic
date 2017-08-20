@@ -11,7 +11,7 @@ Date: 2017-04-22
 Changelog:
 
 * Security fix.
-* Minor [bug fixes]((https://bitbucket.org/BorisBaldassari/alambic/issues?milestone=Alambic+3.3.1).
+* Minor [bug fixes](https://bitbucket.org/BorisBaldassari/alambic/issues?milestone=Alambic+3.3.1).
 
 ## Alambic 3.3
 

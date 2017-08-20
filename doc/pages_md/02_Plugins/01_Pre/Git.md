@@ -32,21 +32,21 @@ Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/
 
 ## Figures
 
-* git_summary.html
+* `git_summary.html`
   HTML export of Git main metrics.
-* git_evol_summary.html
+* `git_evol_summary.html`
   HTML export of Git SCM evolution summary.
-* git_evol_authors.png
+* `git_evol_authors.png`
   PNG export of Git SCM authors evolution.
-* git_evol_authors.svg
+* `git_evol_authors.svg`
   SVG export of Git SCM authors evolution.
-* git_evol_authors.html
+* `git_evol_authors.html`
   HTML export of Git authors evolution.
-* git_evol_commits.png
+* `git_evol_commits.png`
   PNG export of Git SCM commits evolution.
-* git_evol_commits.svg
+* `git_evol_commits.svg`
   SVG export of Git SCM commits evolution.
-* git_evol_commits.html
+* `git_evol_commits.html`
   HTML export of Git commits evolution.
 
 ## Information

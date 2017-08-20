@@ -16,7 +16,7 @@ GitHub is used for dissemination only, there should be no issue filled there. Pu
 
 All Alambic Perl modules have perldoc embedded; the output can be found on this web site (perldoc is updated daily from the code).
 
-* [[/perldoc/index.html]]
+* [http://alambic.io/perldoc/index.html](/perldoc/index.html)
 
 
 ## Environment
@@ -131,4 +131,4 @@ Note that you can also use the `perl` command instead:
 
 HTML reports can be generated using [TAP::Formatter::HTML](http://search.cpan.org/~spurkis/TAP-Formatter-HTML-0.11/):
 
-prove -P HTML=outfile:test_output.html,force_inline_css:1,force_inline_js:1 -Ilib -r --timer -Q t/
+    prove -P HTML=outfile:test_output.html,force_inline_css:1,force_inline_js:1 -Ilib -r --timer -Q t/
