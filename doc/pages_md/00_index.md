@@ -13,7 +13,9 @@ navi_name: Alambic
 
     <p>It basically <b>retrieves data from various repositories</b> (code metrics, scm metadata, stack overflow questions, etc.) and <b>makes them available for custom plugins to produce analysis, numbers, graphics, and data sets</b>.</p>
 
-    <p>A <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs). Examples of plugins ready to use include <a href="/Plugins/Pre/PmdAnalysis.html">PMD Results Analysis</a>, <a href="/Plugins/Pre/StackOverflow.html">StackOverflow questions</a> and <a href="/Plugins/Pre/EclipsePmi.html">PMI Checks for Eclipse projects</a>. <b>Check the complete list of plugins in the <a href="/Plugins">Plugins section</a>.</b></p>
+    <p>A <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs). Examples of plugins ready to use include <a href="/Plugins/Pre/PmdAnalysis.html">PMD Results Analysis</a>, <a href="/Plugins/Pre/StackOverflow.html">StackOverflow questions</a> and <a href="/Plugins/Pre/EclipsePmi.html">PMI Checks for Eclipse projects</a>. <b></p>
+
+    <p>Check the complete list of plugins in the <a href="/Plugins.html">Plugins section</a>.</b></p>
 
     <p>Measures are aggregated in a tree-like <b>quality model</b> structure to better organise and understand the information. The <a href="/Documentation/Users/QualityModel.html">Quality Model</a> can be entirely customised, and almost any type of data source can be added through plugins. </p>
     <br />

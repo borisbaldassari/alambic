@@ -4,7 +4,7 @@ navi_name: ProjectSummary
 
 # Project Summary
 
-This plugin retrieves information from a [Hudson CI](http://eclipse.org/hudson) continuous integration engine, displays a summary of its status, and provides recommendations to better use CI.
+This plugin creates
 
 -----
 
