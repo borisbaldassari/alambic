@@ -41,7 +41,8 @@ my %conf = (
     "badge_attr_alambic.svg" =>
       "A badge to display current value of main quality attribute on an external web site (uses shields.io)",
 
-#        "psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
+    "badge_psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
+    "psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
     "badge_qm" => "A HTML snippet that displays main quality attributes.",
     "badge_project_main" =>
       "A HTML snippet that displays the name and description of the project.",
@@ -102,7 +103,7 @@ sub run_post($$) {
   $repofs->write_output($project_id, "badge_attr_root.svg", $badge);
 
   my $psum_attrs = &_create_psum_attrs($self, $params);
-  $repofs->write_output($project_id, "psum_attrs.html", $psum_attrs);
+  $repofs->write_output($project_id, "badge_psum_attrs.html", $psum_attrs);
 
 
   # Foreach child of root attribute create a badge.
@@ -137,7 +138,7 @@ sub _create_badge() {
   my $name  = shift || "";
   my $value = shift || 0;
 
-  my @colours = ("red", "oragne", "yellow", "green", "brightgreen");
+  my @colours = ("red", "orange", "yellow", "green", "brightgreen");
 
   my $url
     = 'https://img.shields.io/badge/'
@@ -154,7 +155,10 @@ sub _create_badge() {
 sub _create_psum_attrs() {
   my ($self, $params) = @_;
 
-  my $html_t = '<!DOCTYPE html>
+  my $root_value = $params->{'root.value'} || '';
+  my $root_name = $params->{'root.name'} || '';
+  
+  my $html_t = qq'<!DOCTYPE html>
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <meta charset="utf-8">
@@ -168,37 +172,25 @@ sub _create_psum_attrs() {
       <link rel="stylesheet" href="/css/default.css">
     </head>
 
-    <body style=\'font-family: "arial"; font-color: #3E3F3A\'>
+    <body style=\'font-family: "arial"; font-color: #3E3F3A; margin: 10px\'">
       <div class="panel panel-default">
         <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
-        <div class="list-group">
-          <a href="#info" class="list-group-item"><%= $project_id %></a>
-          <a href="#metrics" class="list-group-item">Metrics</a>
-        </div>
+        <table class="table table-striped">
+';
+
+  my @ids = grep { $_ =~ /^QM_/ } sort keys %$params;
+
+  foreach my $id (@ids) {
+      $html_t .= '<tr><td><a href="/documentation/attributes.html#' 
+	  . $id . '">' . $params->{'QMN_' . $id} 
+      . '</a><span class="pull-right">' . $params->{$id} . "</span></td></tr>\n";
+  }
+  
+  $html_t .= qq'
+        </table>
       </div>
     </body>
     </html>';
-
-  # my $html_r = $self->renderer->render_to_string(
-  # 	inline => $html_t, handler => 'epl',
-  # 	layout => "default_empty"
-  # 	);
-  # print "RENDERED " . Dumper($html_r);
-
-  # my $attr_root_name = $params->{'root.name'};
-  # my $attr_root_value = $params->{'root.value'};
-  # $html .= '<p><b><span style="font-weight: bold; font-size: 150%">'
-  # 	. $attr_root_name
-  # 	. ' &nbsp; <span style="font-weight: bold; font-size: 300%">'
-  # 	. $attr_root_value . "</span></p>\n<p>";
-
-# my @subattrs = sort grep( /^QM_.*/, keys %$params );
-# my $subatttrs;
-# foreach my $s (@subattrs) {
-# 	$html .= '<span style="font-weight: bold; font-size: 150%">' . $params->{"QMN_" . $s}
-# 	    . ' &nbsp; ' . $params->{$s} . "</span><br />";
-# }
-# $html .= "</p></body></html>";
 
   return $html_t;
 }
@@ -221,7 +213,7 @@ and images about the project's analysis results.
 
 Parameters: None
 
-For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/ProjectSummary.html>.
+For the complete description of the plugin see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/ProjectSummary.html>.
 
 =head1 SEE ALSO
 

@@ -27,11 +27,11 @@ qmsn <- grep("^QMN_.*", ls(), perl=TRUE, value=TRUE)
 text <- ""
 for (i in 1:length(qms) ) {
   text.tmp <- paste( eval(parse(text = qms[[i]])), eval(parse(text = qmsn[[i]])), sep=" " )
-  text <- paste(text, text.tmp, sep=" ")
+  text <- paste(text, text.tmp, sep=" <br />")
 }
 ```
 
-<p><b><span style="color:blue; font-size: 300%">`r root.value`</span> `r root.name`</b></p>
-<p>`r text`</p>
+<p><b><span style="color:black; font-size: 300%">`r root.value`</span> `r root.name`</b>
+<span style="font-weight: bold">`r text`</span></p>
 
 
