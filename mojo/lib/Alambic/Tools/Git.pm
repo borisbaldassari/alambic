@@ -29,9 +29,9 @@ my %conf = (
   "name"    => "Git Tool",
   "desc"    => "Provides Git commands and features.",
   "ability" => [
-
-#	"install",
-    "methods", "project"
+#   "install",
+    "methods", 
+#   "project"
   ],
   "type"             => "tool",
   "params"           => {"path_git" => "The absolute path to the git binary.",},
