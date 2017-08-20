@@ -5,7 +5,7 @@ navi_name: Git
 
 This plugin retrieves information from a Git repository and runs a basic analysis on its log. It notably displays graphics about commits and authors.
 
-
+Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/Git.pm.html) in the [perldoc](http://alambic.io/perldoc/index.html) section.
 
 -----
 
@@ -25,10 +25,10 @@ This plugin retrieves information from a Git repository and runs a basic analysi
 
 ## Downloads
 
-* import_git.txt: The original git log file as retrieved from git (TXT).
-* git_commits.csv: Evolution of number of commits and authors by day (CSV).
-* metrics_git.csv: Current metrics for the SCM Git plugin (CSV).
-* metrics_git.json: Current metrics for the SCM Git plugin (JSON).
+* `import_git.txt`: The original git log file as retrieved from git (TXT).
+* `git_commits.csv`: Evolution of number of commits and authors by day (CSV).
+* `metrics_git.csv`: Current metrics for the SCM Git plugin (CSV).
+* `metrics_git.json`: Current metrics for the SCM Git plugin (JSON).
 
 ## Figures
 

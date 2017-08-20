@@ -6,6 +6,8 @@ navi_name: StackOverflow
 
 The Stack Overflow plugin retrieves Stack Overflow questions and answers related to the project tag, and provides a summary, a list of hot questions and recommendations to ensure a fine support to users on the web site.
 
+Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/StackOverflow.pm.html) in the [perldoc](http://alambic.io/perldoc/index.html) section.
+
 ----
 
 # Basic information
@@ -15,7 +17,7 @@ The Stack Overflow plugin retrieves Stack Overflow questions and answers related
 * **Description**:
   Retrieves questions and answers related to a specific tag from the Stack Overflow question/answer web site.
 * **Parameters**:
-    * so_keyword A Stack Overflow tag to retrieve questions from.
+    * `so_keyword` A Stack Overflow tag to retrieve questions from.
 
 -----
 

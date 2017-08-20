@@ -16,6 +16,8 @@ Note on rules: There should be a rules directory where the plugin is, with the d
 
 Please note that this plugin only reads the XML configuration and output files of a PMD run. One has to execute it on a regular basis &em; ideally in a continuous integration job &em; and provide the XML files URLs to the plugin.
 
+Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/PmdAnalysis.pm.html) in the [perldoc](http://alambic.io/perldoc/index.html) section.
+
 -----
 
 # Basic information
@@ -27,8 +29,8 @@ Please note that this plugin only reads the XML configuration and output files o
   Please note that this plugin only reads the XML configuration and output files of a PMD run. One has to execute it on a regular basis &em; ideally in a continuous integration job &em; and provide the XML files URLs to the plugin.
   Up-to-date documentation for the plugin is located on [the project wiki](http://alambic.io/Plugins/Pre/PmdAnalysis.html).',
 * **Parameters**:
-    * url_pmd_conf The URL to the XML configuration file used to run PMD.
-    * url_pmd_xml The URL to the XML PMD results for the project.
+    * `url_pmd_conf` The URL to the XML configuration file used to run PMD.
+    * `url_pmd_xml` The URL to the XML PMD results for the project.
 
 -----
 
