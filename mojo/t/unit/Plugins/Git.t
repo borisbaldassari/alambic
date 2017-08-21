@@ -129,8 +129,8 @@ ok($ret->{'metrics'}{'SCM_COMMITS_1Y'} =~ /\d+/, "Metrics has SCM_COMMITS_1Y");
 
 # Check that files have been created.
 note("Check that files have been created. ");
-ok(-e "projects/alambic.test/input/alambic.test_git_log.txt",
-  "Check that file git_log.txt exists.");
+ok(-e "projects/alambic.test/input/alambic.test_import_git.txt",
+  "Check that file import_git.txt exists.");
 ok(
   -e "projects/alambic.test/output/alambic.test_git_commits.csv",
   "Check that file alambic.test_git_commits.csv exists."
