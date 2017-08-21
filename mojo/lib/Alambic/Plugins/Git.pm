@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Plugins::Git;
 
 use strict;
@@ -18,7 +32,7 @@ my %conf = (
   "id"   => "Git",
   "name" => "Git",
   "desc" => [
-    "Retrieves configuration management data from a git local repository. This plugin uses the Git Tool in Alambic.",
+    "Retrieves configuration management data and metrics from a git repository. This plugin uses the Git Tool in Alambic.",
     'See <a href="http://alambic.io/Plugins/Pre/Git">the project\'s wiki</a> for more information.',
   ],
   "type"    => "pre",
@@ -280,7 +294,7 @@ sub _compute_data($$) {
 		     'severity' => 0,
 		     'src' => 'Git',
 		     'desc' => 'There have been only ' . $metrics{'SCM_COMMITS_1Y'}
-		     . ' commits during last year. The project is considered inactive.'
+		     . ' commits during last year. The project is considered low-activity.'
 	    }
 	  );
   } elsif ( ( $metrics{'SCM_COMMITS_1Y'} || 0 ) == 0 ) {
@@ -309,3 +323,35 @@ sub _compute_data($$) {
 
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Plugins::Git> - Retrieves configuration management data and metrics 
+from a git repository.
+
+=head1 DESCRIPTION
+
+B<Alambic::Plugins::Git> Retrieves configuration management data and metrics 
+from a git repository.
+
+Parameters: 
+
+=over
+
+=item * git_url The URL of the remote git repository.
+
+=back
+
+For the complete description of the plugin see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/Git.html>.
+
+=head1 SEE ALSO
+
+L<https://alambic.io/Plugins/Pre/Git.html>,
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+
+=cut
