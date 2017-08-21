@@ -209,9 +209,9 @@ sub git_log() {
 
   my $output = $git->run(('log'));
 
-  $repofs->write_input($project_id, "git_log.txt", $output);
+  $repofs->write_input($project_id, "import_git.txt", $output);
   push(@log,
-    "[Tools::Git] Getting Git log for [$project_id] in [${project_id}_git_log.txt]."
+    "[Tools::Git] Getting Git log for [$project_id] in [${project_id}_import_git.txt]."
   );
 
   return \@log;
