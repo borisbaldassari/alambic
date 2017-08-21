@@ -10,17 +10,15 @@ The complete list of plots that can be exported for a project is listed in the i
 # Simple pictures
 
 The format is as follows:
-````
-<img src="<server:port>/projects/figures/<plugin_id>/<project_id>/image.svg"
-     alt="My picture" />
-````
+
+    <img src="<server:port>/projects/figures/<plugin_id>/<project_id>/image.svg"
+         alt="My picture" />
 
 As an example the following picture is borrowed from the Alambic instance dedicated to Eclipse projects, located at [eclipse.castalia.camp](http://eclipse.castalia.camp). It uses the Bubble plot of questions from the stack overflow plugin of the CDT (tools.cdt) project. You can see the [picture itself here](http://eclipse.castalia.camp/projects/figures/stack_overflow/tools.cdt/blob-so-plot-1.svg).
 
-````
-<img src="http://eclipse.castalia.camp/projects/figures/stack_overflow/tools.cdt/blob-so-plot-1.svg"
-     alt="Bubble plot of Stack Overflow questions" />
-````
+    <img src="http://eclipse.castalia.camp/projects/figures/stack_overflow/tools.cdt/blob-so-plot-1.svg"
+         alt="Bubble plot of Stack Overflow questions" />
+
 
 # HTML snippets
 
@@ -29,11 +27,10 @@ HTML snippets are usually interactive, js-based plots: they allow the user to ei
 Using HTML snippets is as simple as inserting a iframe element in your web page, with the address of the plot as a target. Width and height depend on the plot, so you may need to adjust them. If in doubt, you can still check the plugin page for the project (which uses iframes too) and see what dimensions are used.
 
 An example of iframe for project CDT is provided below:
-````
-<iframe src="/projects/figures/eclipse_its/tools.cdt/its_evol_people.html"
+
+    <iframe src="/projects/figures/eclipse_its/tools.cdt/its_evol_people.html"
         frameborder="0" style="width: 100%; height: 300px">
-</iframe>
-````
+    </iframe>
 
 This iframe would show the following visual when reused:
 
@@ -55,8 +52,7 @@ This iframe would show the following visual when reused:
 ![plot_ly.png](https://bitbucket.org/repo/b48zyo/images/458014901-plot_ly.png)
 
 Plot.ly figures can be exported and reused just as the HTML snippets (which they are btw). Just insert an iframe in your own web page with the plot as a target. For the above picture, it would look like:
-````
-<iframe src="/projects/figures/eclipse_its/technology.hudson/its_evol_summary.html"
-        frameborder="0" style="width: 100%; height: 370px">
-</iframe>
-````
+
+    <iframe src="/projects/figures/eclipse_its/technology.hudson/its_evol_summary.html"
+            frameborder="0" style="width: 100%; height: 370px">
+    </iframe>

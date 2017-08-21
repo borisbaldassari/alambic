@@ -18,4 +18,4 @@ Mojolicious -- and Alambic -- use embedded Perl as a [templating system](http://
   * Quality Model is `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/qm.html.ep`.
   * History is `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/history.html.ep`.
 
-The existing files (along with all `*.html.ep` files) can also serve as an example.
+The existing files (along with all `*.html.ep` files in the `$ALAMBIC_HOME/mojo/Alambic/files/templates/alambic`) can also serve as examples.
