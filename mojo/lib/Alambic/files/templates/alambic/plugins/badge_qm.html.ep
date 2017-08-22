@@ -17,20 +17,20 @@
 <% end %>
 
                 <div class="panel panel-default">
-		          <div class="panel-heading">Quality Model
+		  <div class="panel-heading">Quality Model
                     <span class="pull-right"><a href="/projects/<%= $project_id %>.html" target="_blank"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
-                    <span class="pull-right"><a href="/projects/<%= $project_id %>/qm.html" target="_blank"><i class="fa fa-sitemap fa-lg"></i></a>
+                      <a href="/projects/<%= $project_id %>/qm.html" target="_blank"><i class="fa fa-sitemap fa-lg"></i></a></span>
                   </div>
                   <div class="panel-body">
-
+		    
 % my $attr = 'QM_QUALITY';
                     <dt style="margin-bottom: 5px">Project Health &nbsp; <a href="/documentation/attributes.html#<%= $attr %>" target="_blank"><i class="fa fa-question-circle"></i></a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
                     <dd>
                       <div class="progress">
-			            <div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} || 0%> / 5</div>
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} || 0%> / 5</div>
                       </div>
                     </dd>
-		            <hr />
+		    <hr />
 
 % $attr = 'QM_ECOSYSTEM';
                     <dt style="margin-bottom: 5px">Ecosystem &nbsp; <a href="/documentation/attributes.html#<%= $attr %>" target="_blank"><i class="fa fa-question-circle"></i></a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
