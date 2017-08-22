@@ -36,8 +36,9 @@ Please see the documentation about the [export of figures in external web sites]
 * `badge_qm` A HTML snippet that displays main quality attributes.
   ![badge qm](/images/projectsummary_badge_qm.png)
 * `badge_project_main` A HTML snippet that displays the name and description of the project.
-  ![badge attr alambic](/images/projectsummary_attr_alambic.png)
+  ![badge project main](/images/projectsummary_project_main.png)
 * `badge_qm_viz` A HTML snippet that displays the quality model visualisation.
+  ![badge qm viz](/images/projectsummary_qm_viz.png)
 * `badge_downloads` A HTML snippet that displays downloads for main data.
   ![badge downloads](/images/projectsummary_badge_downloads.png)
 * `badge_plugins` A HTML snippet that displays a list of plugins for the project.
@@ -51,4 +52,4 @@ Project Summary
 
 # Screenshot
 
-![hudson_ci.png](/images/hudson_ci.png)
+![Project Summary UI](/images/projectsummary_ui.png)
