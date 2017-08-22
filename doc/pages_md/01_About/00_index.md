@@ -13,6 +13,8 @@ In this section you can:
 * Learn more about the [resources](/About/Community.html) of the project.
 * Check the [Frequently Asked Questions](/About/FAQ.html).
 
+-----
+
 # Contributors
 
 Alambic is developed by:
