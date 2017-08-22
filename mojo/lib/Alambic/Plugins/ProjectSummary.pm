@@ -40,7 +40,8 @@ my %conf = (
   "provides_figs"    => {
     "badge_attr_alambic.svg" =>
       "A badge to display current value of main quality attribute on an external web site (uses shields.io)",
-
+    "badge_attr_root.svg" =>
+      "A badge to display current value of main quality attribute on an external web site (uses shields.io)",
     "badge_psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
     "psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
     "badge_qm" => "A HTML snippet that displays main quality attributes.",
@@ -97,9 +98,9 @@ sub run_post($$) {
   }
 
   # Create badges in output for root attribute
-  my $badge = &_create_badge('alambic', $qm->[0]{"ind"});
+  my $badge = &_create_badge(\@log, 'alambic', $qm->[0]{"ind"});
   $repofs->write_output($project_id, "badge_attr_alambic.svg", $badge);
-  $badge = &_create_badge($qm->[0]{'name'}, $qm->[0]{'ind'});
+  $badge = &_create_badge(\@log, $qm->[0]{'name'}, $qm->[0]{'ind'});
   $repofs->write_output($project_id, "badge_attr_root.svg", $badge);
 
   my $psum_attrs = &_create_psum_attrs($self, $params);
@@ -108,7 +109,7 @@ sub run_post($$) {
 
   # Foreach child of root attribute create a badge.
   foreach my $attr (@{$qm->[0]{'children'}}) {
-    $badge = &_create_badge($attr->{'name'}, $attr->{'ind'});
+    $badge = &_create_badge(\@log, $attr->{'name'}, $attr->{'ind'});
     $repofs->write_output($project_id,
       "badge_attr_" . $attr->{'name'} . ".svg", $badge);
   }
@@ -134,7 +135,8 @@ sub run_post($$) {
   return {"metrics" => {}, "recs" => [], "info" => {}, "log" => \@log,};
 }
 
-sub _create_badge() {
+sub _create_badge($$$) {
+    my $log = shift;
   my $name  = shift || "";
   my $value = shift || 0;
 
@@ -148,6 +150,8 @@ sub _create_badge() {
     . $colours[int($value)] . '.svg';
   my $ua  = Mojo::UserAgent->new;
   my $svg = $ua->get($url)->res->body;
+
+  push(@$log, "[Plugins::ProjectSummary] Create badge for [$name].");
 
   return $svg;
 }
