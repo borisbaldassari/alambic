@@ -161,7 +161,7 @@ sub _create_psum_attrs() {
 
   my $root_value = $params->{'root.value'} || '';
   my $root_name = $params->{'root.name'} || '';
-  
+
   my $html_t = qq'<!DOCTYPE html>
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -178,7 +178,9 @@ sub _create_psum_attrs() {
 
     <body style=\'font-family: "arial"; font-color: #3E3F3A; margin: 10px\'">
       <div class="panel panel-default">
-        <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+        <div class="panel-heading">
+          $root_name <span class="pull-right">$root_value / 5</span>
+        </div>
         <table class="table table-striped">
 ';
 
@@ -187,7 +189,7 @@ sub _create_psum_attrs() {
   foreach my $id (@ids) {
       $html_t .= '<tr><td><a href="/documentation/attributes.html#' 
 	  . $id . '">' . $params->{'QMN_' . $id} 
-      . '</a><span class="pull-right">' . $params->{$id} . "</span></td></tr>\n";
+      . '</a><span class="pull-right">' . $params->{$id} . " / 5</span></td></tr>\n";
   }
   
   $html_t .= qq'

@@ -50,7 +50,7 @@ ok( grep( m!badge_plugins!, keys %{$conf->{'provides_figs'}} ), "Conf has provid
 ok( grep( m!badges.html!, keys %{$conf->{'provides_viz'}} ), "Conf has provides_viz > badge_plugins" );
 
 # Execute the plugin
-note( "Execute the plugin with tools.cdt project. ");
+note( "Execute the plugin with project test.project. ");
 
 # Preparation: create the Models object
 my $metrics = {

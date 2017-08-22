@@ -26,12 +26,12 @@ qms <- grep("^QM_.*", ls(), perl=TRUE, value=TRUE)
 qmsn <- grep("^QMN_.*", ls(), perl=TRUE, value=TRUE)
 text <- ""
 for (i in 1:length(qms) ) {
-  text.tmp <- paste( eval(parse(text = qms[[i]])), eval(parse(text = qmsn[[i]])), sep=" " )
-  text <- paste(text, text.tmp, sep=" <br />")
+  text.tmp <- paste( eval(parse(text = qmsn[[i]])), ' &nbsp; ', eval(parse(text = qms[[i]])), ' / 5', sep=" " )
+  text <- paste(text, '<br />', text.tmp, sep=" ")
 }
 ```
 
-<p><b><span style="color:black; font-size: 300%">`r root.value`</span> `r root.name`</b>
+<p style="margin-top: 10px;"><b><span style="color:black; font-size: 150%">`r root.name` &nbsp; `r root.value` / 5</span></b>
 <span style="font-weight: bold">`r text`</span></p>
 
 
