@@ -27,9 +27,12 @@ Please see the documentation about the [export of figures in external web sites]
 
 * `badge_attr_alambic.svg` A badge to display current value of main quality attribute on an external web site (uses shields.io)
   ![badge attr alambic](/images/projectsummary_attr_alambic.png)
+* `badge_attr_root.svg` A badge to display current value of main quality attribute on an external web site (uses shields.io)
+  ![badge attr root](/images/projectsummary_attr_root.png)
 * `badge_psum_attrs.html` A HTML snippet to display main quality attributes and their values.
-  ![badge psum attrs](/images/projectsummary_attr_alambic.png)
+  ![badge psum attrs](/images/projectsummary_badge_psum_attrs.png)
 * `psum_attrs.html` A HTML snippet to display main quality attributes and their values.
+  ![psum attrs](/images/projectsummary_psum_attrs.png)
 * `badge_qm` A HTML snippet that displays main quality attributes.
   ![badge qm](/images/projectsummary_badge_qm.png)
 * `badge_project_main` A HTML snippet that displays the name and description of the project.
