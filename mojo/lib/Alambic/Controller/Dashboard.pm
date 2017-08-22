@@ -105,8 +105,9 @@ sub display_plugins {
       $ret
         = 'projects/' . $project_id . '/output/' . $project_id . '_' . $page_id;
 
-# We can also build figures from html.ep templates.
-# If the static page doesn't exist, then try to render something in plugins/*.html.ep.
+      # We can also build figures from html.ep templates.
+      # If the static page doesn't exist, then try to render something in 
+      # plugins/*.html.ep.
       if (not -e $ret) {
         my $run = $self->app->al->get_project_last_run($project_id);
         $self->stash(project_id => $project_id, run => $run,);
@@ -118,9 +119,11 @@ sub display_plugins {
       }
       $ret = "../../../../" . $ret;
     }
-    elsif (grep(/$page_id/, keys %{$plugin_conf->{'provides_data'}})) {
+    else  {
+      #if (grep(/$page_id/, keys %{$plugin_conf->{'provides_data'}})) {
 
-# If the page is a data, reply static file under 'projects/output' or 'projects/input'
+      # If the page is a data, reply static file under 'projects/output'
+      # or 'projects/input'
       my $file_out
         = 'projects/' . $project_id . '/output/' . $project_id . "_" . $page_id;
       my $file_in
