@@ -2,4 +2,6 @@ title: Admin Tasks
 navi_name: AdminTasks
 al_list_items: true
 
-The Admin Tasks section contains 
+This section describes common tasks for administrators of an instance of Alambic.
+
+<br /><br /><br /><br /><br /><br /><br />
