@@ -410,11 +410,9 @@ B<Alambic::Tools::R> - A plugin to interact with the R engine.
 
 =head1 DESCRIPTION
 
-B<Alambic::Tools::R> provides an interface to the R statistical engine.
-It specifically provides methods to compute R script files and knit R markdown 
-documents.
-
-TODO Find the R project web page + rstudio.
+B<Alambic::Tools::R> provides an interface to the L<R statistical engine|https://r-project.org>.
+It specifically provides methods to compute R script files and knit L<R markdown 
+documents|http://rmarkdown.rstudio.com/>.
 
 For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Tools/R.html>.
 
@@ -506,7 +504,7 @@ already present in the directory.  Returns the log of the transformation.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/Tools/R.html>, L<https://www.r-project.org>,
+L<https://alambic.io/Plugins/Tools/R.html>, L<https://www.r-project.org>, 
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 

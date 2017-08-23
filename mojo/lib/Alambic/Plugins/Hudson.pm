@@ -34,7 +34,7 @@ my %conf = (
   "name" => "Hudson CI",
   "desc" => [
     "Retrieves information from a Hudson continuous integration engine, displays a summary of its status, and provides recommendations to better use CI.",
-    "Check the documentation for this plugin on the project wiki: <a href=\"https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/Hudson\">https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/Hudson</a>."
+    "Check the documentation for this plugin on the project web site: <a href=\"http://alambic.io/Plugins/Pre/Hudson.html\">http://alambic.io/Plugins/Pre/Hudson.html</a>."
   ],
   "type"    => "pre",
   "ability" => ['metrics', 'viz', 'figs', 'recs'],

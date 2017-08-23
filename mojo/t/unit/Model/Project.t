@@ -63,7 +63,7 @@ my $plugins = {
     "name" => "Eclipse PMI",
     "desc" => [
       "Eclipse PMI Retrieves meta data about the project from the Eclipse PMI infrastructure.",
-      'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipsePmi">the project\'s wiki</a> for more information.',
+      'See <a href="http://alambic.io/Plugins/Pre/EclipsePmi.html">the project\'s web site</a> for more information.',
     ],
     "type"    => "pre",
     "ability" => ["metrics", "info", 'data', "recs", "viz"],
