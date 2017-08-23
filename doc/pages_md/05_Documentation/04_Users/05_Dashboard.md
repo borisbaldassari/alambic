@@ -1,4 +1,4 @@
-title: Dashboard Summary
+title: Dashboard > Summary
 navi_name: Summary
 
 # Dashboard > Summary
