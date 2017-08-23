@@ -3,14 +3,6 @@ navi_name: Customise
 
 # Customising Alambic
 
-## Models (quality model, quality attributes, metrics)
-
-The quality model, quality attributes and metrics are stored in the database. They are usually imported from JSON files, stored in distinct folders of the install:
-
-Quality model is defined TODO
-
-`$ALAMBIC_HOME/mojo/lib/Alambic/files/models`
-
 ## The templating system
 
 Mojolicious -- and Alambic -- use embedded Perl as a [templating system](http://www.mojolicious.org/perldoc/Mojolicious/Guides/Rendering). It is  basically composed of pure HTML and Perl code snippets and can be easily customised to display different layouts or types of information. Mojolicious generates pages according to:
@@ -19,7 +11,7 @@ Mojolicious -- and Alambic -- use embedded Perl as a [templating system](http://
 
 * Distinct [embedded Perl](http://www.mojolicious.org/perldoc/Mojolicious/Guides/Rendering#Embedded-Perl) pages for the different pages of the web site. These really define the content and design of each page and can be found for Alambic in `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/`.
 
-### Example pages
+## Example pages
 
 All pages are stored in `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/*`.
 

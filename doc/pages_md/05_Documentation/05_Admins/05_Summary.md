@@ -1,9 +1,9 @@
-title: Admin Summary
+title: Admin > Summary
 navi_name: Summary
 
 # Admin > Summary
 
-![Alambic Admin Web UI](/images/alambic_admin_summary.png)
+![Alambic Admin Web UI](/images/admins_summary.png)
 
 ## Instance information
 
