@@ -26,7 +26,7 @@
 		<br />
                 <blockquote><%== app->al->instance_desc() %></blockquote>
 		<hr />
-		<p>This web site is an instance of <a href="http://castalia.camp/alambic">Alambic</a>, an <a href="http://www.bitbucket.org/BorisBaldassari/alambic">open-source</a> framework and service for software development data analysis and management. Learn more about the software in the <a href="/about.html">About section</a>.</p>
+		<p>This web site is an instance of <a href="http://alambic.io">Alambic</a>, an <a href="http://www.bitbucket.org/BorisBaldassari/alambic">open-source</a> framework and service for software development data analysis and management. Learn more about the software in the <a href="/about.html">About section</a>.</p>
               </div>
             </div>
 
