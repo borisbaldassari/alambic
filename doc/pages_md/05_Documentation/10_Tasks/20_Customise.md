@@ -5,7 +5,11 @@ navi_name: Customise
 
 ## Models (quality model, quality attributes, metrics)
 
-The quality model, quality attributes and metrics are defined in separate files
+The quality model, quality attributes and metrics are stored in the database. They are usually imported from JSON files, stored in distinct folders of the install:
+
+Quality model is defined TODO
+
+`$ALAMBIC_HOME/mojo/lib/Alambic/files/models`
 
 ## The templating system
 
@@ -17,9 +21,11 @@ Mojolicious -- and Alambic -- use embedded Perl as a [templating system](http://
 
 ### Example pages
 
-* The user dashboard UI pages can be found in `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/*`. Sub-pages are:
-  * Project Summary is `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/dashboard.html.ep`.
-  * Quality Model is `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/qm.html.ep`.
-  * History is `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/history.html.ep`.
+All pages are stored in `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/*`.
+
+* The user dashboard UI pages can be found in `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/*`.
+* Project Summary is `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/dashboard.html.ep`.
+* Quality Model is `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/qm.html.ep`.
+* History is `$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/history.html.ep`.
 
 The existing files (along with all `*.html.ep` files in the `$ALAMBIC_HOME/mojo/Alambic/files/templates/alambic`) can also serve as examples.

@@ -32,7 +32,7 @@ Date: 2016-12-31
 Changelog:
 
 * Various [bug fixes](https://bitbucket.org/BorisBaldassari/alambic/issues?kind=bug&milestone=Alambic+3.2).
-* The [StackOverflow](https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/StackOverflow) plugin has been added to the list of plugins.
+* The [StackOverflow](http://alambic.io/Plugins/Pre/StackOverflow.html) plugin has been added to the list of plugins.
 * More tests, documentation, reliability and usability improvements.
 * Continuous integration through codeship.
 * A docker image! Still in development, check the [docker hub repository](https://hub.docker.com/r/bbaldassari/alambic/)!

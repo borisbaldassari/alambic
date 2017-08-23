@@ -1,6 +1,8 @@
 title: Data
 navi_name: Data
 
-# The Alambic dashboard > Data
+# Dashboard > Data
+
+![Alambic web UI](/images/users_data.png)
 
 The dashboard
