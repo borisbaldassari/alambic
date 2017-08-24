@@ -56,11 +56,8 @@ ok(grep(m!SCM_COMMITS!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > SCM_COMMITS");
 ok(grep(m!SCM_COMMITTERS!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > SCM_COMMITTERS");
-ok(grep(m!SCM_FILES!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > SCM_FILES");
-
-ok(grep(m!SCM_FILES!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > SCM_FILES");
+ok(grep(m!SCM_MOD_LINES!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > SCM_MOD_LINES");
 
 ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
 ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
@@ -126,6 +123,12 @@ ok($ret->{'metrics'}{'SCM_COMMITS'} < 99999,     "Metrics has SCM_COMMITS");
 ok($ret->{'metrics'}{'SCM_COMMITS_1M'} =~ /\d+/, "Metrics has SCM_COMMITS_1M");
 ok($ret->{'metrics'}{'SCM_COMMITS_1W'} =~ /\d+/, "Metrics has SCM_COMMITS_1W");
 ok($ret->{'metrics'}{'SCM_COMMITS_1Y'} =~ /\d+/, "Metrics has SCM_COMMITS_1Y");
+
+ok($ret->{'metrics'}{'SCM_MOD_LINES'} =~ /\d+/,    "Metrics has SCM_MOD_LINES");
+ok($ret->{'metrics'}{'SCM_MOD_LINES'} > 1000,     "Metrics has SCM_MOD_LINES");
+ok($ret->{'metrics'}{'SCM_MOD_LINES_1M'} =~ /\d+/, "Metrics has SCM_MOD_LINES_1M");
+ok($ret->{'metrics'}{'SCM_MOD_LINES_1W'} =~ /\d+/, "Metrics has SCM_MOD_LINES_1W");
+ok($ret->{'metrics'}{'SCM_MOD_LINES_1Y'} =~ /\d+/, "Metrics has SCM_MOD_LINES_1Y");
 
 # Check that files have been created.
 note("Check that files have been created. ");
