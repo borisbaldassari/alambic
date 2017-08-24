@@ -525,7 +525,7 @@ sub _aggregate_inds($$$$$) {
       if (defined($child_value)) {
 
         # If a problem arose, then dispatch it.
-        if ($child_value !~ /^\d*$/) {
+        if ($child_value !~ /^{\d.}+$/) {
           push(@{$log}, "ERROR during scale compute for $mnemo.");
         }
         if (exists($child->{"weight"})) {
