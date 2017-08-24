@@ -147,6 +147,12 @@ sub _compute_data($$) {
   my ($project_id, $repofs) = @_;
 
   my %metrics;
+  # Initialise some zero values for metrics
+  $metrics{'SCM_COMMITS'} = 0;
+  $metrics{'SCM_COMMITS_1W'} = 0;
+  $metrics{'SCM_COMMITS_1M'} = 0;
+  $metrics{'SCM_COMMITS_1Y'} = 0;
+
   my @recs;
   my @log;
 
@@ -261,18 +267,18 @@ sub _compute_data($$) {
     }
   }
 
-  $metrics{'SCM_AUTHORS'}       = scalar keys %authors;
-  $metrics{'SCM_AUTHORS_1W'}    = scalar keys %authors_1w;
-  $metrics{'SCM_AUTHORS_1M'}    = scalar keys %authors_1m;
-  $metrics{'SCM_AUTHORS_1Y'}    = scalar keys %authors_1y;
+  $metrics{'SCM_AUTHORS'}       = scalar(keys %authors) || 0;
+  $metrics{'SCM_AUTHORS_1W'}    = scalar(keys %authors_1w) || 0;
+  $metrics{'SCM_AUTHORS_1M'}    = scalar(keys %authors_1m) || 0;
+  $metrics{'SCM_AUTHORS_1Y'}    = scalar(keys %authors_1y) || 0;
   $metrics{'SCM_MOD_LINES'}       = $mod_lines;
   $metrics{'SCM_MOD_LINES_1W'}    = $mod_lines_1w;
   $metrics{'SCM_MOD_LINES_1M'}    = $mod_lines_1m;
   $metrics{'SCM_MOD_LINES_1Y'}    = $mod_lines_1y;
   $metrics{'SCM_COMMITTERS'}    = scalar keys %committers;
-  $metrics{'SCM_COMMITTERS_1W'} = scalar keys %committers_1w;
-  $metrics{'SCM_COMMITTERS_1M'} = scalar keys %committers_1m;
-  $metrics{'SCM_COMMITTERS_1Y'} = scalar keys %committers_1y;
+  $metrics{'SCM_COMMITTERS_1W'} = scalar(keys %committers_1w) || 0;
+  $metrics{'SCM_COMMITTERS_1M'} = scalar(keys %committers_1m) || 0;
+  $metrics{'SCM_COMMITTERS_1Y'} = scalar(keys %committers_1y) || 0;
 
   # Set user information for profile
   push(@log, "[Plugins::Git] Writing user events file.");
