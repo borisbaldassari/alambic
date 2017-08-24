@@ -64,7 +64,10 @@ my %conf = (
     "SCM_COMMITTERS_1W" => "SCM_COMMITTERS_1W",
     "SCM_COMMITTERS_1M" => "SCM_COMMITTERS_1M",
     "SCM_COMMITTERS_1Y" => "SCM_COMMITTERS_1Y",
-    "SCM_FILES"         => "SCM_FILES",
+    "SCM_MOD_LINES"         => "SCM_MOD_LINES",
+    "SCM_MOD_LINES_1W"         => "SCM_MOD_LINES_1W",
+    "SCM_MOD_LINES_1M"         => "SCM_MOD_LINES_1M",
+    "SCM_MOD_LINES_1Y"         => "SCM_MOD_LINES_1Y",
   },
   "provides_figs" => {
     'git_summary.html'      => "HTML export of Git main metrics.",
@@ -158,8 +161,10 @@ sub _compute_data($$) {
 
   $metrics{'SCM_COMMITS'} = scalar @commits;
 
-  my (%authors, %authors_1w, %authors_1m, %authors_1y, %users);
+  my (%authors, %authors_1w, %authors_1m, %authors_1y);
+  my %users;
   my (%committers, %committers_1w, %committers_1m, %committers_1y);
+  my ($mod_lines, $mod_lines_1w, $mod_lines_1m, $mod_lines_1y) = (0,0,0,0);
   my %timeline_c;
   my %timeline_a;
   push(@log,
@@ -185,6 +190,15 @@ sub _compute_data($$) {
     if (defined($c->{'cmtr'})) {
       $committers{$c->{'cmtr'}}++;
     }
+    if (defined($c->{'add'})) {
+      $mod_lines += $c->{'add'};
+    }
+    if (defined($c->{'del'})) {
+      $mod_lines += $c->{'del'};
+    }
+    if (defined($c->{'mod'})) {
+      $mod_lines += $c->{'mod'};
+    }
 
     # Is the commit recent (<1W)?
     if ($date > $t_1w->epoch) {
@@ -194,6 +208,15 @@ sub _compute_data($$) {
       }
       if (defined($c->{'cmtr'})) {
         $committers_1w{$c->{'cmtr'}}++;
+      }
+      if (defined($c->{'add'})) {
+	  $mod_lines_1w += $c->{'add'};
+      }
+      if (defined($c->{'del'})) {
+	  $mod_lines_1w += $c->{'del'};
+      }
+      if (defined($c->{'mod'})) {
+	  $mod_lines_1w += $c->{'mod'};
       }
     }
 
@@ -206,6 +229,15 @@ sub _compute_data($$) {
       if (defined($c->{'cmtr'})) {
         $committers_1m{$c->{'cmtr'}}++;
       }
+      if (defined($c->{'add'})) {
+	  $mod_lines_1m += $c->{'add'};
+      }
+      if (defined($c->{'del'})) {
+	  $mod_lines_1m += $c->{'del'};
+      }
+      if (defined($c->{'mod'})) {
+	  $mod_lines_1m += $c->{'mod'};
+      }
     }
 
     # Is the commit recent (<1Y)?
@@ -217,6 +249,15 @@ sub _compute_data($$) {
       if (defined($c->{'cmtr'})) {
         $committers_1y{$c->{'cmtr'}}++;
       }
+      if (defined($c->{'add'})) {
+	  $mod_lines_1y += $c->{'add'};
+      }
+      if (defined($c->{'del'})) {
+	  $mod_lines_1y += $c->{'del'};
+      }
+      if (defined($c->{'mod'})) {
+	  $mod_lines_1y += $c->{'mod'};
+      }
     }
   }
 
@@ -224,6 +265,10 @@ sub _compute_data($$) {
   $metrics{'SCM_AUTHORS_1W'}    = scalar keys %authors_1w;
   $metrics{'SCM_AUTHORS_1M'}    = scalar keys %authors_1m;
   $metrics{'SCM_AUTHORS_1Y'}    = scalar keys %authors_1y;
+  $metrics{'SCM_MOD_LINES'}       = $mod_lines;
+  $metrics{'SCM_MOD_LINES_1W'}    = $mod_lines_1w;
+  $metrics{'SCM_MOD_LINES_1M'}    = $mod_lines_1m;
+  $metrics{'SCM_MOD_LINES_1Y'}    = $mod_lines_1y;
   $metrics{'SCM_COMMITTERS'}    = scalar keys %committers;
   $metrics{'SCM_COMMITTERS_1W'} = scalar keys %committers_1w;
   $metrics{'SCM_COMMITTERS_1M'} = scalar keys %committers_1m;

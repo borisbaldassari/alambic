@@ -39,14 +39,42 @@
         "scale": [2,5,13,121]
       },
       {
-        "name": "Files committed",
-        "mnemo": "SCM_FILES",
+        "name": "SCM Changed Lines",
+        "mnemo": "SCM_MOD_LINES",
         "desc": [
-            "Total number of files touched by commits in source code management repository."
+            "Total number of changed lines (added, removed, changed) in source code management repositories.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). "
         ],
-        "scale": [3,19,95.75,2189]
+        "scale": [1000,5000,50000,500000]
       },
       {
+        "name": "SCM Changed Lines one week",
+        "mnemo": "SCM_MOD_LINES_1W",
+        "desc": [
+            "Total number of changed lines (added, removed, changed) in source code management repositories dated during the last week.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one week period starting the day before the data retrieval."
+        ],
+        "scale": [10,20,50,100]
+      },
+      {
+        "name": "SCM Changed Lines one month",
+        "mnemo": "SCM_MOD_LINES_1M",
+        "desc": [
+            "Total number of changed lines (added, removed, changed) in source code management repositories dated during the last month.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+        ],
+          "scale": [20,50,100,500]
+      },
+      {
+        "name": "SCM Changed Lines one year",
+        "mnemo": "SCM_MOD_LINES_1Y",
+        "desc": [
+            "Total number of changed lines (added, removed, changed) in source code management repositories dated during the last year.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one year period starting the day before the data retrieval (example: if retrieval is on Feb 3rd 2016, period is from Feb 3rd 2015 to Feb 3rd 2016, both included)."
+        ],
+          "scale": [50,100,500,1000]
+      },
+	{
         "name": "SCM authors",
         "mnemo": "SCM_AUTHORS",
         "desc": [
