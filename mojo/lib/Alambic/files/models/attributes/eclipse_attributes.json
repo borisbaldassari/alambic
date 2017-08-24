@@ -4,7 +4,7 @@
     "children": [
       {
         "name": "Eclipse Maturity",
-        "mnemo": "QM_ECLIPSE_QUALITY",
+        "mnemo": "QM_QUALITY",
         "desc": [
             "The overall Maturity of the project.", 
             "In the context of embedded software, Maturity is usually associated with some kind of reliability (most bugs have been already found) and functionality of code, sustainability of the project (will it still deliver fixes and improvements in a few years), and process predictability. Maturity in the PolarSys context has been further described <a href=\"https://polarsys.org/wiki/MaturityDefinition\">on the wiki</a>, and is actually precisely defined by the decomposition of this quality model."
