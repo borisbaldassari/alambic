@@ -72,7 +72,7 @@
             <p>Visualisation plugins usually produce figures which can easily be re-used and embedded in external web sites. There are two types of exports available here: simple image files and html snippets. For each project and plugin the set of images generated is available through a unified interface: <code>/projects/&lt;project_id&gt;/&lt;plugin_id&gt;/image_to_export</code>. These url are permanent and automatically updated when the project is analysed.</p></p>
             <p>Simple images (like png or svg) can be shared by simply retrieving the graphic url and embedding it in a classic <code>&lt;img src="http://alambic_server/projects/&lt;project_id&gt;/&lt;plugin_id&gt;/image_to_export"&gt;</code> image tag.</p>
             <p>More advanced visualisations like interactive and js-based plots are presented as a html snippet which can be embedded in a <code>&lt;iframe src="http://alambic_server/projects/&lt;project_id&gt;/&lt;plugin_id&gt;/snippet_to_export"&gt;</code> tag. End-users will still have the ability to interact with the graph on the external web site since the js data is stored right in the html. Cool eh?</p>
-            <p>The image will be regenerated at every analysis and will be always up-to-date. See <a href="http://alambic.io/Documentation/Basics/Export.html">the examples on the Alambic web site</a> for more detailed information and examples.</p>
+            <p>The image will be regenerated at every analysis and will be always up-to-date. See <a href="http://alambic.io/Documentation/Basics/Exports.html">the examples on the Alambic web site</a> for more detailed information and examples.</p>
 
             <hr />
 

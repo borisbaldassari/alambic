@@ -32,7 +32,7 @@ output:
 
 This plugin generates a number of badges and HTML snippets to embed in other pages to display the current status of the project.
 
-More details about how to embed figures in external web sites can be found on the [project&#39;s web site](http://alambic.io/Documentation/Users/Exports.html). Please note that the height of iframes may need some adjustment.
+More details about how to embed figures in external web sites can be found on the [project&#39;s web site](http://alambic.io/Documentation/Basics/Exports.html). Please note that the height of iframes may need some adjustment.
 
 -----
 

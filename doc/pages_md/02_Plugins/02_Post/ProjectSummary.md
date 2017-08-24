@@ -6,7 +6,7 @@ navi_name: ProjectSummary
 
 This plugin creates images, HTML snippets and full documents about the project's health. These can be easily exported to be displayed in another web site (e.g. Wiki, Confluence, Liferay..).
 
-Please see the documentation about the [export of figures in external web sites](/Documentation/Users/Exports.html).
+Please see the documentation about the [export of figures in external web sites](/Documentation/Basics/Exports.html).
 
 -----
 
