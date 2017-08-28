@@ -38,27 +38,27 @@ navi_name: Alambic
     </a>
   </div>
   <div class="col-lg-2 text-center">
-    <a href="/About"><i class="fa fa-flask fa-2x"></i><br />
+    <a href="/About.html"><i class="fa fa-flask fa-2x"></i><br />
     About Alambic
     </a>
   </div>
   <div class="col-lg-2 text-center">
-    <a href="/Plugins"><i class="fa fa-cubes fa-2x"></i><br />
+    <a href="/Plugins.html"><i class="fa fa-cubes fa-2x"></i><br />
       Plugins
     </a>
   </div>
   <div class="col-lg-2 text-center">
-    <a href="/Setup"><i class="fa fa-bolt fa-2x"></i><br />
+    <a href="/Setup.html"><i class="fa fa-bolt fa-2x"></i><br />
     Setup
     </a>
   </div>
   <div class="col-lg-2 text-center">
-    <a href="/Documentation"><i class="fa fa-life-ring fa-2x"></i><br />
+    <a href="/Documentation.html"><i class="fa fa-life-ring fa-2x"></i><br />
     Documentation
     </a>
   </div>
   <div class="col-lg-2 text-center">
-    <a href="/Dev"><i class="fa fa-code fa-2x"></i><br />
+    <a href="/Dev.html"><i class="fa fa-code fa-2x"></i><br />
     Development
     </a>
   </div>
