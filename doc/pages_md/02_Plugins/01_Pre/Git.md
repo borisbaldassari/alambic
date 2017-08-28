@@ -101,4 +101,4 @@ Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/
 
 # Screenshot
 
-![eclipse_git.png](/images/eclipse_git.png)
+![eclipse_git.png](/images/git_scm.png)

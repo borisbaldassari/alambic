@@ -4,7 +4,7 @@ al_list_items: true
 
 Alambic can be installed on any GNU/Linux system supporting Perl, see:
 
-* the [prerequisites](/Setup/Prequisites.html),
+* the [prerequisites](/Setup/Prerequisites.html),
 * how to [install Alambic on a server](/Setup/Install.html),
 * how to [run Alambic](/Setup/Run.html),
 * and when required how to [upgrade an Alambic instance](/Setup/Upgrade.html).

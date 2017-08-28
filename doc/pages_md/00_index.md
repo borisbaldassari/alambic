@@ -58,7 +58,7 @@ navi_name: Alambic
     </a>
   </div>
   <div class="col-lg-2 text-center">
-    <a href="/Dev.html"><i class="fa fa-code fa-2x"></i><br />
+    <a href="/Development.html"><i class="fa fa-code fa-2x"></i><br />
     Development
     </a>
   </div>
