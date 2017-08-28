@@ -28,4 +28,4 @@ Then restart (hot-reload) hypnotoad:
     boris@midkemia mojo $ hypnotoad bin/alambic
     Starting hot deployment for Hypnotoad server 21981.
 
-If anything goes wrong, you can still get back to the previous git commit and (if things went *really* wrong) restore the last backup file. Check the [documentation on backup](Backups) for more information.
+If anything goes wrong, you can still get back to the previous git commit and (if things went *really* wrong) restore the last backup file. Check the [documentation on backup](/Documentation/Tasks/Backups.html) for more information.

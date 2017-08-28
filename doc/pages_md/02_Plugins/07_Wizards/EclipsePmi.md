@@ -14,7 +14,7 @@ The Project Management Infrastructure is described in the Eclipse wiki:
 * [https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices](https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices)
 * [https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design](https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design)
 
-Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Tools/EclipsePmi.pm.html) in the [perldoc](http://alambic.io/perldoc/index.html) section.
+Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Wizards/EclipsePmi.pm.html) in the [perldoc](http://alambic.io/perldoc/index.html) section.
 
 -----
 
@@ -28,9 +28,9 @@ Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Tools/Ec
 * **Parameters**:
   * `project_pmi` The project ID in the PMI repository (a.k.a. Eclipse project ID).
 * **Plugins**:
-  * [EclipsePmi](/Plugins/Pre/EclipsePmi)
-  * [Hudson](/Plugins/Pre/Hudson)
-  * [Git](/Plugins/Pre/Git)
+  * [EclipsePmi](/Plugins/Pre/EclipsePmi.html)
+  * [Hudson](/Plugins/Pre/Hudson.html)
+  * [Git](/Plugins/Pre/Git.html)
 
 -----
 

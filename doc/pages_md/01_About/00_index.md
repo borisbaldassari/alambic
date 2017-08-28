@@ -21,9 +21,9 @@ Alambic is developed by:
 
 * Boris Baldassari (from [Castalia Solutions](http://castalia.solutions/about.html))
 * [Thales Group](https://www.thalesgroup.com) for the following plugins:
-  * [Git](/Plugins/Pre/Git)
-  * [Jira](/Plugins/Pre/Jira)
-  * [SonarQube 4.5.x](/Plugins/Pre/SonarQube)
+  * [Git](/Plugins/Pre/Git.html)
+  * [Jira](/Plugins/Pre/Jira.html)
+  * [SonarQube 4.5.x](/Plugins/Pre/SonarQube.html)
 
 Other Good People&trade; and Good Companies&trade; kindly contributed:
 
