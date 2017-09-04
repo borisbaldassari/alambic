@@ -17,6 +17,8 @@ package Alambic::Plugins::GenericR;
 use strict;
 use warnings;
 
+use Text::CSV;
+
 use Alambic::Tools::R;
 
 #use Mojo::JSON qw( decode_json encode_json );
@@ -41,7 +43,7 @@ my %conf = (
   "provides_metrics" => {},
   "provides_figs"    => {},
   "provides_recs" => [],
-  "provides_viz"  => {"badges.html" => "Badges",},
+  "provides_viz"  => {"generic_r.html" => "Generic R",},
 );
 
 
@@ -62,103 +64,57 @@ sub run_post($$) {
   my ($self, $project_id, $conf) = @_;
 
   my @log;
-
+  push(@log, "[Plugins::GenericR] Start Generic R plugin execution.");
+  
   my $repofs  = Alambic::Model::RepoFS->new();
   my $models  = $conf->{'models'};
   my $project = $conf->{'project'};
-  my $metrics = $models->get_metrics();
-  my $attributes = $models->get_attributes();
   my $qm      = $project->get_qm(
       $models->get_qm(),
-      $attributes,
-      $metrics,
+      $models->get_attributes(),
+      $models->get_metrics(),
   );
   my $run = $conf->{'last_run'};
 
   my $params = {};
 
-  print "DBG run " . Dumper($run);
-  print "DBG metrics " . Dumper($metrics);
-  print "DBG attributes " . Dumper($attributes);
+  # Create a CSV file with all metrics + values
+  my $metrics = $project->metrics();
+  my $csv = Text::CSV->new({binary => 1, eol => "\n"});
+  $csv->combine( ('Mnemo', 'Value') );
+  my $csv_out = $csv->string();
+  foreach my $metric (sort keys %$metrics) {
+      $csv->combine( ($metric, $metrics->{$metric}) );
+      $csv_out .= $csv->string();
+  }
+  
+  # Write csv file to disk.
+  $repofs->write_plugin('GenericR', $project_id . "_metrics.csv", $csv_out);
+
+  my $attributes = $project->attributes();
+  $csv = Text::CSV->new({binary => 1, eol => "\n"});
+  $csv->combine( ('Mnemo', 'Value') );
+  $csv_out = $csv->string();
+  foreach my $attribute (sort keys %$attributes) {
+      $csv->combine( ($attribute, $attributes->{$attribute}) );
+      $csv_out .= $csv->string();
+  }
+  
+  # Write csv file to disk.
+  $repofs->write_plugin('GenericR', $project_id . "_attributes.csv", $csv_out);
   
   # Execute the figures R scripts.
   my $r = Alambic::Tools::R->new();
-  push(@log, "[Plugins::ProjectSummary] Executing R pdf markdown document.");
+  push(@log, "[Plugins::GenericR] Executing R pdf markdown document.");
   @log = (
     @log,
     @{
-      $r->knit_rmarkdown_pdf('GenericR', $project_id, 'r_analysis.rmd',
-        [], $params)
+      $r->knit_rmarkdown_pdf('GenericR', $project_id, 'generic_r.Rmd',
+        $params)
     }
   );
 
   return {"metrics" => {}, "recs" => [], "info" => {}, "log" => \@log,};
-}
-
-sub _create_badge($$$) {
-    my $log = shift;
-  my $name  = shift || "";
-  my $value = shift || 0;
-
-  my @colours = ("red", "orange", "yellow", "green", "brightgreen");
-
-  my $url
-    = 'https://img.shields.io/badge/'
-    . $name . '-'
-    . $value
-    . '%20%2F%205-'
-    . $colours[int($value)] . '.svg';
-  my $ua  = Mojo::UserAgent->new;
-  my $svg = $ua->get($url)->res->body;
-
-  push(@$log, "[Plugins::ProjectSummary] Create badge for [$name].");
-
-  return $svg;
-}
-
-sub _create_psum_attrs() {
-  my ($self, $params) = @_;
-
-  my $root_value = $params->{'root.value'} || '';
-  my $root_name = $params->{'root.name'} || '';
-
-  my $html_t = qq'<!DOCTYPE html>
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-      <meta charset="utf-8">
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-      <meta name="generator" content="pandoc" />
-
-      <link href="/css/bootstrap.min.css" rel="stylesheet">
-      <link href="/css/plugins/metisMenu/metisMenu.min.css" rel="stylesheet">
-      <link href="/css/sb-admin-2.css" rel="stylesheet">
-      <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
-      <link rel="stylesheet" href="/css/default.css">
-    </head>
-
-    <body style=\'font-family: "arial"; font-color: #3E3F3A; margin: 10px\'">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          $root_name <span class="pull-right">$root_value / 5</span>
-        </div>
-        <table class="table table-striped">
-';
-
-  my @ids = grep { $_ =~ /^QM_/ } sort keys %$params;
-
-  foreach my $id (@ids) {
-      $html_t .= '<tr><td><a href="/documentation/attributes.html#' 
-	  . $id . '">' . $params->{'QMN_' . $id} 
-      . '</a><span class="pull-right">' . $params->{$id} . " / 5</span></td></tr>\n";
-  }
-  
-  $html_t .= qq'
-        </table>
-      </div>
-    </body>
-    </html>';
-
-  return $html_t;
 }
 
 
@@ -169,21 +125,21 @@ sub _create_psum_attrs() {
 
 =head1 NAME
 
-B<Alambic::Plugins::ProjectSummary> - A plugin to display badges 
+B<Alambic::Plugins::GenericR> - A plugin to display badges 
 and exportable snippets about the project's analysis.
 
 =head1 DESCRIPTION
 
-B<Alambic::Plugins::ProjectSummary> provides exportable html snippets 
+B<Alambic::Plugins::GenericR> provides exportable html snippets 
 and images about the project's analysis results.
 
 Parameters: None
 
-For the complete description of the plugin see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/ProjectSummary.html>.
+For the complete description of the plugin see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/GenericR.html>.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/Pre/ProjectSummary.html>,
+L<https://alambic.io/Plugins/Pre/GenericR.html>,
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 
