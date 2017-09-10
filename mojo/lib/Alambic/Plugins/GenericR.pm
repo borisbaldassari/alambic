@@ -33,7 +33,7 @@ my %conf = (
       'See <a href="http://alambic.io/Plugins/Pre/GenericR">the project\'s wiki</a> for more information.',
   ],
   "type"             => "post",
-  "ability"          => ['figs', 'viz'],
+  "ability"          => ['data'],
   "params"           => {},
   "provides_cdata"   => [],
   "provides_info"    => [],
@@ -43,7 +43,7 @@ my %conf = (
   "provides_metrics" => {},
   "provides_figs"    => {},
   "provides_recs" => [],
-  "provides_viz"  => {"generic_r.html" => "Generic R",},
+  "provides_viz"  => {},
 );
 
 
