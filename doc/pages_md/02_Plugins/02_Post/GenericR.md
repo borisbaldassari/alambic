@@ -6,7 +6,7 @@ navi_name: GenericR
 
 This plugin runs a simple R Markdown file and produces a PDF document with basic information (metrics, attributes) about the project.
 
-The purpose of this plugin is to provide an easy-to-use template to run custom R markdown analysis automatically on projects.
+The purpose of this plugin is to provide an easy-to-use template to automatically run custom R markdown analysis on projects.
 
 Please see the documentation on [using Alambic for research](/About/ForResearch.html) and the [perldoc of the module](/perldoc/Alambic/Plugins/GenericR.pm.html)) in the [perldoc](/perldoc/index.html) section..
 

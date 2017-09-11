@@ -88,4 +88,4 @@ The initialisation of the document is done in the first R chunk (named `init`). 
 
 The actual implementation of the GenericR plugin can serve as a reference to understand how R code chunks work and how to display data or graphics in the document.
 
-Depending on the configuration of the project, other data files can be loaded directly from the `input` and `output` directories. See the example of the metrics reference file read command in the R markdown file itself.
+Depending on the configuration of the project, other data files can be loaded directly from the `input` and `output` directories. See the example of the Git analysis in the GenericR R markdown file.
