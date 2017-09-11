@@ -52,7 +52,7 @@ attrs_ref <- read.csv(file=file.attrs_ref, header=T)
 
 # Summary
 
-This plugin generates a PDF document with information about **`r project.id`**.
+This plugin generates a PDF document with information about project **`r project.id`**.
 
 This plugin is intended as an example of [R Markdown document](http://rmarkdown.rstudio.com/) to help people easily setup their own R analysis on software development data.
 
@@ -71,9 +71,10 @@ print( xtable( metrics,
 \end{centering}
 
 ```{r metrics_list, results='asis', echo=FALSE}
-f <- function(x, output) {
+f <- function_m(x, output) {
   id <- paste("\n\n## ", x[1], sep=" ")
   name <- paste("Name: ", x[2], sep=" ")
+  name <- paste("Value: ", metrics[metrics[[,1]==x[1]], 2], sep=" ")
   desc <- paste("Description: ", x[3], sep=" ")
   paste(id, name, desc, sep="\n\n") 
 }
@@ -95,6 +96,13 @@ print( xtable( attributes,
 \end{centering}
 
 ```{r attrs_list, results='asis', echo=FALSE}
+f <- function_a(x, output) {
+  id <- paste("\n\n## ", x[1], sep=" ")
+  name <- paste("Name: ", x[2], sep=" ")
+  name <- paste("Value: ", attrs[attrs[[,1]==x[1]], 2], sep=" ")
+  desc <- paste("Description: ", x[3], sep=" ")
+  paste(id, name, desc, sep="\n\n") 
+}
 cat( paste( apply(attrs_ref, 1, f), sep="" ) )
 ```
 
