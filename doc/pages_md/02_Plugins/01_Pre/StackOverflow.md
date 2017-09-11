@@ -6,7 +6,7 @@ navi_name: StackOverflow
 
 The Stack Overflow plugin retrieves [Stack Overflow](https://stackoverflow.com) questions and answers related to the project tag, and provides a summary, a list of hot questions and recommendations to ensure a fine support to users on the web site.
 
-Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/StackOverflow.pm.html) in the [perldoc](http://alambic.io/perldoc/index.html) section.
+Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/StackOverflow.pm.html) in the [perldoc](/perldoc/index.html) section.
 
 ----
 

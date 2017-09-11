@@ -6,7 +6,7 @@ navi_name: Hudson
 
 This plugin retrieves information from a [Hudson CI](http://eclipse.org/hudson) continuous integration engine, displays a summary of its status, and provides recommendations to better use the Continuous Integration system.
 
-Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/Hudson.pm.html) in the [perldoc](http://alambic.io/perldoc/index.html) section.
+Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/Hudson.pm.html) in the [perldoc](/perldoc/index.html) section.
 
 -----
 

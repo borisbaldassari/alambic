@@ -137,7 +137,7 @@
 		    <tr>
                       <td><a href="/admin/projects/<%= $project_id %>"><%= $projects->{$project_id} %></a></td>
                       <td><%= $project->last_run() %></td>
-                      <td><%= $project->active() %></td>
+                      <td><%= $project->active() ? "Yes" : "No" %></td>
                       <td width="1cm"><a href="/admin/projects/<%= $project_id %>"><i class="fa fa-eye fa-fw"></i></a></td>
                       <td width="1cm"><a href="/admin/projects/<%= $project_id %>/run"><i class="fa fa-rocket fa-fw"></i></a></td>
                       <td width="1cm"><a href="/admin/projects/<%= $project_id %>/del"><i class="fa fa-ban fa-fw"></i></a></td>
