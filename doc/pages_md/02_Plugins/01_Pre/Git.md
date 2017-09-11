@@ -5,7 +5,7 @@ navi_name: Git
 
 This plugin retrieves information from a Git repository and runs a basic analysis on its log. It notably displays graphics about commits and authors.
 
-Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/Git.pm.html) in the [perldoc](http://alambic.io/perldoc/index.html) section.
+Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/Git.pm.html) in the [perldoc](/perldoc/index.html) section.
 
 -----
 
@@ -15,7 +15,6 @@ Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/
 * **Abilities**: metrics, info, data, recs, viz
 * **Description**:
   Retrieves configuration management data from a git local repository. This plugin uses the Git Tool in Alambic.
-  See the [project's wiki](http://alambic.io/Plugins/Pre/Git.html) for more information.
 * **Parameters**:
   * `git_url` The URL of the Git repository to analyse. It can be either a https or ssh URL, e.g. https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git.
 

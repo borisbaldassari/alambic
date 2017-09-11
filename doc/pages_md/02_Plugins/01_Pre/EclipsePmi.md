@@ -13,7 +13,7 @@ The Project Management Infrastructure is described in the Eclipse wiki:
 * [https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices](https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices)
 * [https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design](https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design)
 
-Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/EclipsePmi.pm.html) in the [perldoc](http://alambic.io/perldoc/index.html) section.
+Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/EclipsePmi.pm.html) in the [perldoc](/perldoc/index.html) section.
 
 -----
 
