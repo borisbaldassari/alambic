@@ -37,16 +37,24 @@ knitr::opts_chunk$set(
 
 #project.id <- 'test.project'
 
-file.metrics <- paste("", project.id, "_metrics.csv", sep="")
-file.attributes <- paste("", project.id, "_attributes.csv", sep="")
-file.metrics_ref <- paste("../../../../projects/", project.id, "/output/",
-		 project.id, "_metrics_ref.csv", sep="")
-file.attrs_ref <- paste("../../../../projects/", project.id, "/output/",
-		 project.id, "_attrs_ref.csv", sep="")
-
+file.metrics <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_metrics.csv", sep="")
 metrics <- read.csv(file=file.metrics, header=T)
+
+file.indics <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_indics.csv", sep="")
+indics <- read.csv(file=file.indics, header=T)
+
+file.attributes <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_metrics_ref.csv", sep="")
 attributes <- read.csv(file=file.attributes, header=T)
+
+file.metrics_ref <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_metrics_ref.csv", sep="")
 metrics_ref <- read.csv(file=file.metrics_ref, header=T)
+
+file.attrs_ref <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_attrs_ref.csv", sep="")
 attrs_ref <- read.csv(file=file.attrs_ref, header=T)
 ```
 
@@ -71,14 +79,15 @@ print( xtable( metrics,
 \end{centering}
 
 ```{r metrics_list, results='asis', echo=FALSE}
-f <- function_m(x, output) {
+f_m <- function(x, output) {
   id <- paste("\n\n## ", x[1], sep=" ")
   name <- paste("Name: ", x[2], sep=" ")
-  name <- paste("Value: ", metrics[metrics[[,1]==x[1]], 2], sep=" ")
+  value <- paste("Value: ", metrics[metrics[,1]==x[1], 2],
+       "Indicator: ", indics[indics[,1]==x[1], 2], sep=" ")
   desc <- paste("Description: ", x[3], sep=" ")
-  paste(id, name, desc, sep="\n\n") 
+  paste(id, name, value, desc, sep="\n\n") 
 }
-cat( paste( apply(metrics_ref, 1, f), sep="" ) )
+cat( paste( apply(metrics_ref, 1, f_m), sep="" ) )
 ```
 
 
@@ -96,14 +105,14 @@ print( xtable( attributes,
 \end{centering}
 
 ```{r attrs_list, results='asis', echo=FALSE}
-f <- function_a(x, output) {
+f_a <- function(x, output) {
   id <- paste("\n\n## ", x[1], sep=" ")
   name <- paste("Name: ", x[2], sep=" ")
-  name <- paste("Value: ", attrs[attrs[[,1]==x[1]], 2], sep=" ")
+  value <- paste("Value: ", attrs[attrs[,1]==x[1], 2], sep=" ")
   desc <- paste("Description: ", x[3], sep=" ")
-  paste(id, name, desc, sep="\n\n") 
+  paste(id, name, value, desc, sep="\n\n") 
 }
-cat( paste( apply(attrs_ref, 1, f), sep="" ) )
+cat( paste( apply(attrs_ref, 1, f_a), sep="" ) )
 ```
 
 
