@@ -505,6 +505,7 @@ sub get_project_last_run($) {
   return $repodb->get_project_last_run($project_id);
 }
 
+
 # Return all data for a specific run
 # Params:
 #  * project_id
@@ -515,6 +516,44 @@ sub get_project_run($$) {
   my $run_id     = shift;
 
   return $repodb->get_project_run($project_id, $run_id);
+}
+
+# Return all data for all runs
+# Params:
+#  * project_id
+# Returns
+#  - $ret = [
+#      {
+#        "metrics" => {'metric1' => 'value1'},
+#        "indicators" => {'ind1' => 'value1'},
+#        "attributes" => {'attr1' => 'value1'},
+#        "attributes_conf" => {'attr1' => 'value1'},
+#        "infos" => {'info1' => 'value1'},
+#        "recs" => [{'rec1'}, {'value1'}],
+#        "log" => ['log entry'],
+#      },
+#      {
+#        "metrics" => {'metric1' => 'value1'},
+#        "indicators" => {'ind1' => 'value1'},
+#        "attributes" => {'attr1' => 'value1'},
+#        "attributes_conf" => {'attr1' => 'value1'},
+#        "infos" => {'info1' => 'value1'},
+#        "recs" => [{'rec1'}, {'value1'}],
+#        "log" => ['log entry'],
+#      },
+sub get_project_all_runs($$) {
+  my $self       = shift;
+  my $project_id = shift;
+
+  my @data;
+
+  my $runs = $repodb->get_project_all_runs($project_id);
+  for my $run (@$runs) {
+      my $rundata = $repodb->get_project_run($project_id, $run->{'id'});
+      push( @data, $rundata );
+  }
+
+  return \@data;
 }
 
 
@@ -1046,6 +1085,38 @@ Return all data for the last run of the project.
     my $run = $alambic->get_project_run('modeling.sirius', 3);
 
 Return all data for a specific run.
+
+    {
+      'recs' => [
+        {
+          'desc' => 'The title entry is empty in the PMI.',
+          'severity' => 2,
+          'rid' => 'PMI_EMPTY_TITLE',
+          'src' => 'EclipsePmi'
+        }
+      ],
+      'attributes_conf' => undef,
+      'run_delay' => 49,
+      'project_id' => 'modeling.sirius',
+      'metrics' => {
+        'CI_JOBS_FAILED_1W' => 7,
+      },
+      'info' => {
+        'PMI_SCM_URL' => 'http://git.eclipse.org/c/sirius/org.eclipse.sirius.legacy.git',
+      },
+      'id' => 3,
+      'run_user' => 'administrator',
+      'indicators' => undef,
+      'attributes' => undef,
+      'run_time' => '2017-07-29 09:00:08'
+    }
+
+
+=head2 C<get_project_all_runs()>
+
+    my $run = $alambic->get_project_all_runs('modeling.sirius');
+
+Return all data for all runs.
 
     {
       'recs' => [

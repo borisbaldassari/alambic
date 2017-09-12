@@ -9,8 +9,18 @@
 
             <br />
 
-            <p>The table below lists all runs for this project. For each run the list of metrics, indicators, attributes and their confidence interval can be downloaded with values.</p>
-            <br />
+	    <div class="row"><div class="col-sm-7">
+		<p>The table below lists all runs for this project. For each run the list of metrics, indicators, attributes and their confidence interval can be downloaded with values.</p>
+	      </div>
+	      <div class="col-sm-4">
+		<div class="panel panel-default">
+		  <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+		  <div class="list-group">
+		    <a href="/projects/<%= $project_id %>/history/metrics.json" class="list-group-item">Download metrics history (JSON)</a>
+		    <a href="/projects/<%= $project_id %>/history/attributes.json" class="list-group-item">Download attributes history (JSON)</a>
+		  </div>
+		</div>
+	    </div></div>
 	    
 % foreach my $run (sort { $runs->{$b}{'run_time'} cmp $runs->{$a}{'run_time'} } keys %{$runs}) { 
 %   my %metrics = %{ $runs->{$run}{'metrics'} || {} };
