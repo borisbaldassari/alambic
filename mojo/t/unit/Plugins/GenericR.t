@@ -24,6 +24,7 @@ use Test::More;
 use Mojo::JSON qw( decode_json);
 use Data::Dumper;
 use File::Copy;
+use File::Path qw(make_path remove_tree);
 
 BEGIN { use_ok( 'Alambic::Plugins::GenericR' ); }
 
@@ -86,17 +87,18 @@ my $plugins = {
 my $models = Alambic::Model::Models->new($metrics, $attributes, $qm, $plugins);
 
 # Prepare csv files required for the plugin
-copy "t/resources/modeling.sirius_metrics.csv", "lib/Alambic/Plugins/GenericR/"
+make_path('projects/modeling.sirius/output/');
+copy "t/resources/modeling.sirius_metrics.csv", "projects/modeling.sirius/output/"
     or die "Cannot copy modeling.sirius_metrics.csv.";
-copy "t/resources/modeling.sirius_metrics_ref.csv", "lib/Alambic/Plugins/GenericR/"
+copy "t/resources/modeling.sirius_metrics_ref.csv", "projects/modeling.sirius/output/"
     or die "Cannot copy modeling.sirius_metrics_ref.csv.";
-copy "t/resources/modeling.sirius_indics.csv", "lib/Alambic/Plugins/GenericR/"
+copy "t/resources/modeling.sirius_indics.csv", "projects/modeling.sirius/output/"
     or die "Cannot copy modeling.sirius_indics.csv.";
-copy "t/resources/modeling.sirius_attributes.csv", "lib/Alambic/Plugins/GenericR/"
+copy "t/resources/modeling.sirius_attributes.csv", "projects/modeling.sirius/output/"
     or die "Cannot copy modeling.sirius_attributes.csv.";
-copy "t/resources/modeling.sirius_attrs_ref.csv", "lib/Alambic/Plugins/GenericR/"
+copy "t/resources/modeling.sirius_attrs_ref.csv", "projects/modeling.sirius/output/"
     or die "Cannot copy modeling.sirius_attrs_ref.csv.";
-copy "t/resources/modeling.sirius_git_commits.csv", "lib/Alambic/Plugins/GenericR/"
+copy "t/resources/modeling.sirius_git_commits.csv", "projects/modeling.sirius/output/"
     or die "Cannot copy modeling.sirius_git_commits.csv.";
 
 # Preparation: create the Project object
