@@ -65,16 +65,6 @@ sub run_post($$) {
 
   my @log;
   push(@log, "[Plugins::GenericR] Start Generic R plugin execution.");
-  
-  # my $repofs  = Alambic::Model::RepoFS->new();
-  # my $models  = $conf->{'models'};
-  # my $project = $conf->{'project'};
-  # my $qm      = $project->get_qm(
-  #     $models->get_qm(),
-  #     $models->get_attributes(),
-  #     $models->get_metrics(),
-  # );
-  # my $run = $conf->{'last_run'};
 
   my $params = {};
 
