@@ -126,6 +126,7 @@ sub knit_rmarkdown_inc($$$$) {
   my ($self, $plugin_id, $project_id, $r_in, $r_out, $params) = @_;
 
   my @log;
+  $params = $params || {};
 
   # Set vars.
   my $r_dir    = "lib/Alambic/Plugins/$plugin_id/";
@@ -209,6 +210,7 @@ sub knit_rmarkdown_pdf($$$$) {
   my ($self, $plugin_id, $project_id, $r_file, $params) = @_;
 
   my @log;
+  $params = $params || {};
 
   # Set vars.
   my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
@@ -281,6 +283,7 @@ sub knit_rmarkdown_html($$$$) {
   my ($self, $plugin_id, $project_id, $r_in, $r_out, $params) = @_;
 
   my @log;
+  $params = $params || {};
 
   # Set vars.
   my $r_dir    = "lib/Alambic/Plugins/$plugin_id/";
@@ -362,6 +365,7 @@ sub knit_rmarkdown_images($$$$$) {
   my ($self, $plugin_id, $project_id, $r_in, $r_out, $params) = @_;
 
   my @log;
+  $params = $params || {};
 
   # Set vars.
   my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
