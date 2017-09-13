@@ -110,8 +110,8 @@ my $conf_run = {
     'models' => $models,
 };
 
+# Run all post plugins.
 my $ret = $plugin->run_post("modeling.sirius", $conf_run);
-print "RET " . Dumper($ret);
 ok( grep(/^\[Plugins::GenericR\] Start Generic R plugin execution./, 
 	 @{$ret->{'log'}}) == 1, 
     "Checking if log contains Generic R plugin exec.") or diag explain $ret;
