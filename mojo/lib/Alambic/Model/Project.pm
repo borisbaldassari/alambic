@@ -196,7 +196,7 @@ sub metrics() {
 sub indicators() {
   my ($self, $indicators) = @_;
 
-  %metrics = %{$indicators} if (scalar @_ > 1);
+  %indicators = %{$indicators} if (scalar @_ > 1);
 
   return \%indicators;
 }
@@ -461,7 +461,7 @@ sub run_project($) {
   $repofs->write_output($project_id, "metrics.csv", $csv_out);
 
   # Create a CSV file with all indicators values
-  my $inds = $self->indicators();
+  my $inds = $self->indicators(); 
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
   $csv->combine( ('Mnemo', 'Value') );
   $csv_out = $csv->string();
