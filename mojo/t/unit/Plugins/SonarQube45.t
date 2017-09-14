@@ -141,16 +141,16 @@ ok($ret->{'metrics'}{'SQ_FUNCS'},
 
 # Checking output/*_sq_ files
 ok(
-  -e "projects/test.project/output/test.project_import_sq_issues_blocker.csv",
-  "Check that file test.project_import_sq_issues_blocker.csv exists."
+  -e "projects/test.project/input/test.project_import_sq_issues_blocker.json",
+  "Check that file test.project_import_sq_issues_blocker.json exists."
 );
 ok(
-  -e "projects/test.project/output/test.project_import_sq_issues_critical.csv",
-  "Check that file test.project_import_sq_issues_critical.csv exists."
+  -e "projects/test.project/input/test.project_import_sq_issues_critical.json",
+  "Check that file test.project_import_sq_issues_critical.json exists."
 );
 ok(
-  -e "projects/test.project/output/test.project_import_sq_issues_major.csv",
-  "Check that file test.project_import_sq_issues_major.csv exists."
+  -e "projects/test.project/input/test.project_import_sq_issues_major.json",
+  "Check that file test.project_import_sq_issues_major.json exists."
     );
 ok(
   -e "projects/test.project/output/test.project_sq_issues_blocker.csv",
