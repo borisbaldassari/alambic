@@ -50,7 +50,7 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/Git.pm.html) in t
 
 ## Information
 
-* GIT_SERVER
+* GIT_URL
   The URL of the Git repository used for the analysis.
 
 ## Metrics

@@ -37,4 +37,4 @@ r_analysis.podf
 
 # Screenshot
 
-![Project Summary UI](/images/projectsummary_ui.png)
+![Project Summary UI](/images/generic_r.png)

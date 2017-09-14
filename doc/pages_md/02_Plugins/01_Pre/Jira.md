@@ -11,12 +11,16 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/Jira.pm.html) in 
 
 # Basic information
 
-* **ID**: Git
-* **Abilities**: metrics, info, data, recs, viz
+* **ID**: JiraIts
+* **Abilities**: metrics, info, data, recs, viz, users
 * **Description**:
-  Retrieves configuration management data from a git local repository. This plugin uses the Git Tool in Alambic.
+  The Jira plugin retrieves issue information from an Atlassian Jira server, using the [Jira REST API](https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis).
 * **Parameters**:
-  * `git_url` The URL of the Git repository to analyse. It can be either a https or ssh URL, e.g. https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git.
+  * `jira_url` The URL of the Jira server, e.g. http://myserver.
+  * `jira_user` The user for authentication on the Jira server.
+  * `jira_passwd` The password for authentication on the Jira server.
+  * `jira_project` The project ID to be requested on the Jira server.
+  * `jira_open_states` The states names considered to be open, as a coma-separated list.
 
 -----
 
@@ -24,63 +28,65 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/Jira.pm.html) in 
 
 ## Downloads
 
-* `import_git.txt`: The original git log file as retrieved from git (TXT).
-* `git_commits.csv`: Evolution of number of commits and authors by day (CSV).
-* `metrics_git.csv`: Current metrics for the SCM Git plugin (CSV).
-* `metrics_git.json`: Current metrics for the SCM Git plugin (JSON).
+* `import_jira.json`: The original file of current information, downloaded from the Jira server (JSON).
+* `jira_evol.csv`: The evolution of issues created and authors by day (CSV).
+* `jira_issues.csv`: The list of issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).
+* `jira_issues_late.csv`: The list of late issues (i.e. their due_date has past), with fields `id,summary,type,status,priority,assignee,reporter,due_date,created_at,updated_at,votes,watches` (CSV).
+* `jira_issues_open.csv`: The list of open issues, with fields `id,summary,type,status,priority,assignee,reporter,due_date,created_at,updated_at,votes,watches` (CSV).
+* `jira_issues_open_unassigned.csv`: The list of open and unassigned issues, with fields `id,summary,type,status,priority,assignee,reporter,due_date,created_at,updated_at,votes,watches` (CSV).
+* `metrics_jira.json`: The list of metrics computed by the plugin (JSON).
 
 ## Figures
 
-* `git_summary.html`
-  HTML export of Git main metrics.
-* `git_evol_summary.html`
-  HTML export of Git SCM evolution summary.
-* `git_evol_authors.png`
-  PNG export of Git SCM authors evolution.
-* `git_evol_authors.svg`
-  SVG export of Git SCM authors evolution.
-* `git_evol_authors.html`
-  HTML export of Git authors evolution.
-* `git_evol_commits.png`
-  PNG export of Git SCM commits evolution.
-* `git_evol_commits.svg`
-  SVG export of Git SCM commits evolution.
-* `git_evol_commits.html`
-  HTML export of Git commits evolution.
+* `jira_summary.html`
+  HTML summary of Jira issues main metrics (HTML)
+* `jira_evol_summary.html`
+  Evolution of Jira main metrics (HTML)
+* `jira_evol_authors.html`
+  Evolution of Jira issues authors (HTML)
+* `jira_evol_created.html`
+  Evolution of Jira issues creation (HTML)
 
 ## Information
 
-* GIT_SERVER
-  The URL of the Git repository used for the analysis.
+* JIRA_URL
+  The URL of the project on the Jira server.
 
 ## Metrics
 
-* SCM_AUTHORS,
-  Total number of identities found as authors of commits in source code management repository.
-* SCM_AUTHORS_1W
-  Total number of identities found as authors of commits in source code management repositories dated during the last week.
-* SCM_AUTHORS_1M
-  Total number of identities found as authors of commits in source code management repositories dated during the last month.
-* SCM_AUTHORS_1Y
-  Total number of identities found as authors of commits in source code management repositories dated during the last year.
-* SCM_COMMITS,
-  Total number of commits in source code management repositories.
-* SCM_COMMITS_1W
-  Total number of commits in source code management repositories dated during the last week.
-* SCM_COMMITS_1M
-  Total number of commits in source code management repositories dated during the last month.
-* SCM_COMMITS_1Y
-  Total number of commits in source code management repositories dated during the last year.
-* SCM_COMMITTERS,
-  Total number of identities found as authors of commits in source code management repository.
-* SCM_COMMITTERS_1W
-  Total number of identities found as committers of commits in source code management repositories dated during the last week.
-* SCM_COMMITTERS_1M
-  Total number of identities found as committers of commits in source code management repositories dated during the last month.
-* SCM_COMMITTERS_1Y
-  Total number of identities found as committers of commits in source code management repositories dated during the last year.
-* SCM_FILES
-  Total number of files touched by commits in source code management repositories dated during the last three months.
+* JIRA_VOL,
+  Total number of issues for project in Jira.
+* JIRA_AUTHORS,
+  Total number of identities found as creators of issues.
+* JIRA_AUTHORS_1W
+  Total number of identities found as creators of issues created during the last week.
+* JIRA_AUTHORS_1M
+  Total number of identities found as creators of issues created during the last month.
+* JIRA_AUTHORS_1Y
+  Total number of identities found as creators of issues created during the last year.
+
+* JIRA_CREATED_1W
+  Total number of issues created during the last week.
+* JIRA_CREATED_1M
+  Total number of issues created during the last month.
+* JIRA_CREATED_1Y
+  Total number of issues created during the last year.
+
+* JIRA_UPDATED_1W
+  Total number of issues updated during the last week.
+* JIRA_UPDATED_1M
+  Total number of issues updated during the last month.
+* JIRA_UPDATED_1Y
+  Total number of issues updated during the last year.
+
+* JIRA_OPEN
+  Total number of issues currently in an open state (as defined by the list of open states in the plugin parameters).
+* JIRA_OPEN_PERCENT
+  Percentage of issues currently in an open state (as defined by the list of open states in the plugin parameters), compared to the total volume of issues.
+* JIRA_LATE
+  Number of issues with a due date past the current time.
+* JIRA_OPEN_UNASSIGNED
+  Number of issues 1. not assigned and 2. in an open state (as defined by the list of open states in the plugin parameters).
 
 ## Recommendations
 
@@ -96,4 +102,4 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/Jira.pm.html) in 
 
 # Screenshot
 
-![eclipse_git.png](/images/git_scm.png)
+![eclipse_git.png](/images/jira_its.png)
