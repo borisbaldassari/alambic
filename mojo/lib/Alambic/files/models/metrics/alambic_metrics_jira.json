@@ -1,0 +1,129 @@
+{
+    "name": "Alambic Metrics for Jira Issue Tracking",
+    "version": "0.1",
+    "children": [
+	{
+            "name": "JIRA open issues",
+            "mnemo": "JIRA_OPEN",
+            "desc": [
+    	    	"Number of issues with a state 'open' at the time of analysis."
+            ],
+            "scale": [1,2,3,4]
+	},
+	{
+            "name": "JIRA open issues (%)",
+            "mnemo": "JIRA_OPEN_PERCENT",
+            "desc": [
+    	    	"Percentage of open issues compared to the overall number of issues registered in the system."
+            ],
+            "scale": [1,2,3,4]
+	},
+	{
+            "name": "JIRA total issues",
+            "mnemo": "JIRA_VOL",
+            "desc": [
+		        "Number of issues registered in the database, whatever their state is."
+            ],
+            "scale": [1,2,3,4]
+	},
+	{
+            "name": "JIRA pending issues",
+            "mnemo": "JIRA_OPEN_UNASSIGNED",
+            "desc": [
+   		        "Number of issues in state open with no assignee (i.e. pending).",
+                "It is considered to be good practice to keep this number low. In an active project, people would either work on the bug (i.e. assign it) or triage it (pass it to some other state or assigning it)."
+            ],
+            "scale": [1,2,3,4]
+	},
+	{
+            "name": "JIRA late issues",
+            "mnemo": "JIRA_LATE",
+            "desc": [
+		        "Number of issues with a past due date.",
+                "It is considered good practice to keep this number low. Either fix it or maintain its due date."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "JIRA authors",
+            "mnemo": "JIRA_AUTHORS",
+            "desc": [
+		        "Number of different authors who created issues during the lifetime of the project.",
+                "A high number of authors shows diversity and improves the bus factor of the project."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "JIRA authors last week",
+            "mnemo": "JIRA_AUTHORS_1W",
+            "desc": [
+		        "Number of authors who created issues during last week. If today is Wed. 2017-02-01 then the range is from Wed. 2017-01-25 to Wed. 2017-02-01."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "JIRA authors last month",
+            "mnemo": "JIRA_AUTHORS_1M",
+            "desc": [
+		        "Number of authors who created issues during last month. If today is 2017-02-01 then the range is from 2017-01-01 to 2017-02-01."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "JIRA authors last year",
+            "mnemo": "JIRA_AUTHORS_1Y",
+            "desc": [
+		        "Number of authors who created issues during last year. If today is 2017-02-01 then the range is from 2016-02-01 to 2017-02-01."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "JIRA issues created last week",
+            "mnemo": "JIRA_CREATED_1W",
+            "desc": [
+		        "Number of issues created during last week. If today is Wed. 2017-02-01 then the range is from Wed. 2017-01-25 to Wed. 2017-02-01."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "JIRA issues created last month",
+            "mnemo": "JIRA_CREATED_1M",
+            "desc": [
+		        "Number of issues created during last month. If today is 2017-02-01 then the range is from 2017-01-01 to 2017-02-01."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "JIRA issues created last year",
+            "mnemo": "JIRA_CREATED_1Y",
+            "desc": [
+		        "Number of issues created during last year. If today is 2017-02-01 then the range is from 2016-02-01 to 2017-02-01."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "JIRA issues updated last week",
+            "mnemo": "JIRA_UPDATED_1W",
+            "desc": [
+		        "Number of issues updated during last week. If today is Wed. 2017-02-01 then the range is from Wed. 2017-01-25 to Wed. 2017-02-01."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "JIRA issues updated last month",
+            "mnemo": "JIRA_UPDATED_1M",
+            "desc": [
+		        "Number of issues updated during last month. If today is 2017-02-01 then the range is from 2017-01-01 to 2017-02-01."
+            ],
+            "scale": [2,4,9.75,80]
+	},
+	{
+            "name": "JIRA issues updated last year",
+            "mnemo": "JIRA_UPDATED_1Y",
+            "desc": [
+		        "Number of issues updated during last year. If today is 2017-02-01 then the range is from 2016-02-01 to 2017-02-01."
+            ],
+            "scale": [2,4,9.75,80]
+	}
+    ]
+}
