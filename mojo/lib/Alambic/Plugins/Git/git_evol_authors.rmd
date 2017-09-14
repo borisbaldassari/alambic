@@ -38,7 +38,7 @@ ggsave(file=paste(project.id, "_git_evol_authors.svg", sep=''), plot=gg, width=1
 ggsave(file=paste(project.id, "_git_evol_authors.png", sep=''), plot=gg, width=10, height=8)
 
 p <-dygraph(evol.xts[,c('authors')],
-        main = paste('Commits for ', project.id, sep=''),
+        main = paste('Authors for ', project.id, sep=''),
         width = 800, height = 250 ) %>%
       dyRangeSelector()
 p

@@ -31,12 +31,12 @@ note("Checking the plugin parameters. ");
 my $conf = $plugin->get_conf();
 
 ok(grep(m!info!,    @{$conf->{'ability'}}), "Conf has ability > info");
-ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has not ability > metrics");
-ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has not ability > data");
-ok(grep(m!recs!,    @{$conf->{'ability'}}), "Conf has not ability > recs");
-ok(grep(m!figs!,    @{$conf->{'ability'}}), "Conf has not ability > figs");
+ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
+ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
+ok(grep(m!recs!,    @{$conf->{'ability'}}), "Conf has ability > recs");
+ok(grep(m!figs!,    @{$conf->{'ability'}}), "Conf has ability > figs");
 ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
-ok(grep(m!users!,   @{$conf->{'ability'}}), "Conf has not ability > users");
+ok(grep(m!users!,   @{$conf->{'ability'}}), "Conf has ability > users");
 
 ok(
   grep(m!GIT_URL!, @{$conf->{'provides_info'}}),
@@ -58,12 +58,6 @@ ok(grep(m!SCM_COMMITTERS!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > SCM_COMMITTERS");
 ok(grep(m!SCM_MOD_LINES!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > SCM_MOD_LINES");
-
-ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
-ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
-ok(grep(m!recs!,    @{$conf->{'ability'}}), "Conf has ability > recs");
-ok(grep(m!info!,    @{$conf->{'ability'}}), "Conf has ability > info");
-ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
 
 ok(grep(m!git_url!, keys %{$conf->{'params'}}), "Conf has params > git_url");
 
