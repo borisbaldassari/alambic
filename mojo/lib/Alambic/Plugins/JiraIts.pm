@@ -25,6 +25,7 @@ use Date::Parse;
 use JIRA::REST;
 use Time::Piece;
 use Time::Seconds;
+use Text::CSV;
 use Data::Dumper;
 
 # Main configuration hash for the plugin
@@ -42,6 +43,7 @@ my %conf = (
         "jira_user" => "The user for authentication on the Jira server.",
         "jira_passwd" => "The password for authentication on the Jira server.",
         "jira_project" => "The project ID to be requested on the Jira server.",
+        "jira_open_states" => "The states names considered to be open, as a coma-separated list.",
     },
     "provides_cdata" => [
     ],
@@ -88,8 +90,6 @@ my %conf = (
     },
 );
 
-my $j_status_open = 'To Do';
-
 # Constructor
 sub new {
     my ($class) = @_;
@@ -124,6 +124,9 @@ sub run_plugin($$) {
     my $t_1y = $t_now - ONE_YEAR;
 
     my $jira_url = $conf->{'jira_url'};
+    my $jira_open_states = $conf->{'jira_open_states'};
+    my @j_status_open = split(',', $jira_open_states);
+
     my $jira_user = $conf->{'jira_user'};
     my $jira_passwd = $conf->{'jira_passwd'};
     my $jira_project = $conf->{'jira_project'};
@@ -141,43 +144,57 @@ sub run_plugin($$) {
     my $search = $jira->POST('/search', undef, {
         jql        => 'project=' . $jira_project,
         startAt    => 0,
-        maxResults => -1,
-        fields     => [ qw/summary status assignee reporter created updated duedate/ ],
+        maxResults => 10000,
+        fields     => [ qw/summary status assignee reporter created updated duedate priority votes watches issuetype/ ],
     });
 
     # Write json file to import directory
     $repofs->write_input( $project_id, "import_jira.json", encode_json($search->{'issues'}) );
     
     my (@late, @open, @unassigned_open, %people);
-    my $csv = "id,summary,status,assignee,reporter,due_date,created_at,updated_at\n";
-    my $csv_late = $csv;
-    my $csv_open = $csv;
-    my $csv_open_unassigned = $csv;
+    my $csv_out = "id,summary,type,status,priority,assignee,reporter,due_date,created_at,updated_at,votes,watches\n";
+    my $csv_late_out = $csv_out;
+    my $csv_open_out = $csv_out;
+    my $csv_unassigned_open_out = $csv_out;
     
     my ($jira_created_1w, $jira_created_1m, $jira_created_1y) = (0,0,0);
     my ($jira_updated_1w, $jira_updated_1m, $jira_updated_1y) = (0,0,0);
     my (%authors, %authors_1w, %authors_1m, %authors_1y, %users);
     my %timeline_c;
     my %timeline_a;
-    
+
+    my $csv = Text::CSV->new({binary => 1, eol => "\n"});
+    my $csv_late = Text::CSV->new({binary => 1, eol => "\n"});
+    my $csv_open = Text::CSV->new({binary => 1, eol => "\n"});
+    my $csv_unassigned_open = Text::CSV->new({binary => 1, eol => "\n"});
+
     foreach my $issue (@{$search->{'issues'}}) {
+	my @attrs;
+	
 	my $date = Time::Piece->strptime(int(str2time($issue->{'fields'}{'created'}) || 0), "%s");
 	my $date_m = $date->strftime("%Y-%m-%d");
 	$timeline_c{$date_m}++;
 	$timeline_a{$date_m}{$issue->{'fields'}{'reporter'}{'name'}}++;
 	$authors{$issue->{'fields'}{'reporter'}{'name'}}++;
 	
-        if ($issue->{'fields'}{'status'}{'name'} eq $j_status_open) {
+	@attrs = ( $issue->{'key'}, $issue->{'fields'}{'summary'},
+		   $issue->{'fields'}{'issuetype'}{'name'}, 
+		   $issue->{'fields'}{'status'}{'name'}, 
+		   $issue->{'fields'}{'priority'}{'name'}, 
+		   $issue->{'fields'}{'assignee'}{'name'}, 
+		   $issue->{'fields'}{'reporter'}{'name'},
+		   $issue->{'fields'}{'duedate'},
+		   $issue->{'fields'}{'created'},
+		   $issue->{'fields'}{'updated'},
+		   $issue->{'fields'}{'votes'}{'votes'},
+		   $issue->{'fields'}{'watches'}{'watchCount'} );
+	$csv->combine(@attrs);
+	$csv_out .= $csv->string();
+	
+        if (grep(/$issue->{'fields'}{'status'}{'name'}/, @j_status_open) != 0) {
             push( @open, $issue->{'key'});
-	    $csv_open .= $issue->{'key'} . ",\"" . $issue->{'fields'}{'summary'} . "\","
-                . $issue->{'fields'}{'status'}{'name'} . ","
-                . ($issue->{'fields'}{'assignee'}{'name'} || '') . ","
-                . ($issue->{'fields'}{'reporter'}{'name'} || '') . ","
-                . ($issue->{'fields'}{'duedate'} || '') . ","
-                . ($issue->{'fields'}{'created'} || '') . ","
-                . ($issue->{'fields'}{'updated'} || '')
-                . "\n";
-        }
+	    $csv_open_out .= $csv->string();
+	}
 
         # Convert string dates to epoch seconds
         my $date_due = str2time($issue->{'fields'}{'duedate'}) if defined($issue->{'fields'}{'duedate'});
@@ -188,38 +205,15 @@ sub run_plugin($$) {
         # Check if issue's due date has past
         if ( defined($date_due) and $date_due < $t_now ) {
             push( @late, $issue->{'key'} );
-	    $csv_late .= $issue->{'key'} . ",\"" . $issue->{'fields'}{'summary'} . "\","
-                . $issue->{'fields'}{'status'}{'name'} . ","
-                . ($issue->{'fields'}{'assignee'}{'name'} || '') . ","
-                . ($issue->{'fields'}{'reporter'}{'name'} || '') . ","
-                . ($issue->{'fields'}{'duedate'} || '') . ","
-                . ($issue->{'fields'}{'created'} || '') . ","
-                . ($issue->{'fields'}{'updated'} || '')
-                . "\n";
-        }
+	    $csv_late_out .= $csv->string();
+	}
 
         # Check if issue is assigned and open
         if ( (not defined($issue->{'fields'}{'assignee'}{'name'}))
-              && $issue->{'fields'}{'status'}{'name'} eq $j_status_open ) {
+              && grep(/$issue->{'fields'}{'status'}{'name'}/, @j_status_open) != 0 ) {
             push( @unassigned_open, $issue->{'key'} );
-	    $csv_open_unassigned .= $issue->{'key'} . ",\"" . $issue->{'fields'}{'summary'} . "\","
-                . $issue->{'fields'}{'status'}{'name'} . ","
-                . ($issue->{'fields'}{'assignee'}{'name'} || '') . ","
-                . ($issue->{'fields'}{'reporter'}{'name'} || '') . ","
-                . ($issue->{'fields'}{'duedate'} || '') . ","
-                . ($issue->{'fields'}{'created'} || '') . ","
-                . ($issue->{'fields'}{'updated'} || '')
-                . "\n";
-        }
-
-        $csv .= $issue->{'key'} . ",\"" . $issue->{'fields'}{'summary'} . "\","
-                . $issue->{'fields'}{'status'}{'name'} . ","
-                . ($issue->{'fields'}{'assignee'}{'name'} || '') . ","
-                . ($issue->{'fields'}{'reporter'}{'name'} || '') . ","
-                . ($issue->{'fields'}{'duedate'} || '') . ","
-                . ($issue->{'fields'}{'created'} || '') . ","
-                . ($issue->{'fields'}{'updated'} || '')
-                . "\n";
+	    $csv_unassigned_open_out .= $csv->string();
+	}
 
 	# Populate %users to show activity in the user's profile
 	if ( exists $issue->{'fields'}{'assignee'}{'emailAddress'} ) {
@@ -275,10 +269,10 @@ sub run_plugin($$) {
     }
 
     # Write metrics to csv and json files.
-    $repofs->write_output( $project_id, "jira_issues.csv", $csv );
-    $repofs->write_output( $project_id, "jira_issues_late.csv", $csv_late );
-    $repofs->write_output( $project_id, "jira_issues_open.csv", $csv_open );
-    $repofs->write_output( $project_id, "jira_issues_open_unassigned.csv", $csv_open_unassigned );
+    $repofs->write_output( $project_id, "jira_issues.csv", $csv_out );
+    $repofs->write_output( $project_id, "jira_issues_late.csv", $csv_late_out );
+    $repofs->write_output( $project_id, "jira_issues_open.csv", $csv_open_out );
+    $repofs->write_output( $project_id, "jira_issues_open_unassigned.csv", $csv_unassigned_open_out );
 
     # Compute and store metrics
     $ret{'metrics'}{'JIRA_VOL'} = scalar @{$search->{'issues'}};
@@ -312,7 +306,7 @@ sub run_plugin($$) {
 
     # Write jira metrics csv file
     my @metrics = sort map {$conf{'provides_metrics'}{$_}} keys %{$conf{'provides_metrics'}};
-    my $csv_out = join( ',', sort keys %{$ret{'metrics'}}) . "\n";
+    $csv_out = join( ',', sort keys %{$ret{'metrics'}}) . "\n";
     $csv_out .= join( ',', map { $ret{'metrics'}{$_} || '' } sort keys %{$ret{'metrics'}}) . "\n";
     $repofs->write_plugin( 'JiraIts', $project_id . "_jira.csv", $csv_out );
     $repofs->write_output( $project_id, "metrics_jira.csv", $csv_out );
@@ -360,5 +354,44 @@ sub run_plugin($$) {
 }
 
 
-
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Plugins::JiraIts> - Retrieves issue tracking data and metrics 
+from a Jira server.
+
+=head1 DESCRIPTION
+
+B<Alambic::Plugins::JiraIts> Retrieves issue tracking data and metrics 
+from a Jira Server.
+
+Parameters: 
+
+=over
+
+=item * jira_open_states A list of status names considered as open in the workflow, coma-separated.
+
+=item * jira_passwd The password of the user for the connection to the Jira server.
+
+=item * jira_project The Identifier of the project within the Jira instance, e.g. ALX.
+
+=item * jira_url The URL of the Jira server, e.g. https://tracker.openattic.org.
+
+=back
+=item * jira_user The id of the user for the connection to the Jira server.
+
+
+For the complete description of the plugin see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/Jira.html>.
+
+=head1 SEE ALSO
+
+L<https://alambic.io/Plugins/Pre/Jira.html>,
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<https://www.atlassian.com/software/jira>
+
+
+=cut
