@@ -101,7 +101,7 @@ cat( paste( apply(metrics_ref, 1, f_m), sep="" ) )
 
 ```{r table_attrs, results='asis'}
 print( xtable( attributes, 
-       align="|c|p{5cm}|p{3cm}"), comment=FALSE,
+       align="|c|p{5cm}|p{3cm}|"), comment=FALSE,
        include.rownames=FALSE, include.colnames=TRUE, 
        floating=FALSE, size="\\scriptsize" )
 ```
