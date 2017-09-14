@@ -72,7 +72,6 @@ my %conf = (
 	"JIRA_UPDATED_1Y" => "JIRA_UPDATED_1Y",
         "JIRA_OPEN" => "JIRA_OPEN",
         "JIRA_OPEN_PERCENT" => "JIRA_OPEN_PERCENT",
-        "JIRA_AUTHORS" => "JIRA_AUTHORS",
         "JIRA_LATE" => "JIRA_LATE",
         "JIRA_OPEN_UNASSIGNED" => "JIRA_OPEN_UNASSIGNED",
     },
