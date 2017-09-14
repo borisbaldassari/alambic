@@ -6,9 +6,11 @@ navi_name: SonarQube45
 
 # Purpose
 
-This plugin retrieves information from a Sonarueb 4.5.x instance.
+This plugin retrieves information from a [SonarQube 4.5.x instance]().
 
 Please note that SonarQube changes its API at a unusual high rate. As a consequence different versions of SonarQube may not work with this plugin.
+
+Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/SonarQube.pm.html) in the [perldoc](/perldoc/index.html) section.
 
 -----
 
