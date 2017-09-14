@@ -26,11 +26,21 @@ knitr::opts_chunk$set(fig.path = 'figures/')
 
 #project.id <- 'modeling.sirius'
 plugin.id <- 'JiraIts'
-file.evol = paste("", project.id, "_jira_evol.csv", sep="")
-file.metrics = paste("", project.id, "_jira.csv", sep="")
 
-evol <- read.csv(file=file.evol, header=T)
+file.metrics <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_metrics.csv", sep="")
+
+file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_jira.csv", sep="")
+file.issues = paste("../../../../projects/", project.id, "/output/", project.id, "_jira_issues.csv", sep="")
+file.issues.late = paste("../../../../projects/", project.id, "/output/", project.id, "_jira_issues_late.csv", sep="")
+file.issues.unassigned = paste("../../../../projects/", project.id, "/output/", project.id, "_jira_issues_open_unassigned.csv", sep="")
+file.evol = paste("../../../../projects/", project.id, "/output/", project.id, "_jira_evol.csv", sep="")
+
 metrics <- read.csv(file=file.metrics, header=T)
+issues <- read.csv(file=file.issues, header=T)
+issues.late <- read.csv(file=file.issues.late, header=T)
+issues.unassigned <- read.csv(file=file.issues.unassigned, header=T)
+evol <- read.csv(file=file.evol, header=T)
 ```
 
 ## Jira Issue Tracking System
@@ -43,11 +53,14 @@ The JIRA repository for the project contains ``r metrics[['JIRA_VOL']]`` issues 
 
 During the last month, there has been ``r metrics[['JIRA_CREATED_1M']]`` issues created by ``r metrics[['JIRA_AUTHORS_1M']]`` authors.
 
+
 </div><div class="col-sm-4">
   <div class="panel panel-default">
   <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
   <div class="list-group">
   <a href="#summary" class="list-group-item">Quick Summary</a>
+  <a href="#late_issues" class="list-group-item">Late issues</a>
+  <a href="#unassigned_issues" class="list-group-item">Open unassigned issues</a>
   <a href="#authors" class="list-group-item">Authors</a>
   <a href="#commits" class="list-group-item">Issues created</a>
   <a href="#downloads" class="list-group-item">Downloads</a>
@@ -55,7 +68,17 @@ During the last month, there has been ``r metrics[['JIRA_CREATED_1M']]`` issues 
   </div>
 </div></div>
 
+
+
 ### <a name="quick-summary"></a>Quick Summary
+
+**Evolutionary metrics**
+
+The evolution of ``r ncol(evol)`` metrics has been retrieved: ``r paste(names(evol), collapse=", ")``.
+
+A [dynamic plot has been generated](/projects/`r project.id`/JiraIts/jira_evol_summary.html) using the [plotly library](http://plot.ly) to enable users to play with data itself and its associated plot.
+
+**Static metrics**
 
 ``r ncol(metrics)`` static metrics relative to the current project state have been retrieved:
 
@@ -65,11 +88,71 @@ t <- paste(t, collapse=" ")
 cat(t)
 ```
 
-The evolution of ``r ncol(evol)`` metrics has been retrieved: ``r paste(names(evol), collapse=", ")``.
+**Identified types of issues**
 
-The following plot uses the [plotly library](http://plot.ly) to enable users to play with data itself, and its associated plot. Hover on the graph for more options.
+```{r jira_types, echo=FALSE, message=FALSE, results='asis'}
+types <- table(issues$type)
+t <- lapply(names(types), function(x) paste(x, ' <span class="badge">', types[[x]], '</span>', sep=''))
+t <- paste(t, collapse=', ')
+cat(t)
+```
+.
 
-<iframe src="/projects/`r project.id`/JiraIts/jira_evol_summary.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
+**Identified states of issues**
+
+```{r jira_statuses, echo=FALSE, message=FALSE, results='asis'}
+statuses <- table(issues$status)
+t <- lapply(names(statuses), function(x) paste(x, ' <span class="badge">', statuses[[x]], '</span> ', sep=''))
+t <- paste(t, collapse=", ")
+cat(t)
+```
+.
+
+-----
+
+### <a name="late_issues"></a>Late issues
+
+``r nrow(issues.late)`` issues have a past due date (compared to current time). Display is limited to 10 issues for readability.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Late Issues</div>
+<table class="table table-striped">
+  <tr><th>ID</th><th>Status</th><th>Due date</th><th>Summary</th></tr>
+```{r jira_issues_late, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(head(issues.late,10), 1,
+           function(x) paste('<tr><td>',
+                             x[[1]], '</td><td>', x[[4]],
+                             '</td><td>', x[[8]],
+                             '</td><td>', ' ',
+                             x[[2]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+-----
+
+### <a name="unassigned_issues"></a>Open, unassigned issues
+
+``r nrow(issues.unassigned)`` issues have an open status and are not yet assigned. Although it heavily depends on the JIRA workflow and local customs, it is generally considered good practice to assign issues when they are in an open state so as to know who is responsible for the action. Display is limited to 10 issues for readability.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Late Issues</div>
+<table class="table table-striped">
+  <tr><th>ID</th><th>Status</th><th>Due date</th><th>Summary</th></tr>
+```{r jira_issues_unassigned, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(head(issues.unassigned,10), 1,
+           function(x) paste('<tr><td>',
+                             x[[1]], '</td><td>', x[[4]],
+                             '</td><td>', x[[8]],
+                             '</td><td>', ' ',
+                             x[[2]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
 
 -----
 
@@ -91,7 +174,7 @@ The following plot shows the evolution of [commits](/documentation/metrics#SCM_C
 
 ### <a name="downloads"></a>Downloads
 
-The visualisations on this page can be exported and easily reused on an external web site. You can find more information on iframes and pictures reuse in [the project&apos;s wiki](https://bitbucket.org/BorisBaldassari/alambic/wiki/Using_autogenerated_pictures/). Remember to change the server name in the code samples provided.
+The visualisations on this page can be exported and easily reused on an external web site. You can find more information on iframes and pictures reuse in [the project&apos;s wiki](http://alambic.io/Documentation/Basics/Exports.html). Remember to change the server name in the code samples provided.
 
 Plot of main evolution metrics of the configuration management system
 
@@ -109,10 +192,10 @@ The visualisations used in this document rely on a number of flat CSV and JSON d
 
 * The original file of current information, downloaded from the Jira server [ <a href="import_jira.json">Download JSON</a> ]
 * The evolution of issues created and authors by day [ <a href="jira_evol.csv">Download CSV</a> ]
-* The list of issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at'  [ <a href="jira_issues.csv">Download CSV</a> ]
-* The list of late issues (i.e. their due_date has past), with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' [ <a href="jira_issues_late.csv">Download CSV</a> ]
-* The list of open issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' [ <a href="jira_issues_open.csv">Download CSV</a> ]
-* The list of open and unassigned issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' [ <a href="jira_issues_open_unassigned.csv">Download CSV</a> ]
+* The list of issues, with fields `id, summary, type, status, priority, status, assignee, reporter, due_date, created_at, updated_at, votes, watches`  [ <a href="jira_issues.csv">Download CSV</a> ]
+* The list of late issues (i.e. their due_date has past), with fields `id, summary, type, status, priority, status, assignee, reporter, due_date, created_at, updated_at, votes, watches` [ <a href="jira_issues_late.csv">Download CSV</a> ]
+* The list of open issues, with fields `id, summary, type, status, priority, status, assignee, reporter, due_date, created_at, updated_at, votes, watches` [ <a href="jira_issues_open.csv">Download CSV</a> ]
+* The list of open and unassigned issues, with fields `id, summary, type, status, priority, status, assignee, reporter, due_date, created_at, updated_at, votes, watches` [ <a href="jira_issues_open_unassigned.csv">Download CSV</a> ]
 
 
 
