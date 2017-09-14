@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and Thales Group.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Plugins::JiraIts;
 
 use strict;
@@ -19,10 +33,10 @@ my %conf = (
     "name" => "Jira",
     "desc" => [
 	'The Jira plugin retrieves issue information from an Atlassian Jira server, using the <a href="https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis">Jira REST API</a>.',
-	'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/Jira">the project\'s wiki</a> for more information.',
+	'See <a href="https://alambic.io/Plugins/Pre/Jira">the project\'s wiki</a> for more information.',
     ],
     "type" => "pre",
-    "ability" => [ 'info', 'metrics', 'data', 'figs', 'recs', 'viz' ],
+    "ability" => [ 'info', 'metrics', 'data', 'figs', 'recs', 'viz', 'users' ],
     "params" => {
         "jira_url" => "The URL of the Jira server, e.g. http://myserver.",
         "jira_user" => "The user for authentication on the Jira server.",
@@ -32,7 +46,7 @@ my %conf = (
     "provides_cdata" => [
     ],
     "provides_info" => [
-	"JIRA_SERVER",
+	"JIRA_URL",
     ],
     "provides_data" => {
 	"import_jira.json" => "The original file of current information, downloaded from the Jira server (JSON).",
@@ -119,7 +133,7 @@ sub run_plugin($$) {
         username => $jira_user,
         password => $jira_passwd });
 
-    $ret{'info'}{'JIRA_SERVER'} = $jira_url . "/projects/" . $jira_project . "/";
+    $ret{'info'}{'JIRA_URL'} = $jira_url . "/projects/" . $jira_project . "/";
 
 
     # Iterate on issues
@@ -147,7 +161,7 @@ sub run_plugin($$) {
     my %timeline_a;
     
     foreach my $issue (@{$search->{'issues'}}) {
-	my $date = Time::Piece->strptime(str2time($issue->{'fields'}{'created'} || 0), "%s");
+	my $date = Time::Piece->strptime(int(str2time($issue->{'fields'}{'created'}) || 0), "%s");
 	my $date_m = $date->strftime("%Y-%m-%d");
 	$timeline_c{$date_m}++;
 	$timeline_a{$date_m}{$issue->{'fields'}{'reporter'}{'name'}}++;
@@ -273,11 +287,11 @@ sub run_plugin($$) {
     $ret{'metrics'}{'JIRA_OPEN_PERCENT'} = sprintf( 
 	"%.0f", 100 * (scalar @open) / (scalar @{$search->{'issues'}}) 
 	);
-    $ret{'metrics'}{'JIRA_LATE'} = scalar @late;
-    $ret{'metrics'}{'JIRA_OPEN_UNASSIGNED'} = scalar @unassigned_open;
-    $ret{'metrics'}{'JIRA_AUTHORS_1W'} = scalar keys %authors_1w;
-    $ret{'metrics'}{'JIRA_AUTHORS_1M'} = scalar keys %authors_1m;
-    $ret{'metrics'}{'JIRA_AUTHORS_1Y'} = scalar keys %authors_1y;
+    $ret{'metrics'}{'JIRA_LATE'} = scalar @late || 0;
+    $ret{'metrics'}{'JIRA_OPEN_UNASSIGNED'} = scalar @unassigned_open || 0;
+    $ret{'metrics'}{'JIRA_AUTHORS_1W'} = scalar keys %authors_1w || 0;
+    $ret{'metrics'}{'JIRA_AUTHORS_1M'} = scalar keys %authors_1m || 0;
+    $ret{'metrics'}{'JIRA_AUTHORS_1Y'} = scalar keys %authors_1y || 0;
     $ret{'metrics'}{'JIRA_CREATED_1W'} = $jira_created_1w;
     $ret{'metrics'}{'JIRA_CREATED_1M'} = $jira_created_1m;
     $ret{'metrics'}{'JIRA_CREATED_1Y'} = $jira_created_1y;

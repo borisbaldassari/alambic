@@ -1,4 +1,18 @@
 #! perl -I../../lib/
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 
 use strict;
 use warnings;
@@ -14,30 +28,151 @@ isa_ok( $plugin, 'Alambic::Plugins::JiraIts' );
 
 note( "Checking the plugin parameters. ");
 my $conf = $plugin->get_conf();
-print "CONF IS " . Dumper($conf);
+
+ok(grep(m!jira_url!, keys %{$conf->{'params'}}), "Conf has params > jira_url");
+ok(grep(m!jira_user!, keys %{$conf->{'params'}}), "Conf has params > jira_user");
+ok(grep(m!jira_passwd!, keys %{$conf->{'params'}}), "Conf has params > jira_passwd");
+ok(grep(m!jira_project!, keys %{$conf->{'params'}}), "Conf has params > jira_project");
+
+ok(grep(m!info!,    @{$conf->{'ability'}}), "Conf has ability > info");
+ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
+ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
+ok(grep(m!recs!,    @{$conf->{'ability'}}), "Conf has ability > recs");
+ok(grep(m!figs!,    @{$conf->{'ability'}}), "Conf has ability > figs");
+ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
+ok(grep(m!users!,   @{$conf->{'ability'}}), "Conf has ability > users");
+
+ok(
+  grep(m!JIRA_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > JIRA_URL"
+    );
+
+ok(grep(m!import_jira.json!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > import_jira.json");
+ok(grep(m!jira_evol.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > jira_evol.csv");
+ok(grep(m!jira_issues.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > jira_issues.csv");
+ok(grep(m!jira_issues_late.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > jira_issues_late.csv");
+ok(grep(m!jira_issues_open.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > jira_issues_open.csv");
+ok(grep(m!jira_issues_open_unassigned.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > jira_issues_open_unassigned.csv");
+
+
+ok(grep(m!JIRA_VOL!, keys %{$conf->{'provides_metrics'}}),
+   "Conf has provides_metrics > JIRA_VOL");
+ok(grep(m!JIRA_AUTHORS!, keys %{$conf->{'provides_metrics'}}),
+   "Conf has provides_metrics > JIRA_AUTHORS");
+ok(grep(m!JIRA_AUTHORS_1M!, keys %{$conf->{'provides_metrics'}}),
+   "Conf has provides_metrics > JIRA_AUTHORS_1M");
+ok(grep(m!JIRA_AUTHORS_1W!, keys %{$conf->{'provides_metrics'}}),
+   "Conf has provides_metrics > JIRA_AUTHORS_1W");
+ok(grep(m!JIRA_AUTHORS_1Y!, keys %{$conf->{'provides_metrics'}}),
+   "Conf has provides_metrics > JIRA_AUTHORS_1Y");
+ok(grep(m!JIRA_CREATED_1W!, keys %{$conf->{'provides_metrics'}}),
+   "Conf has provides_metrics > JIRA_CREATED_1W");
+ok(grep(m!JIRA_UPDATED_1W!, keys %{$conf->{'provides_metrics'}}),
+   "Conf has provides_metrics > JIRA_UPDATED_1W");
+ok(grep(m!JIRA_LATE!, keys %{$conf->{'provides_metrics'}}),
+   "Conf has provides_metrics > JIRA_LATE");
+
+ok(grep(m!jira_summary.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > jira_summary.html");
 
 note( "Executing the plugin with AL project. ");
-my $ret = $plugin->run_plugin("tools.cdt", { 'jira_url' => 'https://castalia.atlassian.net', 'jira_user' => 'alambic', 'jira_passwd' => 'password' } );
-print "RET IS " . Dumper($ret);
-is( $ret->{'metrics'}{'ITS_TRACKERS'}, 2, "Number of trackers is 2." ) or diag explain $ret;
-is( scalar grep( /ITS_CLOSED/, keys %{$ret->{'metrics'}} ), 4, "There should be 4 ITS_CLOSED_*." ) or diag explain $ret;
-is( scalar grep( /ITS_CLOSERS/, keys %{$ret->{'metrics'}} ), 4, "There should be 4 ITS_CLOSERS_*." ) or diag explain $ret;
-is( scalar grep( /ITS_DIFF_/, keys %{$ret->{'metrics'}} ), 6, "There should be 6 ITS_DIFF_*.") or diag explain $ret;
-is( scalar grep( /ITS_PERCENTAGE/, keys %{$ret->{'metrics'}} ), 6, "There should be 6 ITS_PERCENTAGE_*." ) or diag explain $ret;
-ok( exists($ret->{'metrics'}{'ITS_CHANGED'}), "There should be a metric called ITS_CHANGED." ) or diag explain $ret;
-ok( exists($ret->{'metrics'}{'ITS_CHANGERS'}), "There should be a metric called ITS_CHANGERS." ) or diag explain $ret;
-ok( exists($ret->{'metrics'}{'ITS_OPENED'}), "There should be a metric called ITS_OPENED." ) or diag explain $ret;
-ok( exists($ret->{'metrics'}{'ITS_OPENERS'}), "There should be a metric called ITS_OPENERS." ) or diag explain $ret;
+my $ret = $plugin->run_plugin(
+    "tools.cdt", 
+    { 
+	'jira_url' => 'https://castalia.atlassian.net', 
+	'jira_user' => 'alambic', 
+	'jira_passwd' => 'alambic123',
+        'jira_project' => 'AL',
+    } );
+
+ok(grep(m!\[Plugins::JiraIts\] Retrieving information from \[http!, @{$ret->{'log'}}),
+   "Ret has log > Retrieve info.");
+ok(grep(m!\[Plugins::JiraIts\] Writing user events file!, @{$ret->{'log'}}),
+   "Ret has log > Writing user events file.");
+ok( grep(/^\[Tools::R\] Exec \[Rsc.*jira_its.Rmd/, 
+	 @{$ret->{'log'}}) == 1, 
+    "Checking if log contains jira_its.Rmd R code exec.") or diag explain $ret;
+ok( grep(/^\[Tools::R\] Exec \[Rsc.*jira_evol_authors.rmd/, 
+	 @{$ret->{'log'}}) == 1, 
+    "Checking if log contains jira_evol_authors.rmd R code exec.") or diag explain $ret;
+ok( grep(/^\[Tools::R\] Exec \[Rsc.*jira_evol_created.rmd/, 
+	 @{$ret->{'log'}}) == 1, 
+    "Checking if log contains jira_evol_created.rmd R code exec.") or diag explain $ret;
+ok( grep(/^\[Tools::R\] Exec \[Rsc.*jira_summary.rmd/, 
+	 @{$ret->{'log'}}) == 1, 
+    "Checking if log contains jira_summary.rmd R code exec.") or diag explain $ret;
+
+is( $ret->{'metrics'}{'JIRA_VOL'}, 8, "JIRA_VOL is 8." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_OPEN'}, 7, "JIRA_OPEN is 7." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_OPEN_PERCENT'}, 88, "JIRA_OPEN_PERCENT is 88." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_OPEN_UNASSIGNED'}, 3, "JIRA_OPEN_UNASSIGNED is 3." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_CREATED_1M'}, 1, "JIRA_CREATED_1M is 1." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_CREATED_1Y'}, 8, "JIRA_CREATED_1Y is 8." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_CREATED_1W'}, 1, "JIRA_CREATED_1W is 1." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_UPDATED_1M'}, 1, "JIRA_UPDATED_1M is 1." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_UPDATED_1W'}, 1, "JIRA_UPDATED_1W is 1." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_UPDATED_1Y'}, 8, "JIRA_UPDATED_1Y is 8." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_AUTHORS_1W'}, 1, "JIRA_AUTHORS_1W is 1." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_AUTHORS_1M'}, 1, "JIRA_AUTHORS_1M is 1." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_AUTHORS_1Y'}, 2, "JIRA_AUTHORS_1Y is 2." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_AUTHORS'}, 2, "JIRA_AUTHORS is 2." ) or diag explain $ret;
+is( $ret->{'metrics'}{'JIRA_LATE'}, 1, "JIRA_LATE is 1." ) or diag explain $ret;
+
+
+ok( scalar(@{$ret->{'recs'}}) == 1,
+    "Ret has 1 rec." );
+ok( $ret->{'recs'}[0]{'rid'} eq "JIRA_LATE_ISSUES",
+    "Ret has rec > JIRA_LATE_ISSUE." );
+
+ok( $ret->{'info'}{'JIRA_URL'} eq 'https://castalia.atlassian.net/projects/AL/',
+    "Ret has info JIRA_URL." );
+
 
 note( "Check that files have been created. ");
-ok( -e "projects/tools.cdt/input/tools.cdt_import_its.json", "Check that file import_its.json exists." );
-ok( -e "projects/tools.cdt/input/tools.cdt_import_its_evol.json", "Check that file import_its_evol.json exists." );
-ok( -e "projects/tools.cdt/output/its_evol_changed.html", "Check that file its_evol_changed.html exists." );
-ok( -e "projects/tools.cdt/output/eclipse_its.inc", "Check that file EclipseIts.inc exists." );
-ok( -e "projects/tools.cdt/output/its_evol_opened.html", "Check that file its_evol_opened.html exists." );
-ok( -e "projects/tools.cdt/output/its_evol_people.html", "Check that file its_evol_people.html exists." );
-ok( -e "projects/tools.cdt/output/its_evol_summary.html", "Check that file its_evol_summary.html exists." );
-ok( -e "projects/tools.cdt/output/tools.cdt_metrics_its.json", "Check that file tools.cdt_metrics_its.json exists." );
+ok( -e "projects/tools.cdt/input/tools.cdt_import_jira.json", 
+    "Check that file import_jira.json exists." );
 
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_evol.csv", 
+    "Check that file jira_evol.csv exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_issues.csv", 
+    "Check that file jira_issues.csv exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_issues_late.csv", 
+    "Check that file jira_issues_late.csv exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_issues_open.csv", 
+    "Check that file jira_issues_open.csv exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_issues_open_unassigned.csv", 
+    "Check that file jira_issues_open_unassigned.csv exists." );
 
-done_testing(19);
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_summary.html", 
+    "Check that file jira_summary.html exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_its.inc", 
+    "Check that file jira_its.inc exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_metrics_jira.csv", 
+    "Check that file metrics_jira.csv exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_metrics_jira.json", 
+    "Check that file metrics_jira.json exists." );
+
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_evol_authors.html", 
+    "Check that file jira_evol_authors.html exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_evol_authors.svg", 
+    "Check that file jira_evol_authors.svg exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_evol_authors.png", 
+    "Check that file jira_evol_authors.png exists." );
+
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_evol_created.html", 
+    "Check that file jira_evol_created.html exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_evol_created.svg", 
+    "Check that file jira_evol_created.svg exists." );
+ok( -e "projects/tools.cdt/output/tools.cdt_jira_evol_created.png", 
+    "Check that file jira_evol_created.png exists." );
+
+done_testing();
+
+exit;
+
