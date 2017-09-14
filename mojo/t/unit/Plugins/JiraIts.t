@@ -89,6 +89,7 @@ my $ret = $plugin->run_plugin(
 	'jira_user' => 'alambic', 
 	'jira_passwd' => 'alambic123',
         'jira_project' => 'AL',
+	'jira_open_states' => 'To Do',
     } );
 
 ok(grep(m!\[Plugins::JiraIts\] Retrieving information from \[http!, @{$ret->{'log'}}),
