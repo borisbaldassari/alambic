@@ -186,6 +186,8 @@ sub startup {
   my $r_projects = $r->get('/projects')->to(controller => 'dashboard');
   $r_projects->get('/#id')->to(action => 'display_summary');
   $r_projects->get('/#id/#page')->to(action => 'display_project');
+  $r_projects->get('/#id/history/#page')
+    ->to(action => 'display_history_all');
   $r_projects->get('/#id/history/#build/#page')
     ->to(action => 'display_history');
   $r_projects->get('/#id/#plugin/#page')->to(action => 'display_plugins');

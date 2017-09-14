@@ -19,10 +19,9 @@ if ($@) {
 
 # Enable redirects (used e.g. for login)
 $t->ua->max_redirects(5);
-print "# 1 \n";
 
 # Check that we have the right home page.
-$a
+my $a
   = $t->get_ok('/')->status_is(200)
   ->content_like(
   qr!<h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>!i,
@@ -43,7 +42,6 @@ $a
   'Main page contains documentation panel.')
   ->content_like(qr!Administration tools</a>!i,
   'Main page contains administration tools panel.');
-print "# 1 \n";
 
 
 # Login

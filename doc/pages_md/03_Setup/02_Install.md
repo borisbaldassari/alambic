@@ -4,7 +4,7 @@ navi_name: Install
 
 # Installing Alambic
 
-<span class="label label-warning">Warning</span> &nbsp; Check first that the [prerequisites](/Setup/Prerequisites) have been installed.
+<span class="label label-warning">Warning</span> &nbsp; Check first that the [prerequisites](/Setup/Prerequisites.html) have been installed.
 
 -----
 
@@ -82,4 +82,4 @@ The application can be started by issuing the following command:
     boris@castalia mojo $ hypnotoad bin/alambic
     boris@castalia mojo $ bin/alambic minion worker
 
-The first command (`hypnotoad`) starts the UI engine, and the second command (`minion worker`) starts a pool of workers to take care of jobs (i.e. project runs). See the page about [Running Alambic](/Setup/Run) for more details.
+The first command (`hypnotoad`) starts the UI engine, and the second command (`minion worker`) starts a pool of workers to take care of jobs (i.e. project runs). See the page about [Running Alambic](/Setup/Run.html) for more details.

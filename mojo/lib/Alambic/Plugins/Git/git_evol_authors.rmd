@@ -1,0 +1,46 @@
+---
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and Thales Group.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+output: html_document
+---
+
+```{r init, echo=FALSE, message=FALSE}
+library(dygraphs)
+library(xts)
+library(ggplot2)
+library(ggthemes)
+library(plotly)
+
+#project.id <- 'modeling.sirius'
+file.evol = paste("", project.id, "_git_commits.csv", sep="")
+evol <- read.csv(file=file.evol, header=T)
+evol$commits_sum <- cumsum(evol$commits)
+#evol$date_ext <- paste(evol$date, "-01", sep="")
+evol.xts <- xts(x = evol[,c('commits_sum', 'commits', 'authors')], order.by=as.POSIXct(as.character(evol[,c('date')]), format="%Y-%m-%d"))
+
+gg <- ggplot(data=evol.xts, aes( x = index(evol.xts), y = authors)) + geom_line()+
+  theme_minimal()
+
+# Save image to png and svg
+ggsave(file=paste(project.id, "_git_evol_authors.svg", sep=''), plot=gg, width=10, height=8)
+ggsave(file=paste(project.id, "_git_evol_authors.png", sep=''), plot=gg, width=10, height=8)
+
+p <-dygraph(evol.xts[,c('authors')],
+        main = paste('Commits for ', project.id, sep=''),
+        width = 800, height = 250 ) %>%
+      dyRangeSelector()
+p
+```
+

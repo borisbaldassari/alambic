@@ -20,7 +20,7 @@ use warnings;
 use Alambic::Model::RepoFS;
 use Git::Repository;
 use Date::Parse;
-
+use File::Path qw(make_path);
 use Data::Dumper;
 
 # Main configuration hash for the tool
@@ -29,9 +29,9 @@ my %conf = (
   "name"    => "Git Tool",
   "desc"    => "Provides Git commands and features.",
   "ability" => [
-
-#	"install",
-    "methods", "project"
+#   "install",
+    "methods", 
+#   "project"
   ],
   "type"             => "tool",
   "params"           => {"path_git" => "The absolute path to the git binary.",},
@@ -47,14 +47,28 @@ my %conf = (
 
 my $git;
 my $git_url;
+my $project_id;
 my $repofs;
 
-# Constructor to build  anew Git object.
+# Constructor to build a new Git object.
+#
+# Params:
+#   - $project_id: the id of the project analysed.
+#   - $git_url: the url of the git repository to clone
 sub new {
   my $class = shift;
-  $git_url = shift;
+  $project_id = shift;
+  $git_url    = shift;
 
-  $git    = Git::Repository->new();
+  my $dir = &_get_src_path($class, $project_id);
+
+  # Create projects input dir if it does not exist
+  if (not &_is_a_git_directory($dir)) {
+    Git::Repository->run( clone => $git_url => $dir );
+  }
+
+  # Now create Git object with dir.
+  $git = Git::Repository->new( work_tree => $dir );
   $repofs = Alambic::Model::RepoFS->new();
 
   return bless {}, $class;
@@ -133,54 +147,54 @@ sub test() {
 # Function to get a git repository locally, not even knowing if
 # it's already there or not. If it exists, it will be pulld.
 # If it doesn't, it will be cloned.
-#
-# Params:
-#   - $project_id: the id of the project analysed.
-#   - $url: the url of the git repository to clone
-sub git_clone_or_pull($$$) {
-  my ($self, $project_id, $url) = @_;
+sub git_clone_or_pull() {
+  my ($self) = @_;
 
   my @log;
 
-  $url = $git_url if (not defined($url));
   my $dir = &_get_src_path($self, $project_id);
 
-  if (-e $dir) {
+  if ( &_is_a_git_directory($dir) ) {
 
     # start from an existing working copy
     eval {
-      my $r = Git::Repository->new(work_tree => $dir);
       push(@log,
-        "[Tools::Git] Directory [$dir] exists. Version is " . $r->version);
-      @log = (@log, @{&git_pull($self, $project_id)});
+        "[Tools::Git] Directory [$dir] exists. Version is " . $git->version);
+      @log = (@log, @{&git_pull($self)});
     };
   }
   else {
     # repository doesn't exist, clone src from git server.
     push(@log, "[Tools::Git] Directory [$dir] doesn't exist. Cloning.");
-    @log = (@log, @{&git_clone($self, $project_id, $url)});
+    @log = (@log, @{&git_clone($self)});
   }
 
   return \@log;
 }
 
+# Utility to know if a directory is a git repo.
+sub _is_a_git_directory($) {
+    my ($dir) = @_;
+    
+    if (-e "$dir/.git/") {
+	return 1;
+    } else {
+	return 0;
+    }
+}
+
 
 # Function to clone a git repository locally. It assumes the repository
 # doesn't already exists (fails otherwise).
-#
-# Params:
-#   - $project_id: the id of the project analysed.
-#   - $url: the url of the git repository to clone
-#   - %params: a ref to hash of parameters/values for the execution.
-sub git_clone($$$) {
-  my ($self, $project_id, $url, $params) = @_;
+sub git_clone() {
+  my ($self) = @_;
 
   my @log;
 
   my $dir = &_get_src_path($self, $project_id);
 
-  push(@log, "[Tools::Git] Cloning [$url] to [$dir].");
-  Git::Repository->run(clone => $url, $dir);
+  push(@log, "[Tools::Git] Cloning [$git_url] to [$dir].");
+  Git::Repository->run(clone => $git_url, $dir);
 
   return \@log;
 }
@@ -188,18 +202,16 @@ sub git_clone($$$) {
 
 # Function to get the log from a git repository. It assumes the repository
 # already exists (fails otherwise).
-#
-# Params:
-#   - $project_id: the id of the project analysed.
-sub git_log($) {
-  my ($self, $project_id) = @_;
+sub git_log() {
+  my ($self) = @_;
 
   my @log;
 
   my $output = $git->run(('log'));
-  $repofs->write_input($project_id, "tool_git_log.txt", $output);
+
+  $repofs->write_input($project_id, "import_git.txt", $output);
   push(@log,
-    "[Tools::Git] Getting Git log for [$project_id] in [${project_id}_tool_git_log.txt]."
+    "[Tools::Git] Getting Git log for [$project_id] in [${project_id}_import_git.txt]."
   );
 
   return \@log;
@@ -208,6 +220,7 @@ sub git_log($) {
 # Returns an array of commits. It assumes the repository
 # already exists (fails otherwise).
 sub git_commits() {
+  my ($self) = @_;
 
   my @log = $git->run(
     ('log', '--format=%H %at %s%n author [%aE]%n committer [%cE]', '--stat'));
@@ -264,9 +277,11 @@ sub _parse_git_log {
 #
 # Params:
 sub git_pull() {
+  my ($self) = @_;
 
   my @log;
   my @output = $git->run(('pull'));
+
   if (scalar @output == 1 && $output[0] =~ m!Already up-to-date!) {
     push(@log, "[Tools::Git] Pulling from origin. Already up-to-date.");
   }
@@ -298,10 +313,16 @@ For the complete configuration see the user documentation on the web site: L<htt
 
 =head2 C<new()>
 
-    my $tool = Alambic::Tools::Git->new();
+    my $tool = Alambic::Tools::Git->new(
+    'test.project', 
+    'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
     my $version = $tool->version();
 
-Build a new Git object.
+Build a new Git object. 
+
+
+If the git directory exists, the plugin will use it. Otherwise a clone will be 
+automatically executed at object startup.
 
 =head2 C<get_conf()>
 
@@ -347,8 +368,7 @@ Self-test method for the tool. Returns a log as an array reference.
 
 =head2 C<git_clone_or_pull()>
 
-    $log = $tool->git_clone_or_pull('test.project',
-      'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
+    $log = $tool->git_clone_or_pull();
 
 Function to get a git repository locally, not even knowing if 
 it's already there or not. If it exists, it will be pulld.

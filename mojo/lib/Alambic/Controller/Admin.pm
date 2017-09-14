@@ -254,7 +254,7 @@ sub models_import {
 
   }
   else {
-    print "DBG something went wrong.\n";
+    print "[ERROR] Something went wrong: bad type for model import.\n";
   }
 
   $self->app->al->get_models()->init_models(
@@ -418,7 +418,6 @@ sub projects_runall {
   my $user = $self->session('session_user');
 
   my $projects = $self->app->al->get_projects_list(1);
-  print Dumper($projects);
 
   # Start minion job
   for my $p (keys %$projects) {
@@ -441,7 +440,6 @@ sub jobs_purge {
   my $user = $self->session('session_user');
 
   foreach my $job (@{$self->minion->backend->list_jobs()}) {
-    print Dumper($job);
 
     # Remove minion job if state == failed or finished.
     if ($job->{'state'} =~ m!^failed$! or $job->{'state'} =~ m!^finished$!) {

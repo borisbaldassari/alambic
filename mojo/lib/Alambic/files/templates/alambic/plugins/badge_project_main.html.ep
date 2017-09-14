@@ -1,0 +1,17 @@
+% layout 'default_empty';
+
+% my $project = app->al->get_project($project_id);
+
+                <div class="panel panel-default">
+		          <div class="panel-heading">Alambic
+                    <span class="pull-right"><a href="/projects/<%= $project_id %>.html" target="_blank"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
+                    <span class="pull-right"><a href="/projects/<%= $project_id %>/qm.html" target="_blank"><i class="fa fa-sitemap fa-lg"></i></a>
+                  </div>
+		    <ul class="list-group">
+                      <li class="list-group-item"><b>ID</b> &nbsp; <%= $project_id %></li>
+                      <li class="list-group-item"><b>Name</b> &nbsp; <%== $project->name %></li>
+                      <li class="list-group-item"><b>Description</b> &nbsp; <%== $project->desc %></li>
+        	    </ul>
+                </div>
+
+

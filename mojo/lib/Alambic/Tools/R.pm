@@ -126,6 +126,7 @@ sub knit_rmarkdown_inc($$$$) {
   my ($self, $plugin_id, $project_id, $r_in, $r_out, $params) = @_;
 
   my @log;
+  $params = $params || {};
 
   # Set vars.
   my $r_dir    = "lib/Alambic/Plugins/$plugin_id/";
@@ -147,7 +148,8 @@ sub knit_rmarkdown_inc($$$$) {
     my $r_cmd = "Rscript -e \"library(rmarkdown); ";
     $r_cmd .= "project.id <- '${project_id}'; plugin.id <- '$plugin_id'; ";
     foreach my $key (keys %{$params}) {
-      $r_cmd .= $key . " <- '" . $params->{$key} . "'; ";
+      $r_cmd .= $key . " <- '" . ($params->{$key}  || '') . "'; ";
+#      $r_cmd .= $key . " <- '" . $params->{$key} . "'; ";
     }
     $r_cmd
       .= "rmarkdown::render('${r_in}', output_format='html_fragment', output_file='$r_md_out')\"";
@@ -208,6 +210,7 @@ sub knit_rmarkdown_pdf($$$$) {
   my ($self, $plugin_id, $project_id, $r_file, $params) = @_;
 
   my @log;
+  $params = $params || {};
 
   # Set vars.
   my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
@@ -229,7 +232,7 @@ sub knit_rmarkdown_pdf($$$$) {
     my $r_cmd = "Rscript -e \"library(rmarkdown); ";
     $r_cmd .= "project.id <- '${project_id}'; plugin.id <- '$plugin_id'; ";
     foreach my $key (keys %{$params}) {
-      $r_cmd .= $key . " <- " . $params->{$key};
+      $r_cmd .= $key . " <- '" . ($params->{$key}  || '') . "'; ";
     }
     $r_cmd .= "rmarkdown::render('${r_md}', output_file='$r_md_out')\"";
 
@@ -280,6 +283,7 @@ sub knit_rmarkdown_html($$$$) {
   my ($self, $plugin_id, $project_id, $r_in, $r_out, $params) = @_;
 
   my @log;
+  $params = $params || {};
 
   # Set vars.
   my $r_dir    = "lib/Alambic/Plugins/$plugin_id/";
@@ -301,7 +305,7 @@ sub knit_rmarkdown_html($$$$) {
     my $r_cmd = "Rscript -e \"library(rmarkdown); ";
     $r_cmd .= "project.id <- '${project_id}'; plugin.id <- '$plugin_id'; ";
     foreach my $key (keys %{$params}) {
-      $r_cmd .= $key . " <- '" . $params->{$key} . "'; ";
+      $r_cmd .= $key . " <- '" . ($params->{$key}  || '') . "'; ";
     }
     $r_cmd
       .= "rmarkdown::render('${r_in}', output_format='html_document', output_file='$r_md_out')\"";
@@ -361,6 +365,7 @@ sub knit_rmarkdown_images($$$$$) {
   my ($self, $plugin_id, $project_id, $r_in, $r_out, $params) = @_;
 
   my @log;
+  $params = $params || {};
 
   # Set vars.
   my $r_dir = "lib/Alambic/Plugins/$plugin_id/";
@@ -375,7 +380,8 @@ sub knit_rmarkdown_images($$$$$) {
     # Passing arguments: 2 first args are project.id and plugin.id
     $r_cmd .= $project_id . " " . $plugin_id;
     foreach my $key (sort keys %{$params}) {
-      $r_cmd .= " " . $params->{$key};
+      $r_cmd .= $key . " <- '" . ($params->{$key}  || '') . "'; ";
+#      $r_cmd .= " " . $params->{$key};
     }
 
     push(@log, "[Tools::R] Exec [$r_cmd].");
@@ -407,11 +413,9 @@ B<Alambic::Tools::R> - A plugin to interact with the R engine.
 
 =head1 DESCRIPTION
 
-B<Alambic::Tools::R> provides an interface to the R statistical engine.
-It specifically provides methods to compute R script files and knit R markdown 
-documents.
-
-TODO Find the R project web page + rstudio.
+B<Alambic::Tools::R> provides an interface to the L<R statistical engine|https://r-project.org>.
+It specifically provides methods to compute R script files and knit L<R markdown 
+documents|http://rmarkdown.rstudio.com/>.
 
 For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Tools/R.html>.
 
@@ -503,7 +507,7 @@ already present in the directory.  Returns the log of the transformation.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/Tools/R.html>, L<https://www.r-project.org>,
+L<https://alambic.io/Plugins/Tools/R.html>, L<https://www.r-project.org>, 
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 

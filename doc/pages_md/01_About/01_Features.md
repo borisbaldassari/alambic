@@ -37,7 +37,7 @@ navi_name: Features
     <img class="img-responsive" src="/images/so_questions.png" alt="StackOverflow questions" />
   </div>
   <div class="col-lg-6">
-    <p>A <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs).  Examples of plugins ready to use include <a href="/Plugins/PmdAnalysis.html">PMD Results Analysis</a>, <a href="/Plugins/StackOverflow.html">StackOverflow questions</a> and <a href="/Plugins/EclipsePmi.html">PMI Checks for Eclipse projects</a>.</p>
+    <p>A <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs).  Examples of plugins ready to use include <a href="/Plugins/Pre/PmdAnalysis.html">PMD Results Analysis</a>, <a href="/Plugins/Pre/StackOverflow.html">StackOverflow questions</a> and <a href="/Plugins/Pre/EclipsePmi.html">PMI Checks for Eclipse projects</a>.</p>
 
     <p>Plugins provide nice <b>visualisation</b>, adapted to the context of software engineering. Visualisation can easily be exported and reused on external web sites (html snippets, png, jpeg, svg), in third-party data munging tools (e.g. Tableau, Plotly, Excel) or in dashboards (e.g. liferay, plotly).</p>
   </div>

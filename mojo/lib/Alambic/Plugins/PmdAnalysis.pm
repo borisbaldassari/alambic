@@ -35,7 +35,7 @@ my %conf = (
   "desc" => [
     "This plugin summarises the output of a PMD run, provides hints to better understand and user it, and defines a pragmatic strategy to fix violations in an efficient way. It also provides guidance on how to configure PMD and select rules for a better, more focused analysis.",
     "Please note that this plugin only reads the XML configuration and output files of a PMD run. One has to execute it on a regular basis &em; ideally in a continuous integration job &em; and provide the XML files URLs to the plugin.",
-    'Up-to-date documentation for the plugin is located on <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/PMD%20Analysis">the project wiki</a>.',
+    'Up-to-date documentation for the plugin is located on <a href="http://alambic.io/Plugins/pre/PmdAnalysis.html">the project wiki</a>.',
   ],
   "type"    => "pre",
   "ability" => ['data', 'recs', 'figs', 'viz'],

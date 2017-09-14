@@ -1,4 +1,18 @@
 #! perl -I../../lib/
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 
 use strict;
 use warnings;
@@ -13,7 +27,7 @@ my $plugins = Alambic::Model::Plugins->new();
 isa_ok($plugins, 'Alambic::Model::Plugins');
 
 my $list = $plugins->get_names_all();
-my $pv   = 5;
+my $pv   = 7;
 ok(scalar(keys %{$list}) == $pv,
   "get_names_all there is a total of $pv plugins detected.")
   or explain %$list;
@@ -24,7 +38,7 @@ ok(scalar(keys %{$list}) == $pv, "get_conf_all has $pv entries.")
 
 # Check plugins types
 $list = $plugins->get_list_plugins_pre();
-$pv   = 4;
+$pv   = 5;
 ok(scalar(@{$list}) == $pv, "get_list_plugins_pre List pre has $pv entries.")
   or explain Dumper @$list;
 
@@ -35,7 +49,7 @@ ok(scalar(@{$list}) == $pv,
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_post();
-$pv   = 1;
+$pv   = 2;
 ok(scalar(@{$list}) == $pv, "get_list_plugins_post List post has $pv entries.")
   or explain Dumper @$list;
 
@@ -47,32 +61,32 @@ ok(scalar(@{$list}) == $pv,
 
 # Check plugins ability
 $list = $plugins->get_list_plugins_data();
-$pv   = 2;
+$pv   = 4;
 ok(scalar @{$list} == $pv, "List data has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_metrics();
-$pv   = 3;
+$pv   = 4;
 ok(scalar @{$list} == $pv, "List metrics has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_figs();
-$pv   = 3;
+$pv   = 4;
 ok(scalar(@{$list}) == $pv, "List figs has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_info();
-$pv   = 1;
+$pv   = 2;
 ok(scalar(@{$list}) == $pv, "List info has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_recs();
-$pv   = 4;
+$pv   = 5;
 ok(scalar(@{$list}) == $pv, "List recs has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_viz();
-$pv   = 5;
+$pv   = 6;
 ok(scalar(@{$list}) == $pv, "List viz has $pv entries.")
   or explain Dumper @$list;
 

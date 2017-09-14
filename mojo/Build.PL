@@ -1,7 +1,8 @@
+use 5.10.1;
+
 use strict;
 use warnings;
 
-use 5.10.1;
 use Module::Build::Mojolicious clean_install => 1;
 
 

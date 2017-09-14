@@ -1,45 +1,39 @@
-title: Git
+title: Git Tool
 navi_name: Git
 
 
 # Git
 
-This plugin retrieves information from a [Hudson CI](http://eclipse.org/hudson) continuous integration engine, displays a summary of its status, and provides recommendations to better use CI.
+This Tool plugin provides an interface to Git features finely integrated within Alambic.
+
+A number of functions are made available for common operations like:
+
+* cloning or pulling from a Git reository,
+* Get the repository's log,
+* Utility functions to get a list of commits.
+
+Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Tools/Git.pm.html) in the [perldoc](http://alambic.io/perldoc/index.html) section.
 
 -----
 
 # Basic information
 
-* **ID**: Hudson
-* **Abilities**: metrics, figs, recs, viz
+* **ID**: git
+* **Name**: Git Tool
+* **Abilities**: methods.
 * **Description**:
-  Retrieves information from a Hudson continuous integration engine, displays a summary of its status, and provides recommendations to better use CI.
+  Provides Git commands and features.
 * **Parameters**:
-    * hudson_url The base URL for the Hudson instance. In other words, the URL one would point to to get the main page of the project's Hudson, with the list of jobs.
+  * `path_git` The absolute path of the git executable if it cannot be found in the `$PATH`.
 
 -----
 
 # Provides
 
-## Metrics
+## Methods
 
-JOBS, JOBS_GREEN, JOBS_YELLOW, JOBS_RED, JOBS_FAILED_1W
-
-## Figures
-
-* hudson_pie.html A pie chart of the status of jobs.
-* hudson_hist.html A history of jobs statuses over past days/weeks. The history range is defined by the remaining jobs, i.e. if jobs are deleted after some time history is lost.
-
-## Recommendations
-
-CI_FAILING_JOBS
-
-## Visualisation
-
-Hudson CI
-
------
-
-# Screenshot
-
-![hudson_ci.png](/images/hudson_ci.png)
+* `git_clone` Clone a project git repository locally.
+* `git_pull` Pull from a remote repository.
+* `git_clone_or_pull` Update a local git repository. If it exists it will be pulled, otherwise it will be cloned.
+* `git_log` Get the log from a local git repository.
+* `git_commits` Get a list of commits from a local git repository.
