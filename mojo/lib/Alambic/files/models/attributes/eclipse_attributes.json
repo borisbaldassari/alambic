@@ -1,0 +1,71 @@
+  {
+    "name": "Alambic Attributes",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Eclipse Maturity",
+        "mnemo": "QM_QUALITY",
+        "desc": [
+            "The overall Maturity of the project.", 
+            "In the context of embedded software, Maturity is usually associated with some kind of reliability (most bugs have been already found) and functionality of code, sustainability of the project (will it still deliver fixes and improvements in a few years), and process predictability. Maturity in the PolarSys context has been further described <a href=\"https://polarsys.org/wiki/MaturityDefinition\">on the wiki</a>, and is actually precisely defined by the decomposition of this quality model."
+        ]
+      },
+      {
+        "name": "Ecosystem",
+        "mnemo": "QM_ECOSYSTEM",
+        "desc" : [
+            "The sustainability of the ecosystem evolving around the project.",
+            "Sustainability is a key point for long term support. If there is a lot of activity, if people can get fast and complete answers, if many people from different companies contribute to the project, then it will have more chance to still be there in a few years, and to continue providing fixes and improvements.",
+            "Ecosystem requirements have been discussed on the mailing list and during meetings, and have been further described on the <a href=\"https://polarsys.org/wiki/EclipseQualityRequirements#Identified_Requirements_for_Community\">Polarsys wiki</a>."
+        ]
+      },
+      {
+        "name": "Process",
+        "mnemo": "QM_PROCESS",
+        "desc" : [
+            "The maturity of the process used to run the project.",
+            "A sound process helps people to do things right and ease collaborative work. If the process is documented, has predictable output, helps enforcing good development practices, etc. then new comers will easily find the information to collaborate, test or change code, or participate in the community. A good process also helps producing a good product [< href=\"/documentation/references.html#Ing2003\">Ing2003</a>] -- although it is agreed that the process is not enough by itself.",
+            "Process requirements have been discussed on the mailing list and during meetings, and have been further described on the <a href=\"https://polarsys.org/wiki/EclipseQualityRequirements#Identified_Requirements_for_Process\">Polarsys wiki</a>. Some may also recognise CMMi Key Process Areas among the attributes."
+        ]
+      },
+      {
+        "name": "Activity",
+        "mnemo": "QM_ACTIVITY",
+        "desc" : [
+            "The activity of the project's ecosystem, as measured on the mailing lists and configuration management system.",
+            "An active project will provide a lot of information on the mailing lists, so when an user encounters an issue she will quickly find the information she needs, and has more chances to get answers if she asks. Fixes and improvements are added regularly."
+        ]
+      },
+      {
+        "name": "Diversity",
+        "mnemo": "QM_DIVERSITY",
+        "desc" : [
+            "The diversity of the project's ecosystem, as measured on the mailing lists and configuration management system.", 
+            "If many different actors from different companies are involved in the project, then it improves its sustainability (by eliminating a single point of failure) and adaptability to different situations. Having developers and users with different contexts and perspectives on the project helps widening its scope and provide a more generic support."
+        ]
+      },
+      {
+        "name": "Support",
+        "mnemo": "QM_SUPPORT",
+        "desc" : [
+            "The amount of knowledge provided when someone asks for support.",
+            "Having many answers on a single question helps better understand how the product works in different conditions, and also provides help for people looking for a similar information later on, since mailing lists are archived and public."
+        ]
+      },
+      {
+        "name": "Configuration Management",
+        "mnemo": "QM_SCM",
+        "desc" : [
+            "The maturity of the project regarding access and usage of the configuration management system.",
+            "Configuration management is an essential part of the collaboration in the project. Access to the source should be documented and facilitated for new comers to easily come in."
+        ]
+      },
+      {
+        "name": "Build and Release Management",
+        "mnemo": "QM_REL_ENG",
+        "desc" : [
+            "Does the project apply best practices regarding Build and Release management?"
+        ]
+      }
+    ]
+  }

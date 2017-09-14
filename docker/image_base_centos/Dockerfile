@@ -36,7 +36,7 @@ RUN chown alambic /home/alambic/alambic_install_perl_deps.sh
 # bash chmod +x /home/alambic/alambic_install_perl_deps.sh \ &&
 
 # Install pandoc
-RUN yum -y install pandoc; yum clean all
+RUN yum -y install pandoc texlive-titling; yum clean all
 
 # Switch to user alambic to install Perl
 USER alambic

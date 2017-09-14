@@ -7,7 +7,7 @@
         "mnemo": "SO_QUESTIONS_VOL_5Y",
         "desc": [
             "The number of questions related to the project's tag posted on Stack Overflow during the last 5 years.",
-            "Having many questions posted about the project indicates a strong interest from the community. The list of questions associated to the tag can be browsed on the [Stack Overflow web site](https://stackoverflow.com/questions/tagged/java)."
+            "Having many questions posted about the project indicates a strong interest from the community. The list of questions associated to the tag can be browsed on the <a href=\"https://stackoverflow.com/questions/tagged/java\">Stack Overflow web site</a>."
         ],
         "scale": [5,50,400,800]
       },
@@ -16,7 +16,7 @@
         "mnemo": "SO_ANSWERS_VOL_5Y",
         "desc": [
             "The number of answers to questions related to the project's tag posted on Stack Overflow during the last 5 years.",
-            "Having many answers posted about the project indicates a strong interest from the community, and a good support. The list of questions and their answers associated to the tag can be browsed on the [Stack Overflow web site](https://stackoverflow.com/questions/tagged/java)."
+            "Having many answers posted about the project indicates a strong interest from the community, and a good support. The list of questions and their answers associated to the tag can be browsed on the <a href=\"https://stackoverflow.com/questions/tagged/java\">Stack Overflow web site</a>."
         ],
         "scale": [1,2,3,4]
       },
@@ -25,16 +25,25 @@
         "mnemo": "SO_ANSWER_RATE_5Y",
         "desc": [
             "The average number of answers per questions related to the project's tag on Stack Overflow during the last 5 years.",
-            "Having many answers posted about the project indicates a strong interest from the community, and a good support. The list of questions and their answers associated to the tag can be browsed on the [Stack Overflow web site](https://stackoverflow.com/questions/tagged/java)."
+            "Having many answers posted about the project indicates a strong interest from the community, and a good support. The list of questions and their answers associated to the tag can be browsed on the <a href=\"https://stackoverflow.com/questions/tagged/java\">Stack Overflow web site</a>."
         ],
         "scale": [1,2,4,5]
+      },
+      {
+        "name": "Stack Overflow Askers (5Y)",
+        "mnemo": "SO_ASKERS_5Y",
+        "desc": [
+            "The number of distinct people asking questions related to the project's tag posted on Stack Overflow during the last 5 years.",
+            "Having many people ask questions about the project indicates a strong interest from the community, and a good support. The list of questions and their answers associated to the tag can be browsed on the <a href=\"https://stackoverflow.com/questions/tagged/java\">Stack Overflow web site</a>."
+        ],
+        "scale": [1,3,5,10]
       },
       {
         "name": "Stack Overflow Votes (5Y)",
         "mnemo": "SO_VOTES_VOL_5Y",
         "desc": [
             "The total number of votes on questions related to the project's tag on Stack Overflow during the last 5 years.",
-            "Having many votes on questions about the project indicates a strong interest from the community. The list of questions and their answers associated to the tag can be browsed on the [Stack Overflow web site](https://stackoverflow.com/questions/tagged/java)."
+            "Having many votes on questions about the project indicates a strong interest from the community. The list of questions and their answers associated to the tag can be browsed on the <a href=\"https://stackoverflow.com/questions/tagged/java\">Stack Overflow web site</a>."
         ],
         "scale": [10,100,250,500]
       },
@@ -43,7 +52,7 @@
         "mnemo": "SO_VIEWS_VOL_5Y",
         "desc": [
             "The total number of views for questions related to the project's tag on Stack Overflow during the last 5 years.",
-            "Having many views on questions about the project indicates a strong interest from the community. The list of questions and their answers associated to the tag can be browsed on the [Stack Overflow web site](https://stackoverflow.com/questions/tagged/java)."
+            "Having many views on questions about the project indicates a strong interest from the community. The list of questions and their answers associated to the tag can be browsed on the <a href=\"https://stackoverflow.com/questions/tagged/java\">Stack Overflow web site</a>."
         ],
         "scale": [100,1000,2500,5000]
       }

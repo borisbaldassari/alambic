@@ -1,3 +1,17 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and Thales Group.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 package Alambic::Plugins::Git;
 
 use strict;
@@ -18,7 +32,7 @@ my %conf = (
   "id"   => "Git",
   "name" => "Git",
   "desc" => [
-    "Retrieves configuration management data from a git local repository. This plugin uses the Git Tool in Alambic.",
+    "Retrieves configuration management data and metrics from a git repository. This plugin uses the Git Tool in Alambic.",
     'See <a href="http://alambic.io/Plugins/Pre/Git">the project\'s wiki</a> for more information.',
   ],
   "type"    => "pre",
@@ -50,7 +64,10 @@ my %conf = (
     "SCM_COMMITTERS_1W" => "SCM_COMMITTERS_1W",
     "SCM_COMMITTERS_1M" => "SCM_COMMITTERS_1M",
     "SCM_COMMITTERS_1Y" => "SCM_COMMITTERS_1Y",
-    "SCM_FILES"         => "SCM_FILES",
+    "SCM_MOD_LINES"         => "SCM_MOD_LINES",
+    "SCM_MOD_LINES_1W"         => "SCM_MOD_LINES_1W",
+    "SCM_MOD_LINES_1M"         => "SCM_MOD_LINES_1M",
+    "SCM_MOD_LINES_1Y"         => "SCM_MOD_LINES_1Y",
   },
   "provides_figs" => {
     'git_summary.html'      => "HTML export of Git main metrics.",
@@ -130,6 +147,12 @@ sub _compute_data($$) {
   my ($project_id, $repofs) = @_;
 
   my %metrics;
+  # Initialise some zero values for metrics
+  $metrics{'SCM_COMMITS'} = 0;
+  $metrics{'SCM_COMMITS_1W'} = 0;
+  $metrics{'SCM_COMMITS_1M'} = 0;
+  $metrics{'SCM_COMMITS_1Y'} = 0;
+
   my @recs;
   my @log;
 
@@ -144,8 +167,10 @@ sub _compute_data($$) {
 
   $metrics{'SCM_COMMITS'} = scalar @commits;
 
-  my (%authors, %authors_1w, %authors_1m, %authors_1y, %users);
+  my (%authors, %authors_1w, %authors_1m, %authors_1y);
+  my %users;
   my (%committers, %committers_1w, %committers_1m, %committers_1y);
+  my ($mod_lines, $mod_lines_1w, $mod_lines_1m, $mod_lines_1y) = (0,0,0,0);
   my %timeline_c;
   my %timeline_a;
   push(@log,
@@ -171,6 +196,15 @@ sub _compute_data($$) {
     if (defined($c->{'cmtr'})) {
       $committers{$c->{'cmtr'}}++;
     }
+    if (defined($c->{'add'})) {
+      $mod_lines += $c->{'add'};
+    }
+    if (defined($c->{'del'})) {
+      $mod_lines += $c->{'del'};
+    }
+    if (defined($c->{'mod'})) {
+      $mod_lines += $c->{'mod'};
+    }
 
     # Is the commit recent (<1W)?
     if ($date > $t_1w->epoch) {
@@ -180,6 +214,15 @@ sub _compute_data($$) {
       }
       if (defined($c->{'cmtr'})) {
         $committers_1w{$c->{'cmtr'}}++;
+      }
+      if (defined($c->{'add'})) {
+	  $mod_lines_1w += $c->{'add'};
+      }
+      if (defined($c->{'del'})) {
+	  $mod_lines_1w += $c->{'del'};
+      }
+      if (defined($c->{'mod'})) {
+	  $mod_lines_1w += $c->{'mod'};
       }
     }
 
@@ -192,6 +235,15 @@ sub _compute_data($$) {
       if (defined($c->{'cmtr'})) {
         $committers_1m{$c->{'cmtr'}}++;
       }
+      if (defined($c->{'add'})) {
+	  $mod_lines_1m += $c->{'add'};
+      }
+      if (defined($c->{'del'})) {
+	  $mod_lines_1m += $c->{'del'};
+      }
+      if (defined($c->{'mod'})) {
+	  $mod_lines_1m += $c->{'mod'};
+      }
     }
 
     # Is the commit recent (<1Y)?
@@ -203,17 +255,30 @@ sub _compute_data($$) {
       if (defined($c->{'cmtr'})) {
         $committers_1y{$c->{'cmtr'}}++;
       }
+      if (defined($c->{'add'})) {
+	  $mod_lines_1y += $c->{'add'};
+      }
+      if (defined($c->{'del'})) {
+	  $mod_lines_1y += $c->{'del'};
+      }
+      if (defined($c->{'mod'})) {
+	  $mod_lines_1y += $c->{'mod'};
+      }
     }
   }
 
-  $metrics{'SCM_AUTHORS'}       = scalar keys %authors;
-  $metrics{'SCM_AUTHORS_1W'}    = scalar keys %authors_1w;
-  $metrics{'SCM_AUTHORS_1M'}    = scalar keys %authors_1m;
-  $metrics{'SCM_AUTHORS_1Y'}    = scalar keys %authors_1y;
+  $metrics{'SCM_AUTHORS'}       = scalar(keys %authors) || 0;
+  $metrics{'SCM_AUTHORS_1W'}    = scalar(keys %authors_1w) || 0;
+  $metrics{'SCM_AUTHORS_1M'}    = scalar(keys %authors_1m) || 0;
+  $metrics{'SCM_AUTHORS_1Y'}    = scalar(keys %authors_1y) || 0;
+  $metrics{'SCM_MOD_LINES'}       = $mod_lines;
+  $metrics{'SCM_MOD_LINES_1W'}    = $mod_lines_1w;
+  $metrics{'SCM_MOD_LINES_1M'}    = $mod_lines_1m;
+  $metrics{'SCM_MOD_LINES_1Y'}    = $mod_lines_1y;
   $metrics{'SCM_COMMITTERS'}    = scalar keys %committers;
-  $metrics{'SCM_COMMITTERS_1W'} = scalar keys %committers_1w;
-  $metrics{'SCM_COMMITTERS_1M'} = scalar keys %committers_1m;
-  $metrics{'SCM_COMMITTERS_1Y'} = scalar keys %committers_1y;
+  $metrics{'SCM_COMMITTERS_1W'} = scalar(keys %committers_1w) || 0;
+  $metrics{'SCM_COMMITTERS_1M'} = scalar(keys %committers_1m) || 0;
+  $metrics{'SCM_COMMITTERS_1Y'} = scalar(keys %committers_1y) || 0;
 
   # Set user information for profile
   push(@log, "[Plugins::Git] Writing user events file.");
@@ -280,7 +345,7 @@ sub _compute_data($$) {
 		     'severity' => 0,
 		     'src' => 'Git',
 		     'desc' => 'There have been only ' . $metrics{'SCM_COMMITS_1Y'}
-		     . ' commits during last year. The project is considered inactive.'
+		     . ' commits during last year. The project is considered low-activity.'
 	    }
 	  );
   } elsif ( ( $metrics{'SCM_COMMITS_1Y'} || 0 ) == 0 ) {
@@ -309,3 +374,35 @@ sub _compute_data($$) {
 
 
 1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Plugins::Git> - Retrieves configuration management data and metrics 
+from a git repository.
+
+=head1 DESCRIPTION
+
+B<Alambic::Plugins::Git> Retrieves configuration management data and metrics 
+from a git repository.
+
+Parameters: 
+
+=over
+
+=item * git_url The URL of the remote git repository.
+
+=back
+
+For the complete description of the plugin see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/Git.html>.
+
+=head1 SEE ALSO
+
+L<https://alambic.io/Plugins/Pre/Git.html>,
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+
+=cut

@@ -5,7 +5,7 @@ navi_name: Git
 
 This plugin retrieves information from a Git repository and runs a basic analysis on its log. It notably displays graphics about commits and authors.
 
-
+Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/Git.pm.html) in the [perldoc](/perldoc/index.html) section.
 
 -----
 
@@ -15,7 +15,6 @@ This plugin retrieves information from a Git repository and runs a basic analysi
 * **Abilities**: metrics, info, data, recs, viz
 * **Description**:
   Retrieves configuration management data from a git local repository. This plugin uses the Git Tool in Alambic.
-  See the [project's wiki](http://alambic.io/Plugins/Pre/Git.html) for more information.
 * **Parameters**:
   * `git_url` The URL of the Git repository to analyse. It can be either a https or ssh URL, e.g. https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git.
 
@@ -25,28 +24,28 @@ This plugin retrieves information from a Git repository and runs a basic analysi
 
 ## Downloads
 
-* import_git.txt: The original git log file as retrieved from git (TXT).
-* git_commits.csv: Evolution of number of commits and authors by day (CSV).
-* metrics_git.csv: Current metrics for the SCM Git plugin (CSV).
-* metrics_git.json: Current metrics for the SCM Git plugin (JSON).
+* `import_git.txt`: The original git log file as retrieved from git (TXT).
+* `git_commits.csv`: Evolution of number of commits and authors by day (CSV).
+* `metrics_git.csv`: Current metrics for the SCM Git plugin (CSV).
+* `metrics_git.json`: Current metrics for the SCM Git plugin (JSON).
 
 ## Figures
 
-* git_summary.html
+* `git_summary.html`
   HTML export of Git main metrics.
-* git_evol_summary.html
+* `git_evol_summary.html`
   HTML export of Git SCM evolution summary.
-* git_evol_authors.png
+* `git_evol_authors.png`
   PNG export of Git SCM authors evolution.
-* git_evol_authors.svg
+* `git_evol_authors.svg`
   SVG export of Git SCM authors evolution.
-* git_evol_authors.html
+* `git_evol_authors.html`
   HTML export of Git authors evolution.
-* git_evol_commits.png
+* `git_evol_commits.png`
   PNG export of Git SCM commits evolution.
-* git_evol_commits.svg
+* `git_evol_commits.svg`
   SVG export of Git SCM commits evolution.
-* git_evol_commits.html
+* `git_evol_commits.html`
   HTML export of Git commits evolution.
 
 ## Information
@@ -101,4 +100,4 @@ This plugin retrieves information from a Git repository and runs a basic analysi
 
 # Screenshot
 
-![eclipse_git.png](/images/eclipse_git.png)
+![eclipse_git.png](/images/git_scm.png)

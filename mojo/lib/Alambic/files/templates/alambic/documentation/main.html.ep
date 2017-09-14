@@ -8,7 +8,7 @@
 
                 <h3>About Alambic</h3>
 
-                <p><a href="http://castalia.camp/alambic">Alambic</a> is an <b>open-source</b> framework and service for <b>software engineering data</b> analysis and management. Alambic main page is <a href="http://castalia.camp/alambic">castalia.camp/alambic</a> and its forge is hosted at <a href="https://bitbucket.org/BorisBaldassari/alambic">BitBucket</a>.</p>
+                <p><a href="http://alambic.io">Alambic</a> is an <b>open-source</b> framework and service for <b>software engineering data</b> analysis and management. Alambic main page is <a href="http://alambic.io">alambic.io</a> and its forge is hosted at <a href="https://bitbucket.org/BorisBaldassari/alambic">BitBucket</a>.</p>
                 <p>Basically Alambic uses plugins to <a href="/documentation/plugins.html">retrieve data from various tools and repositories</a> of the software development process, applies these values to a <a href="/documentation/quality_model.html">quality model</a> and generates a variety of graphs, numbers, and reports. Alambic also provides a <a href="/documentation/data.html">unified API</a> to retrieve this data.</p>
                 <p>The complete process is fully documented, from <a href="/documentation/attributes.html">quality attributes</a> to the <a href="/documentation/metrics.html">metrics</a> retrieved. Data sources may include mailing lists, configuration management, issue tracking system, source code, and more. See the full list of data sources in the <a href="/documentation/plugins.html">Data sources section</a> of the documentation.</p>
 
@@ -24,7 +24,7 @@
                 <ul>
                   <li><b>Alambic helps you organise and understand your data</b> by building a <b>quality model</b> to quickly catch up with the things that matter to you. The quality model can be entirely customised, and almost any type of data source can be added through plugins.</li>
                   <li><b>Alambic helps you share your data</b> by providing ready-to-use datasets, plots that can be exported to external web sites, and online tools to play with data. The process, metrics and quality attributes are self-documented.</li>
-                  <li><b>Alambic can be easily extended</b>: a <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs).  Examples of plugins ready to use include <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/PMD%20Analysis">PMD Results Analysis</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/StackOverflow">StackOverflow questions</a> and <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/PMI%20Checks">PMI Checks for Eclipse projects</a>.</li>
+                  <li><b>Alambic can be easily extended</b>: a <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs).  Examples of plugins ready to use include <a href="http://alambic.io/Plugins/Pre/PmdAnalysis.html">PMD Results Analysis</a>, <a href="http://alambic.io/Plugins/Pre/StackOverflow.html">StackOverflow questions</a> and <a href="http://alambic.io/Plugins/Pre/EclipsePmi.html">PMI Checks for Eclipse projects</a>.</li>
                 </ul>
 
                 <br />
@@ -74,7 +74,7 @@
 
                   <div class="row">
                     <div class="col-lg-4 text-center">
-                      <a href="http://castalia.camp/alambic"><i class="fa fa-home fa-2x"></i><br />Project Home</a>
+                      <a href="http://alambic.io"><i class="fa fa-home fa-2x"></i><br />Project Home</a>
                     </div>
                     <div class="col-lg-4 text-center">
                       <a href="https://bitbucket.org/BorisBaldassari/alambic">
@@ -92,7 +92,7 @@
                       <i class="fa fa-git fa-2x"></i><br />Source</a>
                   </div>
                   <div class="col-lg-4 text-center">
-                    <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki">
+                    <a href="http://alambic.io">
                     <i class="fa fa-question-circle fa-2x"></i><br />Documentation</a>
                   </div>
                 </div>

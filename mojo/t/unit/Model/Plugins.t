@@ -27,7 +27,7 @@ my $plugins = Alambic::Model::Plugins->new();
 isa_ok($plugins, 'Alambic::Model::Plugins');
 
 my $list = $plugins->get_names_all();
-my $pv   = 7;
+my $pv   = 8;
 ok(scalar(keys %{$list}) == $pv,
   "get_names_all there is a total of $pv plugins detected.")
   or explain %$list;
@@ -49,7 +49,7 @@ ok(scalar(@{$list}) == $pv,
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_post();
-$pv   = 1;
+$pv   = 2;
 ok(scalar(@{$list}) == $pv, "get_list_plugins_post List post has $pv entries.")
   or explain Dumper @$list;
 
@@ -61,7 +61,7 @@ ok(scalar(@{$list}) == $pv,
 
 # Check plugins ability
 $list = $plugins->get_list_plugins_data();
-$pv   = 4;
+$pv   = 5;
 ok(scalar @{$list} == $pv, "List data has $pv entries.")
   or explain Dumper @$list;
 
@@ -81,7 +81,7 @@ ok(scalar(@{$list}) == $pv, "List info has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_recs();
-$pv   = 5;
+$pv   = 6;
 ok(scalar(@{$list}) == $pv, "List recs has $pv entries.")
   or explain Dumper @$list;
 

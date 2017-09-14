@@ -4,8 +4,8 @@
 
                 <div class="panel panel-default">
 		          <div class="panel-heading">Downloads
-                    <span class="pull-right"><a href="/projects/<%= $project_id %>.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
-                    <span class="pull-right"><a href="/projects/<%= $project_id %>/qm.html"><i class="fa fa-sitemap fa-lg"></i></a>
+                    <span class="pull-right"><a href="/projects/<%= $project_id %>.html" target="_blank"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
+                    <span class="pull-right"><a href="/projects/<%= $project_id %>/qm.html" target="_blank"><i class="fa fa-sitemap fa-lg"></i></a>
                   </div>
                   <table class="table table-striped">
 		    <tr><td><a href="/projects/<%= $project_id %>/info.html" target="_blank">Information</a> <span class="pull-right"><span class="badge"><%= scalar keys %{( $run->{'info'} || {} )} %></span> &nbsp; <a href="/projects/<%= $project_id %>/info.html" target="_blank"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/info.json" target="_blank"><i class="fa fa-download fa-lg"></i></a></span></td></tr>

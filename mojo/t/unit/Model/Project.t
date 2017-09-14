@@ -30,13 +30,13 @@ my $metrics = {
     'mnemo' => "PMI_ITS_INFO",
     "name"  => "",
     "desc"  => ["Desc"],
-    "scale" => [1, 2, 3, 4]
+    "scale" => [2, 3, 4,5]
   },
   'PMI_SCM_INFO' => {
     "name"  => "SCM information",
     "mnemo" => "PMI_SCM_INFO",
     "desc" => ["Is the source_repo info correctly filled in the PMI records? "],
-    "scale" => [1, 2, 3, 4]
+    "scale" => [0,1,1,2]
   },
 };
 
@@ -63,7 +63,7 @@ my $plugins = {
     "name" => "Eclipse PMI",
     "desc" => [
       "Eclipse PMI Retrieves meta data about the project from the Eclipse PMI infrastructure.",
-      'See <a href="https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/EclipsePmi">the project\'s wiki</a> for more information.',
+      'See <a href="http://alambic.io/Plugins/Pre/EclipsePmi.html">the project\'s web site</a> for more information.',
     ],
     "type"    => "pre",
     "ability" => ["metrics", "info", 'data', "recs", "viz"],
@@ -183,6 +183,12 @@ ok(exists($ret->{'PMI_ITS_INFO'}),
 ok(exists($ret->{'PMI_SCM_INFO'}),
   "There should be a metric called PMI_SCM_INFO.")
   or diag explain $ret;
+ok(exists($ret->{'PMI_DOC_INFO'}),
+  "There should be a metric called PMI_DOC_INFO.")
+  or diag explain $ret;
+ok(exists($ret->{'PMI_ACCESS_INFO'}),
+  "There should be a metric called PMI_ACCESS_INFO.")
+  or diag explain $ret;
 
 #ok( exists($ret->{'ITS_OPENED'}), "There should be a metric called ITS_OPENED." ) or diag explain $ret;
 #ok( exists($ret->{'ITS_OPENERS'}), "There should be a metric called ITS_OPENERS." ) or diag explain $ret;
@@ -198,6 +204,14 @@ ok(
 ok(
   exists($ret->{'metrics'}{'PMI_SCM_INFO'}),
   "PMI_ITS_INFO metric exists in run after plugins."
+) or diag explain $ret;
+ok(
+  exists($ret->{'metrics'}{'PMI_DOC_INFO'}),
+  "PMI_DOC_INFO metric exists in run after plugins."
+) or diag explain $ret;
+ok(
+  exists($ret->{'metrics'}{'PMI_ACCESS_INFO'}),
+  "PMI_ACCESS_INFO metric exists in run after plugins."
 ) or diag explain $ret;
 ok($ret->{'recs'}[0]{'rid'} =~ m!PMI_EMPTY_TITLE!,
   "recs[0] is PMI_EMPTY_TITLE.")
@@ -248,7 +262,7 @@ ok(
 ) or diag explain $ret;
 ok(exists($ret->{'attrs'}{'ATTR1'}), "After qm run attr1 is in ret.")
   or diag explain $ret;
-ok($ret->{'attrs'}{'ATTR1'} =~ m!^3.0$!, "ATTR1 attribute value is '3.0'.")
+ok($ret->{'attrs'}{'ATTR1'} =~ m!^5.0$!, "ATTR1 attribute value is '5.0'.")
   or diag explain $ret;
 ok(
   exists($ret->{'inds'}{'PMI_ITS_INFO'}),
@@ -258,13 +272,13 @@ ok($ret->{'inds'}{'PMI_ITS_INFO'} == 5, "PMI_ITS_INFO indicator value is 5.")
   or diag explain $ret;
 ok(
   exists($ret->{'inds'}{'PMI_SCM_INFO'}),
-  "After qm run inds its_closers is in ret."
+  "After qm run inds pm_its_info is in ret."
 ) or diag explain $ret;
-ok($ret->{'inds'}{'PMI_SCM_INFO'} == 1, "PMI_SCM_INFO indicator value is 1.")
+ok($ret->{'inds'}{'PMI_SCM_INFO'} == 5, "PMI_SCM_INFO indicator value is 5.")
   or diag explain $ret;
 
 $ret = $project->recs();
-print "RECS " . Dumper($ret);
+#print "RECS " . Dumper($ret);
 
 note("Run project.");
 
@@ -273,4 +287,4 @@ note("Run project.");
 #print "RUN PROJ " . Dumper($ret); exit;
 #$ret = $project->get_qm(); print "GET QM " . Dumper($ret);
 
-done_testing(30);
+done_testing();

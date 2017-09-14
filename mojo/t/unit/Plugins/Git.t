@@ -31,12 +31,12 @@ note("Checking the plugin parameters. ");
 my $conf = $plugin->get_conf();
 
 ok(grep(m!info!,    @{$conf->{'ability'}}), "Conf has ability > info");
-ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has not ability > metrics");
-ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has not ability > data");
-ok(grep(m!recs!,    @{$conf->{'ability'}}), "Conf has not ability > recs");
-ok(grep(m!figs!,    @{$conf->{'ability'}}), "Conf has not ability > figs");
+ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
+ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
+ok(grep(m!recs!,    @{$conf->{'ability'}}), "Conf has ability > recs");
+ok(grep(m!figs!,    @{$conf->{'ability'}}), "Conf has ability > figs");
 ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
-ok(grep(m!users!,   @{$conf->{'ability'}}), "Conf has not ability > users");
+ok(grep(m!users!,   @{$conf->{'ability'}}), "Conf has ability > users");
 
 ok(
   grep(m!GIT_URL!, @{$conf->{'provides_info'}}),
@@ -56,17 +56,8 @@ ok(grep(m!SCM_COMMITS!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > SCM_COMMITS");
 ok(grep(m!SCM_COMMITTERS!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > SCM_COMMITTERS");
-ok(grep(m!SCM_FILES!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > SCM_FILES");
-
-ok(grep(m!SCM_FILES!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > SCM_FILES");
-
-ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
-ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
-ok(grep(m!recs!,    @{$conf->{'ability'}}), "Conf has ability > recs");
-ok(grep(m!info!,    @{$conf->{'ability'}}), "Conf has ability > info");
-ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
+ok(grep(m!SCM_MOD_LINES!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > SCM_MOD_LINES");
 
 ok(grep(m!git_url!, keys %{$conf->{'params'}}), "Conf has params > git_url");
 
@@ -127,10 +118,16 @@ ok($ret->{'metrics'}{'SCM_COMMITS_1M'} =~ /\d+/, "Metrics has SCM_COMMITS_1M");
 ok($ret->{'metrics'}{'SCM_COMMITS_1W'} =~ /\d+/, "Metrics has SCM_COMMITS_1W");
 ok($ret->{'metrics'}{'SCM_COMMITS_1Y'} =~ /\d+/, "Metrics has SCM_COMMITS_1Y");
 
+ok($ret->{'metrics'}{'SCM_MOD_LINES'} =~ /\d+/,    "Metrics has SCM_MOD_LINES");
+ok($ret->{'metrics'}{'SCM_MOD_LINES'} > 1000,     "Metrics has SCM_MOD_LINES");
+ok($ret->{'metrics'}{'SCM_MOD_LINES_1M'} =~ /\d+/, "Metrics has SCM_MOD_LINES_1M");
+ok($ret->{'metrics'}{'SCM_MOD_LINES_1W'} =~ /\d+/, "Metrics has SCM_MOD_LINES_1W");
+ok($ret->{'metrics'}{'SCM_MOD_LINES_1Y'} =~ /\d+/, "Metrics has SCM_MOD_LINES_1Y");
+
 # Check that files have been created.
 note("Check that files have been created. ");
-ok(-e "projects/alambic.test/input/alambic.test_git_log.txt",
-  "Check that file git_log.txt exists.");
+ok(-e "projects/alambic.test/input/alambic.test_import_git.txt",
+  "Check that file import_git.txt exists.");
 ok(
   -e "projects/alambic.test/output/alambic.test_git_commits.csv",
   "Check that file alambic.test_git_commits.csv exists."

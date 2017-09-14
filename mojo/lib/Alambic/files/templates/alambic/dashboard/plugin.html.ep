@@ -68,7 +68,6 @@
 	    <hr />
 
 	    <h3 id="info">Information</h3>
-	      <%= dumper($run_info) %>
 
             <table class="table table-striped table-condensed table-hover">
               <tr>

@@ -1,0 +1,39 @@
+---
+output: html_document
+---
+
+```{r init, echo=FALSE, fig.height=3, message=FALSE, warning=FALSE}
+#project.id <- 'alambic'
+plugin.id <- 'JiraIts'
+file.metrics = paste("", project.id, "_jira.csv", sep="")
+
+metrics <- read.csv(file=file.metrics, header=T)
+```
+
+### <a name="quick-summary"></a>Quick Summary
+
+``r ncol(metrics)`` metrics have been retrieved from Jira:
+
+* Total number of issues ([JIRA_VOL](/documentation/metrics#JIRA_VOL)): ``r metrics[['JIRA_VOL']]``
+* Number of open issues ([JIRA_OPEN](/documentation/metrics#JIRA_OPEN)): ``r metrics[['JIRA_OPEN']]``
+* Percentage of open issues ([JIRA_OPEN_PERCENT](/documentation/metrics#JIRA_OPEN_PERCENT)): ``r metrics[['JIRA_OPEN_PERCENT']]``
+* Number of late issues ([JIRA_LATE](/documentation/metrics#JIRA_LATE)): ``r metrics[['JIRA_LATE']]``
+* Number of open unassigned issues ([JIRA_OPEN_UNASSIGNED](/documentation/metrics#JIRA_OPEN_UNASSIGNED)): ``r metrics[['JIRA_OPEN_UNASSIGNED']]``
+
+* Total number of authors ([JIRA_AUTHORS](/documentation/metrics#JIRA_AUTHORS)): ``r metrics[['JIRA_AUTHORS']]``
+* Number of authors during last week ([JIRA_AUTHORS_1W](/documentation/metrics#JIRA_AUTHORS_1W)): ``r metrics[['JIRA_AUTHORS_1W']]``
+* Number of authors during last month ([JIRA_AUTHORS_1M](/documentation/metrics#JIRA_AUTHORS_1M)): ``r metrics[['JIRA_AUTHORS_1M']]``
+* Number of authors during last year ([JIRA_AUTHORS_1Y](/documentation/metrics#JIRA_AUTHORS_1Y)): ``r metrics[['JIRA_AUTHORS_1Y']]``
+
+* Total number of created issues ([JIRA_CREATED](/documentation/metrics#JIRA_CREATED)): ``r metrics[['JIRA_CREATED']]``
+* Number of created issues during last week ([JIRA_CREATED_1W](/documentation/metrics#JIRA_CREATED_1W)): ``r metrics[['JIRA_CREATED_1W']]``
+* Number of created issues during last month ([JIRA_CREATED_1M](/documentation/metrics#JIRA_CREATED_1M)): ``r metrics[['JIRA_CREATED_1M']]``
+* Number of created issues during last year ([JIRA_CREATED_1Y](/documentation/metrics#JIRA_CREATED_1Y)): ``r metrics[['JIRA_CREATED_1Y']]``
+
+* Total number of updated issues ([JIRA_UPDATED](/documentation/metrics#JIRA_UPDATED)): ``r metrics[['JIRA_UPDATED']]``
+* Number of updated issues during last week ([JIRA_UPDATED_1W](/documentation/metrics#JIRA_UPDATED_1W)): ``r metrics[['JIRA_UPDATED_1W']]``
+* Number of updated issues during last month ([JIRA_UPDATED_1M](/documentation/metrics#JIRA_UPDATED_1M)): ``r metrics[['JIRA_UPDATED_1M']]``
+* Number of updated issues during last year ([JIRA_UPDATED_1Y](/documentation/metrics#JIRA_UPDATED_1Y)): ``r metrics[['JIRA_UPDATED_1Y']]``
+
+The Jira plugin analysis for project ``r project.id`` is available on the [Alambic dashboard](/projects/`r project.id`/JiraIts/jira_its.html).
+

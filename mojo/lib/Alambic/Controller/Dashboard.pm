@@ -50,7 +50,7 @@ sub display_project {
 
 }
 
-# Main page for project history.
+# Main page for project history (per-build).
 sub display_history {
   my $self = shift;
 
@@ -66,6 +66,59 @@ sub display_history {
   else {
     &_display_project_history_html($self, $project_id, $plugin_id, $build_id,
       $page_id);
+  }
+
+}
+
+# Main page for project history (all builds).
+sub display_history_all {
+  my $self = shift;
+
+  my $project_id = $self->param('id');
+  my $plugin_id  = $self->param('plugin');
+  my $page_id    = $self->param('page') || '';
+
+  my $runs = $self->app->al->get_project_all_runs($project_id);
+
+  # Filter data according to requested page.
+  if ($page_id =~ m!^attributes.json$!) {
+
+      my @attributes;
+      foreach my $r (@$runs) {
+	  my $a = {
+	      'id' => $r->{'id'},
+	      'run_time' => $r->{'run_time'},
+	      'run_delay' => $r->{'run_delay'},
+	      'attributes' => $r->{'attributes'},	      
+	      'attributes_conf' => $r->{'attributes_conf'},	      
+	  };
+	  push( @attributes, $a );
+      }
+
+      $self->render(json => \@attributes);
+
+  }
+  elsif ($page_id =~ m!^metrics.json$!) {
+
+      my @metrics;
+      foreach my $r (@$runs) {
+	  my $a = {
+	      'id' => $r->{'id'},
+	      'run_time' => $r->{'run_time'},
+	      'run_delay' => $r->{'run_delay'},
+	      'metrics' => $r->{'metrics'},	      
+	      'indicators' => $r->{'indicators'},	      
+	  };
+	  push( @metrics, $a );
+      }
+
+    $self->render(json => \@metrics);
+
+  }
+  else {
+
+    $self->reply->not_found;
+
   }
 
 }
@@ -105,8 +158,9 @@ sub display_plugins {
       $ret
         = 'projects/' . $project_id . '/output/' . $project_id . '_' . $page_id;
 
-# We can also build figures from html.ep templates.
-# If the static page doesn't exist, then try to render something in plugins/*.html.ep.
+      # We can also build figures from html.ep templates.
+      # If the static page doesn't exist, then try to render something in 
+      # plugins/*.html.ep.
       if (not -e $ret) {
         my $run = $self->app->al->get_project_last_run($project_id);
         $self->stash(project_id => $project_id, run => $run,);
@@ -118,9 +172,10 @@ sub display_plugins {
       }
       $ret = "../../../../" . $ret;
     }
-    elsif (grep(/$page_id/, keys %{$plugin_conf->{'provides_data'}})) {
+    else  {
 
-# If the page is a data, reply static file under 'projects/output' or 'projects/input'
+      # If the page is a data, reply static file under 'projects/output'
+      # or 'projects/input'
       my $file_out
         = 'projects/' . $project_id . '/output/' . $project_id . "_" . $page_id;
       my $file_in

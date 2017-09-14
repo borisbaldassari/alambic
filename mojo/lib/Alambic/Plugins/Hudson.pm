@@ -34,7 +34,7 @@ my %conf = (
   "name" => "Hudson CI",
   "desc" => [
     "Retrieves information from a Hudson continuous integration engine, displays a summary of its status, and provides recommendations to better use CI.",
-    "Check the documentation for this plugin on the project wiki: <a href=\"https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/Hudson\">https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/Hudson</a>."
+    "Check the documentation for this plugin on the project web site: <a href=\"http://alambic.io/Plugins/Pre/Hudson.html\">http://alambic.io/Plugins/Pre/Hudson.html</a>."
   ],
   "type"    => "pre",
   "ability" => ['metrics', 'viz', 'figs', 'recs'],
@@ -49,7 +49,8 @@ my %conf = (
     "CI_JOBS_YELLOW" => "CI_JOBS_YELLOW",
     "CI_JOBS_RED"    => "CI_JOBS_RED",
     "CI_JOBS_FAILED_1W" =>
-      "CI_JOBS_FAILED_1W",    # last build is failed for more than 1W old
+      "CI_JOBS_FAILED_1W",    # last build is failed for more than 1W
+    "CI_JOBS_GREEN_RATIO"  => "CI_JOBS_GREEN_RATIO",
   },
   "provides_data" => {},
   "provides_figs" => {
@@ -175,6 +176,8 @@ sub _compute_data($) {
       push(@recs, $rec);
     }
   }
+  my $total = $metrics{'CI_JOBS_GREEN'} + $metrics{'CI_JOBS_YELLOW'} + $metrics{'CI_JOBS_RED'};
+  $metrics{'CI_JOBS_GREEN_RATIO'} = int( 100 * $metrics{'CI_JOBS_GREEN'} / $total );
 
   # Prepare the Text::CSV module.
   my $csv

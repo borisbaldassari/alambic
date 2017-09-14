@@ -33,7 +33,7 @@ my %conf = (
   "desc" => [
     "Retrieves questions and answers related to a specific tag from the Stack Overflow question/answer web site.",
     "The analysed time range spans the last 5 years.",
-    "Check the documentation for this plugin on the project wiki: <a href=\"https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/StackOverflow\">https://bitbucket.org/BorisBaldassari/alambic/wiki/Plugins/3.x/StackOverflow</a>."
+    "Check the documentation for this plugin on the project web site: <a href=\"http://alambic.io/Plugins/Pre/StackOverflow.html\">http://alambic.io/Plugins/Pre/StackOverflow.html</a>."
   ],
   "type"    => "pre",
   "ability" => ['metrics', 'recs', 'viz', 'users'],

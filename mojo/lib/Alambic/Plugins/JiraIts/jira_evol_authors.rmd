@@ -1,0 +1,29 @@
+---
+output: html_document
+---
+
+```{r init, echo=FALSE, message=FALSE}
+library(dygraphs)
+library(xts)
+library(ggplot2)
+library(ggthemes)
+
+#project.id <- 'modeling.sirius'
+file.evol = paste("", project.id, "_jira_evol.csv", sep="")
+evol <- read.csv(file=file.evol, header=T)
+evol.xts <- xts(x = evol[,c('issues_created', 'authors')], order.by=as.POSIXct(as.character(evol[,c('date')]), format="%Y-%m-%d"))
+
+gg <- ggplot(data=evol.xts, aes( x = index(evol.xts), y = authors)) + geom_line()+
+  theme_minimal()
+
+# Save image to png and svg
+ggsave(file=paste(project.id, "_jira_evol_authors.svg", sep=''), plot=gg, width=10, height=8)
+ggsave(file=paste(project.id, "_jira_evol_authors.png", sep=''), plot=gg, width=10, height=8)
+
+p <-dygraph(evol.xts[,c('authors')],
+        main = paste('JIRA issues authors for ', project.id, sep=''),
+        width = 800, height = 250 ) %>%
+      dyRangeSelector()
+p
+```
+
