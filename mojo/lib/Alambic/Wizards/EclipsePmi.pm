@@ -87,16 +87,16 @@ sub run_wizard($) {
   }
   $project_pmi->{'pmi_url'} = $url;
 
-  my $name       = $project_pmi->{'title'};
-  my $desc       = $project_pmi->{'description'}->[0]->{'summary'};
-  my $project_ci = $project_pmi->{'build_url'}->[0]->{'url'};
+  my $name        = $project_pmi->{'title'};
+  my $desc        = $project_pmi->{'description'}->[0]->{'summary'};
+  my $project_ci  = $project_pmi->{'build_url'}->[0]->{'url'};
   my $project_git = $project_pmi->{'source_repo'}->[0]->{'url'};
 
   my $plugins_conf = {
-    "EclipsePmi" => {'project_pmi' => $project_id},
-    "Hudson"     => {'hudson_url'  => $project_ci},
-    "Git"     => {'git_url'  => $project_git},
-    "ProjectSummary"     => {},
+    "EclipsePmi"     => {'project_pmi' => $project_id},
+    "Hudson"         => {'hudson_url'  => $project_ci},
+    "Git"            => {'git_url'     => $project_git},
+    "ProjectSummary" => {},
   };
 
   my $project

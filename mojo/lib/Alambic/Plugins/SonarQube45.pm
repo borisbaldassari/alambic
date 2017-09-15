@@ -8,7 +8,7 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
-#   Thales 
+#   Thales
 #   Boris Baldassari - Castalia Solutions
 #
 #########################################################
@@ -55,8 +55,8 @@ my %conf = (
     "comment_lines_density"         => "SQ_COMR",
     "complexity"                    => "SQ_CPX",
     "file_complexity"               => "SQ_CPX_FILE_IDX",
-    "class_complexity"              => "SQ_CPX_CLASS_IDX", #TODO
-    "function_complexity"           => "SQ_CPX_FUNC_IDX",  # TODO
+    "class_complexity"              => "SQ_CPX_CLASS_IDX",              #TODO
+    "function_complexity"           => "SQ_CPX_FUNC_IDX",               # TODO
     "coverage"                      => "SQ_COVERAGE",
     "public_api"                    => "SQ_PUBLIC_API",
     "public_documented_api_density" => "SQ_PUBLIC_API_DOC_DENSITY",
@@ -112,17 +112,17 @@ my %conf = (
   },
   "provides_figs" => {
 
-      'sonarqube_violations_bar.svg' => "Repartition of violations severity (SVG)",
-      'sonarqube_violations_pie.html' =>
-	  "Pie chart of repartition of violations severity (HTML)",
-      'sonarqube_summary.html'    => "Summary of main SonarQube metrics (HTML)",
-      'sonarqube_violations.html' => "Summary of SonarQube violations (HTML)",
-	  
+    'sonarqube_violations_bar.svg' =>
+      "Repartition of violations severity (SVG)",
+    'sonarqube_violations_pie.html' =>
+      "Pie chart of repartition of violations severity (HTML)",
+    'sonarqube_summary.html'    => "Summary of main SonarQube metrics (HTML)",
+    'sonarqube_violations.html' => "Summary of SonarQube violations (HTML)",
+
 #      'sonarqube_coverage.html' => "Bar plot of the different coverage metrics of SonarQube",
   },
-  "provides_recs" => [
-  ],
-  "provides_viz" => {"sonarqube45.html" => "SonarQube",},
+  "provides_recs" => [],
+  "provides_viz"  => {"sonarqube45.html" => "SonarQube",},
 );
 
 
@@ -453,8 +453,6 @@ sub run_plugin($$) {
 
 
 1;
-
-
 
 
 =encoding utf8

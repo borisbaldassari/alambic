@@ -30,13 +30,13 @@ my $metrics = {
     'mnemo' => "PMI_ITS_INFO",
     "name"  => "",
     "desc"  => ["Desc"],
-    "scale" => [2, 3, 4,5]
+    "scale" => [2, 3, 4, 5]
   },
   'PMI_SCM_INFO' => {
     "name"  => "SCM information",
     "mnemo" => "PMI_SCM_INFO",
     "desc" => ["Is the source_repo info correctly filled in the PMI records? "],
-    "scale" => [0,1,1,2]
+    "scale" => [0, 1, 1, 2]
   },
 };
 
@@ -278,6 +278,7 @@ ok($ret->{'inds'}{'PMI_SCM_INFO'} == 5, "PMI_SCM_INFO indicator value is 5.")
   or diag explain $ret;
 
 $ret = $project->recs();
+
 #print "RECS " . Dumper($ret);
 
 note("Run project.");

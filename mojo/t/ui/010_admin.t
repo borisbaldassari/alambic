@@ -98,16 +98,15 @@ $t->get_ok('/admin/models/import?file=alambic_quality_model.json&type=qm')
   ->status_is(200, 'Import quality model definition is 200.')
   ->content_like(qr!File alambic_quality_model.json has been imported!i,
   'Import quality model definition is ok.')
-  ->content_like(qr!Quality model defined, with \[QM_QUALITY\] at its root.!i, 
-		 'Quality model is loaded in models.');
+  ->content_like(qr!Quality model defined, with \[QM_QUALITY\] at its root.!i,
+  'Quality model is loaded in models.');
 
 # Import metrics definition
 $t->get_ok('/admin/models/import?file=alambic_metrics_hudson.json&type=metrics')
   ->status_is(200, 'Import metrics definition is 200.')
   ->content_like(qr!File alambic_metrics_hudson.json has been imported!i,
   'Import metrics definition is ok.')
-  ->content_like(qr!6 metrics defined.!i, 
-		 'Metrics are loaded in models.');
+  ->content_like(qr!6 metrics defined.!i, 'Metrics are loaded in models.');
 
 # Import attributes definition
 $t->get_ok('/admin/models/import?file=alambic_attributes.json&type=attributes')

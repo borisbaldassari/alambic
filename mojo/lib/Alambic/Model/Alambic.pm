@@ -549,8 +549,8 @@ sub get_project_all_runs($$) {
 
   my $runs = $repodb->get_project_all_runs($project_id);
   for my $run (@$runs) {
-      my $rundata = $repodb->get_project_run($project_id, $run->{'id'});
-      push( @data, $rundata );
+    my $rundata = $repodb->get_project_run($project_id, $run->{'id'});
+    push(@data, $rundata);
   }
 
   return \@data;

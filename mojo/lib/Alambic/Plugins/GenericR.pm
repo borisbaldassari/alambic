@@ -29,21 +29,21 @@ my %conf = (
   "id"   => "GenericR",
   "name" => "Generic R plugin",
   "desc" => [
-      "The generic R plugin enables users to easily define their own R markdown files to automatically run analysis on projects.",
-      'See <a href="http://alambic.io/Plugins/Pre/GenericR">the project\'s wiki</a> for more information.',
+    "The generic R plugin enables users to easily define their own R markdown files to automatically run analysis on projects.",
+    'See <a href="http://alambic.io/Plugins/Pre/GenericR">the project\'s wiki</a> for more information.',
   ],
-  "type"             => "post",
-  "ability"          => ['data'],
-  "params"           => {},
-  "provides_cdata"   => [],
-  "provides_info"    => [],
-  "provides_data"    => {
-      "generic_r.pdf" => "The PDF document generated from the R markdown file.",
-    },
+  "type"           => "post",
+  "ability"        => ['data'],
+  "params"         => {},
+  "provides_cdata" => [],
+  "provides_info"  => [],
+  "provides_data"  => {
+    "generic_r.pdf" => "The PDF document generated from the R markdown file.",
+  },
   "provides_metrics" => {},
   "provides_figs"    => {},
-  "provides_recs" => [],
-  "provides_viz"  => {},
+  "provides_recs"    => [],
+  "provides_viz"     => {},
 );
 
 
@@ -74,8 +74,7 @@ sub run_post($$) {
   @log = (
     @log,
     @{
-      $r->knit_rmarkdown_pdf('GenericR', $project_id, 'generic_r.Rmd',
-        $params)
+      $r->knit_rmarkdown_pdf('GenericR', $project_id, 'generic_r.Rmd', $params)
     }
   );
 

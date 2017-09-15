@@ -83,34 +83,34 @@ sub display_history_all {
   # Filter data according to requested page.
   if ($page_id =~ m!^attributes.json$!) {
 
-      my @attributes;
-      foreach my $r (@$runs) {
-	  my $a = {
-	      'id' => $r->{'id'},
-	      'run_time' => $r->{'run_time'},
-	      'run_delay' => $r->{'run_delay'},
-	      'attributes' => $r->{'attributes'},	      
-	      'attributes_conf' => $r->{'attributes_conf'},	      
-	  };
-	  push( @attributes, $a );
-      }
+    my @attributes;
+    foreach my $r (@$runs) {
+      my $a = {
+        'id'              => $r->{'id'},
+        'run_time'        => $r->{'run_time'},
+        'run_delay'       => $r->{'run_delay'},
+        'attributes'      => $r->{'attributes'},
+        'attributes_conf' => $r->{'attributes_conf'},
+      };
+      push(@attributes, $a);
+    }
 
-      $self->render(json => \@attributes);
+    $self->render(json => \@attributes);
 
   }
   elsif ($page_id =~ m!^metrics.json$!) {
 
-      my @metrics;
-      foreach my $r (@$runs) {
-	  my $a = {
-	      'id' => $r->{'id'},
-	      'run_time' => $r->{'run_time'},
-	      'run_delay' => $r->{'run_delay'},
-	      'metrics' => $r->{'metrics'},	      
-	      'indicators' => $r->{'indicators'},	      
-	  };
-	  push( @metrics, $a );
-      }
+    my @metrics;
+    foreach my $r (@$runs) {
+      my $a = {
+        'id'         => $r->{'id'},
+        'run_time'   => $r->{'run_time'},
+        'run_delay'  => $r->{'run_delay'},
+        'metrics'    => $r->{'metrics'},
+        'indicators' => $r->{'indicators'},
+      };
+      push(@metrics, $a);
+    }
 
     $self->render(json => \@metrics);
 
@@ -159,7 +159,7 @@ sub display_plugins {
         = 'projects/' . $project_id . '/output/' . $project_id . '_' . $page_id;
 
       # We can also build figures from html.ep templates.
-      # If the static page doesn't exist, then try to render something in 
+      # If the static page doesn't exist, then try to render something in
       # plugins/*.html.ep.
       if (not -e $ret) {
         my $run = $self->app->al->get_project_last_run($project_id);
@@ -172,7 +172,7 @@ sub display_plugins {
       }
       $ret = "../../../../" . $ret;
     }
-    else  {
+    else {
 
       # If the page is a data, reply static file under 'projects/output'
       # or 'projects/input'

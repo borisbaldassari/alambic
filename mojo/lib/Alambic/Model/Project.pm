@@ -340,7 +340,7 @@ sub run_posts() {
   my ($self, $models) = @_;
 
   my @log;
-  
+
   my $conf = {'last_run' => $project_last_run, 'project' => $self,
     'models' => $models,};
 
@@ -351,6 +351,7 @@ sub run_posts() {
   my $ret;
   foreach my $plugin_id (@post_plugins) {
     my $ret_plugin = $plugins_module->run_post($project_id, $plugin_id, $conf);
+
     # Add retrieved values to the current project.
     foreach my $info (sort keys %{$ret_plugin->{'info'}}) {
       $info{$info} = $ret_plugin->{'info'}{$info};
@@ -419,7 +420,7 @@ sub run_project($) {
 
 
   # Create file with all metric definitions for project
-  my $csv = Text::CSV->new({binary => 1, eol => "\n"});
+  my $csv     = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_out = "Mnemo,Name,Description\n";
   my $metrics = $models->get_metrics();
   foreach my $metric (keys %$metrics) {
@@ -429,61 +430,65 @@ sub run_project($) {
     $csv->combine(@metrics);
     $csv_out .= $csv->string();
   }
+
   # Write csv file to disk.
   $repofs->write_output($project_id, "metrics_ref.csv", $csv_out);
 
-  
+
   # Create file with all attribute definitions for project
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
   $csv_out = "Mnemo,Name,Description\n";
   my $attrs = $models->get_attributes();
   foreach my $attr (keys %$attrs) {
     my $desc = join(' ', @{$attrs->{$attr}{'description'}});
-    my @attrs
-      = ($attrs->{$attr}{'mnemo'}, $attrs->{$attr}{'name'}, $desc,);
+    my @attrs = ($attrs->{$attr}{'mnemo'}, $attrs->{$attr}{'name'}, $desc,);
     $csv->combine(@attrs);
     $csv_out .= $csv->string();
   }
+
   # Write csv file to disk.
   $repofs->write_output($project_id, "attrs_ref.csv", $csv_out);
 
-  
+
   # Create a CSV file with all metric values
   $metrics = $self->metrics();
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
-  $csv->combine( ('Mnemo', 'Value') );
+  $csv->combine(('Mnemo', 'Value'));
   $csv_out = $csv->string();
   foreach my $metric (sort keys %$metrics) {
-      $csv->combine( ($metric, $metrics->{$metric}) );
-      $csv_out .= $csv->string();
+    $csv->combine(($metric, $metrics->{$metric}));
+    $csv_out .= $csv->string();
   }
+
   # Write csv file to disk.
   $repofs->write_output($project_id, "metrics.csv", $csv_out);
 
   # Create a CSV file with all indicators values
-  my $inds = $self->indicators(); 
+  my $inds = $self->indicators();
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
-  $csv->combine( ('Mnemo', 'Value') );
+  $csv->combine(('Mnemo', 'Value'));
   $csv_out = $csv->string();
   foreach my $ind (sort keys %$inds) {
-      $csv->combine( ($ind, $inds->{$ind}) );
-      $csv_out .= $csv->string();
+    $csv->combine(($ind, $inds->{$ind}));
+    $csv_out .= $csv->string();
   }
+
   # Write csv file to disk.
   $repofs->write_output($project_id, "indics.csv", $csv_out);
 
   # Create a CSV file with all attribute values
   my $attributes = $self->attributes();
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
-  $csv->combine( ('Mnemo', 'Value') );
+  $csv->combine(('Mnemo', 'Value'));
   $csv_out = $csv->string();
   foreach my $attribute (sort keys %$attributes) {
-      $csv->combine( ($attribute, $attributes->{$attribute}) );
-      $csv_out .= $csv->string();
-  }  
+    $csv->combine(($attribute, $attributes->{$attribute}));
+    $csv_out .= $csv->string();
+  }
+
   # Write csv file to disk.
   $repofs->write_output($project_id, "attributes.csv", $csv_out);
-  
+
 
   # Run post plugins
   my $post_data = $self->run_posts($models) || {};

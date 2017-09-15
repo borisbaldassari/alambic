@@ -46,7 +46,7 @@ my %conf = (
   "provides_data"  => {
     "import_git.txt" =>
       "The original git log file as retrieved from git (TXT).",
-    "metrics_git.csv" => "Current metrics for the SCM Git plugin (CSV).",
+    "metrics_git.csv"  => "Current metrics for the SCM Git plugin (CSV).",
     "metrics_git.json" => "Current metrics for the SCM Git plugin (JSON).",
     "git_commits.csv" =>
       "Evolution of number of commits and authors by day (CSV)."
@@ -64,10 +64,10 @@ my %conf = (
     "SCM_COMMITTERS_1W" => "SCM_COMMITTERS_1W",
     "SCM_COMMITTERS_1M" => "SCM_COMMITTERS_1M",
     "SCM_COMMITTERS_1Y" => "SCM_COMMITTERS_1Y",
-    "SCM_MOD_LINES"         => "SCM_MOD_LINES",
-    "SCM_MOD_LINES_1W"         => "SCM_MOD_LINES_1W",
-    "SCM_MOD_LINES_1M"         => "SCM_MOD_LINES_1M",
-    "SCM_MOD_LINES_1Y"         => "SCM_MOD_LINES_1Y",
+    "SCM_MOD_LINES"     => "SCM_MOD_LINES",
+    "SCM_MOD_LINES_1W"  => "SCM_MOD_LINES_1W",
+    "SCM_MOD_LINES_1M"  => "SCM_MOD_LINES_1M",
+    "SCM_MOD_LINES_1Y"  => "SCM_MOD_LINES_1Y",
   },
   "provides_figs" => {
     'git_summary.html'      => "HTML export of Git main metrics.",
@@ -79,7 +79,8 @@ my %conf = (
     'git_evol_commits.svg'  => "SVG export of Git SCM commits evolution.",
     'git_evol_commits.html' => "HTML export of Git commits evolution.",
   },
-  "provides_recs" => ["SCM_LOW_ACTIVITY", "SCM_ZERO_ACTIVITY","SCM_LOW_DIVERSITY",],
+  "provides_recs" =>
+    ["SCM_LOW_ACTIVITY", "SCM_ZERO_ACTIVITY", "SCM_LOW_DIVERSITY",],
   "provides_viz" => {"git_scm.html" => "Git SCM",},
 );
 
@@ -147,8 +148,9 @@ sub _compute_data($$) {
   my ($project_id, $repofs) = @_;
 
   my %metrics;
+
   # Initialise some zero values for metrics
-  $metrics{'SCM_COMMITS'} = 0;
+  $metrics{'SCM_COMMITS'}    = 0;
   $metrics{'SCM_COMMITS_1W'} = 0;
   $metrics{'SCM_COMMITS_1M'} = 0;
   $metrics{'SCM_COMMITS_1Y'} = 0;
@@ -170,7 +172,7 @@ sub _compute_data($$) {
   my (%authors, %authors_1w, %authors_1m, %authors_1y);
   my %users;
   my (%committers, %committers_1w, %committers_1m, %committers_1y);
-  my ($mod_lines, $mod_lines_1w, $mod_lines_1m, $mod_lines_1y) = (0,0,0,0);
+  my ($mod_lines, $mod_lines_1w, $mod_lines_1m, $mod_lines_1y) = (0, 0, 0, 0);
   my %timeline_c;
   my %timeline_a;
   push(@log,
@@ -216,13 +218,13 @@ sub _compute_data($$) {
         $committers_1w{$c->{'cmtr'}}++;
       }
       if (defined($c->{'add'})) {
-	  $mod_lines_1w += $c->{'add'};
+        $mod_lines_1w += $c->{'add'};
       }
       if (defined($c->{'del'})) {
-	  $mod_lines_1w += $c->{'del'};
+        $mod_lines_1w += $c->{'del'};
       }
       if (defined($c->{'mod'})) {
-	  $mod_lines_1w += $c->{'mod'};
+        $mod_lines_1w += $c->{'mod'};
       }
     }
 
@@ -236,13 +238,13 @@ sub _compute_data($$) {
         $committers_1m{$c->{'cmtr'}}++;
       }
       if (defined($c->{'add'})) {
-	  $mod_lines_1m += $c->{'add'};
+        $mod_lines_1m += $c->{'add'};
       }
       if (defined($c->{'del'})) {
-	  $mod_lines_1m += $c->{'del'};
+        $mod_lines_1m += $c->{'del'};
       }
       if (defined($c->{'mod'})) {
-	  $mod_lines_1m += $c->{'mod'};
+        $mod_lines_1m += $c->{'mod'};
       }
     }
 
@@ -256,25 +258,25 @@ sub _compute_data($$) {
         $committers_1y{$c->{'cmtr'}}++;
       }
       if (defined($c->{'add'})) {
-	  $mod_lines_1y += $c->{'add'};
+        $mod_lines_1y += $c->{'add'};
       }
       if (defined($c->{'del'})) {
-	  $mod_lines_1y += $c->{'del'};
+        $mod_lines_1y += $c->{'del'};
       }
       if (defined($c->{'mod'})) {
-	  $mod_lines_1y += $c->{'mod'};
+        $mod_lines_1y += $c->{'mod'};
       }
     }
   }
 
-  $metrics{'SCM_AUTHORS'}       = scalar(keys %authors) || 0;
-  $metrics{'SCM_AUTHORS_1W'}    = scalar(keys %authors_1w) || 0;
-  $metrics{'SCM_AUTHORS_1M'}    = scalar(keys %authors_1m) || 0;
-  $metrics{'SCM_AUTHORS_1Y'}    = scalar(keys %authors_1y) || 0;
-  $metrics{'SCM_MOD_LINES'}       = $mod_lines;
-  $metrics{'SCM_MOD_LINES_1W'}    = $mod_lines_1w;
-  $metrics{'SCM_MOD_LINES_1M'}    = $mod_lines_1m;
-  $metrics{'SCM_MOD_LINES_1Y'}    = $mod_lines_1y;
+  $metrics{'SCM_AUTHORS'}    = scalar(keys %authors)    || 0;
+  $metrics{'SCM_AUTHORS_1W'} = scalar(keys %authors_1w) || 0;
+  $metrics{'SCM_AUTHORS_1M'} = scalar(keys %authors_1m) || 0;
+  $metrics{'SCM_AUTHORS_1Y'} = scalar(keys %authors_1y) || 0;
+  $metrics{'SCM_MOD_LINES'}  = $mod_lines;
+  $metrics{'SCM_MOD_LINES_1W'}  = $mod_lines_1w;
+  $metrics{'SCM_MOD_LINES_1M'}  = $mod_lines_1m;
+  $metrics{'SCM_MOD_LINES_1Y'}  = $mod_lines_1y;
   $metrics{'SCM_COMMITTERS'}    = scalar keys %committers;
   $metrics{'SCM_COMMITTERS_1W'} = scalar(keys %committers_1w) || 0;
   $metrics{'SCM_COMMITTERS_1M'} = scalar(keys %committers_1m) || 0;
@@ -334,41 +336,53 @@ sub _compute_data($$) {
     @log, @{$r->knit_rmarkdown_html('Git', $project_id, 'git_evol_summary.rmd')}
   );
   @log
-      = (@log, @{$r->knit_rmarkdown_html('Git', $project_id, 'git_summary.rmd')});
-  
-  
+    = (@log, @{$r->knit_rmarkdown_html('Git', $project_id, 'git_summary.rmd')});
+
+
   # Execute checks and fill recs.
-  
+
   # If less than 12 commits during last year, consider the project inactive.
-  if ( ( $metrics{'SCM_COMMITS_1Y'} || 0 ) < 12 ) {
-      push( @recs, { 'rid' => 'SCM_LOW_ACTIVITY',
-		     'severity' => 0,
-		     'src' => 'Git',
-		     'desc' => 'There have been only ' . $metrics{'SCM_COMMITS_1Y'}
-		     . ' commits during last year. The project is considered low-activity.'
-	    }
-	  );
-  } elsif ( ( $metrics{'SCM_COMMITS_1Y'} || 0 ) == 0 ) {
-      push( @recs, { 'rid' => 'SCM_ZERO_ACTIVITY',
-		     'severity' => 0,
-		     'src' => 'Git',
-		     'desc' => 'There has been zero'
-			 . ' commits during last year. The project seems to be dormant.'
-	    }
-	  );
+  if (($metrics{'SCM_COMMITS_1Y'} || 0) < 12) {
+    push(
+      @recs,
+      {
+        'rid'      => 'SCM_LOW_ACTIVITY',
+        'severity' => 0,
+        'src'      => 'Git',
+        'desc'     => 'There have been only '
+          . $metrics{'SCM_COMMITS_1Y'}
+          . ' commits during last year. The project is considered low-activity.'
+      }
+    );
   }
-  
-  if ( ( $metrics{'SCM_AUTHORS_1Y'} || 0 ) < 2 ) {
-      push( @recs, { 'rid' => 'SCM_LOW_DIVERSITY',
-		     'severity' => 0,
-		     'src' => 'Git',
-		     'desc' => 'There have been only ' . $metrics{'SCM_AUTHORS_1Y'}
-		       . ' authors during last year. This is a low numbers for authors, and'
-		       . ' it represents a risk for the sustainability of the project.'
-	    }
-	  );
+  elsif (($metrics{'SCM_COMMITS_1Y'} || 0) == 0) {
+    push(
+      @recs,
+      {
+        'rid'      => 'SCM_ZERO_ACTIVITY',
+        'severity' => 0,
+        'src'      => 'Git',
+        'desc'     => 'There has been zero'
+          . ' commits during last year. The project seems to be dormant.'
+      }
+    );
   }
-  
+
+  if (($metrics{'SCM_AUTHORS_1Y'} || 0) < 2) {
+    push(
+      @recs,
+      {
+        'rid'      => 'SCM_LOW_DIVERSITY',
+        'severity' => 0,
+        'src'      => 'Git',
+        'desc'     => 'There have been only '
+          . $metrics{'SCM_AUTHORS_1Y'}
+          . ' authors during last year. This is a low numbers for authors, and'
+          . ' it represents a risk for the sustainability of the project.'
+      }
+    );
+  }
+
   return {"metrics" => \%metrics, "recs" => \@recs, "log" => \@log,};
 }
 

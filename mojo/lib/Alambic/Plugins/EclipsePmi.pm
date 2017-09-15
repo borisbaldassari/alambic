@@ -43,7 +43,7 @@ my %conf = (
   },
   "provides_cdata" => [],
   "provides_info"  => [
-    "PMI_MLS_DEV_URL",             "PMI_MLS_USR_URL",
+    "PMI_MLS_DEV_URL",         "PMI_MLS_USR_URL",
     "PMI_MAIN_URL",            "PMI_WIKI_URL",
     "PMI_BUGZILLA_CREATE_URL", "PMI_DOWNLOAD_URL",
     "PMI_SCM_URL",             "PMI_BUGZILLA_COMPONENT",
@@ -59,11 +59,11 @@ my %conf = (
     "pmi_checks.csv"  => "The list of PMI checks and their results (CSV).",
   },
   "provides_metrics" => {
-    "PMI_ITS_INFO" => "PMI_ITS_INFO",
-    "PMI_SCM_INFO" => "PMI_SCM_INFO",
-    "PMI_REL_VOL"  => "PMI_REL_VOL",
-    "PMI_DOC_INFO"  => "PMI_DOC_INFO",
-    "PMI_ACCESS_INFO"  => "PMI_ACCESS_INFO"
+    "PMI_ITS_INFO"    => "PMI_ITS_INFO",
+    "PMI_SCM_INFO"    => "PMI_SCM_INFO",
+    "PMI_REL_VOL"     => "PMI_REL_VOL",
+    "PMI_DOC_INFO"    => "PMI_DOC_INFO",
+    "PMI_ACCESS_INFO" => "PMI_ACCESS_INFO"
   },
   "provides_figs" => {},
   "provides_recs" => [
@@ -192,7 +192,7 @@ sub _compute_data($) {
   my @log;
   my $checks_ok;
   my $checks_nok;
-  my $pub_doc_info = 0;
+  my $pub_doc_info    = 0;
   my $pub_access_info = 0;
 
   push(@log, "[Plugins::EclipsePmi] Starting compute data for [$project_id].");
@@ -336,10 +336,10 @@ sub _compute_data($) {
   }
 
   # Check website_url info
-  if ( exists($raw_project->{'website_url'}[0]) ) {
-      $pub_doc_info++;
+  if (exists($raw_project->{'website_url'}[0])) {
+    $pub_doc_info++;
   }
-      
+
   # Test Web site
   $check = {};
   $check->{'results'} = [];
@@ -377,10 +377,10 @@ sub _compute_data($) {
   $ret_check->{'checks'}->{'website_url'} = $check;
 
   # Check wiki_url info
-  if ( exists($raw_project->{'wiki_url'}[0]) ) {
-      $pub_doc_info++;
+  if (exists($raw_project->{'wiki_url'}[0])) {
+    $pub_doc_info++;
   }
-      
+
   # Test Wiki
   $check = {};
   $check->{'results'} = [];
@@ -450,15 +450,15 @@ sub _compute_data($) {
   $ret_check->{'checks'}->{'bugzilla_query_url'} = $check;
 
   # Check download_url info
-  if ( exists($raw_project->{'download_url'}[0]) ) {
-      $pub_access_info++;
+  if (exists($raw_project->{'download_url'}[0])) {
+    $pub_access_info++;
   }
-      
+
   # Check downloads info
-  if ( exists($raw_project->{'downloads'}[0]) ) {
-      $pub_access_info++;
+  if (exists($raw_project->{'downloads'}[0])) {
+    $pub_access_info++;
   }
-      
+
   # Test Download url
   $check = {};
   $check->{'results'} = [];
@@ -496,10 +496,10 @@ sub _compute_data($) {
   $ret_check->{'checks'}->{'download_url'} = $check;
 
   # Check gettingstarted_url info
-  if ( exists($raw_project->{'gettingstarted_url'}[0]) ) {
-      $pub_doc_info++;
+  if (exists($raw_project->{'gettingstarted_url'}[0])) {
+    $pub_doc_info++;
   }
-      
+
   # Test Getting started url
   $check = {};
   $check->{'results'} = [];
@@ -541,20 +541,20 @@ sub _compute_data($) {
   $ret_check->{'checks'}->{'gettingstarted_url'} = $check;
 
   # Check build_doc info
-  if ( exists($raw_project->{'build_doc'}[0]) ) {
-      $pub_doc_info++;
+  if (exists($raw_project->{'build_doc'}[0])) {
+    $pub_doc_info++;
   }
-      
+
   # Check documentation info
-  if ( exists($raw_project->{'documentation'}[0]) ) {
-      $pub_doc_info++;
+  if (exists($raw_project->{'documentation'}[0])) {
+    $pub_doc_info++;
   }
-      
+
   # Check documentation_url info
-  if ( exists($raw_project->{'documentation_url'}[0]) ) {
-      $pub_doc_info++;
+  if (exists($raw_project->{'documentation_url'}[0])) {
+    $pub_doc_info++;
   }
-      
+
   # Test Documentation url
   $check = {};
   $check->{'results'} = [];
@@ -673,8 +673,8 @@ sub _compute_data($) {
     = 'Checks if the Dev ML URL can be fetched using a simple get query.';
   if (ref($raw_project->{'dev_list'}) =~ m!HASH!) {
     $info{"PMI_MLS_DEV_URL"} = $raw_project->{'dev_list'}->{'url'};
-    $url                 = $raw_project->{'dev_list'}->{'url'};
-    $check->{'value'}    = $url;
+    $url                     = $raw_project->{'dev_list'}->{'url'};
+    $check->{'value'}        = $url;
     my $results = &_check_url($url, 'Dev ML');
     push(@{$check->{'results'}}, $results);
     if ($check->{'results'}[-1] !~ /^OK/) {
@@ -704,10 +704,10 @@ sub _compute_data($) {
   $ret_check->{'checks'}->{'dev_list'} = $check;
 
   # Check mailing_lists info
-  if ( exists($raw_project->{'mailing_lists'}[0]) ) {
-      $pub_doc_info++;
+  if (exists($raw_project->{'mailing_lists'}[0])) {
+    $pub_doc_info++;
   }
-      
+
   # Test mailing_lists
   $check = {};
   $check->{'results'} = [];
@@ -739,10 +739,10 @@ sub _compute_data($) {
   $ret_check->{'checks'}->{'mailing_lists'} = $check;
 
   # Check forums info
-  if ( exists($raw_project->{'forums'}[0]) ) {
-      $pub_doc_info++;
+  if (exists($raw_project->{'forums'}[0])) {
+    $pub_doc_info++;
   }
-      
+
   # Test forums
   $check = {};
   $check->{'results'} = [];
@@ -846,22 +846,22 @@ sub _compute_data($) {
   # Retrieve information about source repos
   my $pub_scm_info = 0;
   if (scalar @{$raw_project->{"source_repo"}} > 0) {
+    $pub_scm_info++;
+    if (defined($info{"PMI_SCM_URL"})) {
       $pub_scm_info++;
-      if (defined($info{"PMI_SCM_URL"})) {
-	  $pub_scm_info++;
-	  if ($ua->head($info{"PMI_SCM_URL"})) {
-	      $pub_scm_info++;
-	  }
+      if ($ua->head($info{"PMI_SCM_URL"})) {
+        $pub_scm_info++;
       }
+    }
 
   }
   $metrics{"PMI_SCM_INFO"} = $pub_scm_info;
 
   # Check update_sites info
-  if ( exists($raw_project->{'update_sites'}[0]) ) {
-      $pub_access_info++;
+  if (exists($raw_project->{'update_sites'}[0])) {
+    $pub_access_info++;
   }
-      
+
   # Test update_sites
   $check = {};
   $check->{'results'} = [];
@@ -909,10 +909,10 @@ sub _compute_data($) {
   $ret_check->{'checks'}->{'update_sites'} = $check;
 
   # Check build_doc info
-  if ( exists($raw_project->{'build_doc'}[0]) ) {
-      $pub_doc_info++;
+  if (exists($raw_project->{'build_doc'}[0])) {
+    $pub_doc_info++;
   }
-      
+
   # Test CI
   my $proj_ci = $raw_project->{'build_url'}->[0]->{'url'} || '';
   $check              = {};
@@ -1030,10 +1030,10 @@ sub _compute_data($) {
   $ret_check->{'checks'}->{'releases'} = $check;
 
   # Set metrics related to doc and access info
-  $metrics{"PMI_DOC_INFO"} = $pub_doc_info;
+  $metrics{"PMI_DOC_INFO"}    = $pub_doc_info;
   $metrics{"PMI_ACCESS_INFO"} = $pub_access_info;
 
-  
+
   # Write pmi checks json file to disk.
   push(@log,
     "[Plugins::EclipsePmi] Writing PMI checks json file to output dir.");

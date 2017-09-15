@@ -50,7 +50,7 @@ my %conf = (
     "CI_JOBS_RED"    => "CI_JOBS_RED",
     "CI_JOBS_FAILED_1W" =>
       "CI_JOBS_FAILED_1W",    # last build is failed for more than 1W
-    "CI_JOBS_GREEN_RATIO"  => "CI_JOBS_GREEN_RATIO",
+    "CI_JOBS_GREEN_RATIO" => "CI_JOBS_GREEN_RATIO",
   },
   "provides_data" => {},
   "provides_figs" => {
@@ -176,8 +176,12 @@ sub _compute_data($) {
       push(@recs, $rec);
     }
   }
-  my $total = $metrics{'CI_JOBS_GREEN'} + $metrics{'CI_JOBS_YELLOW'} + $metrics{'CI_JOBS_RED'};
-  $metrics{'CI_JOBS_GREEN_RATIO'} = int( 100 * $metrics{'CI_JOBS_GREEN'} / $total );
+  my $total
+    = $metrics{'CI_JOBS_GREEN'}
+    + $metrics{'CI_JOBS_YELLOW'}
+    + $metrics{'CI_JOBS_RED'};
+  $metrics{'CI_JOBS_GREEN_RATIO'}
+    = int(100 * $metrics{'CI_JOBS_GREEN'} / $total);
 
   # Prepare the Text::CSV module.
   my $csv

@@ -38,10 +38,8 @@ ok(grep(m!figs!,    @{$conf->{'ability'}}), "Conf has ability > figs");
 ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
 ok(grep(m!users!,   @{$conf->{'ability'}}), "Conf has ability > users");
 
-ok(
-  grep(m!GIT_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > GIT_URL"
-);
+ok(grep(m!GIT_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > GIT_URL");
 
 ok(grep(m!import_git.txt!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > import_git.txt");
@@ -87,9 +85,12 @@ my $ret = $plugin->run_plugin(
 );
 
 ok(grep(m!GIT_URL!, keys %{$ret->{'info'}}), "Ret has info > GIT_URL.");
-ok($ret->{'info'}{'GIT_URL'} =~ m!^https://BorisBaldassari\@bitbucket.org/BorisBaldassari/alambic.git$!, 
-   "Ret has correct GIT_URL.");
-    
+ok(
+  $ret->{'info'}{'GIT_URL'}
+    =~ m!^https://BorisBaldassari\@bitbucket.org/BorisBaldassari/alambic.git$!,
+  "Ret has correct GIT_URL."
+);
+
 ok(grep(m!\[Tools::Git\] Getting Git log!, @{$ret->{'log'}}),
   "Ret has log > Getting Git log");
 ok(grep(m!\[Plugins::Git\] Parsing git log:!, @{$ret->{'log'}}),
@@ -118,11 +119,14 @@ ok($ret->{'metrics'}{'SCM_COMMITS_1M'} =~ /\d+/, "Metrics has SCM_COMMITS_1M");
 ok($ret->{'metrics'}{'SCM_COMMITS_1W'} =~ /\d+/, "Metrics has SCM_COMMITS_1W");
 ok($ret->{'metrics'}{'SCM_COMMITS_1Y'} =~ /\d+/, "Metrics has SCM_COMMITS_1Y");
 
-ok($ret->{'metrics'}{'SCM_MOD_LINES'} =~ /\d+/,    "Metrics has SCM_MOD_LINES");
-ok($ret->{'metrics'}{'SCM_MOD_LINES'} > 1000,     "Metrics has SCM_MOD_LINES");
-ok($ret->{'metrics'}{'SCM_MOD_LINES_1M'} =~ /\d+/, "Metrics has SCM_MOD_LINES_1M");
-ok($ret->{'metrics'}{'SCM_MOD_LINES_1W'} =~ /\d+/, "Metrics has SCM_MOD_LINES_1W");
-ok($ret->{'metrics'}{'SCM_MOD_LINES_1Y'} =~ /\d+/, "Metrics has SCM_MOD_LINES_1Y");
+ok($ret->{'metrics'}{'SCM_MOD_LINES'} =~ /\d+/, "Metrics has SCM_MOD_LINES");
+ok($ret->{'metrics'}{'SCM_MOD_LINES'} > 1000,   "Metrics has SCM_MOD_LINES");
+ok($ret->{'metrics'}{'SCM_MOD_LINES_1M'} =~ /\d+/,
+  "Metrics has SCM_MOD_LINES_1M");
+ok($ret->{'metrics'}{'SCM_MOD_LINES_1W'} =~ /\d+/,
+  "Metrics has SCM_MOD_LINES_1W");
+ok($ret->{'metrics'}{'SCM_MOD_LINES_1Y'} =~ /\d+/,
+  "Metrics has SCM_MOD_LINES_1Y");
 
 # Check that files have been created.
 note("Check that files have been created. ");

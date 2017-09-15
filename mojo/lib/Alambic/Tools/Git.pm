@@ -29,8 +29,10 @@ my %conf = (
   "name"    => "Git Tool",
   "desc"    => "Provides Git commands and features.",
   "ability" => [
+
 #   "install",
-    "methods", 
+    "methods",
+
 #   "project"
   ],
   "type"             => "tool",
@@ -64,11 +66,11 @@ sub new {
 
   # Create projects input dir if it does not exist
   if (not &_is_a_git_directory($dir)) {
-    Git::Repository->run( clone => $git_url => $dir );
+    Git::Repository->run(clone => $git_url => $dir);
   }
 
   # Now create Git object with dir.
-  $git = Git::Repository->new( work_tree => $dir );
+  $git = Git::Repository->new(work_tree => $dir);
   $repofs = Alambic::Model::RepoFS->new();
 
   return bless {}, $class;
@@ -154,7 +156,7 @@ sub git_clone_or_pull() {
 
   my $dir = &_get_src_path($self, $project_id);
 
-  if ( &_is_a_git_directory($dir) ) {
+  if (&_is_a_git_directory($dir)) {
 
     # start from an existing working copy
     eval {
@@ -174,13 +176,14 @@ sub git_clone_or_pull() {
 
 # Utility to know if a directory is a git repo.
 sub _is_a_git_directory($) {
-    my ($dir) = @_;
-    
-    if (-e "$dir/.git/") {
-	return 1;
-    } else {
-	return 0;
-    }
+  my ($dir) = @_;
+
+  if (-e "$dir/.git/") {
+    return 1;
+  }
+  else {
+    return 0;
+  }
 }
 
 

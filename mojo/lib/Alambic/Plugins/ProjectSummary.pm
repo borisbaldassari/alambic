@@ -42,8 +42,10 @@ my %conf = (
       "A badge to display current value of main quality attribute on an external web site (uses shields.io)",
     "badge_attr_root.svg" =>
       "A badge to display current value of main quality attribute on an external web site (uses shields.io)",
-    "badge_psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
-    "psum_attrs.html" => "A HTML snippet to display main quality attributes and their values.",
+    "badge_psum_attrs.html" =>
+      "A HTML snippet to display main quality attributes and their values.",
+    "psum_attrs.html" =>
+      "A HTML snippet to display main quality attributes and their values.",
     "badge_qm" => "A HTML snippet that displays main quality attributes.",
     "badge_project_main" =>
       "A HTML snippet that displays the name and description of the project.",
@@ -136,7 +138,7 @@ sub run_post($$) {
 }
 
 sub _create_badge($$$) {
-    my $log = shift;
+  my $log   = shift;
   my $name  = shift || "";
   my $value = shift || 0;
 
@@ -160,7 +162,7 @@ sub _create_psum_attrs() {
   my ($self, $params) = @_;
 
   my $root_value = $params->{'root.value'} || '';
-  my $root_name = $params->{'root.name'} || '';
+  my $root_name  = $params->{'root.name'}  || '';
 
   my $html_t = qq'<!DOCTYPE html>
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -187,11 +189,15 @@ sub _create_psum_attrs() {
   my @ids = grep { $_ =~ /^QM_/ } sort keys %$params;
 
   foreach my $id (@ids) {
-      $html_t .= '<tr><td><a href="/documentation/attributes.html#' 
-	  . $id . '">' . $params->{'QMN_' . $id} 
-      . '</a><span class="pull-right">' . $params->{$id} . " / 5</span></td></tr>\n";
+    $html_t
+      .= '<tr><td><a href="/documentation/attributes.html#'
+      . $id . '">'
+      . $params->{'QMN_' . $id}
+      . '</a><span class="pull-right">'
+      . $params->{$id}
+      . " / 5</span></td></tr>\n";
   }
-  
+
   $html_t .= qq'
         </table>
       </div>

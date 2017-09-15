@@ -98,11 +98,9 @@ ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] major issues.!, @log),
 ok(grep(m!^\[Plugins::SonarQube45\] Got \[35\] rules.!, @log),
   "Log returns 35 rules.")
   or diag explain @log;
-ok(
-  grep(m!^\[Plugins::SonarQube45\] Get resources from \[http!,
-    @log),
-  "Log returns get resources."
-) or diag explain @log;
+ok(grep(m!^\[Plugins::SonarQube45\] Get resources from \[http!, @log),
+  "Log returns get resources.")
+  or diag explain @log;
 ok(grep(m!^\[Plugins::SonarQube45\] Got \[33\] metrics.!, @log),
   "Log returns got 33 metrics.")
   or diag explain @log;
@@ -138,7 +136,6 @@ ok($ret->{'metrics'}{'SQ_FUNCS'},
   or diag explain $ret;
 
 
-
 # Checking output/*_sq_ files
 ok(
   -e "projects/test.project/input/test.project_import_sq_issues_blocker.json",
@@ -151,7 +148,7 @@ ok(
 ok(
   -e "projects/test.project/input/test.project_import_sq_issues_major.json",
   "Check that file test.project_import_sq_issues_major.json exists."
-    );
+);
 ok(
   -e "projects/test.project/output/test.project_sq_issues_blocker.csv",
   "Check that file test.project_sq_issues_blocker.csv exists."
@@ -163,7 +160,7 @@ ok(
 ok(
   -e "projects/test.project/output/test.project_sq_issues_major.csv",
   "Check that file test.project_sq_issues_major.csv exists."
-    );
+);
 
 # Checking sq_metrics file
 ok(

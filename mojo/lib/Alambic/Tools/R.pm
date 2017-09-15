@@ -148,7 +148,8 @@ sub knit_rmarkdown_inc($$$$) {
     my $r_cmd = "Rscript -e \"library(rmarkdown); ";
     $r_cmd .= "project.id <- '${project_id}'; plugin.id <- '$plugin_id'; ";
     foreach my $key (keys %{$params}) {
-      $r_cmd .= $key . " <- '" . ($params->{$key}  || '') . "'; ";
+      $r_cmd .= $key . " <- '" . ($params->{$key} || '') . "'; ";
+
 #      $r_cmd .= $key . " <- '" . $params->{$key} . "'; ";
     }
     $r_cmd
@@ -232,7 +233,7 @@ sub knit_rmarkdown_pdf($$$$) {
     my $r_cmd = "Rscript -e \"library(rmarkdown); ";
     $r_cmd .= "project.id <- '${project_id}'; plugin.id <- '$plugin_id'; ";
     foreach my $key (keys %{$params}) {
-      $r_cmd .= $key . " <- '" . ($params->{$key}  || '') . "'; ";
+      $r_cmd .= $key . " <- '" . ($params->{$key} || '') . "'; ";
     }
     $r_cmd .= "rmarkdown::render('${r_md}', output_file='$r_md_out')\"";
 
@@ -305,7 +306,7 @@ sub knit_rmarkdown_html($$$$) {
     my $r_cmd = "Rscript -e \"library(rmarkdown); ";
     $r_cmd .= "project.id <- '${project_id}'; plugin.id <- '$plugin_id'; ";
     foreach my $key (keys %{$params}) {
-      $r_cmd .= $key . " <- '" . ($params->{$key}  || '') . "'; ";
+      $r_cmd .= $key . " <- '" . ($params->{$key} || '') . "'; ";
     }
     $r_cmd
       .= "rmarkdown::render('${r_in}', output_format='html_document', output_file='$r_md_out')\"";
@@ -380,7 +381,8 @@ sub knit_rmarkdown_images($$$$$) {
     # Passing arguments: 2 first args are project.id and plugin.id
     $r_cmd .= $project_id . " " . $plugin_id;
     foreach my $key (sort keys %{$params}) {
-      $r_cmd .= $key . " <- '" . ($params->{$key}  || '') . "'; ";
+      $r_cmd .= $key . " <- '" . ($params->{$key} || '') . "'; ";
+
 #      $r_cmd .= " " . $params->{$key};
     }
 

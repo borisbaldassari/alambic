@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" xml:lang="en">
 <head>
-<title>Alambic::Model::Alambic &mdash; Alambic</title>
+<title>Alambic::Model::Alambic &mdash; Alambic Perldoc</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
 </head>
 <body><div class="box">
-  <h1 class="t1">Alambic</h1>
+  <h1 class="t1">Alambic Perldoc</h1>
   <table>
     <tr>
       <td class="label">Description</td>
-      <td class="cell">Alambic developer documentation</td>
+      <td class="cell">Alambic</td>
     </tr>
   </table>
 </div>
 <div class="path">
-  <a href="../../index.html">Alambic</a> &gt; Perl Modules &gt;
+  <a href="../../index.html">Alambic Perldoc</a> &gt; Perl Modules &gt;
   Alambic::Model::Alambic
 </div>
 <div>
@@ -61,6 +61,7 @@
       <li><a href="#get_project_hist">get_project_hist()</a></li>
       <li><a href="#get_project_last_run">get_project_last_run()</a></li>
       <li><a href="#get_project_run">get_project_run()</a></li>
+      <li><a href="#get_project_all_runs">get_project_all_runs()</a></li>
       <li><a href="#run_project">run_project()</a></li>
       <li><a href="#run_plugins">run_plugins()</a></li>
       <li><a href="#run_qm">run_qm()</a></li>
@@ -469,6 +470,37 @@
 <pre><code>    my $run = $alambic-&gt;get_project_run(&#39;modeling.sirius&#39;, 3);</code></pre>
 
 <p>Return all data for a specific run.</p>
+
+<pre><code>    {
+      &#39;recs&#39; =&gt; [
+        {
+          &#39;desc&#39; =&gt; &#39;The title entry is empty in the PMI.&#39;,
+          &#39;severity&#39; =&gt; 2,
+          &#39;rid&#39; =&gt; &#39;PMI_EMPTY_TITLE&#39;,
+          &#39;src&#39; =&gt; &#39;EclipsePmi&#39;
+        }
+      ],
+      &#39;attributes_conf&#39; =&gt; undef,
+      &#39;run_delay&#39; =&gt; 49,
+      &#39;project_id&#39; =&gt; &#39;modeling.sirius&#39;,
+      &#39;metrics&#39; =&gt; {
+        &#39;CI_JOBS_FAILED_1W&#39; =&gt; 7,
+      },
+      &#39;info&#39; =&gt; {
+        &#39;PMI_SCM_URL&#39; =&gt; &#39;http://git.eclipse.org/c/sirius/org.eclipse.sirius.legacy.git&#39;,
+      },
+      &#39;id&#39; =&gt; 3,
+      &#39;run_user&#39; =&gt; &#39;administrator&#39;,
+      &#39;indicators&#39; =&gt; undef,
+      &#39;attributes&#39; =&gt; undef,
+      &#39;run_time&#39; =&gt; &#39;2017-07-29 09:00:08&#39;
+    }</code></pre>
+
+<h2 id="get_project_all_runs"><code>get_project_all_runs()</code></h2>
+
+<pre><code>    my $run = $alambic-&gt;get_project_all_runs(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Return all data for all runs.</p>
 
 <pre><code>    {
       &#39;recs&#39; =&gt; [
