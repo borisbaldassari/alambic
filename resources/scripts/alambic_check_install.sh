@@ -50,7 +50,7 @@ _check_prerequisite() {
 echo "# Checking system prerequisites."
 echo "# Checking system prerequisites." >> $LOG
 # Not debian: libcurl-devel perl-CPAN libxml2-devel openssl-devel
-CMDS="wget passwd gcc make bzip2 git openssl"
+CMDS="wget passwd gcc make bzip2 git openssl pandoc"
 for c in `echo $CMDS | tr ' ' '\n'`; do
     _check_prerequisite $c;
 done
