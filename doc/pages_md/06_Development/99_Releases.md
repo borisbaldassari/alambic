@@ -4,6 +4,18 @@ navi_name: Releases
 
 # Alambic releases
 
+## Alambic 3.3.2
+
+Date: 2017-09-15
+
+Changelog:
+
+* Several bug fixes: https://bitbucket.org/BorisBaldassari/alambic/issues?milestone=Alambic+3.3.2.
+* New [Jira plugin](/Plugins/Pre/Jira.html), contributed by [Thales Group](https://www.thalesgroup.com).
+* New [Git plugin](/Plugins/Pre/Git.html), contributed by [Thales Group](https://www.thalesgroup.com).
+* New [SonarQube 4.5.x plugin](/Plugins/Pre/SonarQube45.html), contributed by [Thales Group](https://www.thalesgroup.com).
+* New [Generic R plugin](/Plugins/Post/GenericR.html) for better [reproducible research](/Documentation/Research.html).
+
 ## Alambic 3.3.1
 
 Date: 2017-04-22
@@ -32,7 +44,7 @@ Date: 2016-12-31
 Changelog:
 
 * Various [bug fixes](https://bitbucket.org/BorisBaldassari/alambic/issues?kind=bug&milestone=Alambic+3.2).
-* The [StackOverflow](http://alambic.io/Plugins/Pre/StackOverflow.html) plugin has been added to the list of plugins.
+* The [StackOverflow](/Plugins/Pre/StackOverflow.html) plugin has been added to the list of plugins.
 * More tests, documentation, reliability and usability improvements.
 * Continuous integration through codeship.
 * A docker image! Still in development, check the [docker hub repository](https://hub.docker.com/r/bbaldassari/alambic/)!
