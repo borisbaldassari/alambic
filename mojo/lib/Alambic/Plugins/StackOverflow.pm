@@ -36,7 +36,7 @@ my %conf = (
     "Check the documentation for this plugin on the project web site: <a href=\"http://alambic.io/Plugins/Pre/StackOverflow.html\">http://alambic.io/Plugins/Pre/StackOverflow.html</a>."
   ],
   "type"    => "pre",
-  "ability" => ['metrics', 'recs', 'viz', 'users'],
+  "ability" => ['data', 'figs', 'metrics', 'recs', 'viz', 'users'],
   "params" =>
     {"so_keyword" => "A Stack Overflow tag to retrieve questions from.",},
   "provides_cdata" => [],
