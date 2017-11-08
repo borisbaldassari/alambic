@@ -7,8 +7,8 @@ steps:
     description: Build CI Image desc...
     type: build
 
-    dockerfile: Dockerfile
-    working_directory: ${{main_clone}}/docker/image_ci/
+    dockerfile: docker/image_ci/Dockerfile
+    working_directory: ${{main_clone}}/
 
     image_name: bbaldassari/alambic_ci
     tag: latest # ${{CF_BRANCH}}
