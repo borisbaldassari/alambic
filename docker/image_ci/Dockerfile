@@ -13,6 +13,7 @@ WORKDIR /home/alambic/alambic/
 COPY . .
 
 USER root
+RUN chown -R alambic:alambic /home/alambic/alambic
 
 # Execute processes
 CMD [ "su", "-", "alambic", "-c", "sh /home/alambic/alambic/docker/image_ci/alambic_init_start.sh"]
