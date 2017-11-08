@@ -1,6 +1,6 @@
 *.csv
 mojo/projects/*
-mojo/backups/*
+#mojo/backups/*
 mojo/log/*
 #doc/dump/*
 *~
