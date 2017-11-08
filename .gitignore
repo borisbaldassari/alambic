@@ -1,6 +1,8 @@
 *.csv
 mojo/projects/*
-doc/dump/*
+mojo/backups/*
+mojo/log/*
+#doc/dump/*
 *~
 codeship.aes
 *.Rhistory
