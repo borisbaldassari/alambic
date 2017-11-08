@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+    <title>Backups - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Basics.html">Basics</a>
+        </li>
+        <li class="">
+            <a href="../Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="../Admins.html">Admins</a>
+        </li>
+        <li class="active">
+            <a href="../Tasks.html">AdminTasks</a>
+        </li>
+        <li class="">
+            <a href="../Research.html">Research</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="active">
+            <a href="Backups.html">Backups</a>
+        </li>
+        <li class="">
+            <a href="Customise.html">Customise</a>
+        </li>
+        <li class="">
+            <a href="Models.html">Models</a>
+        </li>
+        <li class="">
+            <a href="CLI.html">CLI</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Backups in Alambic</h1>
+
+<p>In Alambic all important data is stored in the database. It means that all file system files can be regenerated with a single run from the information stored in database, with the only exception of the main configuration file <code>alambic.conf</code>, which stores database information.</p>
+
+<p>Data preserved in database includes:</p>
+
+<ul>
+<li>The instance configuration: name, description.</li>
+<li>Users configuration (with hashes as passwords).</li>
+<li>Models attributes, metrics and quality models.</li>
+<li>Projects configuration, information, custom data, and runs.</li>
+</ul>
+
+<p>It is recommended to backup the Alambic instance regularly, and before any heavy administration operation (e.g. update).</p>
+
+<h1>Executing backups from the UI</h1>
+
+<p>The admin section has its own system for backups and restore.</p>
+
+<p><img src="/images/alambic_backups.png" alt="alambic_backups.png" /></p>
+
+<p>The backup basically generates a SQL file which can be fed to another (or the same, btw) server, using interfaces like psql or pgAdmin. Backup files are stored on the file system (in <code>$MOJO_HOME</code>/backups) and can be downloaded from the web interface. Administrators can restore a backup file by clicking on the upload icon next to the file -- note however that this will erase all current values and replace them with the restored data.</p>
+
+<h1>Executing backups from the CLI</h1>
+
+<p>There is an Alambic command for backups:</p>
+
+<pre><code>$ bin/alambic alambic backup
+Database has been backed up in [backups/alambic_backup_201612271112.sql].
+</code></pre>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

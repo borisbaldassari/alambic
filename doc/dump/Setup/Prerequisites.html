@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+    <title>Prerequisites for installing Alambic - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../Plugins.html">Plugins</a>
+        </li>
+        <li class="active">
+            <a href="../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="Prerequisites.html">Prerequisites</a>
+        </li>
+        <li class="">
+            <a href="Install.html">Install</a>
+        </li>
+        <li class="">
+            <a href="Run.html">Run</a>
+        </li>
+        <li class="">
+            <a href="Upgrade.html">Upgrade</a>
+        </li>
+        <li class="">
+            <a href="Docker.html">Docker</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Dependencies and requirements</h1>
+
+<p>Alambic is written in Perl and uses the <a href="https://mojolicio.us">Mojolicious</a> web framework. It relies on a database to store configuration and projects information. As for now only PostgreSQL is supported as a back-end database.</p>
+
+<p><span class="label label-info">Note</span> &nbsp; You may want to install <a href="http://perlbrew.pl/">perlbrew</a> to have separate perl instances. Even better, perlbrew can be setup with a basic Unix user account.</p>
+
+<p>The <a href="/Setup/Docker.html">docker image</a> serves as a use case test for installation of Alambic. As such, the list of requirements used to build the <code>image_base_centos</code> in <code>$ALAMBIC_HOME/Alambic/docker/image_base_centos</code> can be used as a reference for the dependencies.</p>
+
+<h2>Basic requirements</h2>
+
+<ul>
+<li><strong>Perl</strong> 5.x versions 5.22, 5.24 and 5.26 have been tested. See the development page for more details on testing.</li>
+<li><strong>PostgreSQL</strong> 9.5 or later. Some bleeding edge features are used (like update on insert), both by Alambic and the Minion job queuing system.</li>
+<li>Alambic has been developed and tested on <strong>Gnu/Linux systems</strong> (CentOS, Ubuntu, Debian). It may work on Windows, but this is not tested and thus not supported.</li>
+<li>Some plugins use the <strong>R software</strong> for advanced visualisation and computations.</li>
+</ul>
+
+<p>Installing Mojolicious: see instructions <a href="https://github.com/kraih/mojo/wiki/Installation">here</a> or simply use the CPAN module:</p>
+
+<pre><code>$ perl -MCPAN -e 'install Mojolicious'
+</code></pre>
+
+<h2>Perl Dependencies</h2>
+
+<p>The list of Perl requirements notably include the following modules from CPAN:</p>
+
+<ul>
+<li><code>XML::LibXML</code> for analysis of PMD XML results.</li>
+<li><code>List::Util</code> and <code>List::MoreUtils</code> for the uniq function.</li>
+<li><code>File::chdir</code>, <code>File::Basename</code>, <code>File::Copy</code>, <code>File::Path</code> and <code>File::stat</code> for filesystem operations.</li>
+<li><code>Net::IDN::Encode</code> and <code>IO::Socket::SSL</code> (version 1.94+) for https.</li>
+<li><code>Minion</code> for the job queuing feature.</li>
+<li><code>Mojo::Pg</code>, <code>Mojo::JSON</code>, <code>Mojo::UserAgent</code>, <code>Mojolicious::Plugin::InstallablePaths</code> and <code>Mojolicious::Plugin::Mail</code></li>
+<li><code>DateTime</code> and <code>Date::Parse</code></li>
+<li><code>Test::More</code>, <code>Test::Perl::Critic</code> for testing, and <code>Pod::ProjectDocs</code> for documentation generation.</li>
+<li><code>Text::CSV</code> (which may import <code>Text::CSV_XS</code> too)</li>
+<li><code>Digest::MD5</code> and <code>Crypt::PBKDF2</code> for password hashes</li>
+<li><code>Git::Repository</code>, <code>JIRA::REST</code> for data source plugins.</li>
+</ul>
+
+<p>One can install everything in one command using <code>cpanm</code>. Note the <code>POSTGRES_HOME</code> env var.</p>
+
+<p><code>
+POSTGRES_HOME=/usr/pgsql-9.5 cpanm inc::Module::Install Digest::MD5 Crypt::PBKDF2 Date::Parse DateTime File::chdir File::Basename File::Copy File::Path File::stat List::Util List::MoreUtils Minion Mojolicious Mojo::JSON Mojo::UserAgent Mojo::Pg XML::LibXML Text::CSV Time::localtime Mojolicious::Plugin::Mail Test::More Test::Perl::Critic Net::IDN::Encode IO::Socket::SSL Git::Repository JIRA::REST Mojolicious::Plugin::InstallablePaths Pod::ProjectDocs
+</code></p>
+
+<p>Note that plugins have different specific requirements. As an example the StackOverflow plugin requires a R installation and a few packages (knitr for the weaving, snowballc for the wordcloud, etc.). See the documentation of plugins for more information.</p>
+
+<h2>R dependencies</h2>
+
+<p>Most plugins use the R engine for the computations and/or the visualisations. As of Alambic 3.3.2, the list of R modules required to run Alambic plugins notably includes:</p>
+
+<ul>
+<li><code>ggplot2</code>, <code>googleVis</code> and <code>plotly</code> for visualisation,</li>
+<li><code>markdown</code> and <code>jsonlite</code> for data formats,</li>
+<li><code>knitr</code>, <code>xtable</code>, <code>htmltools</code>, <code>rmarkdown</code> for literate programing,</li>
+<li><code>wordcloud</code>, <code>SnowballC</code>, <code>dygraphs</code> for specific graphics.</li>
+</ul>
+
+<p>The complete list of of R modules can be installed with the following command:</p>
+
+<p><code>
+Rscript -e 'install.packages(c("BH", "DBI", "NLP", "R6", "RColorBrewer", "Rcpp", "SnowballC", "assertthat", "backports", "base64enc", "bitops", "caTools", "colorspace", "curl", "dichromat", "digest", "dplyr", "dygraphs", "evaluate", "ggplot2", "ggthemes", "googleVis", "gtable", "hexbin", "highr", "htmltools", "htmlwidgets", "httr", "jsonlite", "knitr", "labeling", "lazyeval", "magrittr", "markdown", "mime", "munsell", "openssl", "packrat", "pander", "plotly", "plyr", "purrr", "reshape2", "rmarkdown", "rprojroot", "scales", "slam", "stringi", "stringr", "tibble", "tidyr", "tm", "viridisLite", "wordcloud", "xtable", "xts", "yaml", "zoo", "svglite"), repos="http://cran.r-project.org")'
+</code></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

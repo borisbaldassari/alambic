@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Alambic::Model::RepoDB &mdash; Alambic</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
+  <h1 class="t1">Alambic</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Alambic developer documentation</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Alambic</a> &gt; Perl Modules &gt;
+  Alambic::Model::RepoDB
+</div>
+<div>
+<a href="../../src/Alambic/Model/RepoDB.pm">Source</a>
+</div>
+
+<div class="pod">
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+      <li><a href="#init_db">init_db()</a></li>
+      <li><a href="#backup_db">backup_db()</a></li>
+      <li><a href="#restore_db">restore_db()</a></li>
+      <li><a href="#get_pg_version">get_pg_version()</a></li>
+      <li><a href="#clean_db">clean_db()</a></li>
+      <li><a href="#is_db_defined">is_db_defined()</a></li>
+      <li><a href="#is_db_ok">is_db_ok()</a></li>
+      <li><a href="#is_db_empty">is_db_empty()</a></li>
+      <li><a href="#name">name()</a></li>
+      <li><a href="#desc">desc()</a></li>
+      <li><a href="#conf">conf()</a></li>
+      <li><a href="#get_info">get_info()</a></li>
+      <li><a href="#get_metrics">get_metrics()</a></li>
+      <li><a href="#get_metric">get_metric()</a></li>
+      <li><a href="#get_attribute">get_attribute()</a></li>
+      <li><a href="#get_attributes">get_attributes()</a></li>
+      <li><a href="#set_attribute">set_attribute()</a></li>
+      <li><a href="#get_users">get_users()</a></li>
+      <li><a href="#get_user">get_user()</a></li>
+      <li><a href="#add_user">add_user()</a></li>
+      <li><a href="#del_user">del_user()</a></li>
+      <li><a href="#get_qm">get_qm()</a></li>
+      <li><a href="#set_qm">set_qm()</a></li>
+      <li><a href="#set_project_conf">set_project_conf()</a></li>
+      <li><a href="#delete_project">delete_project()</a></li>
+      <li><a href="#get_project_conf">get_project_conf()</a></li>
+      <li><a href="#get_projects_list">get_projects_list()</a></li>
+      <li><a href="#get_active_projects_list">get_active_projects_list()</a></li>
+      <li><a href="#add_project_run">add_project_run()</a></li>
+      <li><a href="#get_project_last_run">get_project_last_run()</a></li>
+      <li><a href="#get_project_run">get_project_run()</a></li>
+      <li><a href="#get_project_all_runs">get_project_all_runs()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>Alambic::Model::RepoDB</b> - Interface to all database-related actions and information defined in Alambic.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    my $repodb = Alambic::Model::RepoDB-&gt;new(
+      &quot;postgresql://alambic:pass4alambic@/alambic_db&quot;
+    );
+    
+    $repodb-&gt;backup();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><b>Alambic::Model::RepoDB</b> provides a complete interface to all database operations within Alambic. As for now only Postgres is supported, but other database systems may be added in the future while keeping this interface mostly as it is.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="new"><code>new()</code></h2>
+
+<pre><code>    my $repodb = Alambic::Model::RepoDB-&gt;new(
+      &quot;postgresql://alambic:pass4alambic@/alambic_db&quot;
+    );</code></pre>
+
+<p>Create a new <a href="RepoDB.pm.html">Alambic::Model::RepoDB</a> object and optionally initialise it with a database connection.</p>
+
+<h2 id="init_db"><code>init_db()</code></h2>
+
+<pre><code>    $repodb-&gt;init_db();</code></pre>
+
+<p>Initialise the database with all tables.</p>
+
+<h2 id="backup_db"><code>backup_db()</code></h2>
+
+<pre><code>    $repodb-&gt;backup();</code></pre>
+
+<p>Start a backup of the Alambic database. This produces a SQL file with all data that can be easily re-imported in PostGresql server. Returns a big SQL file.</p>
+
+<h2 id="restore_db"><code>restore_db()</code></h2>
+
+<pre><code>    $repodb-&gt;restore_db(&#39;INSERT INTO....&#39;);</code></pre>
+
+<p>Restore a backup by executing the SQL export, re-initialise the sequence ids for auto-increment columns.</p>
+
+<h2 id="get_pg_version"><code>get_pg_version()</code></h2>
+
+<pre><code>    my $version = $repodb-&gt;get_pg_version();</code></pre>
+
+<p>Get the PostGres version. Returns a string, e.g. PostgreSQL 9.5.</p>
+
+<h2 id="clean_db"><code>clean_db()</code></h2>
+
+<pre><code>    $repodb-&gt;clean_db();</code></pre>
+
+<p>Clean the database. Boils down to migrating down the schemas.</p>
+
+<h2 id="is_db_defined"><code>is_db_defined()</code></h2>
+
+<pre><code>    if ($repodb-&gt;is_db_defined()) { print &quot;defined!&quot; }</code></pre>
+
+<p>Get the database status: is the connection string filled in?</p>
+
+<h2 id="is_db_ok"><code>is_db_ok()</code></h2>
+
+<pre><code>    if ($repodb-&gt;is_db_ok()) { print &quot;ok!&quot; }</code></pre>
+
+<p>Checks if the database is ready to be used, i.e. has the correct number of tables defined.</p>
+
+<h2 id="is_db_empty"><code>is_db_empty()</code></h2>
+
+<pre><code>    if ($repodb-&gt;is_db_empty()) { print &quot;empty!&quot; }</code></pre>
+
+<p>Checks if the database contains data (counts number of project run records). Returns undef if tables do not exist (db is not ok).</p>
+
+<h2 id="name"><code>name()</code></h2>
+
+<pre><code>    my $name = $repodb-&gt;name();
+    $repodb-&gt;name(&#39;New name&#39;);</code></pre>
+
+<p>Get or set the Alambic instance name.</p>
+
+<h2 id="desc"><code>desc()</code></h2>
+
+<pre><code>    my $name = $repodb-&gt;desc();
+    $repodb-&gt;desc(&#39;New description&#39;);</code></pre>
+
+<p>Get or set the Alambic instance name.</p>
+
+<h2 id="conf"><code>conf()</code></h2>
+
+<pre><code>    my $params = $repodb-&gt;conf();
+    # Returns a hash ref
+    $repodb(&#39;param1&#39;, &#39;value1&#39;);</code></pre>
+
+<p>Get or set the Alambic instance configuration. When getting (no argument provided), the full hash is returned. When setting, specify param and value.</p>
+
+<h2 id="get_info"><code>get_info()</code></h2>
+
+<pre><code>    my $info $repodb-&gt;get_info();</code></pre>
+
+<p>Get all info for a project from db.</p>
+
+<h2 id="get_metrics"><code>get_metrics()</code></h2>
+
+<pre><code>    my $metrics = $repodb-&gt;get_metrics();</code></pre>
+
+<p>Get all metrics definition from db.</p>
+
+<h2 id="get_metric"><code>get_metric()</code></h2>
+
+<pre><code>    my $metric = epodb-&gt;get_metric(&#39;METRIC1&#39;);</code></pre>
+
+<p>Get a single metric definition from db.</p>
+
+<h2 id="get_attribute"><code>get_attribute()</code></h2>
+
+<pre><code>    my $attr = $repodb-&gt;get_attribute(&#39;ATTR1&#39;);</code></pre>
+
+<p>Get a single attribute definition from db.</p>
+
+<h2 id="get_attributes"><code>get_attributes()</code></h2>
+
+<pre><code>    my $attrs = $repodb-&gt;get_attributes();</code></pre>
+
+<p>Get all attributes definition from db.</p>
+
+<h2 id="set_attribute"><code>set_attribute()</code></h2>
+
+<pre><code>    $repodb-&gt;set_attribute(
+      &#39;MNEMO&#39;, &#39;ATTR_NAME&#39;, [&#39;desc&#39;, &#39;desc&#39;]
+    );</code></pre>
+
+<p>Set a attribute definition in the db.</p>
+
+<h2 id="get_users"><code>get_users()</code></h2>
+
+<pre><code>    my $users = $repodb-&gt;get_users();</code></pre>
+
+<p>Get all users from db.</p>
+
+<h2 id="get_user"><code>get_user()</code></h2>
+
+<pre><code>    my $user = $repodb-&gt;get_user(&#39;boris&#39;);</code></pre>
+
+<p>Get a specific user from db.</p>
+
+<h2 id="add_user"><code>add_user()</code></h2>
+
+<pre><code>    $repodb-&gt;add_user(
+      &#39;boris&#39;, &#39;Boris Baldassari&#39;, &#39;boris@domain.com&#39;,
+      &#39;password&#39;, [&#39;Admin&#39;], {}, {}
+    )</code></pre>
+
+<p>Add a user to the database.</p>
+
+<h2 id="del_user"><code>del_user()</code></h2>
+
+<pre><code>    $repodb-&gt;del_user(&#39;boris&#39;);</code></pre>
+
+<p>Delete a user from the database.</p>
+
+<h2 id="get_qm"><code>get_qm()</code></h2>
+
+<pre><code>    my $qm = $repodb-&gt;get_qm();</code></pre>
+
+<p>Get a single qm definition from db (the first record as for now).</p>
+
+<h2 id="set_qm"><code>set_qm()</code></h2>
+
+<pre><code>    $repodb-&gt;set_qm(
+      &#39;MNENMO&#39;, &#39;My Model Name&#39;, {}
+    );</code></pre>
+
+<p>Set a qm definition in the db.</p>
+
+<h2 id="set_project_conf"><code>set_project_conf()</code></h2>
+
+<pre><code>    $repodb-&gt;set_project_conf(
+      &#39;project_id&#39;, &#39;Project Name&#39;, 
+      &#39;Project Desc&#39;, { &#39;PLUG1&#39; =&gt; {} }
+    );</code></pre>
+
+<p>Add or edit a project in the list of projects, with its name, desc, and plugins.</p>
+
+<h2 id="delete_project"><code>delete_project()</code></h2>
+
+<pre><code>    $repodb-&gt;delete_project(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Delete from db all entries relatives to a project.</p>
+
+<h2 id="get_project_conf"><code>get_project_conf()</code></h2>
+
+<pre><code>    my $project_conf = $repodb-&gt;get_project_conf(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Get the configuration of a project as a hash.</p>
+
+<h2 id="get_projects_list"><code>get_projects_list()</code></h2>
+
+<pre><code>    my $list = $repodb-&gt;get_projects_list();</code></pre>
+
+<h2 id="get_active_projects_list"><code>get_active_projects_list()</code></h2>
+
+<pre><code>    my $list = $repodb-&gt;get_active_projects_list();</code></pre>
+
+<p>Returns a hash of projects id/names defined in the db.</p>
+
+<h2 id="add_project_run"><code>add_project_run()</code></h2>
+
+<pre><code>    $repodb-&gt;add_project_run(
+      &#39;project_id&#39;, \%run_info, 
+      \%info, \%metrics, \%indicators
+      \%atttributes, \Mattributes_conf
+      \%recs
+    );</code></pre>
+
+<p>Stores the results of a job run in Alambic.</p>
+
+<h2 id="get_project_last_run"><code>get_project_last_run()</code></h2>
+
+<pre><code>    my $last_run = $repodb-&gt;get_project_last_run();</code></pre>
+
+<p>Returns the results of the last job run in Alambic for the specified project.</p>
+
+<pre><code>    {
+      &#39;attributes&#39; =&gt; { &#39;MYATTR&#39; =&gt; 18 },
+      &#39;id&#39; =&gt; 2,
+      &#39;indicators&#39; =&gt; { &#39;MYINDIC&#39; =&gt; 16 },
+      &#39;metrics&#39; =&gt; { &#39;MYMETRIC&#39; =&gt; 15 },
+      &#39;project_id&#39; =&gt; &#39;modeling.sirius&#39;,
+      &#39;recs&#39; =&gt; [
+        {
+          &#39;desc&#39; =&gt; &#39;This is a description.&#39;,
+          &#39;severity&#39; =&gt; 3,
+          &#39;rid&#39; =&gt; &#39;REC_PMI_11&#39;
+        }
+      ],
+      &#39;run_delay&#39; =&gt; 113,
+      &#39;run_time&#39; =&gt; &#39;2016-05-08 16:53:57&#39;,
+      &#39;run_user&#39; =&gt; &#39;none&#39;
+    }</code></pre>
+
+<h2 id="get_project_run"><code>get_project_run()</code></h2>
+
+<pre><code>    my $run = $repodb-&gt;get_project_run(&#39;modeling.sirius&#39;, 5);</code></pre>
+
+<p>Returns the results of the specified job run in Alambic for the specified project.</p>
+
+<h2 id="get_project_all_runs"><code>get_project_all_runs()</code></h2>
+
+<pre><code>    my $runs = $repodb-&gt;get_project_all_runs($project_id);</code></pre>
+
+<p>Returns an array of basic information of all runs in Alambic for the specified project.</p>
+
+<pre><code>    [
+      {
+        &#39;id&#39; =&gt; 2,
+        &#39;project_id&#39; =&gt; &#39;modeling.sirius&#39;,
+        &#39;run_delay&#39; =&gt; 113,
+        &#39;run_time&#39; =&gt; &#39;2016-05-08 16:53:20&#39;,
+        &#39;run_user&#39; =&gt; &#39;none&#39;
+      },
+      {
+        &#39;id&#39; =&gt; 1,
+        &#39;project_id&#39; =&gt; &#39;modeling.sirius&#39;,
+        &#39;run_delay&#39; =&gt; 13,
+        &#39;run_time&#39; =&gt; &#39;2016-05-08 16:53:20&#39;,
+        &#39;run_user&#39; =&gt; &#39;none&#39;
+      }
+    ]</code></pre>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="http://search.cpan.org/perldoc?Mojolicious">Mojolicious</a>, <a href="http://alambic.io">http://alambic.io</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a></p>
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

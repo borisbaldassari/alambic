@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Alambic::Model::Models &mdash; Alambic</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
+  <h1 class="t1">Alambic</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Alambic developer documentation</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Alambic</a> &gt; Perl Modules &gt;
+  Alambic::Model::Models
+</div>
+<div>
+<a href="../../src/Alambic/Model/Models.pm">Source</a>
+</div>
+
+<div class="pod">
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+      <li><a href="#init_models">init_models()</a></li>
+      <li><a href="#get_metric">get_metric()</a></li>
+      <li><a href="#get_metrics">get_metrics()</a></li>
+      <li><a href="#get_metrics_full">get_metrics_full()</a></li>
+      <li><a href="#get_metrics_active">get_metrics_active()</a></li>
+      <li><a href="#get_metrics_repos">get_metrics_repos()</a></li>
+      <li><a href="#get_attribute">get_attribute()</a></li>
+      <li><a href="#get_attributes">get_attributes()</a></li>
+      <li><a href="#get_attributes_full">get_attributes_full()</a></li>
+      <li><a href="#get_qm">get_qm()</a></li>
+      <li><a href="#get_qm_full">get_qm_full()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>Alambic::Model::Models</b> - Interface to all models definition: metrics, attributes, quality model, and links to data providers.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    my $models = Alambic::Model::Models-&gt;new(
+      $metrics, $attributes, $qm, $plugins
+    );
+    
+    my $qm_full = $models-&gt;get_qm_full();
+    my $metrics = $models-&gt;get_metrics();
+    my $metric = $models-&gt;get_metric(&#39;NCLOC&#39;);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><b>Alambic::Model::Models</b> provides a complete interface to the Models used behind the Alambic application: metrics definition, quality attribute definition, quality model tree, etc.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="new"><code>new()</code></h2>
+
+<pre><code>    my $models = Alambic::Model::Models-&gt;new(
+      $metrics, $attributes, $qm, $plugins
+    );</code></pre>
+
+<p>Create a new <a href="Models.pm.html">Alambic::Model::Models</a> object and initialises it with provided metrics, attributes, quality model and plugins (i.e. data providers).</p>
+
+<h2 id="init_models"><code>init_models()</code></h2>
+
+<pre><code>    my $models = Alambic::Model::Models-&gt;new();
+    $models = -&gt;init_models( $metrics, $attributes, 
+      $qm, $plugins-&gt;get_conf_all());
+    );</code></pre>
+
+<p>Another way to initialise the model after the object creation: read and set the metrics, attributes, qm and plugins from here.</p>
+
+<h2 id="get_metric"><code>get_metric()</code></h2>
+
+<pre><code>    my $metric = $models-&gt;get_metric(&#39;NCLOC&#39;);</code></pre>
+
+<p>Returns information about a single metric. Returns a hash reference:</p>
+
+<pre><code>    {
+      &#39;active&#39; =&gt; &#39;false&#39;,
+      &#39;desc&#39; =&gt; [ &#39;Desc&#39; ],
+        &#39;mnemo&#39; =&gt; &#39;METRIC1&#39;,
+        &#39;ds&#39; =&gt; &#39;EclipseIts&#39;,
+        &#39;scale&#39; =&gt; [1, 2, 3, 4],
+        &#39;name&#39; =&gt; &#39;Metric 1&#39;,
+        &#39;parents&#39; =&gt; {
+            &#39;ATTR1&#39; =&gt; 1
+      }
+    }</code></pre>
+
+<h2 id="get_metrics"><code>get_metrics()</code></h2>
+
+<pre><code>    my $metrics = $models-&gt;get_metrics();</code></pre>
+
+<p>Returns information about all metrics. Returns a hash reference:</p>
+
+<pre><code>    {
+      &#39;METRIC1&#39; =&gt; {
+        &#39;active&#39; =&gt; &#39;false&#39;,
+        &#39;desc&#39; =&gt; [ &#39;Desc&#39; ],
+          &#39;mnemo&#39; =&gt; &#39;METRIC1&#39;,
+          &#39;ds&#39; =&gt; &#39;EclipseIts&#39;,
+          &#39;scale&#39; =&gt; [1, 2, 3, 4],
+        &#39;name&#39; =&gt; &#39;Metric 1&#39;,
+        &#39;parents&#39; =&gt; {
+            &#39;ATTR1&#39; =&gt; 1
+        }
+      }
+    }</code></pre>
+
+<h2 id="get_metrics_full"><code>get_metrics_full()</code></h2>
+
+<pre><code>    my $metrics_full = $models-&gt;get_metrics_full();</code></pre>
+
+<p>Get list of metrics with information and headers.</p>
+
+<h2 id="get_metrics_active"><code>get_metrics_active()</code></h2>
+
+<pre><code>    my $list = $models-&gt;get_metrics_active();
+    foreach my $m (@$list) { say $models-&gt;get_metric($m); }</code></pre>
+
+<p>Returns a list of the active metrics, i.e. metrics defined and used in the quality model. It is an array of metric ids.</p>
+
+<h2 id="get_metrics_repos"><code>get_metrics_repos()</code></h2>
+
+<pre><code>    my $repos = $models-&gt;get_metrics_repos();</code></pre>
+
+<p>Get a list of all data providers (plugins). Returns a array reference.</p>
+
+<h2 id="get_attribute"><code>get_attribute()</code></h2>
+
+<pre><code>    my $attr = $models-&gt;get_attribute(&#39;QM_ECOSYSTEM&#39;);</code></pre>
+
+<p>Get information about a single attribute.</p>
+
+<pre><code>    {
+      &#39;name&#39; =&gt; &#39;Diversity&#39;,
+      &#39;description&#39; =&gt; [ &#39;The diversity of the project\&#39;s ecosystem, as measured..&#39; ],
+      &#39;mnemo&#39; =&gt; &#39;QM_DIVERSITY&#39;
+    };</code></pre>
+
+<h2 id="get_attributes"><code>get_attributes()</code></h2>
+
+<pre><code>    my $attrs = $models-&gt;get_attributes();</code></pre>
+
+<p>Get information about all attributes.</p>
+
+<pre><code>    {
+      &#39;ATTR1&#39; =&gt; {
+        &#39;name&#39; =&gt; &#39;Attribute 1&#39;,
+        &#39;mnemo&#39; =&gt; &#39;ATTR1&#39;,
+        &#39;desc&#39; =&gt; [
+          &#39;Desc&#39;
+        ]
+      }
+    }</code></pre>
+
+<h2 id="get_attributes_full"><code>get_attributes_full()</code></h2>
+
+<pre><code>    my $attrs = $models-&gt;get_attributes_full();</code></pre>
+
+<p>Get information about all attributes and headers.</p>
+
+<pre><code>    {
+      &#39;name&#39; =&gt; &#39;Alambic Attributes&#39;,
+      &#39;version&#39; =&gt; &#39;Sun Jul 30 10:16:57 2017&#39;,
+      &#39;children&#39; =&gt; {
+        &#39;ATTR1&#39; =&gt; {
+          &#39;name&#39; =&gt; &#39;Attribute 1&#39;,
+          &#39;mnemo&#39; =&gt; &#39;ATTR1&#39;,
+          &#39;desc&#39; =&gt; [
+            &#39;Desc&#39;
+          ]
+        }
+      }
+    }</code></pre>
+
+<h2 id="get_qm"><code>get_qm()</code></h2>
+
+<pre><code>    my $qm = $models-&gt;get_qm();</code></pre>
+
+<p>Get Quality Model description (without headers).</p>
+
+<h2 id="get_qm_full"><code>get_qm_full()</code></h2>
+
+<pre><code>    my $qm = $models-&gt;get_qm_full();</code></pre>
+
+<p>Get the full quality model for the documentation visualisation. This includes the quality model, with attributes and metrics and their values. Also includes headers.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="http://search.cpan.org/perldoc?Mojolicious">Mojolicious</a>, <a href="http://alambic.io">http://alambic.io</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a></p>
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+
