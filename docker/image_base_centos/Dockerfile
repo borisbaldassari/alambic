@@ -19,21 +19,15 @@ RUN rpm -Uvh https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86
 RUN adduser alambic \
     && echo passpass | passwd alambic --stdin
 
-
 # Install R and all dependencies
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm; \
     yum install -y R;
 COPY alambic_install_r_deps.sh /home/alambic/alambic_install_r_deps.sh
-
 RUN /bin/bash /home/alambic/alambic_install_r_deps.sh
-# chmod +x /home/alambic/alambic_install_r_deps.sh \ && 
-
-RUN echo "REBUILD ME now please! pf921"
 
 # Copy perl deps file for alambic
 COPY alambic_install_perl_deps.sh /home/alambic/alambic_install_perl_deps.sh
 RUN chown alambic /home/alambic/alambic_install_perl_deps.sh
-# bash chmod +x /home/alambic/alambic_install_perl_deps.sh \ &&
 
 # Install pandoc
 RUN yum -y install pandoc texlive-titling; yum clean all
