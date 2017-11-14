@@ -8,7 +8,6 @@ EXPOSE 3000
 USER alambic
 
 # Clone Alambic repository
-#RUN git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
 WORKDIR /home/alambic/alambic/
 COPY . .
 
