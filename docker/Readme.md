@@ -6,11 +6,17 @@ A few Docker images are setup:
 * A test image `image_test` built from `alambic_base_centos` that clones the Alambic repository and executes all tests.
 * A release image `alambic_ci` built from `alambic_base_centos` that provides a complete Alambic ready to use.
 
+The official repository for Alambic images is:
+
+* https://hub.docker.com/r/bbaldassari/alambic/
+
 Please note that both test and ci images need a postgresql container to run. A compose file (and codeship file) is provided to run the complete setup in one command.
 
 ## Running Alambic using compose
 
-The docker-compose.run.yml file at the root of the repository provides an integrated environment that uses the official docker postgresql 9.5 image, runs an init script and sets the application up for use.
+You can execute Alambic in a single command line, thanks to docker compose.
+
+The `docker-compose.run.yml` file at the root of the repository provides an integrated environment that uses the official docker `postgresql:9.5` and `bbaldassari/alambic` images, runs an init script and sets the application up for use.
 
 In the root of the Alambic repository, execute:
 `$ docker-compose -f docker-compose.run.yml up`

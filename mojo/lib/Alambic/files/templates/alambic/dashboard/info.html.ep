@@ -1,0 +1,36 @@
+% my $project_id = stash( 'project_id' );
+% my $run = stash( 'run' );
+
+            <h1 class="al-h1"><small><%= $project_id %></small> Project Information</h1>
+            <br />
+
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/data', project_id => $project_id
+            <br />
+
+            <div class="row">
+              <div class="col-sm-6">
+		        <p>This table lists all available information retrieved from plugins for this project.</p>
+              </div>
+              <div class="col-sm-6">
+                <div class="list-group">
+                  <a class="list-group-item" href="/projects/<%= $project_id %>/info.json" role="button"><i class="fa fa-download"></i> &nbsp; Download information (JSON)</a>
+                </div>
+              </div>
+            </div>
+            <br />
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th>Mnemo</th>
+                <th>Value</th>
+              </tr>
+% my $info = $run->{'info'};
+% foreach my $item (sort keys %{$info}) {
+              <tr>
+                <td><a href="/documentation/info.html#<%= $item %>"><%= $item %></a></td>
+                <td><a href="/documentation/info.html#<%= $item %>"><%= $info->{$item} %></a></td>
+                <td></td>
+              </tr>
+% }
+            </table>
+

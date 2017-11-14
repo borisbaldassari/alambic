@@ -1,0 +1,37 @@
+---
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+output: html_document
+---
+
+```{r init, echo=FALSE, message=FALSE}
+# Will be called as:
+# Rscript -e "library(rmarkdown); project.id <- 'modeling.sirius'; plugin.id <- 'ProjectSummary'; QM_PROCESS <- '4.0'; root.name <- 'Project Maturity'; QM_ECOSYSTEM <- '3.7'; QMN_QM_PROCESS <- 'Process'; root.value <- '3.9'; QMN_QM_ECOSYSTEM <- 'Ecosystem'; rmarkdown::render('psum_attrs.rmd', output_format='html_document', output_file='modeling.sirius_psum_attrs.html')"
+
+# Get attributes
+qms <- grep("^QM_.*", ls(), perl=TRUE, value=TRUE)
+# get their names
+qmsn <- grep("^QMN_.*", ls(), perl=TRUE, value=TRUE)
+text <- ""
+for (i in 1:length(qms) ) {
+  text.tmp <- paste( eval(parse(text = qmsn[[i]])), ' &nbsp; ', eval(parse(text = qms[[i]])), ' / 5', sep=" " )
+  text <- paste(text, '<br />', text.tmp, sep=" ")
+}
+```
+
+<p style="margin-top: 10px;"><b><span style="color:black; font-size: 150%">`r root.name` &nbsp; `r root.value` / 5</span></b>
+<span style="font-weight: bold">`r text`</span></p>
+
+

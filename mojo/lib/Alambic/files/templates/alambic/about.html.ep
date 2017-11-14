@@ -1,0 +1,61 @@
+
+            <h1 class="al-h1"><small>About</small> This web site</h1>
+            <br />
+
+            <div class="row">
+              <div class="col-lg-6">
+
+		        <h3>About this instance</h3>
+
+		        <p><b>Name</b> <br />
+		        <%= app->al->instance_name() %></p>
+		        <p><b>Description</b> <br />
+		        <%== app->al->instance_desc() %></p>
+
+              </div>
+              <div class="col-lg-6">
+                <br />
+
+                <div class="panel panel-default" style="border-color: #3E3F3A">
+                  <div class="panel-heading" style="color: white; background-color: #3E3F3A"><strong>Send message to administrator</strong></div>
+                  <div class="panel-body">
+
+                    <form action="contact" method="POST" class="form-horizontal" role="form">
+                      <fieldset>
+	                <label class="control-label">Name</label>
+	                <div class="controls">
+		          <div class="input-group">
+		            <span class="input-group-addon" style="border-color: #3E3F3A"><i class="fa fa-user"></i></span>
+		            <input type="text" class="input-xlarge form-control" style="border-color: #3E3F3A" name="name" placeholder="Name">
+		          </div>
+	                </div>
+	                <br />
+
+	                <label class="control-label">Email</label>
+	                <div class="controls">
+		          <div class="input-group">
+		            <span class="input-group-addon" style="border-color: #3E3F3A"><i class="fa fa-envelope"></i></span>
+		            <input type="text" class="form-control" style="border-color: #3E3F3A" id="email" name="email" placeholder="Email">
+		          </div>
+	                </div>
+	                <br />
+
+	                <label class="control-label">Message</label>
+	                <div class="controls">
+		          <div class="input-group">
+		            <span class="input-group-addon" style="border-color: #3E3F3A"><i class="fa fa-pencil"></i></span>
+		            <textarea name="message" class="form-control" style="border-color: #3E3F3A" rows="10" cols="78" placeholder="Enter your message here"></textarea>
+		          </div>
+	                </div>
+                      </fieldset>
+                      <br />
+
+                      <button class="btn btn-success pull-right" style="background-color: #5884b3" id="submit">submit</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <br />
+            <br />

@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+<head>
+    <title>CLI commands - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Basics.html">Basics</a>
+        </li>
+        <li class="">
+            <a href="../Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="../Admins.html">Admins</a>
+        </li>
+        <li class="active">
+            <a href="../Tasks.html">AdminTasks</a>
+        </li>
+        <li class="">
+            <a href="../Research.html">Research</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="Backups.html">Backups</a>
+        </li>
+        <li class="">
+            <a href="Customise.html">Customise</a>
+        </li>
+        <li class="">
+            <a href="Models.html">Models</a>
+        </li>
+        <li class="active">
+            <a href="CLI.html">CLI</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Alambic Command Line Interface</h1>
+
+<p>Alambic offers a command line interface for some of its features:</p>
+
+<ul>
+<li><code>about</code> Shows help and exit.</li>
+<li><code>init</code> Initialisation of the database and instance.</li>
+<li><code>backup</code> Backup the database.</li>
+<li><code>password</code> resets the password of an Alambic user.</li>
+</ul>
+
+<h2>Using the Alambic CLI:</h2>
+
+<p>On the file system, go to the <code>mojo</code> directory and issue the following commands:
+<code>
+bin/alambic alambic &lt;command&gt; &lt;options&gt;
+</code></p>
+
+<h2>about</h2>
+
+<p>Prints usage and exit.</p>
+
+<pre><code>$ bin/alambic about
+
+Welcome to the Alambic application.
+
+See http://alambic.io for more information about the project.
+
+Usage: alambic &lt;command&gt;
+
+Alambic commands:
+* alambic about                 Display this help text.
+* alambic init                  Initialise the database.
+* alambic backup                Backup the database.
+* alambic password user mypass  Reset password for user.
+
+Other Mojolicious commands:
+* alambic minion                Manage job queuing system.
+* alambic daemon                Run application in development mode.
+* alambic prefork               Run application in production (multithreaded) mode.
+</code></pre>
+
+<h2>init</h2>
+
+<p>Initialise the database and set basic settings for Alambic (name, description), and create a administrator password with default values.</p>
+
+<pre><code>boris@midkemia mojo $ bin/alambic init
+Database is nok or is empty.
+Initialising database.
+Initialising instance parameters.
+Creating administrator account.
+</code></pre>
+
+<p>Default values for administrator account are:</p>
+
+<ul>
+<li>login: <code>administrator</code>,</li>
+<li>name:<code>Administrator</code>,</li>
+<li>email: <code>alambic@castalia.solutions</code>,</li>
+<li>password: <code>password</code>,</li>
+<li>roles: ['Admin']</li>
+</ul>
+
+<p>For safety, if the database is already populated then the init command fails. In this case remove tables manually (or re-create the database) and re-execute the command.</p>
+
+<h2>backup</h2>
+
+<p>Start a complete backup of the Alambic database.</p>
+
+<pre><code>$ bin/alambic backup
+Starting database backup.
+Database has been backed up in [backups/alambic_backup_201707281338.sql].
+</code></pre>
+
+<h2>password</h2>
+
+<p>Reset the password of an Alambic user.</p>
+
+<pre><code>$ alambic password administrator newpassword
+Successfully changed password for user [Administrator].
+</code></pre>
+
+<h2>test</h2>
+
+<p>Run the complete Alambic test suite.</p>
+
+<p><span class="label label-danger">Danger</span> &nbsp; This will erase the test database. Double check that your configuration is correct.</p>
+
+<pre><code>boris@midkemia mojo $ bin/alambic test
+Running tests from "/home/boris/Projects/bb_alambic/mojo/bin/../t".
+/home/boris/Projects/bb_alambic/mojo/bin/../t/ui/001_basic.t ............. ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/ui/002_documentation.t ..... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/ui/010_admin.t ............. ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/ui/011_auth.t .............. ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Alambic.t ....... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Models.t ........ ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Plugins.t ....... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Project.t ....... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/RepoDB.t ........ ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/RepoFS.t ........ ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Tools.t ......... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Users.t ......... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Wizards.t ....... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Plugins/EclipsePmi.t .. ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Tools/Git.t ........... 1/? Clonage dans 'projects/test.project/src'... at /home/boris/Projects/bb_alambic/mojo/bin/../lib/Alambic/Tools/Git.pm line 183.
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Tools/Git.t ........... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Tools/R.t ............. ok
+All tests successful.
+Files=16, Tests=603, 160 wallclock secs ( 0.09 usr  0.05 sys +  9.34 cusr  0.90 csys = 10.38 CPU)
+Result: PASS
+</code></pre>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

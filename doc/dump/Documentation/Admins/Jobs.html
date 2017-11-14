@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+<head>
+    <title>Admin &gt; Jobs - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Basics.html">Basics</a>
+        </li>
+        <li class="">
+            <a href="../Users.html">Users</a>
+        </li>
+        <li class="active">
+            <a href="../Admins.html">Admins</a>
+        </li>
+        <li class="">
+            <a href="../Tasks.html">AdminTasks</a>
+        </li>
+        <li class="">
+            <a href="../Research.html">Research</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="Summary.html">Summary</a>
+        </li>
+        <li class="">
+            <a href="Database.html">Database</a>
+        </li>
+        <li class="">
+            <a href="Models.html">Models</a>
+        </li>
+        <li class="active">
+            <a href="Jobs.html">Jobs</a>
+        </li>
+        <li class="">
+            <a href="Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="Tools.html">Tools</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Admin > Jobs</h1>
+
+<p>This section displays the list of jobs in the queue.</p>
+
+<p><img src="/images/admins_jobs.png" alt="Alambic Admin Web UI" /></p>
+
+<h2>Information</h2>
+
+<p>Information displayed for each job is:</p>
+
+<ul>
+<li>Job ID</li>
+<li>Task executed by the job, e.g. run_analysis, run_plugin.</li>
+<li>Status, one of <code>inactive</code>, <code>active</code>, <code>failed</code>, or <code>finished</code>.</li>
+<li>Dates of creation (and end, if the job has completed) of the job.</li>
+<li>Arguments provided to the Job for its execution.</li>
+</ul>
+
+<p>For each job, administrators can (icons on the left, from left to right):
+* Show details (including log) of the job.
+* Restart the job with same set of arguments.
+* Delete the jobs.</p>
+
+<p>See the <a href="http://mojolicious.org/perldoc/Minion/Job">documentation for Minion jobs</a> for more details.</p>
+
+<p>Successful (i.e. in status <code>finished</code>) jobs are automatically deleted after one day.</p>
+
+<h2>Minion</h2>
+
+<p><a href="http://mojolicious.org/perldoc/Minion">Minion</a> is a queue management system finely integrated into Mojolicious. It uses a Postgresql database to store information about the jobs, and can be commanded directly <a href="http://search.cpan.org/~sri/Minion-7.05/lib/Minion/Command/minion/job.pm">from the command line</a>.</p>
+
+<p>You need to start a worker for minion to manage the queue and actually do the work. This is achieved by issuing in a command line:</p>
+
+<pre><code>boris@midkemia mojo $ bin/alambic minion worker
+</code></pre>
+
+<p>The list of jobs in queue can be obtained from the command line:</p>
+
+<pre><code>boris@midkemia mojo $ bin/alambic minion job
+142  finished  default  run_project
+141  finished  default  run_project
+</code></pre>
+
+<p>Display list of workers running:</p>
+
+<pre><code>boris@midkemia mojo $ bin/alambic minion job -w
+83  midkemia:837
+</code></pre>
+
+<p>Display statistics about the queue:</p>
+
+<pre><code>boris@midkemia mojo $ bin/alambic minion job -s
+{
+  "active_jobs" =&gt; 0,
+  "active_workers" =&gt; 0,
+  "delayed_jobs" =&gt; 0,
+  "enqueued_jobs" =&gt; 215,
+  "failed_jobs" =&gt; 3,
+  "finished_jobs" =&gt; 1,
+  "inactive_jobs" =&gt; 0,
+  "inactive_workers" =&gt; 1
+}
+</code></pre>
+
+<p>The full list of options for the Minion queueing system is:</p>
+
+<pre><code>boris@midkemia mojo $ bin/alambic minion help job
+Usage: APPLICATION minion job [OPTIONS] [IDS]
+
+  ./myapp.pl minion job
+  ./myapp.pl minion job 10023
+  ./myapp.pl minion job -w
+  ./myapp.pl minion job -w 23
+  ./myapp.pl minion job -s
+  ./myapp.pl minion job -f 10023
+  ./myapp.pl minion job -q important -t foo -S inactive
+  ./myapp.pl minion job -e foo -a '[23, "bar"]'
+  ./myapp.pl minion job -e foo -P 10023 -P 10024 -p 5 -q important
+  ./myapp.pl minion job -R -d 10 10023
+  ./myapp.pl minion job --remove 10023
+  ./myapp.pl minion job -b jobs -a '[12]'
+  ./myapp.pl minion job -b jobs -a '[12]' 23 24 25
+
+Options:
+  -A, --attempts &lt;number&gt;     Number of times performing this new job will be
+                              attempted, defaults to 1
+  -a, --args &lt;JSON array&gt;     Arguments for new job or worker remote control
+                              command in JSON format
+  -b, --broadcast &lt;command&gt;   Broadcast remote control command to one or more
+                              workers
+  -d, --delay &lt;seconds&gt;       Delay new job for this many seconds
+  -e, --enqueue &lt;task&gt;        New job to be enqueued
+  -f, --foreground            Retry job in "minion_foreground" queue and
+                              perform it right away in the foreground (very
+                              useful for debugging)
+  -h, --help                  Show this summary of available options
+      --home &lt;path&gt;           Path to home directory of your application,
+                              defaults to the value of MOJO_HOME or
+                              auto-detection
+  -l, --limit &lt;number&gt;        Number of jobs/workers to show when listing
+                              them, defaults to 100
+  -m, --mode &lt;name&gt;           Operating mode for your application, defaults to
+                              the value of MOJO_MODE/PLACK_ENV or
+                              "development"
+  -o, --offset &lt;number&gt;       Number of jobs/workers to skip when listing
+                              them, defaults to 0
+  -P, --parent &lt;id&gt;           One or more jobs the new job depends on
+  -p, --priority &lt;number&gt;     Priority of new job, defaults to 0
+  -q, --queue &lt;name&gt;          Queue to put new job in, defaults to "default",
+                              or list only jobs in this queue
+  -R, --retry                 Retry job
+      --remove                Remove job
+  -S, --state &lt;name&gt;          List only jobs in this state
+  -s, --stats                 Show queue statistics
+  -t, --task &lt;name&gt;           List only jobs for this task
+  -w, --workers               List workers instead of jobs, or show
+                              information for a specific worker
+</code></pre>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

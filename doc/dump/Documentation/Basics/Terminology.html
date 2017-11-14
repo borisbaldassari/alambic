@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+    <title>Terminology - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="../Basics.html">Basics</a>
+        </li>
+        <li class="">
+            <a href="../Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="../Admins.html">Admins</a>
+        </li>
+        <li class="">
+            <a href="../Tasks.html">AdminTasks</a>
+        </li>
+        <li class="">
+            <a href="../Research.html">Research</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="active">
+            <a href="Terminology.html">Terminology</a>
+        </li>
+        <li class="">
+            <a href="QualityModel.html">QualityModel</a>
+        </li>
+        <li class="">
+            <a href="Exports.html">Exports</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Terminology</h1>
+
+<h2>Quality attributes</h2>
+
+<p><strong>Quality attributes</strong> represent features of quality you want to achieve, like maintainability (for product) or activity (for community). It is defined on a scale from 1 (poor) to 5 (excellent). Attributes also have a confidence interval (e.g. 5/7) that shows how many metrics were actually used to compute it, compared to the total number of metrics that should have been used (in the case of missing metrics).</p>
+
+<p>Since everybody has a different meaning for such characteristics, it is vital to precisely define them to setup a semantic foundation for all participants. It is a good idea to rely on existing models for these definitions, like ISO 9126 or ISO 250xx.</p>
+
+<p>The complete list of attributes for an Alambic instance is self-documented on the instance itself, in the Documentation > Attributes section. En example can be found on one of the demonstration instances, e.g. <a href="http://eclipse.castalia.camp/documentation/attributes.html">eclipse.alambic.io</a>.</p>
+
+<p>In Alambic attributes are defined through an ID, a name, and a description. See <a href="/Documentation/Admins/Models.html">Admins > Models</a> for more details about the JSON format.</p>
+
+<h2>Indicators</h2>
+
+<p>Indicators range from 1 (bad) to 5 (excellent). They are entirely subjective, since they will vary depending on the project's context and on people's understanding of what is good or not. In other words they are a localised judgement on the raw numbers collected from the data sources.</p>
+
+<p>Indicators are computed from metrics using the scales.</p>
+
+<h2>Scales</h2>
+
+<p>Scales define what is bad, good or excellent regarding the collected numbers. They are a way of <em>adapting</em> raw numbers to the local context and give hints about the interpretation of numbers.</p>
+
+<p>Scales provide thresholds, so they are defined as an array of 4 integers as in: <code>[15, 30, 50, 80]</code>. In this case, percentages from 0 to 15% would be classified 1/5, from 16 to 30% would be 2/5, from 31 to 50% would be 3/5, from 51 to 80% would be 4/5, and over 81% would be 5/5.</p>
+
+<p><img src="/images/alambic_presentation_metrics.jpeg" alt="alambic_presentation_metrics.jpeg" /></p>
+
+<p>It should be noted that:</p>
+
+<ul>
+<li>Different tools may induce a different meaning for the same metric. With Git, having a huge number of branches is considered normal, since most projects use branches to develop new features and fixes. In subversion a similar high number of branches would probably indicate a bad branch management.</li>
+<li>Different processes or contexts may also impact scales: some projects try to treat and close bugs as soon as possible while others let them exist for a very long time, until someone simply treat them. Those are different ways of managing issues, none is really wrong, just choose yours and apply sensible limits (i.e. scales).</li>
+</ul>
+
+<h2>Metrics</h2>
+
+<p>Metrics are the base measures used to assess the quality model. Examples of metrics include <code>Number of emails sent on the developer mailing list during last week</code> or <code>Number of commits during last week</code>.</p>
+
+<p>The complete list of metrics for an Alambic instance is self-documented on the instance itself, in the Documentation > Metrics section. En example can be found on one of the demonstration instances, e.g. <a href="http://eclipse.castalia.camp/documentation/metrics.html">eclipse.alambic.io</a>.</p>
+
+<p>In Alambic metrics are defined through an ID, a name, description, and an associated scale. See <a href="/Documentation/Admins/Models.html">Admins > Models</a> for more details about the JSON format.</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

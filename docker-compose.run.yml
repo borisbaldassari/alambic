@@ -6,6 +6,8 @@ services:
     environment:
         POSTGRES_PASSWORD: pass4alambic
         POSTGRES_USER: alambic
+    volumes:
+    - alambic_db:/var/lib/postgresql/data
   alambic_ci:
     image: bbaldassari/alambic_ci
     command: su - alambic -c "sh /home/alambic/alambic/docker/image_ci/alambic_init_start.sh"
@@ -13,4 +15,9 @@ services:
     - "3000:3000"
     depends_on:
     - postgres_ci
-
+    volumes:
+    - alambic_fs:/home/alambic
+volumes:
+    alambic_db:    
+    alambic_fs:
+    

@@ -1,0 +1,168 @@
+---
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+title: "Alambic -- R analysis document"
+author: "Boris Baldassari"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+---
+
+
+```{r init, echo=FALSE, message=FALSE}
+library(xts)
+library(ggplot2)
+require(xtable)
+
+knitr::opts_chunk$set(
+  fig.align = 'center',
+  warning=FALSE,
+  error=TRUE,
+  echo=FALSE,
+  message=FALSE,
+  progress = TRUE)
+
+#project.id <- 'test.project'
+
+file.metrics <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_metrics.csv", sep="")
+metrics <- read.csv(file=file.metrics, header=T)
+
+file.indics <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_indics.csv", sep="")
+indics <- read.csv(file=file.indics, header=T)
+
+file.attributes <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_attributes.csv", sep="")
+attributes <- read.csv(file=file.attributes, header=T)
+
+file.metrics_ref <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_metrics_ref.csv", sep="")
+metrics_ref <- read.csv(file=file.metrics_ref, header=T)
+
+file.attrs_ref <- paste("../../../../projects/", project.id, "/output/",
+ project.id, "_attrs_ref.csv", sep="")
+attrs_ref <- read.csv(file=file.attrs_ref, header=T)
+```
+
+# Summary
+
+This plugin generates a PDF document with information about project **`r project.id`**.
+
+This plugin is intended as an example of [R Markdown document](http://rmarkdown.rstudio.com/) to help people easily setup their own R analysis on software development data.
+
+
+# Metrics
+
+\begin{centering}
+
+```{r table_metrics, results='asis', echo=FALSE}
+print( xtable( metrics, 
+       align="|c|p{5cm}|p{3cm}|"), comment=FALSE,
+       include.rownames=FALSE, include.colnames=TRUE, 
+       floating=FALSE, size="\\scriptsize" )
+```
+
+\end{centering}
+
+```{r metrics_list, results='asis', echo=FALSE}
+f_m <- function(x, output) {
+  name <- paste("\n\n## ", x[2], sep=" ")
+  id <- paste("ID: ", x[1], sep=" ")
+  if ( sum(indics[,1]==x[1]) ) {
+    value <- paste("Value: ", metrics[metrics[,1]==x[1], 2], 
+      " ( ", indics[indics[,1]==x[1], 2], " / 5 ) ", sep="")
+  } else {
+    value <- paste("Value: ", metrics[metrics[,1]==x[1], 2], sep=" ")
+  }
+  desc <- paste("Description: ", x[3], sep=" ")
+  paste(name, id, value, desc, sep="\n\n") 
+}
+cat( paste( apply(metrics_ref, 1, f_m), sep="" ) )
+```
+
+
+# Attributes
+
+\begin{centering}
+
+```{r table_attrs, results='asis'}
+print( xtable( attributes, 
+       align="|c|p{5cm}|p{3cm}|"), comment=FALSE,
+       include.rownames=FALSE, include.colnames=TRUE, 
+       floating=FALSE, size="\\scriptsize" )
+```
+
+\end{centering}
+
+```{r attrs_list, results='asis', echo=FALSE}
+f_a <- function(x, output) {
+  name <- paste("\n\n## ", attrs_ref[attrs_ref[,1]==x[1], 2], sep=" ")
+  id <- paste("ID: ", x[1], sep=" ")
+  value <- paste("Value: ", attributes[attributes[,1]==x[1], 2], " / 5 ", sep=" ")
+  desc <- paste("Description: ", attrs_ref[attrs_ref[,1]==x[1], 3], sep=" ")
+  paste(name, id, value, desc, sep="\n\n") 
+}
+cat( paste( apply(attributes, 1, f_a), sep="" ) )
+```
+
+
+# Git analysis
+
+```{r git}
+file.evol = paste("../../../../projects/", project.id, "/output/",
+	  project.id, "_git_commits.csv", sep="")
+
+evol <- read.csv(file=file.evol, header=T)
+
+commits_vol <- sum(evol$commits)
+authors_vol <- sum(evol$authors)
+
+evol_xts <- xts(x=evol[,2-3], order.by=as.POSIXct(evol$date))
+```
+
+The repository contains a total of ``r commits_vol`` commits made by ``r metrics[metrics[,1]=='SCM_AUTHORS',2]`` authors. The first commit was made on the ``r evol[1,1]`` and the last analysed commits was made on ``r evol[nrow(evol),1]``.
+
+During the last month, there has been ``r metrics[metrics[,1]=='SCM_COMMITS_1M',2]`` commits made by ``r metrics[metrics[,1]=='SCM_AUTHORS_1M',2]`` authors.
+
+## Weekly commits 
+
+```{r git_commits, fig.width=6, fig.height=3}
+require(ggthemes)
+
+ep <- endpoints(evol_xts, on = 'weeks')
+evol_xts_commits <- period.apply(x=evol_xts[,1], INDEX=ep, FUN=sum)
+ggplot(evol_xts_commits, aes(x=index(evol_xts_commits), y=commits)) +
+			 geom_line() +
+			 theme_tufte() +
+			 labs(x="Date", y="Weekly commits",
+			      title="Weekly commits for project",
+			      caption="Based on data from Alambic")
+
+```
+
+## Weekly authors 
+
+```{r git_authors, fig.width=6, fig.height=3}
+evol_xts_authors <- period.apply(x=evol_xts[,2], INDEX=ep, FUN=sum)
+ggplot(evol_xts_authors, aes(x=index(evol_xts_authors), y=authors)) +
+			 geom_line() +
+			 theme_tufte() +
+			 labs(x="Date", y="Weekly authors",
+			      title="Weekly authors for project",
+			      caption="Based on data from Alambic")
+```
+

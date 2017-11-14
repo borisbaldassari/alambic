@@ -1,0 +1,372 @@
+% my $project_id = stash( 'project_id' );
+% my $run = stash( 'run' );
+% use Data::Dumper;
+% my $project = app->al->get_project($project_id);
+% my $models = app->al->get_models();
+% my $attributes = $project->attributes();
+% my $attributes_conf = $project->attributes_conf();
+% my $plugins = app->al->get_plugins();
+% my $plugins_list = $plugins->get_names_all();
+% my $colours = ["#EBEBEB","#FFFF66","#CCF24D","#99E633","#66D91A","#33CC00"];
+% my %recs_txt = (
+%   1 => 'Low',
+%   2 => 'Medium',
+%   3 => 'High',
+% );
+
+<% my $comp_p = begin %>
+ % my $value = shift || 0;
+ % return $value * 20;
+<% end %>
+
+<% my $comp_c = begin %>
+ % my $value = shift || 0;
+ % return $colours->[int($value)];
+<% end %>
+
+<% my $icon_ability = begin %>
+ % my $ability = shift;
+ % my $plugin = shift;
+ % my ($icon, $name);
+ % if ($ability =~ m!metrics!) { $icon = "fa-tasks"; $name = "Metrics" }
+ % elsif ($ability =~ m!figs!) { $icon = "fa-picture-o"; $name = "Figures" }
+ % elsif ($ability =~ m!info!) { $icon = "fa-info-circle"; $name = "Information" }
+ % elsif ($ability =~ m!data!) { $icon = "fa-download"; $name = "Downloads" }
+ % elsif ($ability =~ m!recs!) { $icon = "fa-map-signs"; $name = "Recommendations" }
+ % elsif ($ability =~ m!user!) { $icon = "fa-users"; $name = "User information" }
+ % elsif ($ability =~ m!viz!) { $icon = "fa-pie-chart"; $name = "Visualisation" }
+ % else { $icon = "fa-question" }
+  <span data-toggle="tooltip" data-placement="top" title="<%= $name %>"><i class="fa <%= $icon %>"></i></span>
+ <% end %>
+
+            <h1 class="al-h1"><small><%= $project_id %></small> Summary</h1>
+            <br />
+
+% my $msg = flash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-12">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%== $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/summary', project_id => "$project_id"
+            <br />
+
+	    <!-- span class="label" style="background-color: #3E3F3A">#3E3F3A</span>
+	    <span class="label" style="background-color: #FFA500">#FFA500</span>
+	    <span class="label" style="background-color: #5884B3">#5884B3</span>
+	    <span class="label" style="background-color: #CC6686">#CC6686</span>
+	    <span class="label" style="background-color: #9DBE59">#9DBE59</span -->
+
+            <br />
+
+	    <div class="row">
+              <div class="col-md-6">
+              </div>
+              <div class="col-md-6">
+              </div>
+            </div>
+            <dl class="dl-horizontal">
+	      <dt>ID</dt><dd><%= $project_id %></dd>
+	      <dt>Name</dt><dd><%= $project->name() %></dd>
+              <dt>Description</dt><dd><%== $project->desc() %></dd>
+	      <dt>Last analysis</dt><dd>Executed on <code><%= $run->{'run_time'} %></code> by <code><%= $run->{'run_user'} %></code>, took <code><%= $run->{'run_delay'} %></code> seconds.</dd>
+            </dl>
+
+	    <br />
+
+	    <div class="row">
+              <div class="col-lg-4">
+                <div class="panel panel-default">
+		  <div class="panel-heading">Quality Model</div>
+                  <div class="panel-body">
+
+% my $attr = 'QM_QUALITY';
+                    <dt style="margin-bottom: 5px"><a href="/documentation/attributes.html#<%= $attr %>">Project Health</a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
+                    <dd>
+                      <div class="progress">
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} || 0%> / 5</div>
+                      </div>
+                    </dd>
+		    <hr />
+
+% $attr = 'QM_ECOSYSTEM';
+                    <dt style="margin-bottom: 5px"><a href="/documentation/attributes.html#<%= $attr %>">Ecosystem</a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
+                    <dd>
+                      <div class="progress">
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} || '' %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} %> / 5</div>
+                      </div>
+                    </dd>
+
+% $attr = 'QM_PROCESS';
+                    <dt style="margin-bottom: 5px"><a href="/documentation/attributes.html#<%= $attr %>">Process</a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
+                    <dd>
+                      <div class="progress">
+			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} || '' %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} %> / 5</div>
+                      </div>
+                    </dd>
+
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="panel panel-default">
+		  <div class="panel-heading">Downloads</div>
+                  <table class="table table-striped">
+		    <tr><td><a href="/projects/<%= $project_id %>/info.html">Information</a> <span class="pull-right"><span class="badge"><%= scalar keys %{( $run->{'info'} || {} )} %></span> &nbsp; <a href="/projects/<%= $project_id %>/info.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/info.json"><i class="fa fa-download fa-lg"></i></a></span></td></tr>
+		    <tr><td><a href="/projects/<%= $project_id %>/metrics.html">Metrics</a> <span class="pull-right"><span class="badge"><%= scalar keys ( %{$run->{'metrics'} || {}} ) %></span> &nbsp; <a href="/projects/<%= $project_id %>/metrics.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/metrics.json"><i class="fa fa-download fa-lg"></i></a></span></td></tr>
+		    <tr><td><a href="/projects/<%= $project_id %>/attributes.html">Attributes</a> <span class="pull-right"><span class="badge"><%= scalar keys ( %{$run->{'attributes'} || {}} ) %></span> &nbsp; <a href="/projects/<%= $project_id %>/attributes.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/attributes.json"><i class="fa fa-download fa-lg"></i></a></span></td></tr>
+		    <tr><td><a href="/projects/<%= $project_id %>/recs.html">Recommendations</a> <span class="pull-right"><span class="badge"><%= scalar @{$run->{'recs'} || []} %></span> &nbsp; <a href="/projects/<%= $project_id %>/recs.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/recs.json"><i class="fa fa-download fa-lg"></i></a></span></td></tr>
+		    <tr><td><a href="/projects/<%= $project_id %>/qm.html">Quality Model</a> <span class="pull-right"><a href="/projects/<%= $project_id %>/qm.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp; <a href="/projects/<%= $project_id %>/qm_full.json"><i class="fa fa-download fa-lg"></i></a></span></td></tr>
+		    </table>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="panel panel-default">
+		  <div class="panel-heading">Data providers</div>
+		  <ul class="list-group">
+% foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   next if not ( grep $_ eq $p, @{$plugins->get_list_plugins_pre()} );
+%   my $conf = $plugins->get_plugin($p)->get_conf();
+            <li class="list-group-item"><%= $plugins_list->{$p} %>
+		      <span class="pull-right">
+			    <a href="/documentation/plugins#<%= $p %>"><i class="fa fa-question-circle fa-lg"></i></a> &nbsp;
+		        <a href="/projects/<%= $project_id %>/<%= $p %>.html"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
+		        <%== join( ' &nbsp; ', map { $icon_ability->($_, $p) } sort @{$conf->{'ability'}} ) %>
+              </span>
+		    </li>
+% }
+		  </ul>
+                </div>
+              </div>
+            </div>
+
+	    <hr />
+
+	    <div class="panel-group" id="accordion_info">
+	      <div class="panel panel-default">
+		<div class="panel-heading">
+		  <a data-toggle="collapse" data-parent="#accordion_info" href="#collapse_info">Information </a>
+		</div>
+		<div id="collapse_info" class="panel-collapse collapse">
+
+		  <table class="table table-striped table-condensed table-hover">
+		    <tr>
+                      <th width="20%">Mnemo</th>
+                      <th width="80%">Value</th>
+		    </tr>
+% my $info = $run->{'info'};
+% foreach my $item (sort keys %{$info}) {
+		    <tr>
+                      <td><%= $item %></td>
+                      <td><%= $info->{$item} %></td>
+                      <td></td>
+		    </tr>
+% }
+		  </table>
+
+		</div>
+	      </div>
+	    </div>
+
+	    <div class="panel-group" id="accordion_metrics">
+	      <div class="panel panel-default">
+		<div class="panel-heading">
+		  <a data-toggle="collapse" data-parent="#accordion_metrics" href="#collapse_metrics">Metrics </a>
+		</div>
+		<div id="collapse_metrics" class="panel-collapse collapse">
+
+		  <table class="table table-striped table-condensed table-hover">
+		    <tr>
+                      <th width="20%">Name</th>
+                      <th width="10%">Mnemo</th>
+                      <th width="50%">Description</th>
+                      <th width="10%">Value</th>
+                      <th width="10%">Indicator</th>
+		    </tr>
+% my $metrics = $run->{'metrics'};
+% my $inds = $run->{'indicators'};
+% my $metrics_def = $models->get_metrics();
+% my $metrics_active = $models->get_metrics_active();
+% foreach my $item (sort keys %{$metrics}) {
+%   if ( grep( /^$item$/, @{$metrics_active} ) ) {
+		    <tr>
+                      <td><a href="/documentation/metrics.html#<%= $item %>"><%= $metrics_def->{$item}->{'name'} %></a></td>
+                      <td><a href="/documentation/metrics.html#<%= $item %>"><%= $item %></a></td>
+                      <td><%= $models->get_metric($item)->{'description'}->[0] %></td>
+                      <td><%= $metrics->{$item} %></td>
+                      <td><%= $inds->{$item} %></td>
+		    </tr>
+%   }
+% }
+		  </table>
+
+		</div>
+	      </div>
+	    </div>
+
+
+	    <div class="panel-group" id="accordion_attrs">
+	      <div class="panel panel-default">
+		<div class="panel-heading">
+		  <a data-toggle="collapse" data-parent="#accordion_attrs" href="#collapse_attrs">Attributes </a>
+		</div>
+		<div id="collapse_attrs" class="panel-collapse collapse">
+
+		  <table class="table table-striped table-condensed table-hover">
+		    <tr>
+                      <th width="20%">Name</th>
+                      <th width="10%">Mnemo</th>
+                      <th width="50%">Description</th>
+                      <th width="10%">Value</th>
+                      <th width="10%">Confidence</th>
+		    </tr>
+% foreach my $attr (sort keys %{$attributes}) {
+%   my $myattr = defined($models->get_attribute($attr)) ? $models->get_attribute($attr)->{'name'} : $attr;
+		    <tr>
+                      <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $myattr %></a></td>
+                      <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attr %></a></td>
+                      <td><%== defined($models->get_attribute($attr)) ? $models->get_attribute($attr)->{'description'}->[0] : '' %></td>
+                      <td><%= $attributes->{$attr} %></td>
+                      <td><%= $attributes_conf->{$attr} %></td>
+		    </tr>
+% }
+		  </table>
+
+		</div>
+	      </div>
+	    </div>
+
+
+	    <div class="panel-group" id="accordion_recs">
+	      <div class="panel panel-default">
+		<div class="panel-heading">
+		  <a data-toggle="collapse" data-parent="#accordion_recs" href="#collapse_recs">Recommendations </a>
+		</div>
+		<div id="collapse_recs" class="panel-collapse collapse">
+
+		  <table class="table table-striped table-condensed table-hover">
+		    <tr>
+                      <th width="20%">Type</th>
+                      <th width="10%">Severity</th>
+                      <th width="70%">Description</th>
+		    </tr>
+% foreach my $item (sort { $b->{'severity'} <=> $a->{'severity'} } @{$run->{'recs'} || []}) {
+%   next if ( $item->{'severity'} != 3 );
+		      <tr>
+			<td><%= $item->{'rid'} %></td>
+			<td><%= $recs_txt{ $item->{'severity'} } %></td>
+			<td><%= $item->{'desc'} %></td>
+		      </tr>
+% }
+		  </table>
+		</div>
+	      </div>
+	    </div>
+
+	    <div class="panel-group" id="accordion_data">
+	      <div class="panel panel-default">
+		<div class="panel-heading">
+		  <a data-toggle="collapse" data-parent="#accordion_data" href="#collapse_data">Downloads </a>
+		</div>
+		<div id="collapse_data" class="panel-collapse collapse">
+
+		  <table class="table table-striped table-condensed table-hover">
+		    <tr>
+                      <th width="20%">Plugin</th>
+                      <th width="40%">Description</th>
+                      <th width="40%">URL</th>
+		    </tr>
+% my $list_data = $plugins->get_list_plugins_data();
+% foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   if (grep( /$p/, @$list_data )) {
+%     my $plugin_data = $plugins->get_plugin($p)->get_conf()->{'provides_data'};
+%     foreach my $pd (sort keys %{$plugin_data}) {
+		    <tr id="data_<%= $p %>">
+		      <td><%= $p %></td>
+		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>"><%= $pd %></a><br /><%= $plugin_data->{$pd} %></td>
+		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>">/projects/<%= $project_id %>/<%= $p %>/<%= $pd %></a></td>
+		    </tr>
+%     }
+%   }
+% }
+		  </table>
+
+		</div>
+	      </div>
+	    </div>
+
+	    <div class="panel-group" id="accordion_figs">
+	      <div class="panel panel-default">
+		<div class="panel-heading">
+		  <a data-toggle="collapse" data-parent="#accordion_figs" href="#collapse_figs">Figures </a>
+		</div>
+		<div id="collapse_figs" class="panel-collapse collapse">
+
+		  <table class="table table-striped table-condensed table-hover">
+		    <tr>
+                      <th width="20%">Plugin</th>
+                      <th width="40%">Description</th>
+                      <th width="40%">URL</th>
+		    </tr>
+% my $list_figs = $plugins->get_list_plugins_figs();
+% foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   if (grep( /$p/, @$list_figs )) {
+%     my $plugin_figs = $plugins->get_plugin($p)->get_conf()->{'provides_figs'};
+%     foreach my $pd (sort keys %{$plugin_figs}) {
+		    <tr id="figs_<%= $p %>">
+		      <td><%= $p %></td>
+		      <td><%= $plugin_figs->{$pd} %></td>
+		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>">/projects/<%= $project_id %>/<%= $p %>/<%= $pd %></a></td>
+		    </tr>
+%     }
+%   }
+% }
+		  </table>
+
+		</div>
+	      </div>
+	    </div>
+
+	    <div class="panel-group" id="accordion_viz">
+	      <div class="panel panel-default">
+		<div class="panel-heading">
+		  <a data-toggle="collapse" data-parent="#accordion_viz" href="#collapse_viz">Visualisation </a>
+		</div>
+		<div id="collapse_viz" class="panel-collapse collapse">
+
+		  <table class="table table-striped table-condensed table-hover">
+		    <tr>
+                      <th width="20%">Plugin</th>
+                      <th width="40%">Name</th>
+                      <th width="40%">URL</th>
+		    </tr>
+% my $list_viz = $plugins->get_list_plugins_viz();
+% foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   if (grep( /$p/, @$list_viz )) {
+%     my $plugin_viz = $plugins->get_plugin($p)->get_conf()->{'provides_viz'};
+%     my $plugin_name = exists($plugins_list->{$p}) ? $plugins_list->{$p} : "Unknown";
+%     foreach my $pv (sort keys %{$plugin_viz}) {
+		    <tr id="viz_<%= $p %>">
+		      <td><%= $p %></td>
+		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pv %>"><%= $plugin_viz->{$pv} %></a></td>
+		      <td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pv %>">/projects/<%= $project_id %>/<%= $p %>/<%= $pv %></a></td>
+		    </tr>
+%     }
+%   }
+% }
+		  </table>
+
+		</div>
+	      </div>
+	    </div>
+
+	    <hr />
+            <p class="pull-right">Last analysis was on <%= defined( $run->{'run_time'} ) ? "" . $run->{'run_time'} : 'Never' %>.</p>
+            <br />
+

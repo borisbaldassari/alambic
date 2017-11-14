@@ -1,0 +1,90 @@
+
+            <h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>
+
+% my $msg = flash 'msg';
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%= $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+            <div class="row">
+              <div class="col-lg-6">
+                <br />
+                <img src="/images/logo_alambic.jpg" class="img-responsive" style="margin: 0px" alt="Alambic logo" /> 
+              </div>
+              <div class="col-lg-6">
+                <br />
+
+		<h2><%== app->al->instance_name() %></h2>
+
+		<br />
+                <blockquote><%== app->al->instance_desc() %></blockquote>
+		<hr />
+		<p>This web site is an instance of <a href="http://alambic.io">Alambic</a>, an <a href="http://www.bitbucket.org/BorisBaldassari/alambic">open-source</a> framework and service for software development data analysis and management. Learn more about the software in the <a href="/about.html">About section</a>.</p>
+              </div>
+            </div>
+
+            <br />
+ 
+            <div class="row">
+
+              <div class="col-lg-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading"><i class="fa fa-dashboard fa-fw"></i> Projects</div>
+                  <table class="table table-striped">
+		    <tr>
+		      <th width="40%">Name</th>
+		      <th width="40%">Last analysis</th>
+		    </tr>
+% my $projects = app->al->get_projects_list();
+% foreach my $project (sort keys %$projects) {
+%   my $proj_full = app->al->get_project($project);
+%   next if (not $proj_full->active);
+		    <tr>
+                      <td><a href="/projects/<%= $project %>"><%= $projects->{$project} %></a></td>
+                      <td><%= $proj_full->last_run() %></td>
+		    </tr>
+% }
+                  </table>
+                </div>
+              </div>
+	      
+              <div class="col-lg-6">
+		
+                <div class="panel panel-default">
+                  <div class="panel-heading"><a href="documentation/main.html"><i class="fa fa-life-ring fa-fw"></i> Documentation</a></div>
+		  <div class="panel-body">
+		    <p>The complete retrieval and analysis process is fully documented on this very web site. More detailed information on Alambic itself and the plugins can be found on the <a href="http://www.bitbucket.org/BorisBaldassari/alambic">project&apos;s wiki</a>.</p>
+		  </div>
+                  <div class="list-group">
+                    <a href="documentation/data.html" class="list-group-item">Data resources</a>
+                    <a href="documentation/plugins.html" class="list-group-item">Plugins</a>
+                    <a href="documentation/metrics.html" class="list-group-item">Metrics</a>
+                    <a href="documentation/attributes.html" class="list-group-item">Attributes</a>
+                    <a href="documentation/quality_model.html" class="list-group-item">Full quality model</a>
+                    <a href="documentation/references.html" class="list-group-item">References</a>
+                  </div>
+                </div>
+                <br />
+
+                <div class="panel panel-default">
+                  <div class="panel-heading"><a href="admin/summary"><i class="fa fa-wrench fa-fw"></i> &nbsp; Administration tools</a></div>
+		  <div class="panel-body">
+		    <p>The Administration section requires authentication.</p>
+		  </div>
+                  <div class="list-group">
+                    <a href="admin/projects" class="list-group-item">Projects management</a>
+                    <a href="admin/repo" class="list-group-item">Database &amp; Backups</a>
+                    <a href="admin/models" class="list-group-item">Models, metrics, attributes.</a>
+                    <a href="admin/jobs" class="list-group-item">Jobs</a>
+                  </div>
+                </div>
+              </div>
+	      
+            </div>

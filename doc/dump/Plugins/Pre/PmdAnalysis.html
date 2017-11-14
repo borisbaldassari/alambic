@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+<head>
+    <title>PMD Analysis - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="../Pre.html">Pre</a>
+        </li>
+        <li class="">
+            <a href="../Post.html">Post</a>
+        </li>
+        <li class="">
+            <a href="../Tools.html">Tools</a>
+        </li>
+        <li class="">
+            <a href="../Wizards.html">Wizards</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="EclipsePmi.html">EclipsePmi</a>
+        </li>
+        <li class="">
+            <a href="Git.html">Git</a>
+        </li>
+        <li class="">
+            <a href="Hudson.html">Hudson</a>
+        </li>
+        <li class="">
+            <a href="Jira.html">Jira</a>
+        </li>
+        <li class="active">
+            <a href="PmdAnalysis.html">PmdAnalysis</a>
+        </li>
+        <li class="">
+            <a href="SonarQube45.html">SonarQube45</a>
+        </li>
+        <li class="">
+            <a href="StackOverflow.html">StackOverflow</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>PMD Analysis and Configuration</h1>
+
+<h1>Purpose</h1>
+
+<p><a href="https://pmd.github.io">PMD</a> is an open-source, well-known and widely used static analysis tool for Java.</p>
+
+<p>This plugin summarises the output of a PMD run, provides hints to better understand and use it, and defines a pragmatic strategy to fix violations in an efficient way. It also provides guidance on how to configure PMD and select rules for a better, more focused analysis. More precisely, this document:</p>
+
+<ul>
+<li>Lists the rulesets used, with the associated number and priority of violations. It help users understand the scope of the different rulesets they use.</li>
+<li>Proposes to remove from the configuration a list of rules that have a huge number of violations associated with a low priority. Such rules are useless, because the project does not have the maturity to tackle it yet, and it clutters the results. Not to speak about the despair it induces in teams.</li>
+<li>Proposes steps for continuous improvement, once the former has been addressed.</li>
+</ul>
+
+<p>Note on rules: There should be a rules directory where the plugin is, with the definition of the PMD rulesets to be analysed. You can extract them from the PMD jars (e.g. lib/pmd-java-5.2.3/rulesets/java*.xml) to match the version of PMD you are using.</p>
+
+<p>Please note that this plugin only reads the XML configuration and output files of a PMD run. One has to execute it on a regular basis -- ideally in a continuous integration job -- and provide the XML files URLs to the plugin.</p>
+
+<p>Check the <a href="http://alambic.io/perldoc/Alambic/Plugins/PmdAnalysis.pm.html">plugin Perl documentation</a> in the <a href="http://alambic.io/perldoc/index.html">perldoc</a> section.</p>
+
+<hr />
+
+<h1>Basic information</h1>
+
+<ul>
+<li><strong>ID</strong>: PmdAnalysis</li>
+<li><strong>Abilities</strong>:   metrics   data   recs   figs   viz</li>
+<li><strong>Description</strong>:
+This plugin summarises the output of a PMD run, provides hints to better understand and user it, and defines a pragmatic strategy to fix violations in an efficient way. It also provides guidance on how to configure PMD and select rules for a better, more focused analysis.
+Please note that this plugin only reads the XML configuration and output files of a PMD run. One has to execute it on a regular basis -- ideally in a continuous integration job -- and provide the XML files URLs to the plugin.
+Up-to-date documentation for the plugin is located on <a href="http://alambic.io/Plugins/Pre/PmdAnalysis.html">the project wiki</a>.',</li>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>url_pmd_conf</code> The URL to the XML configuration file used to run PMD.</li>
+<li><code>url_pmd_xml</code> The URL to the XML PMD results for the project.</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h1>Provides</h1>
+
+<h2>Information</h2>
+
+<h2>Metrics</h2>
+
+<h2>Figures</h2>
+
+<p>pmd_analysis_files_ncc1.svg, pmd_analysis_pie.html, pmd_analysis_top_5_rules.svg, pmd_configuration_rulesets_repartition.svg, pmd_configuration_summary_pie.html, pmd_configuration_violations_rules.svg</p>
+
+<h2>Downloads</h2>
+
+<ul>
+<li><code>import_pmd_analysis_conf.xml</code>: The PMD configuration file retrieved for the analysis (XML).</li>
+<li><code>import_pmd_analysis_results.xml</code>: The PMD results file retrieved for the analysis (XML).</li>
+<li><code>pmd_analysis_files.csv</code>: Files: for each non-conform file, its name, total number of non-conformities, number of non-conformities for each priority, number of broken and clean rules, and the rate of acquired practices (CSV).</li>
+<li><code>pmd_analysis_main_csv</code>: Generic information about the project : PMD version, timestamp of analysis, number of non-conformities, number of rules checked, number of rules violated, number of clean rules, rate of acquired practices (CSV).</li>
+<li><code>pmd_analysis_rules.csv</code>: Rules: number of non-conformities for each category of rules and priority (CSV).</li>
+<li><code>pmd_analysis_rulesets.csv</code>: Rulesets detected in analysis output, with number of violations for each priority, in long format (CSV).</li>
+<li><code>pmd_analysis_rulesets2.csv</code>: Rulesets detected in analysis output, with number of violations for each priority, in wide format (CSV).</li>
+<li><code>pmd_analysis_violations.csv</code>: Violations: foreach violated rule, its priority, the ruleset it belongs to, and the volume of violations (CSV).</li>
+<li><code>pmd_analysis_violations.json</code>: Violations: foreach violated rule, its priority, the ruleset it belongs to, and the volume of violations (JSON).</li>
+</ul>
+
+<h2>Recommendations</h2>
+
+<ul>
+<li>PMD_FIX_FILE,</li>
+<li>PMD_FIX_RULE,</li>
+<li>PMD_RULE_DEL</li>
+</ul>
+
+<h2>Visualisation</h2>
+
+<p>PMD Analysis, PMD Configuration</p>
+
+<hr />
+
+<h1>Screenshot</h1>
+
+<p><img src="/images/pmd_analysis.png" alt="pmd_analysis.png" /></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

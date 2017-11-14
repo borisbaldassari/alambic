@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+    <title>Upgrading Alambic - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../Plugins.html">Plugins</a>
+        </li>
+        <li class="active">
+            <a href="../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="Prerequisites.html">Prerequisites</a>
+        </li>
+        <li class="">
+            <a href="Install.html">Install</a>
+        </li>
+        <li class="">
+            <a href="Run.html">Run</a>
+        </li>
+        <li class="active">
+            <a href="Upgrade.html">Upgrade</a>
+        </li>
+        <li class="">
+            <a href="Docker.html">Docker</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Upgrading Alambic</h1>
+
+<p>Since all data is stored into the database, any running instance of Alambic can be updated from the Alambic project repository without losing any information.</p>
+
+<p><span class="label label-warning">Warning</span> &nbsp; As usual in this situation, it is highly recommended to make a backup prior to any update.</p>
+
+<p>To do the update go to the alambic directory and issue a git pull command:</p>
+
+<pre><code>boris@camp ~/alambic $ git pull
+remote: Counting objects: 6, done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 6 (delta 3), reused 0 (delta 0)
+Unpacking objects: 100% (6/6), done.
+From bitbucket.org:BorisBaldassari/alambic
+   709aae9..eef3c49  master     -&gt; origin/master
+Updating 709aae9..eef3c49
+Fast-forward
+ mojo/public/images/alambic_presentation_data.jpg |  Bin 0 -&gt; 110023 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 mojo/public/images/alambic_presentation_data.jpg
+</code></pre>
+
+<p>Then restart (hot-reload) hypnotoad:</p>
+
+<pre><code>boris@midkemia mojo $ hypnotoad bin/alambic
+Starting hot deployment for Hypnotoad server 21981.
+</code></pre>
+
+<p>If anything goes wrong, you can still get back to the previous git commit and (if things went <em>really</em> wrong) restore the last backup file. Check the <a href="/Documentation/Tasks/Backups.html">documentation on backup</a> for more information.</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

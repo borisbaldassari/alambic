@@ -1,0 +1,43 @@
+% use Data::Dumper;
+% my $project_id = stash( 'project_id' );
+% my $attributes = stash( 'attributes' );
+% my $attributes_conf = stash( 'attributes_conf' );
+% my $models = stash( 'models' );
+
+            <h1 class="al-h1"><small><%= $project_id %></small> Project Attributes</h1>
+            <br />
+
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/data', project_id => $project_id
+            <br />
+
+            <div class="row">
+              <div class="col-sm-6">
+		        <p>This table lists all attributes computed from plugin data, according to the <a href="/projects/<%= $project_id %>/qm.html">quality model structure</a>.</p>
+              </div>
+              <div class="col-sm-6">
+                <div class="list-group">
+                  <a class="list-group-item" href="/projects/<%= $project_id %>/attributes.json" role="button"><i class="fa fa-download"></i> &nbsp; Download attributes (JSON)</a>
+                </div>
+              </div>
+            </div>
+            <br />
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th>Name</th>
+                <th>Mnemo</th>
+                <th>Description</th>
+                <th>Value</th>
+                <th>Confidence</th>
+              </tr>
+% foreach my $attr (sort keys %{$attributes}) {
+              <tr>
+                <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $models->get_attribute($attr)->{'name'} %></a></td>
+                <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attr %></a></td>
+                <td><%== $models->get_attribute($attr)->{'description'}->[0] %></td>
+                <td><%= $attributes->{$attr} %> / 5</td>
+                <td><%= $attributes_conf->{$attr} %> metrics</td>
+              </tr>
+% }
+            </table>
+

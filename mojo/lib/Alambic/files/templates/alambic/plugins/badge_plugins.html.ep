@@ -1,0 +1,42 @@
+% layout 'default_empty';
+
+% my $project = app->al->get_project($project_id);
+% my $plugins = app->al->get_plugins();
+% my $plugins_list = $plugins->get_names_all();
+
+<% my $icon_ability = begin %>
+ % my $ability = shift;
+ % my $plugin = shift;
+ % my ($icon, $name);
+ % if ($ability =~ m!metrics!) { $icon = "fa-tasks"; $name = "Metrics" }
+ % elsif ($ability =~ m!figs!) { $icon = "fa-picture-o"; $name = "Figures" }
+ % elsif ($ability =~ m!info!) { $icon = "fa-info-circle"; $name = "Information" }
+ % elsif ($ability =~ m!data!) { $icon = "fa-download"; $name = "Downloads" }
+ % elsif ($ability =~ m!recs!) { $icon = "fa-map-signs"; $name = "Recommendations" }
+ % elsif ($ability =~ m!user!) { $icon = "fa-users"; $name = "User information" }
+ % elsif ($ability =~ m!viz!) { $icon = "fa-pie-chart"; $name = "Visualisation" }
+ % else { $icon = "fa-question" }
+  <span data-toggle="tooltip" data-placement="top" title="<%= $name %>"><i class="fa <%= $icon %>"></i></span>
+ <% end %>
+
+                <div class="panel panel-default">
+		          <div class="panel-heading">Plugins
+                    <span class="pull-right"><a href="/projects/<%= $project_id %>.html" target="_blank"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
+                    <span class="pull-right"><a href="/projects/<%= $project_id %>/qm.html" target="_blank"><i class="fa fa-sitemap fa-lg"></i></a>
+                  </div>
+		          <ul class="list-group">
+% foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   next if not ( grep $_ eq $p, @{$plugins->get_list_plugins_pre()} );
+%   my $conf = $plugins->get_plugin($p)->get_conf();
+                    <li class="list-group-item"><%= $plugins_list->{$p} %>
+		              <span class="pull-right">
+			            <a href="/documentation/plugins#<%= $p %>" target="_blank"><i class="fa fa-question-circle fa-lg"></i></a> &nbsp;
+        		        <a href="/projects/<%= $project_id %>/<%= $p %>.html" target="_blank"><i class="fa fa-eye fa-lg"></i></a> &nbsp;
+		        <%== join( ' &nbsp; ', map { $icon_ability->($_, $p) } sort @{$conf->{'ability'}} ) %>
+                      </span>
+        		    </li>
+% }
+        		  </ul>
+                </div>
+
+

@@ -1,0 +1,15 @@
+
+            <h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  Page not found (404).
+                </div>
+              </div>
+            </div>
+
+
+	    <p>Ooops, this page was not found.</p>
+		<p>You might want to <a href="/about.html">contact the administrator</a> of this Alambic instance for assistance.</p>

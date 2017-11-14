@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+    <title>Eclipse Pmi Wizard - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Pre.html">Pre</a>
+        </li>
+        <li class="">
+            <a href="../Post.html">Post</a>
+        </li>
+        <li class="">
+            <a href="../Tools.html">Tools</a>
+        </li>
+        <li class="active">
+            <a href="../Wizards.html">Wizards</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="active">
+            <a href="EclipsePmi.html">Eclipse</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Eclipse PMI Wizard</h1>
+
+<p>This Wizard plugin creates a new project in Alambic using the values defined in the <a href="https://projects.eclipse.org">Eclipse PMI</a> repository.</p>
+
+<p>The Project Management Infrastructure is described in the Eclipse wiki:</p>
+
+<ul>
+<li><a href="https://wiki.eclipse.org/Project_Management_Infrastructure">https://wiki.eclipse.org/Project_Management_Infrastructure</a></li>
+<li><a href="https://wiki.eclipse.org/Project_Management_Infrastructure/Overview">https://wiki.eclipse.org/Project_Management_Infrastructure/Overview</a></li>
+<li><a href="https://wiki.eclipse.org/Project_Management_Infrastructure/Development">https://wiki.eclipse.org/Project_Management_Infrastructure/Development</a></li>
+<li><a href="https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices">https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices</a></li>
+<li><a href="https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design">https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design</a></li>
+</ul>
+
+<p>Check the <a href="http://alambic.io/perldoc/Alambic/Wizards/EclipsePmi.pm.html">plugin Perl documentation</a> in the <a href="http://alambic.io/perldoc/index.html">perldoc</a> section.</p>
+
+<hr />
+
+<h1>Basic information</h1>
+
+<ul>
+<li><strong>ID</strong>: EclipsePmi</li>
+<li><strong>Name</strong>: Eclipse PMI Wizard</li>
+<li><strong>Description</strong>:
+The Eclipse PMI wizard creates a new project with all data source plugins needed to analyse a project from the Eclipse forge, including Eclipse ITS, Eclipse MLS, Eclipse PMI, Eclipse SCM and Hudson CI. It retrieves and uses values from the PMI repository to set the plugin parameters automatically.',
+This wizard only creates the plugins that should always be available. Depending on the project's configuration and data sources availability, other plugins may be needed and can manually be added to the configuration.</li>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>project_pmi</code> The project ID in the PMI repository (a.k.a. Eclipse project ID).</li>
+</ul></li>
+<li><strong>Plugins</strong>:
+<ul>
+<li><a href="/Plugins/Pre/EclipsePmi.html">EclipsePmi</a></li>
+<li><a href="/Plugins/Pre/Hudson.html">Hudson</a></li>
+<li><a href="/Plugins/Pre/Git.html">Git</a></li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h1>Information retrieved</h1>
+
+<p>The following information is automatically retrieved from the PMI and used in the project's initialisation:
+* Project name and description
+* Git repository URL
+* Hudson repository URL</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

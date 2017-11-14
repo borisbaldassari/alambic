@@ -1,0 +1,8 @@
+{
+    pages_dir   => app->home->rel_file('pages_md'),
+    dump_dir    => app->home->rel_file('dump'),
+    name        => 'Alambic',
+    copyright   => 'Boris Baldassari',
+    cached      => 0,
+    perldoc     => 0,
+}

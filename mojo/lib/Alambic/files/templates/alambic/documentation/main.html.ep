@@ -1,0 +1,143 @@
+
+
+            <h1 class="al-h1"><small>Documentation</small> main page</h1>
+            <br />
+
+            <div class="row">
+              <div class="col-lg-6">
+
+                <h3>About Alambic</h3>
+
+                <p><a href="http://alambic.io">Alambic</a> is an <b>open-source</b> framework and service for <b>software engineering data</b> analysis and management. Alambic main page is <a href="http://alambic.io">alambic.io</a> and its forge is hosted at <a href="https://bitbucket.org/BorisBaldassari/alambic">BitBucket</a>.</p>
+                <p>Basically Alambic uses plugins to <a href="/documentation/plugins.html">retrieve data from various tools and repositories</a> of the software development process, applies these values to a <a href="/documentation/quality_model.html">quality model</a> and generates a variety of graphs, numbers, and reports. Alambic also provides a <a href="/documentation/data.html">unified API</a> to retrieve this data.</p>
+                <p>The complete process is fully documented, from <a href="/documentation/attributes.html">quality attributes</a> to the <a href="/documentation/metrics.html">metrics</a> retrieved. Data sources may include mailing lists, configuration management, issue tracking system, source code, and more. See the full list of data sources in the <a href="/documentation/plugins.html">Data sources section</a> of the documentation.</p>
+
+                <p>Alambic is a derivative of the <a href="http://dashboard.polarsys.org">PolarSys dashboard</a>. <a href="http://polarsys.org">PolarSys</a> is an Eclipse <a href="http://www.eclipse.org/org/workinggroups/">Industry Working Group</a> created by large industry players and by tools providers to collaborate on the creation and support of Open Source tools for the development of embedded systems. Members of PolarSys started working on a <a href="https://polarsys.org/wiki/Maturity_Assessment_WG">Maturity Assessment task force</a> back in 2013, to assess and help improve quality of projects entering the PolarSys umbrella.</p>
+		<p>Alambic is developed and maintained by Boris Baldassari and <a href="https://castalia.solutions">Castalia Solutions</a>. It has notably received important contributions and support from the <a href="http://eclipse.org">Eclipse Foundation</a> and <a href="https://www.thalesgroup.com">Thales Group</a>.</p>
+              </div>
+              <div class="col-lg-6">
+
+                <h3 id="mainfeatures">Main features</h3>
+
+                <p>Alambic provides tools to better centralise, manage, and present software engineering data. </p>
+
+                <ul>
+                  <li><b>Alambic helps you organise and understand your data</b> by building a <b>quality model</b> to quickly catch up with the things that matter to you. The quality model can be entirely customised, and almost any type of data source can be added through plugins.</li>
+                  <li><b>Alambic helps you share your data</b> by providing ready-to-use datasets, plots that can be exported to external web sites, and online tools to play with data. The process, metrics and quality attributes are self-documented.</li>
+                  <li><b>Alambic can be easily extended</b>: a <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs).  Examples of plugins ready to use include <a href="http://alambic.io/Plugins/Pre/PmdAnalysis.html">PMD Results Analysis</a>, <a href="http://alambic.io/Plugins/Pre/StackOverflow.html">StackOverflow questions</a> and <a href="http://alambic.io/Plugins/Pre/EclipsePmi.html">PMI Checks for Eclipse projects</a>.</li>
+                </ul>
+
+                <br />
+
+              </div>
+            </div>
+                <hr />
+            <div class="row">
+              <div class="col-lg-6">
+
+                <h3>Local resources</h3>
+
+                <br />
+                <br />
+
+                <div class="row">
+                  <div class="col-lg-4 text-center">
+                    <a href="/documentation/data.html"><i class="fa fa-cloud-download fa-2x"></i><br />Data</a>
+                  </div>
+                  <div class="col-lg-4 text-center">
+                     <a href="/documentation/plugins.html"><i class="fa fa-plug fa-2x"></i><br />Plugins</a>
+                  </div>
+                  <div class="col-lg-4 text-center">
+                     <a href="/documentation/references.html"><i class="fa fa-book fa-2x"></i><br />References</a>
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-lg-4 text-center">
+                          <a href="/documentation/metrics.html"><i class="fa fa-book fa-2x"></i><br />Metrics</a>
+                  </div>
+                  <div class="col-lg-4 text-center">
+                    <a href="/documentation/attributes.html">
+                    <i class="fa fa-book fa-2x"></i><br />Attributes</a>
+                  </div>
+                  <div class="col-lg-4 text-center">
+                    <a href="/documentation/quality_model.html">
+                    <i class="fa fa-sitemap fa-2x"></i><br />Quality model</a>
+                  </div>
+                  </div>
+              </div>
+              <div class="col-lg-6">
+
+                  <h3>Online resources</h3>
+
+                  <br />
+
+                  <div class="row">
+                    <div class="col-lg-4 text-center">
+                      <a href="http://alambic.io"><i class="fa fa-home fa-2x"></i><br />Project Home</a>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                      <a href="https://bitbucket.org/BorisBaldassari/alambic">
+                      <i class="fa fa-bitbucket fa-2x"></i><br />Project Home</a>
+                    </div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-lg-4 text-center">
+                      <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?status=new&status=open">
+                      <i class="fa fa-bug fa-2x"></i><br />Issues</a>
+                    </div>
+                  <div class="col-lg-4 text-center">
+                    <a href="https://bitbucket.org/BorisBaldassari/alambic/src">
+                      <i class="fa fa-git fa-2x"></i><br />Source</a>
+                  </div>
+                  <div class="col-lg-4 text-center">
+                    <a href="http://alambic.io">
+                    <i class="fa fa-question-circle fa-2x"></i><br />Documentation</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+                <hr />
+
+                <h3>Retrieval and analysis process</h3>
+                <div class="row">
+                      <div class="col-lg-6">
+                        <br />
+                        <p>Data is retrieved by executing <b>pre-plugins</b>. Plugins first collect the data and then optionnaly run checks and actions, then compute metrics or visualisation objects. Once all pre-plugins have been executed, the attributes are computed and the quality model is populated. </p>
+                        <p>Then the <b>post-plugins</b> are executed, and have access to all data retrieved and computed by pre-plugins. Once the project has been successfully analysed results are displayed in the dashboard section. This section provides several pages to analyse the project's situation and zoom into the details when needed. The plugins tab displays the visualisation output of installed plugins.</p>
+                        <p>Once all projects have been executed, <b>global plugins</b> are executed. They have access to data, information, recommendations, metrics and attributes from all projects.</p>
+                    		<p></p>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="text-center" ><img src="/images/alambic_presentation_data.jpg" class="img-responsive" style="width: 800px;" /></div>
+                    </div>
+                  </div>
+
+	          <br />
+                <hr />
+
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <h3>Metrics, indicators, attributes, confidence</h3>
+
+		<p></p>
+		<p></p>
+		<p></p>
+
+              </div>
+              <div class="col-lg-6">
+                <div class="text-center" ><img src="/images/alambic_presentation_metrics.svg" class="img-responsive" style="width: 800px;" /></div>
+              </div>
+            </div>
+
+	        <br />
+
+            <hr />
+
+            <h3 id="yourproject">What about <i>your</i> project?</h3>
+
+            <p>Any project willing to enter the dashboard is welcome. However, the analysis requires some information in order to compute indicators and attributes of quality. Depending on <a href="/documentation/plugins.html">the plugins activated</a> on the project some metrics may be empty.</p>
+            <p>Adding a project needs authentication. Please <a href="/about.html">contact your Alambic administrator</a> for the next steps.</p>
+

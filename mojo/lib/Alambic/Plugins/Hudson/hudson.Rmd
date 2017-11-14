@@ -1,4 +1,18 @@
 ---
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 title: "Hudson visualisation"
 author:
 - name: "Boris Baldassari"
@@ -50,13 +64,13 @@ jobs.nok <- jobs[jobs$color == 'red',]
 <div class="row">
 <div class="col-md-6">
 
-## Hudson Continuous Integration Engine
+<h2>Hudson Continuous Integration Engine</h2>
 
-Hudson instance [``r main$name``] is located at ``r main$url``. 
+Hudson instance [``r main$name``] is located at ``r main$url``.
 
 There are ``r metrics$CI_JOBS`` jobs defined on this instance. ``r metrics$CI_JOBS_GREEN`` are green (stable), ``r metrics$CI_JOBS_YELLOW`` are yellow (unstable), ``r metrics$CI_JOBS_RED`` are red (failing).
 
-## Metrics
+<h2>Metrics</h2>
 
 The following metrics are available:
 
@@ -74,13 +88,13 @@ The following metrics are available:
 </div>
 </div>
 
-## History 
+## History
 
 <iframe src="/projects/`r project.id`/Hudson/hudson_hist.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
 
 ## Failing Jobs
 
-There are ``r metrics[['CI_JOBS_RED']]`` failing jobs on the instance. 
+There are ``r metrics[['CI_JOBS_RED']]`` failing jobs on the instance.
 
 These jobs have not been failing for a long time (less than a week). It should be quite easy to make them succeed again. <b>Fix them</b> as soon as possible.
 
@@ -117,10 +131,10 @@ List of failing jobs, sorted by last successful build.
 <table class="table table-striped">
   <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
 ```{r hudson_failing_jobs, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(jobs.nok, 1, 
+t <- apply(jobs.nok, 1,
            function(x) paste('<tr><td>',
-                             x[[1]], '</td><td><small>', x[[16]], 
-                             '</small></td><td><small>', x[[6]], 
+                             x[[1]], '</td><td><small>', x[[16]],
+                             '</small></td><td><small>', x[[6]],
                              ' sec.</small></td><td>', ' ',
                              x[[14]], ' &#37;</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
@@ -131,7 +145,7 @@ cat(t)
 
 ## Unstable Jobs
 
-A build is considered unstable if it was built successfully and one or more publishers report it unstable. For example if the JUnit publisher is configured and a test fails then the build will be marked unstable. 
+A build is considered unstable if it was built successfully and one or more publishers report it unstable. For example if the JUnit publisher is configured and a test fails then the build will be marked unstable.
 
 One of the purpose of continuous integration is to provide confidence in builds and deliveries, so unstability is not an option. <b>Fix them, or disable the failing publishers</b> if they are not relevant anymore. This list should be generally empty, or at least a temporary, time-limited stage for builds.
 
@@ -140,10 +154,10 @@ One of the purpose of continuous integration is to provide confidence in builds 
 <table class="table table-striped">
   <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
 ```{r jobs_unstable, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(jobs.unstable, 1, 
+t <- apply(jobs.unstable, 1,
            function(x) paste('<tr><td>',
-                             x[[1]], '</td><td><small>', x[[16]], 
-                             '</small></td><td><small>', x[[6]], 
+                             x[[1]], '</td><td><small>', x[[16]],
+                             '</small></td><td><small>', x[[6]],
                              ' sec.</small></td><td>', ' ',
                              x[[14]], ' &#37;</td></tr>', sep=''))
 #<span class="label" style="background-color: #cc6686"></span>
@@ -155,7 +169,7 @@ cat(t)
 
 ## Successful Jobs
 
-These jobs run well, congrats! 
+These jobs run well, congrats!
 
 Maybe you could check from time to time if this criterion is still relevant: are the builds succeeding because they measure the wrong thing, because the build is outdated and doesn't evolve anymore, or because things are plainly right?
 
@@ -164,10 +178,10 @@ Maybe you could check from time to time if this criterion is still relevant: are
 <table class="table table-striped">
   <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
 ```{r hudson_ok_jobs, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(jobs.ok, 1, 
+t <- apply(jobs.ok, 1,
            function(x) paste('<tr><td>',
-                             x[[1]], '</td><td><small>', x[[16]], 
-                             '</small></td><td><small>', x[[6]], 
+                             x[[1]], '</td><td><small>', x[[16]],
+                             '</small></td><td><small>', x[[6]],
                              ' sec.</small></td><td>', ' ',
                              x[[14]], ' &#37;</td></tr>', sep=''))
 t <- paste(t, collapse=" ")

@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+    <title>Project Summary - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Pre.html">Pre</a>
+        </li>
+        <li class="active">
+            <a href="../Post.html">Post</a>
+        </li>
+        <li class="">
+            <a href="../Tools.html">Tools</a>
+        </li>
+        <li class="">
+            <a href="../Wizards.html">Wizards</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="GenericR.html">GenericR</a>
+        </li>
+        <li class="active">
+            <a href="ProjectSummary.html">ProjectSummary</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Project Summary</h1>
+
+<p>This plugin creates images, HTML snippets and full documents about the project's health. These can be easily exported to be displayed in another web site (e.g. Wiki, Confluence, Liferay..).</p>
+
+<p>Please see the documentation about the <a href="/Documentation/Basics/Exports.html">export of figures in external web sites</a>. You can check also the <a href="/perldoc/Alambic/Plugins/ProjectSummary.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
+
+<hr />
+
+<h1>Basic information</h1>
+
+<ul>
+<li><strong>ID</strong>: ProjectSummary</li>
+<li><strong>Name</strong>: Project Summary</li>
+<li><strong>Abilities</strong>: figs, viz</li>
+<li><strong>Description</strong>:
+The Project Summary plugin creates a bunch of exportable HTML snippets, images and badges.</li>
+<li><strong>Parameters</strong>:</li>
+</ul>
+
+<hr />
+
+<h1>Provides</h1>
+
+<h2>Figures</h2>
+
+<ul>
+<li><code>badge_attr_alambic.svg</code> A badge to display current value of main quality attribute on an external web site (uses shields.io)
+<img src="/images/projectsummary_attr_alambic.png" alt="badge attr alambic" /></li>
+<li><code>badge_attr_root.svg</code> A badge to display current value of main quality attribute on an external web site (uses shields.io)
+<img src="/images/projectsummary_attr_root.png" alt="badge attr root" /></li>
+<li><code>badge_psum_attrs.html</code> A HTML snippet to display main quality attributes and their values.
+<img src="/images/projectsummary_badge_psum_attrs.png" alt="badge psum attrs" /></li>
+<li><code>psum_attrs.html</code> A HTML snippet to display main quality attributes and their values.
+<img src="/images/projectsummary_psum_attrs.png" alt="psum attrs" /></li>
+<li><code>badge_qm</code> A HTML snippet that displays main quality attributes.
+<img src="/images/projectsummary_badge_qm.png" alt="badge qm" /></li>
+<li><code>badge_project_main</code> A HTML snippet that displays the name and description of the project.
+<img src="/images/projectsummary_project_main.png" alt="badge project main" /></li>
+<li><code>badge_qm_viz</code> A HTML snippet that displays the quality model visualisation.
+<img src="/images/projectsummary_qm_viz.png" alt="badge qm viz" /></li>
+<li><code>badge_downloads</code> A HTML snippet that displays downloads for main data.
+<img src="/images/projectsummary_badge_downloads.png" alt="badge downloads" /></li>
+<li><code>badge_plugins</code> A HTML snippet that displays a list of plugins for the project.
+<img src="/images/projectsummary_badge_plugins.png" alt="badge plugins" /></li>
+</ul>
+
+<h2>Visualisation</h2>
+
+<p>Project Summary</p>
+
+<hr />
+
+<h1>Screenshot</h1>
+
+<p><img src="/images/projectsummary_ui.png" alt="Project Summary UI" /></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

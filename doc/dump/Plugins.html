@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+    <title>Alambic plugins - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="./">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="Plugins/Pre.html">Pre</a>
+        </li>
+        <li class="">
+            <a href="Plugins/Post.html">Post</a>
+        </li>
+        <li class="">
+            <a href="Plugins/Tools.html">Tools</a>
+        </li>
+        <li class="">
+            <a href="Plugins/Wizards.html">Wizards</a>
+        </li>
+    </ul>
+
+<div id="content">
+
+<h1>Plugins</h1>
+
+<div class="pull-right" style="width: 50%">
+  <div class="list-group">
+      <a href="Plugins/Pre.html" class="list-group-item">Pre</a>
+      <a href="Plugins/Post.html" class="list-group-item">Post</a>
+      <a href="Plugins/Tools.html" class="list-group-item">Tools</a>
+      <a href="Plugins/Wizards.html" class="list-group-item">Wizards</a>
+    </div>
+</div>
+
+<p><strong>Pre-plugins</strong> basically collect data from a repository, and run single-source analysis on it. Plugins first collect the data and then optionnaly run checks and actions, then compute metrics or visualisation objects. Once all pre-plugins have been executed, the attributes are computed and the quality model is populated.</p>
+
+<p>Then the <strong>post-plugins</strong> are executed, and have access to all data retrieved and computed by pre-plugins. Once the project has been successfully analysed results are displayed in the dashboard section. This section provides several pages to analyse the project's situation and zoom into the details when needed. The plugins tab displays the visualisation output of installed plugins.</p>
+
+<p>Once all projects have been executed, <strong>global plugins</strong> are executed. They have access to data, information, recommendations, metrics and attributes from all projects and provide instance-wide insights and analysis.</p>
+
+<p>Other types of plugins include:</p>
+
+<ul>
+<li><strong>Tools</strong> used to retrieve, parse and analyse data, such as the R engine or the Git configuration management tool.</li>
+<li><strong>Wizards</strong> enable administrators to easily setup a new project according to the settings of a specific forge. An example of wizard is the <a href="/Plugins/Wizards/EclipsePmi.html">Eclipse PMI Wizard</a>.</li>
+</ul>
+
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

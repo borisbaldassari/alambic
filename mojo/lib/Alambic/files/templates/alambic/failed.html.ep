@@ -1,0 +1,18 @@
+
+            <h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>
+
+% my $msg = flash 'msg';
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%= $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+
+	    <p>The Administration section requires authentication.</p>
+        <p>Two options here: either <a href="/login">login</a> or <a href="/about.html">contact the administrator</a> of this Alambic instance.</p>

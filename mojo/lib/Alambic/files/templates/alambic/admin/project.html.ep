@@ -1,0 +1,198 @@
+% use File::Basename qw( fileparse ); use Data::Dumper;
+% my $project_id = stash( 'project_id' );
+% my $runs = stash( 'project_runs' );
+
+            <h1 class="al-h1"><small>Administration</small> Project <%= $project_id %></h1>
+            <br />
+
+% my $msg = flash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-12">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%== $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+%= include '/alambic/admin/admin_menu', current => '/admin/projects'
+
+            <div class="row">
+              <div class="col-md-6">
+
+% my $plugins = app->al->get_plugins();
+% my $plugins_all = $plugins->get_names_all();
+% my $plugins_pre = $plugins->get_list_plugins_pre();
+% my $plugins_post = $plugins->get_list_plugins_post();
+%
+% my $project = app->al->get_project($project_id);
+% my $project_plugins = $project->get_plugins();
+% my @data_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_data()} ) } keys %$project_plugins;
+% my @figs_plugins = map { $_ if grep( /$_/, @{$plugins->get_list_plugins_figs()} ) } keys %$project_plugins;
+% my ($data_vol, $figs_vol) = (0, 0);
+% foreach my $dp (@data_plugins) {
+%   next if not ( grep( /^$dp$/, @{$plugins->get_list_plugins_data()} ) );
+%   $data_vol += scalar keys %{$plugins->get_plugin($dp)->get_conf()->{'provides_data'}};
+% }
+% foreach my $fp (@figs_plugins) {
+%   next if not ( grep( /^$fp$/, @{$plugins->get_list_plugins_figs()} ) );
+%   $figs_vol += scalar keys %{$plugins->get_plugin($fp)->get_conf()->{'provides_figs'}};
+% }
+% my $by = exists($runs->[-1]) ? $runs->[-1]->{'run_user'} : 'Unknown';
+% my $on = exists($runs->[-1]) ? $runs->[-1]->{'run_delay'} : 0;
+                <dl class="dl-horizontal">
+		  <dt>ID</dt><dd><%= $project->get_id() %></dd>
+                  <dt>Name</dt><dd><%= $project->name() %></dd>
+                  <dt>Description</dt><dd><%== $project->desc() %></dd>
+		  <dt>Is active</dt><dd><%= $project->active() ? 'Yes' : 'No' %></dd>
+		  <dt>Last run</dt><dd>Executed on <code><%= $project->last_run() || "Never" %></code><br />
+		    By <code><%= $by %></code>, took <code><%= $on %></code> seconds.<br />
+		    Please note that only a full run will store data in the database. Partial runs (plugin, pre, qm, post) will have their results only displayed in the job.</dd>
+		</dl>
+		<hr />
+                <dl class="dl-horizontal">
+		  <dt>Info</dt><dd><%= scalar keys %{$project->info()} %> &nbsp; <a href="/projects/<%= $project_id %>/info">See info &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Data</dt><dd><%= $data_vol %> &nbsp; <a href="/projects/<%= $project_id %>/data">See downloadable data &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Figures</dt><dd><%= $figs_vol %> &nbsp; <a href="/projects/<%= $project_id %>/data">See figures &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Metrics</dt><dd><%= scalar keys %{$project->metrics()} %> &nbsp; <a href="/projects/<%= $project_id %>/metrics">See metrics &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Indicators</dt><dd><%= scalar keys %{$project->indicators()} %> &nbsp; <a href="/projects/<%= $project_id %>/metrics">See indicators &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Attributes</dt><dd><%= scalar keys %{$project->attributes()} %> &nbsp; <a href="/projects/<%= $project_id %>/attributes">See attributes &nbsp; <i class="fa fa-eye"></i></a></dd>
+		  <dt>Recs</dt><dd><%= scalar @{$project->recs() || []} %> &nbsp; <a href="/projects/<%= $project_id %>/recs">See recommendations &nbsp; <i class="fa fa-eye"></i></a></dd>
+		</dl>
+              </div>
+              <div class="col-md-6">
+		<div class="panel panel-default">
+		  <div class="panel-heading"><h3 class="panel-title">Actions</h3></div>
+                  <div class="list-group">
+                    <a class="list-group-item" href="/admin/projects/" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Return to projects</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/edit" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Edit project information</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run" role="button"><i class="fa fa-fw fa-rocket"></i> &nbsp; Run project full</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/pre" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run pre plugins</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/qm" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run quality model</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/run/post" role="button"> &nbsp; &nbsp; &nbsp; <i class="fa fa-fw fa-rocket"></i> &nbsp; Run post plugins</a>
+                    <a class="list-group-item" href="/admin/projects/<%= $project_id %>/del" role="button"><i class="fa fa-fw fa-ban"></i> &nbsp; Delete project</a>
+                    <a class="list-group-item" href="/projects/<%= $project_id %>" role="button"><i class="fa fa-fw fa-dashboard"></i> &nbsp; Project dashboard</a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+	    <hr />
+
+            <div class="row">
+              <div class="col-md-12">
+
+		<h3>Plugins: Pre</h3>
+
+		<p>You can add a data source from:
+% foreach my $p (sort @$plugins_pre) {
+%   if (not exists($project_plugins->{$p})) {
+		  [ <a href="/admin/projects/<%= $project_id %>/setp/<%= $p %>"><%= $p %></a> ] &nbsp;
+%   }
+% }
+		</p>
+		<table class="table table-striped">
+		  <tr><th>Name</th><th>ID</th><th>Args</th><th colspan="3">Actions</th></tr>
+% foreach my $plugin ( sort keys %$project_plugins ) {
+%   my $plugin_name = 'Unknown';
+%   if (grep(/$plugin/, @$plugins_pre)) {
+%     $plugin_name = $plugins_all->{$plugin};
+		  <tr>
+                    <td><%= $plugin_name %></td><td><%= $plugin %></td>
+                    <td>
+%   my @args_full = map { "$_: <code>" . $project_plugins->{$plugin}->{$_} . "</code>"; } keys %{$project_plugins->{$plugin}};
+%   my $args_str = join( '<br />', sort @args_full );
+                  <%== $args_str %>
+                    </td>
+                    <td width="1cm"><a href="/admin/projects/<%= $project_id %>/setp/<%= $plugin %>"><i class="fa fa-edit"></i></a></td>
+                    <td width="1cm"><a href="/admin/projects/<%= $project_id %>/runp/<%= $plugin %>"><i class="fa fa-cogs"></i></a></td>
+                    <td width="1cm"><a href="/admin/projects/<%= $project_id %>/delp/<%= $plugin %>"><i class="fa fa-ban"></i></a></td></tr>
+%   }
+% }
+		</table>
+
+		<h3>Plugins: Post</h3>
+
+		<p>You can add a data source from:
+% foreach my $p (sort @$plugins_post) {
+%   if (not exists($project_plugins->{$p})) {
+		  [ <a href="/admin/projects/<%= $project_id %>/setp/<%= $p %>"><%= $p %></a> ] &nbsp;
+%   }
+% }
+		</p>
+
+		<table class="table table-striped">
+		  <tr><th>Name</th><th>ID</th><th colspan="3">Actions</th></tr>
+% foreach my $plugin ( sort keys %$project_plugins ) {
+%   my $plugin_name = 'Unknown';
+%   if (grep(/$plugin/, @$plugins_post)) {
+%     $plugin_name = $plugins_all->{$plugin};
+		  <tr>
+                    <td><%= $plugin_name %></td><td><%= $plugin %></td>
+                    <td width="1cm"><a href="/admin/projects/<%= $project_id %>/setp/<%= $plugin %>"><i class="fa fa-edit"></i></a></td>
+                    <td width="1cm"><a href="/admin/projects/<%= $project_id %>/runp/<%= $plugin %>"><i class="fa fa-cogs"></i></a></td>
+                    <td width="1cm"><a href="/admin/projects/<%= $project_id %>/delp/<%= $plugin %>"><i class="fa fa-ban"></i></a></td></tr>
+%   }
+% }
+		</table>
+
+              </div>
+            </div>
+
+	    <hr />
+
+            <div class="row">
+              <div class="col-md-12">
+		<h3>Runs</h3>
+
+		<p>History of runs for this project.</p>
+		<table class="table table-striped">
+		  <tr><th>Run ID</th><th>Run time</th><th>Time spent</th><th>Run by</th></tr>
+% foreach my $run ( @$project_runs ) {
+		  <tr>
+                    <td><%= $run->{'id'} %></td><td><%= $run->{'run_time'} %></td>
+                    <td><%= $run->{'run_delay'} %></td><td><%= $run->{'run_user'} %></td>
+		  </tr>
+% }
+		</table>
+              </div>
+            </div>
+
+	    <hr />
+
+            <div class="row">
+              <div class="col-md-6">
+
+                <h3>Input files</h3>
+
+                <table class="table table-striped">
+                  <tr><th>File</th><th colspan="1">Actions</th></tr>
+% my %timestamps = %{stash( 'files_time' )};
+% foreach my $file (@{stash( 'files_input' )}) {
+%   my $file_short = fileparse($file);
+                  <tr>
+                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><a href="/admin/projects/<%= $project->get_id() . '/del_input_file/' . $file_short %>"><i class="fa fa-ban"></i></a></td>
+                  </tr>
+% }
+                </table>
+
+              </div>
+              <div class="col-md-6">
+
+                <h3>Generated files</h3>
+
+                <table class="table table-striped">
+                  <tr><th>File</th><th colspan="1">Actions</th></tr>
+% foreach my $file (@{stash( 'files_output' )}) {
+%   my $file_short = fileparse($file);
+                  <tr>
+                    <td><%= $file_short %> &nbsp; <small>[ <%= $timestamps{$file} || "Unknown" %> ]</small></td><td><a href="/admin/projects/<%= $project->get_id() . '/del_output_file/' . $file_short %>"><i class="fa fa-ban"></i></a></td>
+                  </tr>
+% }
+                </table>
+
+              </div>
+            </div>

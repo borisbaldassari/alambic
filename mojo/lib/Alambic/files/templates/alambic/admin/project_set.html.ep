@@ -1,0 +1,60 @@
+
+% my $project_id = stash( 'id' );
+% my $project_name = stash( 'name' );
+% my $project_desc = stash( 'desc' );
+% my $project_active = stash( 'is_active' ) || "";
+
+            <h1 class="al-h1"><small>Administration</small> Add/Edit project information</h1>
+            <br />
+
+%= include 'alambic/admin/admin_menu', current => '/admin/projects'
+
+% if (defined($project_id)) {
+            <form action="/admin/projects/<%= $project_id %>/edit" method="POST" class="form-horizontal" role="form">
+
+% } else {
+            <form action="/admin/projects/new" method="POST" class="form-horizontal" role="form">
+% }
+              <div class="form-group">
+                <label for="id" class="control-label col-xs-2">Project ID</label>
+                <div class="col-xs-10">
+% if (defined($project_id)) {
+                  <input type="text" class="form-control" name="id" value="<%= $project_id %>" readonly />
+% } else {
+                  <input type="text" class="form-control" name="id" />
+% }
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="name" class="control-label col-xs-2">Name</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" name="name" id="name" value="<%= $project_name %>" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="desc" class="control-label col-xs-2">Description</label>
+                <div class="col-xs-10">
+                  <textarea type="text" class="form-control" name="desc" id="desc" style="border-color: #3E3F3A" rows="10" cols="78"><%= $project_desc %></textarea>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="is_active" class="control-label col-xs-2">Active</label>
+                <div class="col-xs-10">
+% my $is_active = $project_active ? " checked" : "";
+                  <input type="checkbox" name="is_active"<%= $is_active %> />
+                </div>
+              </div>
+
+              <br />
+              <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                  <input class="btn btn-primary" type="submit" value="Save" />
+                  <input class="btn btn-default" type="button" value="Cancel" onclick="history.go(-1);" />
+                </div>
+              </div>
+
+            </form>
+

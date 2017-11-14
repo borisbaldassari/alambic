@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+<head>
+    <title>Dashboard &gt; Summary - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Basics.html">Basics</a>
+        </li>
+        <li class="active">
+            <a href="../Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="../Admins.html">Admins</a>
+        </li>
+        <li class="">
+            <a href="../Tasks.html">AdminTasks</a>
+        </li>
+        <li class="">
+            <a href="../Research.html">Research</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="MyAlambic.html">MyAlambic</a>
+        </li>
+        <li class="active">
+            <a href="Dashboard.html">Summary</a>
+        </li>
+        <li class="">
+            <a href="QualityModel.html">QualityModel</a>
+        </li>
+        <li class="">
+            <a href="Data.html">Data</a>
+        </li>
+        <li class="">
+            <a href="History.html">History</a>
+        </li>
+        <li class="">
+            <a href="Log.html">Log</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Dashboard > Summary</h1>
+
+<p><img src="/images/users_summary.png" alt="Alambic web UI" /></p>
+
+<p>The summary shows the main information and figures about the project.</p>
+
+<ul>
+<li>Main project information:
+<ul>
+<li><strong>ID</strong> The unique identifier of the project.</li>
+<li><strong>Name</strong> The human name of the project.</li>
+<li><strong>Description</strong> A short description of the project.</li>
+<li><strong>Last analysis</strong> provides information on the last analysis: who started it, when, and how long it took.</li>
+</ul></li>
+</ul>
+
+<h2>Main results</h2>
+
+<ul>
+<li><strong>Quality Model</strong> shows the value of main quality attributes, with links to the documentation.</li>
+<li><strong>Downloads</strong> provides download links to information, metrics, attributes, recommendations and quality model in JSON format.</li>
+<li><strong>Data Providers</strong> lists all Pre plugins defined for the project, with links to the documentation and the plugin's page. The abilities for each plugins (metrics, info, data, recommendations, visualisation, etc.) are also shown for each plugin.</li>
+</ul>
+
+<h2>List of data</h2>
+
+<p><img src="/images/users_summary_recs.png" alt="Alambic web UI" /></p>
+
+<p>Displays the list of items computed from the last analysis run, in collapsable panels:</p>
+
+<ul>
+<li><strong>Information</strong> (e.g. <code>GIT_URL</code>, <code>PMI_MAIN_URL</code>)</li>
+<li><strong>Metrics</strong> with their description and values</li>
+<li><strong>Attributes</strong> with their description and values</li>
+<li><strong>Recommendations</strong></li>
+<li><strong>Downloads</strong> with description and links to files</li>
+<li><strong>Figures</strong> with description and links to figures</li>
+<li><strong>Visualisations</strong> with links to the plugin pages.</li>
+</ul>
+
+<p>The text snippet on the bottom of the page (<code>Last analysis was executed on 2017-08-22 09:43:10.</code>) displays the date of analysis for the computed data and values.</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

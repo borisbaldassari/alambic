@@ -1,0 +1,12 @@
+% layout 'contenticious', title => $content_node->title;
+% 
+% if (defined $content_node->html) {
+%   if (defined $content_node->meta->{'al_list_items'}) {
+%= include 'list', content_node => $content_node
+%   } else {
+%== $content_node->html
+%   }
+% } else {
+%= include 'list_empty', content_node => $content_node
+% }
+

@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+<head>
+    <title>Alambic For research - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="Basics.html">Basics</a>
+        </li>
+        <li class="">
+            <a href="Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="Admins.html">Admins</a>
+        </li>
+        <li class="">
+            <a href="Tasks.html">AdminTasks</a>
+        </li>
+        <li class="active">
+            <a href="Research.html">Research</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Introduction: Using Alambic for reproducible research</h1>
+
+<p>Alambic uses <a href="https://www.r-project.org">R</a> to run analysis on metrics and project data, and to draw plots. The following R packages are available in the standard installation:</p>
+
+<ul>
+<li>Many plots are generated with <a href="http://ggplot2.org/">ggplot2</a>. Some history plots use the [dygraph][dygraph] library.</li>
+<li><a href="http://rmarkdown.rstudio.com/">Knit</a> is used to generate complete HTML and PDF documents that are either included in the project dashboard or available for download.</li>
+<li>Interactive graphics are plotted using <a href="http://plot.ly">plot.ly</a> and its <a href="https://plot.ly/r/">R package</a>.</li>
+</ul>
+
+<p>A couple of other packages are available for various purposes:</p>
+
+<ul>
+<li>ts, zoo for time series,</li>
+<li>wordcloud, ggthemes, googleVis, SnowballC</li>
+<li>pander, dplyr, migrattr, reshpae2, xtable for manipulation.</li>
+</ul>
+
+<p>The complete and up-to-date list of R packages required to install Alambic, and available for plugins, is available in the Docker installation script in <code>$ALAMBIC_HOME/docker/image_base_centos/alambic_install_r_deps.sh</code>.</p>
+
+<h1>Building a new plugin for R markdown documents</h1>
+
+<p>Alambic offers an easy way to run custom R markdown file, with pre-loaded data sets (metrics, indicators, attributes). All the information retrieved and computed by pre-plugins is also available for computations.</p>
+
+<p>Building a custom plugin to run your own R markdown file is straight-forward.</p>
+
+<h2>Make a copy of the GenericR plugin</h2>
+
+<p>The plugin is composed of the main module file (<code>GenericR.pm</code>) and a directory (<code>GenericR/</code>) containing the R files. The adopted naming convention is to use the plugin ID, camel case, for both files.</p>
+
+<p>Make a copy of the GenericR plugin, located in the <code>$MOJO/lib/Alambic/Plugins</code> directory.</p>
+
+<pre><code>$ cd $MOJO/lib/Alambic/Plugins/
+$ cp GenericR.pm MyRMarkdown.pm
+$ cp -r GenericR/ MyRMarkdown/
+</code></pre>
+
+<p>Edit the main module file:</p>
+
+<pre><code>$ emacs MyRMarkdown.pm
+</code></pre>
+
+<p>Edit the main configuration hash of the plugin and update the following fields:</p>
+
+<ul>
+<li>ID: a unique identifier (no blank, only ascii chars) for the plugin.</li>
+<li>Name: a human-readable name for the plugin, that will be displayed in the interface.</li>
+<li>Description: an arraw of strings to give information and help about the plugin. Each array item will be embedded in <code>&lt;p&gt;</code> tags, and HTML can be used (e.g. for links).</li>
+<li>Optionally, edit the description of the PDF document that will be generated.</li>
+</ul>
+
+<p>For our example, the file would look like this:</p>
+
+<pre><code>my %conf = (
+  "id"   =&gt; "MyRMarkdown",
+  "name" =&gt; "Generic R plugin",
+  "desc" =&gt; [
+      "The generic R plugin enables users to easily define their own R markdown files to automatically run analysis on projects.",
+      'See &lt;a href="http://alambic.io/Plugins/Pre/GenericR"&gt;the project\'s wiki&lt;/a&gt; for more information.',
+  ],
+  "type"             =&gt; "post",
+  "ability"          =&gt; ['data'],
+  "params"           =&gt; {},
+  "provides_cdata"   =&gt; [],
+  "provides_info"    =&gt; [],
+  "provides_data"    =&gt; {
+      "generic_r.pdf" =&gt; "The PDF document generated from the R markdown file.",
+    },
+  "provides_metrics" =&gt; {},
+  "provides_figs"    =&gt; {},
+  "provides_recs" =&gt; [],
+  "provides_viz"  =&gt; {},
+);
+</code></pre>
+
+<p>And you're done. Start the application again, and the plugin should appear in the list.</p>
+
+<h2>Edit R files</h2>
+
+<p>This plugin uses the <a href="http://rmarkdown.rstudio.com/">RMarkdown</a> syntax and engine to process the file. Edit the R file in the directory of the new plugin:</p>
+
+<pre><code>$ cd MyRMarkdown/
+$ emacs generic_r.Rmd
+</code></pre>
+
+<p>The initialisation of the document is done in the first R chunk (named <code>init</code>). It loads the definition of metrics and attributes as data frames (resp. <code>metrics_ref</code> and <code>attrs_ref</code>) and the values of metrics and attributes for the current run (resp. <code>metrics</code> and <code>attrs</code>).</p>
+
+<p>The actual implementation of the GenericR plugin can serve as a reference to understand how R code chunks work and how to display data or graphics in the document.</p>
+
+<p>Depending on the configuration of the project, other data files can be loaded directly from the <code>input</code> and <code>output</code> directories. See the example of the Git analysis in the GenericR R markdown file.</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

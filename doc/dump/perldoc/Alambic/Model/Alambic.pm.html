@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Alambic::Model::Alambic &mdash; Alambic</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
+  <h1 class="t1">Alambic</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Alambic developer documentation</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Alambic</a> &gt; Perl Modules &gt;
+  Alambic::Model::Alambic
+</div>
+<div>
+<a href="../../src/Alambic/Model/Alambic.pm">Source</a>
+</div>
+
+<div class="pod">
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+      <li><a href="#backup">backup()</a></li>
+      <li><a href="#restore">restore()</a></li>
+      <li><a href="#instance_name">instance_name()</a></li>
+      <li><a href="#instance_desc">instance_desc()</a></li>
+      <li><a href="#instance_version">instance_version()</a></li>
+      <li><a href="#instance_pg_alambic">instance_pg_alambic()</a></li>
+      <li><a href="#instance_pg_minion">instance_pg_minion()</a></li>
+      <li><a href="#is_db_ok">is_db_ok()</a></li>
+      <li><a href="#is_db_m_ok">is_db_m_ok()</a></li>
+      <li><a href="#get_plugins">get_plugins()</a></li>
+      <li><a href="#get_models">get_models()</a></li>
+      <li><a href="#get_tools">get_tools()</a></li>
+      <li><a href="#get_repo_fs">get_repo_fs()</a></li>
+      <li><a href="#get_repo_db">get_repo_db()</a></li>
+      <li><a href="#get_wizards">get_wizards()</a></li>
+      <li><a href="#users">users()</a></li>
+      <li><a href="#set_user">set_user()</a></li>
+      <li><a href="#set_user_project">set_user_project()</a></li>
+      <li><a href="#get_user">get_user()</a></li>
+      <li><a href="#del_user">del_user()</a></li>
+      <li><a href="#create_project">create_project()</a></li>
+      <li><a href="#create_project_from_wizard">create_project_from_wizard()</a></li>
+      <li><a href="#get_project">get_project()</a></li>
+      <li><a href="#set_project">set_project()</a></li>
+      <li><a href="#get_projects_list">get_projects_list()</a></li>
+      <li><a href="#add_project_plugin">add_project_plugin()</a></li>
+      <li><a href="#del_project_plugin">del_project_plugin()</a></li>
+      <li><a href="#get_project_hist">get_project_hist()</a></li>
+      <li><a href="#get_project_last_run">get_project_last_run()</a></li>
+      <li><a href="#get_project_run">get_project_run()</a></li>
+      <li><a href="#run_project">run_project()</a></li>
+      <li><a href="#run_plugins">run_plugins()</a></li>
+      <li><a href="#run_qm">run_qm()</a></li>
+      <li><a href="#run_posts">run_posts()</a></li>
+      <li><a href="#run_globals">run_globals()</a></li>
+      <li><a href="#delete_project">delete_project()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>Alambic::Model::Alambic</b> - The main class to interact with the Alambic application.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    my $alambic = Alambic::Model::Alambic-&gt;new(
+      {
+        &#39;conf_pg_alambic&#39; =&gt; &#39;postgresql://alambic:pass4alambic@/minion_db&#39;,
+        &#39;alambic_version&#39; =&gt; &#39;3.3.2&#39;, 
+      }
+    )
+    
+    my $sql = $alambic-&gt;backup();
+    $alambic-&gt;restore($sql);
+    $alambic-&gt;run_project(&#39;modeling.sirius&#39;);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><b>Alambic::Model::Alambic</b> provides an almost complete interface to the Alambic application. Most features provided by <a href="http://search.cpan.org/perldoc?Almabic::Model::Controllers">Almabic::Model::Controllers</a> and <a href="http://search.cpan.org/perldoc?Alambic::Model::Commands">Alambic::Model::Commands</a> are actually executed by this class, from database queries to project execution and backups.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="new"><code>new()</code></h2>
+
+<pre><code>    my $alambic = Alambic::Model::Alambic-&gt;new(
+      {
+        &#39;conf_pg_alambic&#39; =&gt; &#39;postgresql://alambic:pass4alambic@/minion_db&#39;,
+        &#39;alambic_version&#39; =&gt; &#39;3.3.2&#39;, 
+      }
+    )</code></pre>
+
+<p>Creates a new Alambic object to interact with the Alambic instance and features.</p>
+
+<h2 id="backup"><code>backup()</code></h2>
+
+<p>Create a backup of the Alambic DB.</p>
+
+<h2 id="restore"><code>restore()</code></h2>
+
+<pre><code>    $alambic-&gt;restore($my_complete_sql_string);</code></pre>
+
+<p>Restore a SQL string into the Alambic DB.</p>
+
+<h2 id="instance_name"><code>instance_name()</code></h2>
+
+<pre><code>    my $name = $instance_bname();
+    
+    $instance_name(&#39;My new name for this instance.&#39;);</code></pre>
+
+<p>Get or set the instance name.</p>
+
+<h2 id="instance_desc"><code>instance_desc()</code></h2>
+
+<pre><code>    my $desc = $instance_desc();
+    
+    $instance_desc(&#39;My new description of this instance.&#39;);</code></pre>
+
+<p>Get or set the instance description.</p>
+
+<h2 id="instance_version"><code>instance_version()</code></h2>
+
+<p>Get the version of Alambic running this instance.</p>
+
+<h2 id="instance_pg_alambic"><code>instance_pg_alambic()</code></h2>
+
+<p>Get the postgresql configuration for alambic.</p>
+
+<h2 id="instance_pg_minion"><code>instance_pg_minion()</code></h2>
+
+<p>Get the postgresql configuration for minion.</p>
+
+<h2 id="is_db_ok"><code>is_db_ok()</code></h2>
+
+<p>Get boolean to check if the alambic db can be used.</p>
+
+<h2 id="is_db_m_ok"><code>is_db_m_ok()</code></h2>
+
+<p>Get boolean to check if the minion db information is defined.</p>
+
+<h2 id="get_plugins"><code>get_plugins()</code></h2>
+
+<p>Return the Plugins.pm object for this instance.</p>
+
+<h2 id="get_models"><code>get_models()</code></h2>
+
+<p>Return the Models.pm object for this instance.</p>
+
+<h2 id="get_tools"><code>get_tools()</code></h2>
+
+<p>Return the Tools.pm object for this instance.</p>
+
+<h2 id="get_repo_fs"><code>get_repo_fs()</code></h2>
+
+<p>Return the RepoFS.pm object for this instance.</p>
+
+<h2 id="get_repo_db"><code>get_repo_db()</code></h2>
+
+<p>Return the RepoDB.pm object for this instance.</p>
+
+<h2 id="get_wizards"><code>get_wizards()</code></h2>
+
+<p>Return the Wizards.pm object for this instance.</p>
+
+<h2 id="users"><code>users()</code></h2>
+
+<p>Return the list of users with their information.</p>
+
+<pre><code>    my $users = {
+      &#39;boris.baldassari&#39; =&gt; {
+        &#39;name&#39; =&gt; &#39;Boris Baldassari&#39;,
+        &#39;email&#39; =&gt; &#39;boris.baldassari@domain.com&#39;,
+        &#39;passwd&#39; =&gt; &#39;password&#39;,
+        &#39;roles&#39; =&gt; [ &#39;admin&#39; ],
+        &#39;projects&#39; =&gt; [ &#39;modeling.sirius&#39; ],
+        &#39;notifs&#39; =&gt; {
+          &#39;modeling.sirius&#39; =&gt; [ &#39;run_complete&#39; ],
+        },
+      },
+    };</code></pre>
+
+<h2 id="set_user"><code>set_user()</code></h2>
+
+<pre><code>    $self-&gt;app-&gt;al-&gt;set_user(&#39;administrator&#39;, &#39;Administrator&#39;,
+      &#39;alambic@castalia.solutions&#39;, &#39;password&#39;, [&#39;Admin&#39;], {}, {});</code></pre>
+
+<p>Add or update user to the Alambic db.</p>
+
+<ul>
+
+<li><p>id</p>
+
+</li>
+<li><p>name</p>
+
+</li>
+<li><p>email</p>
+
+</li>
+<li><p>password</p>
+
+</li>
+<li><p>roles (array reference)</p>
+
+</li>
+<li><p>projects (hash reference)</p>
+
+</li>
+<li><p>notifications (hash reference)</p>
+
+</li>
+</ul>
+
+<h2 id="set_user_project"><code>set_user_project()</code></h2>
+
+<pre><code>    $al-&gt;set_user_project($user_id, $project_id, $content);</code></pre>
+
+<p>Add or update a project in a user profile.</p>
+
+<ul>
+
+<li><p>user_id</p>
+
+</li>
+<li><p>project_id</p>
+
+</li>
+<li><p>content</p>
+
+</li>
+</ul>
+
+<h2 id="get_user"><code>get_user()</code></h2>
+
+<pre><code>    $al-&gt;get_user(&#39;boris&#39;);</code></pre>
+
+<p>Get information for a single user.</p>
+
+<h2 id="del_user"><code>del_user()</code></h2>
+
+<pre><code>    $al-&gt;get_user(&#39;boris&#39;);</code></pre>
+
+<p>Delete a user from the database.</p>
+
+<h2 id="create_project"><code>create_project()</code></h2>
+
+<pre><code>    $self-&gt;app-&gt;al-&gt;create_project(
+      $project_id, $project_name, 
+      $plugins,
+      $project_active);</code></pre>
+
+<p>Create and return an empty project (i.e. with no plugin).</p>
+
+<ul>
+
+<li><p>project id</p>
+
+</li>
+<li><p>project name</p>
+
+</li>
+<li><p>project description</p>
+
+</li>
+<li><p>is active (boolean)</p>
+
+</li>
+</ul>
+
+<h2 id="create_project_from_wizard"><code>create_project_from_wizard()</code></h2>
+
+<pre><code>    $self-&gt;app-&gt;al-&gt;create_project_from_wizard(
+      $wizard_id,
+      $project_id,
+      $conf,
+    );</code></pre>
+
+<p>Create and return a new project from a wizard.</p>
+
+<ul>
+
+<li><p>wizard id (e.g. EclipsePmi)</p>
+
+</li>
+<li><p>project id</p>
+
+</li>
+<li><p>configuration</p>
+
+<pre><code>    {
+      &#39;param1&#39; =&gt; &#39;value1&#39;,
+      &#39;param2&#39; =&gt; &#39;value2&#39;,
+    }</code></pre>
+
+</li>
+</ul>
+
+<h2 id="get_project"><code>get_project()</code></h2>
+
+<pre><code>    my $project = $alambic-&gt;get_project(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Get a Project object from its id. The project is populated with data (metrics, attributes, recs) if available.</p>
+
+<h2 id="set_project"><code>set_project()</code></h2>
+
+<pre><code>    my $project = $self-&gt;app-&gt;al-&gt;set_project(
+      $project_id, 
+      $project_name, 
+      $project_desc,
+      $project_active
+    );</code></pre>
+
+<p>Set properties of a project from its id.</p>
+
+<ul>
+
+<li><p>id the id of the project to be set.</p>
+
+</li>
+<li><p>name the name of the project to be set.</p>
+
+</li>
+<li><p>desc the desc of the project to be set.</p>
+
+</li>
+<li><p>active the is_active flag of the project to be set.</p>
+
+</li>
+<li><p>plugins the plugins conf of the project to be set.</p>
+
+</li>
+</ul>
+
+<h2 id="get_projects_list"><code>get_projects_list()</code></h2>
+
+<pre><code>    my $projects_list = $alambic-&gt;get_projects_list();</code></pre>
+
+<p>Get a hash ref of all project ids with their names. Returns:</p>
+
+<pre><code>    $projects = {
+      &quot;modeling.sirius&quot; =&gt; &quot;Sirius&quot;,
+      &quot;tools.cdt&quot; =&gt; &quot;CDT&quot;,
+    }</code></pre>
+
+<ul>
+
+<li><p>is_active (optional) should inactive project be returned as well?</p>
+
+</li>
+</ul>
+
+<h2 id="add_project_plugin"><code>add_project_plugin()</code></h2>
+
+<pre><code>    $self-&gt;app-&gt;al-&gt;add_project_plugin($project_id, $plugin_id, \%args);</code></pre>
+
+<p>Add or set a plugin to the project configuration.</p>
+
+<ul>
+
+<li><p>project_id the project id.</p>
+
+</li>
+<li><p>plugin_id the plugin id.</p>
+
+</li>
+<li><p>plugin_conf a hash ref for the plugin configuration.</p>
+
+<pre><code>    {
+      &#39;param1&#39; =&gt; &#39;value1&#39;,
+      &#39;param2&#39; =&gt; &#39;value2&#39;,
+    }</code></pre>
+
+</li>
+</ul>
+
+<h2 id="del_project_plugin"><code>del_project_plugin()</code></h2>
+
+<pre><code>    $self-&gt;app-&gt;al-&gt;del_project_plugin($project_id, $plugin_id);</code></pre>
+
+<p>Delete a plugin from the project configuration.</p>
+
+<ul>
+
+<li><p>project_id the project id.</p>
+
+</li>
+<li><p>plugin_id the plugin id.</p>
+
+</li>
+</ul>
+
+<h2 id="get_project_hist"><code>get_project_hist()</code></h2>
+
+<pre><code>    my $hist = $self-&gt;app-&gt;al-&gt;get_project_hist($project_id);</code></pre>
+
+<p>Retrieve history of runs for a project. Only basic information is returned, subsequent calls to get_project_run will be required to actually get the data. Returns an array of hashes:</p>
+
+<pre><code>    [
+      {
+        &#39;run_time&#39; =&gt; &#39;2017-07-29 09:00:08&#39;,
+        &#39;id&#39; =&gt; 3,
+        &#39;run_delay&#39; =&gt; 49,
+        &#39;project_id&#39; =&gt; &#39;modeling.sirius&#39;,
+        &#39;run_user&#39; =&gt; &#39;administrator&#39;
+      },
+      {
+        &#39;id&#39; =&gt; 2,
+        &#39;run_delay&#39; =&gt; 44,
+        &#39;project_id&#39; =&gt; &#39;modeling.sirius&#39;,
+        &#39;run_time&#39; =&gt; &#39;2017-07-29 08:54:35&#39;,
+        &#39;run_user&#39; =&gt; &#39;administrator&#39;
+      },
+      {
+        &#39;run_user&#39; =&gt; &#39;administrator&#39;,
+        &#39;run_time&#39; =&gt; &#39;2017-07-29 08:53:12&#39;,
+        &#39;project_id&#39; =&gt; &#39;modeling.sirius&#39;,
+        &#39;id&#39; =&gt; 1,
+        &#39;run_delay&#39; =&gt; 47
+      }
+    ];</code></pre>
+
+<h2 id="get_project_last_run"><code>get_project_last_run()</code></h2>
+
+<pre><code>    my $runs = $alambic-&gt;get_project_last_run(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Return all data for the last run of the project.</p>
+
+<pre><code>    {
+      &#39;recs&#39; =&gt; [
+        {
+          &#39;desc&#39; =&gt; &#39;The title entry is empty in the PMI.&#39;,
+          &#39;severity&#39; =&gt; 2,
+          &#39;rid&#39; =&gt; &#39;PMI_EMPTY_TITLE&#39;,
+          &#39;src&#39; =&gt; &#39;EclipsePmi&#39;
+        }
+      ],
+      &#39;attributes_conf&#39; =&gt; undef,
+      &#39;run_delay&#39; =&gt; 49,
+      &#39;project_id&#39; =&gt; &#39;modeling.sirius&#39;,
+      &#39;metrics&#39; =&gt; {
+        &#39;CI_JOBS_FAILED_1W&#39; =&gt; 7,
+      },
+      &#39;info&#39; =&gt; {
+        &#39;PMI_SCM_URL&#39; =&gt; &#39;http://git.eclipse.org/c/sirius/org.eclipse.sirius.legacy.git&#39;,
+      },
+      &#39;id&#39; =&gt; 3,
+      &#39;run_user&#39; =&gt; &#39;administrator&#39;,
+      &#39;indicators&#39; =&gt; undef,
+      &#39;attributes&#39; =&gt; undef,
+      &#39;run_time&#39; =&gt; &#39;2017-07-29 09:00:08&#39;
+    }</code></pre>
+
+<h2 id="get_project_run"><code>get_project_run()</code></h2>
+
+<pre><code>    my $run = $alambic-&gt;get_project_run(&#39;modeling.sirius&#39;, 3);</code></pre>
+
+<p>Return all data for a specific run.</p>
+
+<pre><code>    {
+      &#39;recs&#39; =&gt; [
+        {
+          &#39;desc&#39; =&gt; &#39;The title entry is empty in the PMI.&#39;,
+          &#39;severity&#39; =&gt; 2,
+          &#39;rid&#39; =&gt; &#39;PMI_EMPTY_TITLE&#39;,
+          &#39;src&#39; =&gt; &#39;EclipsePmi&#39;
+        }
+      ],
+      &#39;attributes_conf&#39; =&gt; undef,
+      &#39;run_delay&#39; =&gt; 49,
+      &#39;project_id&#39; =&gt; &#39;modeling.sirius&#39;,
+      &#39;metrics&#39; =&gt; {
+        &#39;CI_JOBS_FAILED_1W&#39; =&gt; 7,
+      },
+      &#39;info&#39; =&gt; {
+        &#39;PMI_SCM_URL&#39; =&gt; &#39;http://git.eclipse.org/c/sirius/org.eclipse.sirius.legacy.git&#39;,
+      },
+      &#39;id&#39; =&gt; 3,
+      &#39;run_user&#39; =&gt; &#39;administrator&#39;,
+      &#39;indicators&#39; =&gt; undef,
+      &#39;attributes&#39; =&gt; undef,
+      &#39;run_time&#39; =&gt; &#39;2017-07-29 09:00:08&#39;
+    }</code></pre>
+
+<h2 id="run_project"><code>run_project()</code></h2>
+
+<pre><code>    my $results = $alambic-&gt;run_project(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Run a full analysis on a project, including pre- plugins, qm, post- plugins. Returns a hash ref with all information about the run.</p>
+
+<pre><code>    {
+      &quot;metrics&quot; =&gt; {&#39;metric1&#39; =&gt; &#39;value1&#39;},
+      &quot;indicators&quot; =&gt; {&#39;ind1&#39; =&gt; &#39;value1&#39;},
+      &quot;attributes&quot; =&gt; {&#39;attr1&#39; =&gt; &#39;value1&#39;},
+      &quot;attributes_conf&quot; =&gt; {&#39;attr1&#39; =&gt; &#39;value1&#39;},
+      &quot;infos&quot; =&gt; {&#39;info1&#39; =&gt; &#39;value1&#39;},
+      &quot;recs&quot; =&gt; [{&#39;rec1&#39;}, {&#39;rec2&#39;}],
+      &quot;log&quot; =&gt; [&#39;log entry&#39;],
+    }</code></pre>
+
+<h2 id="run_plugins"><code>run_plugins()</code></h2>
+
+<pre><code>    my $results = $alambic-&gt;run_plugins(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Run all pre-plugins on a project. Results will NOT be stored in db (only full runs are actually stored). Returns a hash ref with all information about the run.</p>
+
+<pre><code>    {
+      &quot;metrics&quot; =&gt; {&#39;metric1&#39; =&gt; &#39;value1&#39;},
+      &quot;indicators&quot; =&gt; {&#39;ind1&#39; =&gt; &#39;value1&#39;},
+      &quot;attributes&quot; =&gt; {&#39;attr1&#39; =&gt; &#39;value1&#39;},
+      &quot;attributes_conf&quot; =&gt; {&#39;attr1&#39; =&gt; &#39;value1&#39;},
+      &quot;infos&quot; =&gt; {&#39;info1&#39; =&gt; &#39;value1&#39;},
+      &quot;recs&quot; =&gt; [{&#39;rec1&#39;}, {&#39;rec2&#39;}],
+      &quot;log&quot; =&gt; [&#39;log entry&#39;],
+    }</code></pre>
+
+<h2 id="run_qm"><code>run_qm()</code></h2>
+
+<pre><code>    my $results = $alambic-&gt;run_qm(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Compute indicators and populate the quality model. Returns a hash reference with all computation results.</p>
+
+<pre><code>    {
+      &quot;metrics&quot; =&gt; {&#39;metric1&#39; =&gt; &#39;value1&#39;},
+      &quot;indicators&quot; =&gt; {&#39;ind1&#39; =&gt; &#39;value1&#39;},
+      &quot;attributes&quot; =&gt; {&#39;attr1&#39; =&gt; &#39;value1&#39;},
+      &quot;attributes_conf&quot; =&gt; {&#39;attr1&#39; =&gt; &#39;value1&#39;},
+      &quot;log&quot; =&gt; [&#39;log entry&#39;],
+    }</code></pre>
+
+<h2 id="run_posts"><code>run_posts()</code></h2>
+
+<pre><code>    my $results = $alambic-&gt;run_posts(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Run all post plugins for the project. Returns a hash reference with all information returned by post plugins.</p>
+
+<pre><code>    {
+      &quot;metrics&quot; =&gt; {&#39;metric1&#39; =&gt; &#39;value1&#39;},
+      &quot;indicators&quot; =&gt; {&#39;ind1&#39; =&gt; &#39;value1&#39;},
+      &quot;attributes&quot; =&gt; {&#39;attr1&#39; =&gt; &#39;value1&#39;},
+      &quot;attributes_conf&quot; =&gt; {&#39;attr1&#39; =&gt; &#39;value1&#39;},
+      &quot;infos&quot; =&gt; {&#39;info1&#39; =&gt; &#39;value1&#39;},
+      &quot;recs&quot; =&gt; [{&#39;rec1&#39;}, {&#39;rec2&#39;}],
+      &quot;log&quot; =&gt; [&#39;log entry&#39;],
+    }</code></pre>
+
+<h2 id="run_globals"><code>run_globals()</code></h2>
+
+<p>TODO. NOT IMPLEMENTED.</p>
+
+<h2 id="delete_project"><code>delete_project()</code></h2>
+
+<pre><code>    $alambic-&gt;delete_project(&#39;modelings.sirius&#39;);</code></pre>
+
+<p>Delete a project from the Alambic instance. This removes database records and all files associated to the project on the file system.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="http://search.cpan.org/perldoc?Mojolicious">Mojolicious</a>, <a href="http://alambic.io">http://alambic.io</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a></p>
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

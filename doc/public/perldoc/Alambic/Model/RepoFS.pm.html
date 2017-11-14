@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Alambic::Model::RepoFS &mdash; Alambic Perldoc</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
+  <h1 class="t1">Alambic Perldoc</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Alambic</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Alambic Perldoc</a> &gt; Perl Modules &gt;
+  Alambic::Model::RepoFS
+</div>
+<div>
+<a href="../../src/Alambic/Model/RepoFS.pm">Source</a>
+</div>
+
+<div class="pod">
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+      <li><a href="#write_input">write_input()</a></li>
+      <li><a href="#read_input">read_input()</a></li>
+      <li><a href="#write_output">write_output()</a></li>
+      <li><a href="#read_output">read_output()</a></li>
+      <li><a href="#write_plugin">write_plugin()</a></li>
+      <li><a href="#read_plugin">read_plugin()</a></li>
+      <li><a href="#write_backup">write_backup()</a></li>
+      <li><a href="#read_backup">read_backup()</a></li>
+      <li><a href="#write_models">write_models()</a></li>
+      <li><a href="#read_models">read_models()</a></li>
+      <li><a href="#write_users">write_users()</a></li>
+      <li><a href="#read_users">read_users()</a></li>
+      <li><a href="#delete_project">delete_project()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>Alambic::Model::RepoFS</b> - Interface to all file-system-related actions and information defined in Alambic.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    my $repofs = Alambic::Model::RepoFS-&gt;new();
+    
+    $repofs-&gt;delete_project(&#39;modeling.sirius&#39;);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><b>Alambic::Model::RepoFS</b> provides autility methods for all operations related to file system: read and copy files, delete projects, etc.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="new"><code>new()</code></h2>
+
+<pre><code>    my $repofs = Alambic::Model::RepoFS-&gt;new();</code></pre>
+
+<p>Create a new <a href="RepoFS.pm.html">Alambic::Model::RepoFS</a> object.</p>
+
+<h2 id="write_input"><code>write_input()</code></h2>
+
+<pre><code>    $repofs-&gt;write_input(
+      &#39;modeling.sirius&#39;, 
+      &#39;myfilename.txt&#39;
+      $content
+    );</code></pre>
+
+<p>Write a file to the project input directory.</p>
+
+<h2 id="read_input"><code>read_input()</code></h2>
+
+<pre><code>    $repofs-&gt;read_input(&#39;modeling.sirius&#39;, &#39;myfile.txt&#39;);
+    </code></pre>
+
+<p>Read a file from the project input directory.</p>
+
+<h2 id="write_output"><code>write_output()</code></h2>
+
+<pre><code>    $repofs-&gt;write_output(
+      &#39;modeling.sirius&#39;, 
+      &#39;myfilename.txt&#39;
+      $content
+    );</code></pre>
+
+<p>Write a file to the project output directory.</p>
+
+<h2 id="read_output"><code>read_output()</code></h2>
+
+<pre><code>    $repofs-&gt;read_output(&#39;modeling.sirius&#39;, &#39;myfile.txt&#39;);
+    </code></pre>
+
+<p>Read a file from the project output directory.</p>
+
+<h2 id="write_plugin"><code>write_plugin()</code></h2>
+
+<pre><code>    $repofs-&gt;write_plugin(
+      &#39;EclipsePmi&#39;, 
+      &#39;myfilename.txt&#39;
+      $content
+    );</code></pre>
+
+<p>Write a file to the plugin directory.</p>
+
+<h2 id="read_plugin"><code>read_plugin()</code></h2>
+
+<pre><code>    $repofs-&gt;read_plugin(&#39;EclipsePmi&#39;, &#39;myfile.txt&#39;);
+    </code></pre>
+
+<p>Read a file from the plugin directory.</p>
+
+<h2 id="write_backup"><code>write_backup()</code></h2>
+
+<pre><code>    $repofs-&gt;write_backup(
+      $content
+    );</code></pre>
+
+<p>Write a file to the backup directory.</p>
+
+<h2 id="read_backup"><code>read_backup()</code></h2>
+
+<pre><code>    $repofs-&gt;read_backup(&#39;mybackup.sql&#39;);
+    </code></pre>
+
+<p>Read a file from the backup directory.</p>
+
+<h2 id="write_models"><code>write_models()</code></h2>
+
+<pre><code>    $repofs-&gt;write_models(
+      &#39;metrics&#39;, 
+      &#39;myfilename.txt&#39;
+      $content
+    );</code></pre>
+
+<p>Write a file to the models directory.</p>
+
+<h2 id="read_models"><code>read_models()</code></h2>
+
+<pre><code>    $repofs-&gt;read_models(&#39;metrics&#39;, &#39;myfile.txt&#39;);
+    </code></pre>
+
+<p>Read a file from the models directory.</p>
+
+<h2 id="write_users"><code>write_users()</code></h2>
+
+<pre><code>    $repofs-&gt;write_users(
+      &#39;EclipsePmi&#39;, &#39;modeling.sirius&#39;, $content
+    );</code></pre>
+
+<p>Write user operations to the projects/&lt;project_id&gt;/users/ directory.</p>
+
+<h2 id="read_users"><code>read_users()</code></h2>
+
+<pre><code>    my $users = $repofs-&gt;read_users(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Read user operations to the projects/&lt;project_id&gt;/users/ directory.</p>
+
+<h2 id="delete_project"><code>delete_project()</code></h2>
+
+<pre><code>    $repofs-&gt;delete_project(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Delete the complete hierarchy of files in projects/&lt;project_id&gt;.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="http://search.cpan.org/perldoc?Mojolicious">Mojolicious</a>, <a href="http://alambic.io">http://alambic.io</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a></p>
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

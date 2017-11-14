@@ -1,0 +1,224 @@
+% my $project_id = stash( 'project_id' );
+% my $run = stash( 'run' );
+%
+% my $project = app->al->get_project($project_id);
+% my $models = app->al->get_models();
+% my $attributes = $project->attributes();
+% my $attributes_conf = $project->attributes_conf();
+% my $plugins = app->al->get_plugins();
+% my $list = $plugins->get_names_all();
+% my %recs_txt = (
+%   1 => 'Low',
+%   2 => 'Medium',
+%   3 => 'High',
+% );
+
+            <h1 class="al-h1"><small><%= $project_id %></small> Data summary</h1>
+            <br />
+
+%= include 'alambic/dashboard/dashboard_menu', current => '/projects/data', project_id => $project_id
+            <br />
+
+	        <div class="row"><div class="col-sm-7">
+		    <p>This table details all available data for project <code><%= $project_id %></code>.</p>
+		    <p>Main data available for project includes: </p>
+		    <ul>
+		      <li><code><%= scalar keys %{ $run->{'info'} || {} } %></code> information [ <a href="info">Display</a> | <a href="/projects/<%= $project_id %>/info.json">Download JSON</a> ]</li>
+		      <li><code><%= scalar keys %{ $run->{'metrics'} || {} } %></code> metrics [ <a href="metrics">Display</a> | <a href="/projects/<%= $project_id %>/metrics.json">Download JSON</a> ]</li>
+		      <li><code><%= scalar keys %{ $run->{'attributes'} || {} } %></code> attributes [ <a href="attributes">Display</a> | <a href="/projects/<%= $project_id %>/attributes.json">Download JSON</a> ]</li>
+		      <li><code><%= scalar @{ $run->{'recs'} || [] } %></code> recommendations [ <a href="recs">Display</a> | <a href="/projects/<%= $project_id %>/recs.json">Download JSON</a> ]</li>
+		      <li>the populated quality model [ <a href="qm">Display</a> | <a href="/projects/<%= $project_id %>/qm_full.json">Download JSON</a> ]</li>
+		    </ul>
+		    <p>A lot of information is also directly available from the plugins: </p>
+		    <ul>
+% my $ps = app->al->get_project($project_id)->get_plugins();
+% foreach my $p (sort keys %$ps) {
+              <li><a href="<%= $p %>.html"><%= $p %></a></li>
+% }
+		    </ul>
+	      </div>
+	      <div class="col-sm-4">
+		    <div class="panel panel-default">
+		    <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+		    <div class="list-group">
+		      <a href="#info" class="list-group-item">Information</a>
+		      <a href="#metrics" class="list-group-item">Metrics</a>
+		      <a href="#attrs" class="list-group-item">Attributes</a>
+		      <a href="#recs" class="list-group-item">Recommendations</a>
+		      <a href="#viz" class="list-group-item">Visualisation</a>
+		      <a href="#data" class="list-group-item">Downloads</a>
+		      <a href="#figs" class="list-group-item">Figures</a>
+		    </div>
+		  </div>
+	      </div></div>
+
+          <br />
+
+	      <h2 id="info">Information</h2>
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Mnemo</th>
+                <th width="80%">Value</th>
+              </tr>
+% my $info = $run->{'info'};
+% foreach my $item (sort keys %{$info}) {
+              <tr>
+                <td><%= $item %></td>
+                <td><%= $info->{$item} %></td>
+              </tr>
+% }
+            </table>
+
+	    <h2 id="metrics">Metrics</h2>
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Name</th>
+                <th width="10%">Mnemo</th>
+                <th width="50%">Description</th>
+                <th width="10%">Value</th>
+                <th width="10%">Indicator</th>
+              </tr>
+% my $metrics = $run->{'metrics'};
+% my $inds = $run->{'indicators'};
+% my $metrics_def = $models->get_metrics();
+% my $metrics_active = $models->get_metrics_active();
+% foreach my $item (sort keys %{$metrics}) {
+%   if ( grep( /^$item$/, @{$metrics_active} ) ) {
+              <tr>
+                <td><a href="/documentation/metrics.html#<%= $item %>"><%= $metrics_def->{$item}->{'name'} %></a></td>
+                <td><a href="/documentation/metrics.html#<%= $item %>"><%= $item %></a></td>
+                <td><%= $models->get_metric($item)->{'description'}->[0] %></td>
+                <td><%= $metrics->{$item} %></td>
+                <td><%= $inds->{$item} %></td>
+              </tr>
+%   }
+% }
+            </table>
+
+
+	    <h2 id="attrs">Attributes</h2>
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Name</th>
+                <th width="10%">Mnemo</th>
+                <th width="50%">Description</th>
+                <th width="10%">Value</th>
+                <th width="10%">Confidence</th>
+              </tr>
+% foreach my $attr (sort keys %{$attributes}) {
+              <tr>
+                <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $models->get_attribute($attr)->{'name'} %></a></td>
+                <td><a href="/documentation/attributes.html#<%= $attr %>"><%= $attr %></a></td>
+                <td><%== $models->get_attribute($attr)->{'description'}->[0] %></td>
+                <td><%= $attributes->{$attr} %></td>
+                <td><%= $attributes_conf->{$attr} %></td>
+              </tr>
+% }
+            </table>
+
+
+	    <h2 id="recs">Recommendations</h2>
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Name</th>
+                <th width="10%">Mnemo</th>
+                <th width="50%">Description</th>
+                <th width="10%">Severity</th>
+                <th width="70%">Volume</th>
+              </tr>
+% my $list_recs = $plugins->get_list_plugins_recs();
+% foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   if (grep( /$p/, @$list_recs )) {
+%     my $plugin_recs = $plugins->get_plugin($p)->get_conf()->{'provides_recs'};
+%     foreach my $pr (sort @$plugin_recs) {
+%       my @recs_ = grep { $_->{'rid'} =~ /$pr/ } @{$run->{'recs'} || []};
+%       my $vol = scalar @recs_;
+%       next if ($vol == 0);
+              <tr>
+                <td><%= $pr %></td>
+                <td><%= $pr %></td>
+                <td><%= $recs_[0]{'desc'} %></td>
+                <td><%= $recs_txt{ $recs_[0]{'severity'} } %> (<%= $recs_[0]{'severity'} %>)</td>
+                <td><%= $vol %></td>
+              </tr>
+%     }
+%   }
+% }
+            </table>
+
+
+	    <h2 id="viz">Visualisation</h2>
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Plugin</th>
+                <th width="40%">Name</th>
+                <th width="40%">URL</th>
+              </tr>
+% my $list_viz = $plugins->get_list_plugins_viz();
+% foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   if (grep( /$p/, @$list_viz )) {
+%     my $plugin_viz = $plugins->get_plugin($p)->get_conf()->{'provides_viz'};
+%     my $plugin_name = exists($list->{$p}) ? $list->{$p} : "Unknown";
+%     foreach my $pv (sort keys %{$plugin_viz}) {
+              <tr>
+		<td><%= $p %></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pv %>"><%= $plugin_name %></a></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pv %>">/projects/<%= $project_id %>/<%= $p %>/<%= $pv %></a></td>
+	      </tr>
+%     }
+%   }
+% }
+            </table>
+
+
+	    <h2 id="data">Downloads</h2>
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Plugin</th>
+                <th width="40%">Description</th>
+                <th width="40%">URL</th>
+              </tr>
+% my $list_data = $plugins->get_list_plugins_data();
+% foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   if (grep( /$p/, @$list_data )) {
+%     my $plugin_data = $plugins->get_plugin($p)->get_conf()->{'provides_data'};
+%     foreach my $pd (sort keys %{$plugin_data}) {
+              <tr>
+		<td><%= $p %></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>"><%= $pd %></a><br /><%= $plugin_data->{$pd} %></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>">/projects/<%= $project_id %>/<%= $p %>/<%= $pd %></a></td>
+	      </tr>
+%     }
+%   }
+% }
+            </table>
+
+
+	    <h2 id="figs">Figures</h2>
+
+            <table class="table table-striped table-condensed table-hover">
+              <tr>
+                <th width="20%">Plugin</th>
+                <th width="40%">Description</th>
+                <th width="40%">URL</th>
+              </tr>
+% my $list_figs = $plugins->get_list_plugins_figs();
+% foreach my $p ( sort keys %{$project->get_plugins()} ) {
+%   if (grep( /$p/, @$list_figs )) {
+%     my $plugin_figs = $plugins->get_plugin($p)->get_conf()->{'provides_figs'};
+%     foreach my $pd (sort keys %{$plugin_figs}) {
+              <tr>
+		<td><%= $p %></td>
+		<td><%= $plugin_figs->{$pd} %></td>
+		<td><a href="/projects/<%= $project_id %>/<%= $p %>/<%= $pd %>">/projects/<%= $project_id %>/<%= $p %>/<%= $pd %></a></td>
+	      </tr>
+%     }
+%   }
+% }
+            </table>

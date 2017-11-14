@@ -1,0 +1,162 @@
+{
+   "abstract" : "A software development data management framework",
+   "author" : [
+      "Boris Baldassari"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.4224",
+   "license" : [
+      "unknown"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Alambic",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.38"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Crypt::PBKDF2" : "0",
+            "Date::Parse" : "0",
+            "DateTime" : "0",
+            "File::Basename" : "0",
+            "File::Copy" : "0",
+            "File::Path" : "0",
+            "File::ShareDir" : "1.00",
+            "File::chdir" : "0",
+            "File::stat" : "0",
+            "Git::Repository" : "0",
+            "IO::Socket::SSL" : "0",
+            "JIRA::REST" : "0",
+            "List::MoreUtils" : "0",
+            "List::Util" : "0",
+            "Minion" : "0",
+            "Mojo::JSON" : "0",
+            "Mojo::Pg" : "0",
+            "Mojo::UserAgent" : "0",
+            "Mojolicious" : "7.28",
+            "Mojolicious::Plugin::Mail" : "0",
+            "Net::IDN::Encode" : "0",
+            "Time::localtime" : "0",
+            "XML::LibXML" : "0",
+            "perl" : "v5.24.0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0"
+         }
+      }
+   },
+   "provides" : {
+      "Alambic" : {
+         "file" : "lib/Alambic.pm"
+      },
+      "Alambic::Commands::about" : {
+         "file" : "lib/Alambic/Commands/about.pm"
+      },
+      "Alambic::Commands::backup" : {
+         "file" : "lib/Alambic/Commands/backup.pm"
+      },
+      "Alambic::Commands::init" : {
+         "file" : "lib/Alambic/Commands/init.pm"
+      },
+      "Alambic::Commands::password" : {
+         "file" : "lib/Alambic/Commands/password.pm"
+      },
+      "Alambic::Controller::Admin" : {
+         "file" : "lib/Alambic/Controller/Admin.pm"
+      },
+      "Alambic::Controller::Alambic" : {
+         "file" : "lib/Alambic/Controller/Alambic.pm"
+      },
+      "Alambic::Controller::Dashboard" : {
+         "file" : "lib/Alambic/Controller/Dashboard.pm"
+      },
+      "Alambic::Controller::Documentation" : {
+         "file" : "lib/Alambic/Controller/Documentation.pm"
+      },
+      "Alambic::Controller::Jobs" : {
+         "file" : "lib/Alambic/Controller/Jobs.pm"
+      },
+      "Alambic::Controller::Repo" : {
+         "file" : "lib/Alambic/Controller/Repo.pm"
+      },
+      "Alambic::Controller::Tools" : {
+         "file" : "lib/Alambic/Controller/Tools.pm"
+      },
+      "Alambic::Controller::Users" : {
+         "file" : "lib/Alambic/Controller/Users.pm"
+      },
+      "Alambic::Model::Alambic" : {
+         "file" : "lib/Alambic/Model/Alambic.pm"
+      },
+      "Alambic::Model::Models" : {
+         "file" : "lib/Alambic/Model/Models.pm"
+      },
+      "Alambic::Model::Plugins" : {
+         "file" : "lib/Alambic/Model/Plugins.pm"
+      },
+      "Alambic::Model::Project" : {
+         "file" : "lib/Alambic/Model/Project.pm"
+      },
+      "Alambic::Model::RepoDB" : {
+         "file" : "lib/Alambic/Model/RepoDB.pm"
+      },
+      "Alambic::Model::RepoFS" : {
+         "file" : "lib/Alambic/Model/RepoFS.pm"
+      },
+      "Alambic::Model::Tools" : {
+         "file" : "lib/Alambic/Model/Tools.pm"
+      },
+      "Alambic::Model::Users" : {
+         "file" : "lib/Alambic/Model/Users.pm"
+      },
+      "Alambic::Model::Wizards" : {
+         "file" : "lib/Alambic/Model/Wizards.pm"
+      },
+      "Alambic::Plugins::EclipsePmi" : {
+         "file" : "lib/Alambic/Plugins/EclipsePmi.pm"
+      },
+      "Alambic::Plugins::Git" : {
+         "file" : "lib/Alambic/Plugins/Git.pm"
+      },
+      "Alambic::Plugins::Hudson" : {
+         "file" : "lib/Alambic/Plugins/Hudson.pm"
+      },
+      "Alambic::Plugins::PmdAnalysis" : {
+         "file" : "lib/Alambic/Plugins/PmdAnalysis.pm"
+      },
+      "Alambic::Plugins::ProjectSummary" : {
+         "file" : "lib/Alambic/Plugins/ProjectSummary.pm"
+      },
+      "Alambic::Plugins::StackOverflow" : {
+         "file" : "lib/Alambic/Plugins/StackOverflow.pm"
+      },
+      "Alambic::Tools::Git" : {
+         "file" : "lib/Alambic/Tools/Git.pm"
+      },
+      "Alambic::Tools::R" : {
+         "file" : "lib/Alambic/Tools/R.pm"
+      },
+      "Alambic::Wizards::EclipsePmi" : {
+         "file" : "lib/Alambic/Wizards/EclipsePmi.pm"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://bitbucket.org/BorisBaldassari/alambic/issues"
+      },
+      "repository" : {
+         "url" : "https://bitbucket.org/BorisBaldassari/alambic.git"
+      }
+   },
+   "version" : "v3.3.2",
+   "x_serialization_backend" : "JSON::PP version 2.27400_02"
+}
