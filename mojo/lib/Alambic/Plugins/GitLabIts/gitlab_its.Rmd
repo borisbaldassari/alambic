@@ -1,5 +1,5 @@
 ---
-title: "GitLab CI visualisation"
+title: "GitLab ITS visualisation"
 author:
 - name: "Boris Baldassari"
   affiliation: Castalia Solutions
@@ -31,7 +31,7 @@ knitr::opts_chunk$set(fig.path = "figures/")
 project.id <- 'alambic'
 gitlab.id <- 'bbaldassari/Alambic'
 gitlab.url <- 'https://gitlab.com'
-plugin.id <- 'GitLabCi'
+plugin.id <- 'GitLabIts'
 file.metrics = paste("", project.id, "_ci_metrics.csv", sep="")
 file.builds = paste("", project.id, "_ci_jobs.csv", sep="")
 file.pipes = paste("", project.id, "_ci_pipelines.csv", sep="")
