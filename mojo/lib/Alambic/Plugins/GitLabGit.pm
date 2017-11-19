@@ -4,12 +4,14 @@ use strict;
 use warnings;
 
 use Alambic::Model::RepoFS;
+use Alambic::Tools::R;
 
 use GitLab::API::v3;
 use Mojo::JSON qw( decode_json encode_json );
 use Date::Parse;
 use Time::Piece;
 use Time::Seconds;
+use Text::CSV;
 use Data::Dumper;
 
 # Main configuration hash for the plugin
@@ -55,18 +57,14 @@ my %conf = (
 	"SCM_COMMITTERS_1W" => "SCM_COMMITTERS_1W",
 	"SCM_COMMITTERS_1M" => "SCM_COMMITTERS_1M",
 	"SCM_COMMITTERS_1Y" => "SCM_COMMITTERS_1Y",
-	"SCM_MOD_LINES"     => "SCM_MOD_LINES",
-	"SCM_MOD_LINES_1W"  => "SCM_MOD_LINES_1W",
-	"SCM_MOD_LINES_1M"  => "SCM_MOD_LINES_1M",
-	"SCM_MOD_LINES_1Y"  => "SCM_MOD_LINES_1Y",
 	"SCM_MRS"           => "SCM_MRS",
 	"SCM_MRS_OPENED"    => "SCM_MRS_OPENED",
 	"SCM_MRS_OPENED_1W"    => "SCM_MRS_OPENED_1W",
 	"SCM_MRS_OPENED_1M"    => "SCM_MRS_OPENED_1M",
 	"SCM_MRS_OPENED_1Y"    => "SCM_MRS_OPENED_1Y",
-	"SCM_MRS_OPENED_STILL1W"    => "SCM_MRS_OPENED_STILL1W",
-	"SCM_MRS_OPENED_STILL1M"    => "SCM_MRS_OPENED_STILL1M",
-	"SCM_MRS_OPENED_STILL1Y"    => "SCM_MRS_OPENED_STILL1Y",
+	"SCM_MRS_OPENED_STILL_1W"    => "SCM_MRS_OPENED_STILL_1W",
+	"SCM_MRS_OPENED_STILL_1M"    => "SCM_MRS_OPENED_STILL_1M",
+	"SCM_MRS_OPENED_STILL_1Y"    => "SCM_MRS_OPENED_STILL_1Y",
 	"SCM_MRS_OPENED_STALED_1M" => "SCM_MRS_OPENED_STALED_1M",
 	"SCM_MRS_CLOSED"    => "SCM_MRS_CLOSED",
 	"SCM_MRS_MERGED"    => "SCM_MRS_MERGED",
@@ -77,7 +75,7 @@ my %conf = (
     "provides_recs" => [
         "SCM_MRS_STALED_1W",
         "SCM_LOW_ACTIVITY",
-        "SCM_SERO_ACTIVITY",
+        "SCM_ZERO_ACTIVITY",
         "SCM_LOW_DIVERSITY",
     ],
     "provides_viz" => {
@@ -150,6 +148,12 @@ sub run_plugin($$) {
     my %timeline_c;
     my %timeline_a;
     
+    # Initialise some zero values for some metrics -- others are set to zero anyway.
+    $ret{'metrics'}{'SCM_COMMITS'}    = 0;
+    $ret{'metrics'}{'SCM_COMMITS_1W'} = 0;
+    $ret{'metrics'}{'SCM_COMMITS_1M'} = 0;
+    $ret{'metrics'}{'SCM_COMMITS_1Y'} = 0;
+
     # The API returns an array of merge requests.
     if ( ref($commits) eq "ARRAY" ) {
  	push(@{$ret{'log'}}, "[Plugins::GitLabGit] Retrieved Commits info from [$gl_url].");
