@@ -2,11 +2,14 @@ title: GitLab ITS
 navi_name: GitLabIts
 
 
-# GitLab CI
+# GitLab ITS
 
-This plugin retrieves information from a [GitLab](https://about.gitlab.com/) continuous integration engine, displays a summary of its status, and provides recommendations to better use the Continuous Integration system.
+This plugin retrieves information from a [GitLab](https://about.gitlab.com/) issue tracking system, displays a summary of its issues, and provides recommendations to better use the issue tracking system.
 
 Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/GitLabIts.pm.html) in the [perldoc](/perldoc/index.html) section.
+
+> This plugin targets the GitLab API v3, i.e. GitLab 8.x (up to 9.4.x too). See the [official GitLab announcement](https://docs.gitlab.com/ce/api/v3_to_v4.html) for more details.
+
 
 -----
 
