@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Alambic::Model::RepoFS;
+use Alambic::Tools::R;
 
 use GitLab::API::v3;
 use Mojo::JSON qw( decode_json encode_json );

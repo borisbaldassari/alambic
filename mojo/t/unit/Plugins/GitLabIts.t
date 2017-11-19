@@ -59,7 +59,7 @@ ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
 ok(grep(m!info!,    @{$conf->{'ability'}}), "Conf has ability > info");
 ok(grep(m!figs!,    @{$conf->{'ability'}}), "Conf has ability > figs");
 ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
-ok(grep(m!info!,    @{$conf->{'ability'}}), "Conf has ability > info");
+ok(grep(m!recs!,    @{$conf->{'ability'}}), "Conf has ability > recs");
 ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
 
 ok(grep(m!gitlab_url!, keys %{$conf->{'params'}}),
@@ -78,7 +78,7 @@ my $in_gitlab_token   = "tiPs2VdkhaDnfmteiToD";
 
 note("Executing the plugin with Alambic project. ");
 my $ret = $plugin->run_plugin(
-    "test.gitlab",
+    "test.gitlabits",
     { 'gitlab_url' => $in_gitlab_url, 
       'gitlab_id' => $in_gitlab_id,
       'gitlab_token' => $in_gitlab_token });
