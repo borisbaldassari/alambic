@@ -8,6 +8,8 @@ This plugin retrieves information from a [GitLab](https://about.gitlab.com/) con
 
 Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/GitLabCi.pm.html) in the [perldoc](/perldoc/index.html) section.
 
+> This plugin targets the GitLab API v3, i.e. GitLab 8.x (up to 9.4.x too). See the [official GitLab announcement](https://docs.gitlab.com/ce/api/v3_to_v4.html) for more details.
+
 > Note: terminology differs between CI engines. As a reminder, we considered the following mapping between Hudson/Jenkins and GitLab CI: Hudson Jobs are GitLab Pipelines, and Hudson Builds are GitLab Jobs. Yeah. Misleading.
 
 -----
