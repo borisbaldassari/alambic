@@ -37,8 +37,11 @@ my %conf = (
   ],
   "type"    => "pre",
   "ability" => ['data', 'figs', 'metrics', 'recs', 'viz', 'users'],
-  "params" =>
-    {"so_keyword" => "A Stack Overflow tag to retrieve questions from.",},
+  "params" => {
+      "so_keyword" => "A Stack Overflow tag to retrieve questions from.",
+      "proxy" =>
+  'If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example:  <code>https://user:pass@proxy.mycorp:3777</code>.',
+    },
   "provides_cdata" => [],
   "provides_info"  => [],
   "provides_data"  => {
@@ -87,9 +90,10 @@ sub run_plugin($$) {
   my $repofs = Alambic::Model::RepoFS->new();
 
   my $so_keyword = $conf->{'so_keyword'};
+  my $proxy_url = $conf->{'proxy'} || '';
 
   # Retrieve and store data from the remote repository.
-  $ret{'log'} = &_retrieve_data($project_id, $so_keyword, $repofs);
+  $ret{'log'} = &_retrieve_data($project_id, $so_keyword, $proxy_url, $repofs);
 
   # Analyse retrieved data, generate info, metrics, plots and visualisation.
   my $tmp_ret = &_compute_data($project_id, $so_keyword, $repofs);
@@ -103,7 +107,7 @@ sub run_plugin($$) {
 
 
 sub _retrieve_data() {
-  my ($project_id, $so_keyword, $repofs) = @_;
+  my ($project_id, $so_keyword, $proxy_url, $repofs) = @_;
 
   my @log;
 
@@ -138,8 +142,28 @@ sub _retrieve_data() {
 
     # Fetch JSON data from SO
     my $ua = Mojo::UserAgent->new;
-    $content_json = $ua->get($url_question)->res->body;
+    $ua->max_redirects(10);
+    $ua->inactivity_timeout(60);
+    
+    # Configure Proxy
+    if ( $proxy_url =~ m!^default!i ) {
+	# If 'default', then use detect
+	$ua->proxy->detect; 
+	my $proxy_http = $ua->proxy->http;
+	my $proxy_https = $ua->proxy->https;
+	push(@log, "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https].");
+    } elsif ( $proxy_url =~ m!\S+$! ) {
+	# If something, then use it
+	$ua->proxy->http($proxy_url)->https($proxy_url);
+	push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
+    } else {
+	# If blank, then use no proxy
+	push(@log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
+    }
 
+    # Get the resource
+    $content_json = $ua->get($url_question)->res->body;
+    
     # Decode the json we got and add items to our set.
     if (length($content_json) < 10) {
       push(@log, "[Plugins::StackOverflow] Cannot find [$url_question].");
