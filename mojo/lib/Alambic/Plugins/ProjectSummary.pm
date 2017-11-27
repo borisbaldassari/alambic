@@ -32,7 +32,10 @@ my %conf = (
   ],
   "type"             => "post",
   "ability"          => ['figs', 'viz'],
-  "params"           => {},
+  "params"           => {
+    "proxy" =>
+      'If a proxy is required to access the <a href="https://shileds.io">shields.io</a> web site, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
+    },
   "provides_cdata"   => [],
   "provides_info"    => [],
   "provides_data"    => {},
@@ -75,7 +78,10 @@ sub get_conf() {
 
 # Run plugin: retrieves data + compute_data
 sub run_post($$) {
-  my ($self, $project_id, $conf) = @_;
+    my ($self, $project_id, $conf) = @_;
+
+    # Get the params
+  my $proxy_url = $conf->{'proxy'} || '';
 
   my @log;
 
@@ -100,10 +106,10 @@ sub run_post($$) {
   }
 
   # Create badges in output for root attribute
-  my $badge = &_create_badge(\@log, 'alambic', $qm->[0]{"ind"});
+  my $badge = &_create_badge($proxy_url, \@log, 'alambic', $qm->[0]{"ind"});
   $repofs->write_output($project_id, "badge_attr_alambic.svg", $badge);
-  $badge = &_create_badge(\@log, $qm->[0]{'name'}, $qm->[0]{'ind'});
-  $repofs->write_output($project_id, "badge_attr_root.svg", $badge);
+  $badge = &_create_badge($proxy_url, \@log, $qm->[0]{'name'}, $qm->[0]{'ind'});
+  $repofs->write_output($proxy_url, $project_id, "badge_attr_root.svg", $badge);
 
   my $psum_attrs = &_create_psum_attrs($self, $params);
   $repofs->write_output($project_id, "badge_psum_attrs.html", $psum_attrs);
@@ -111,7 +117,7 @@ sub run_post($$) {
 
   # Foreach child of root attribute create a badge.
   foreach my $attr (@{$qm->[0]{'children'}}) {
-    $badge = &_create_badge(\@log, $attr->{'name'}, $attr->{'ind'});
+    $badge = &_create_badge($proxy_url, \@log, $attr->{'name'}, $attr->{'ind'});
     $repofs->write_output($project_id,
       "badge_attr_" . $attr->{'name'} . ".svg", $badge);
   }
@@ -138,6 +144,7 @@ sub run_post($$) {
 }
 
 sub _create_badge($$$) {
+    my $proxy_url = shift;
   my $log   = shift;
   my $name  = shift || "";
   my $value = shift || 0;
@@ -150,7 +157,26 @@ sub _create_badge($$$) {
     . $value
     . '%20%2F%205-'
     . $colours[int($value)] . '.svg';
+  
   my $ua  = Mojo::UserAgent->new;
+  
+  # Configure Proxy
+  if ( $proxy_url =~ m!^default!i ) {
+      # If 'default', then use detect
+      $ua->proxy->detect; 
+      my $proxy_http = $ua->proxy->http;
+      my $proxy_https = $ua->proxy->https;
+      push(@$log, "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https].");
+  } elsif ( $proxy_url =~ m!\S+! ) {
+      # If something, then use it
+      $ua->proxy->http($proxy_url)->https($proxy_url);
+      push(@$log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
+  } else {
+      # If blank, then use no proxy
+      push(@$log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
+  }
+
+  # GET the resource
   my $svg = $ua->get($url)->res->body;
 
   push(@$log, "[Plugins::ProjectSummary] Create badge for [$name].");
