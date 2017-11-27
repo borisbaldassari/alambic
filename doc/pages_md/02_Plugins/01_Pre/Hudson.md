@@ -18,6 +18,7 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/Hudson.pm.html) i
   Retrieves information from a Hudson continuous integration engine, displays a summary of its status, and provides recommendations to better use CI.
 * **Parameters**:
   * `hudson_url` The base URL for the Hudson instance. In other words, the URL one would point to to get the main page of the project's Hudson, with the list of jobs.
+  * `proxy` If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the `default` keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.
 
 -----
 
