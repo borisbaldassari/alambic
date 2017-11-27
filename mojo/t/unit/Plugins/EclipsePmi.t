@@ -211,6 +211,11 @@ is(
 ) or diag explain $ret;
 is(
   $ret->{'log'}[0],
+  '[Plugins::EclipsePmi] No proxy defined [].',
+  "Checking first line of log."
+) or diag explain $ret;
+is(
+  $ret->{'log'}[1],
   '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].',
   "Checking first line of log."
 ) or diag explain $ret;

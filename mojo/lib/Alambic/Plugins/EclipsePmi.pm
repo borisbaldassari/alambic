@@ -26,8 +26,8 @@ use Mojolicious::Controller;
 use Mojolicious::Renderer;
 use Data::Dumper;
 
+
 # Main configuration hash for the plugin
-# TODO update all links to bitbucket.
 my %conf = (
   "id"   => "EclipsePmi",
   "name" => "Eclipse PMI",
@@ -40,6 +40,8 @@ my %conf = (
   "params"  => {
     "project_pmi" =>
       "The project ID used to identify the project on the PMI server. Look for it in the URL of the project on <a href=\"http://projects.eclipse.org\">http://projects.eclipse.org</a>.",
+    "proxy" =>
+      'If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
   },
   "provides_cdata" => [],
   "provides_info"  => [
@@ -108,6 +110,7 @@ sub run_plugin($$) {
   my ($self, $project_id, $conf) = @_;
 
   my $project_pmi = $conf->{'project_pmi'} || $project_id;
+  my $proxy_url = $conf->{'proxy'} || '';
 
   my %ret = ('metrics' => {}, 'info' => {}, 'recs' => [], 'log' => [],);
 
@@ -115,7 +118,7 @@ sub run_plugin($$) {
   my $repofs = Alambic::Model::RepoFS->new();
 
   # Retrieve and store data from the remote repository.
-  my $ret_tmp = &_retrieve_data($project_id, $project_pmi, $repofs);
+  my $ret_tmp = &_retrieve_data($project_id, $project_pmi, $proxy_url, $repofs);
   if (not defined($ret_tmp)) {
     return {'log' => ['Could not fetch anything useful from PMI.']};
   }
@@ -124,7 +127,7 @@ sub run_plugin($$) {
   }
 
   # Analyse retrieved data, generate info, metrics, plots and visualisation.
-  my $tmp_ret = &_compute_data($project_id, $project_pmi, $repofs);
+  my $tmp_ret = &_compute_data($project_id, $project_pmi, $proxy_url, $repofs);
 
   $ret{'metrics'} = $tmp_ret->{'metrics'};
   $ret{'info'}    = $tmp_ret->{'info'};
@@ -136,7 +139,7 @@ sub run_plugin($$) {
 
 
 sub _retrieve_data($$$) {
-  my ($project_id, $project_pmi, $repofs) = @_;
+  my ($project_id, $project_pmi, $proxy_url, $repofs) = @_;
 
   my @log;
 
@@ -144,13 +147,32 @@ sub _retrieve_data($$$) {
   $ua->max_redirects(10);
   $ua->inactivity_timeout(60);
 
+  # Configure Proxy
+  if ( $proxy_url =~ m!^default!i ) {
+      # If 'default', then use detect
+      $ua->proxy->detect; 
+      my $proxy_http = $ua->proxy->http;
+      my $proxy_https = $ua->proxy->https;
+      print "proxy [$proxy_http] and [$proxy_https].\n";
+      push(@log, "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https].");
+  } elsif ( $proxy_url =~ m!\S+$! ) {
+      # If something, then use it
+      $ua->proxy->http($proxy_url)->https($proxy_url);
+      print "proxy [$proxy_url]\n";
+      push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
+  } else {
+      # If blank, then use no proxy
+      print "[Plugins::EclipsePmi] No proxy defined [$proxy_url].\n";
+      push(@log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
+  }
+      
   # Fetch json file from projects.eclipse.org
   my ($url, $content);
   if ($project_id =~ m!^polarsys!) {
     $url = $polarsys_url . $project_pmi;
     push(@log, "[Plugins::EclipsePmi] Using PolarSys PMI infra at [$url].");
     $content = $ua->get($url)->res->body;
-    sleep 1;
+#    sleep 1; why the hell do we sleep?
   }
   else {
     $url = $eclipse_url . $project_pmi;
@@ -184,7 +206,7 @@ sub _retrieve_data($$$) {
 }
 
 sub _compute_data($) {
-  my ($project_id, $project_pmi, $repofs) = @_;
+  my ($project_id, $project_pmi, $proxy_url, $repofs) = @_;
 
   my %info;
   my %metrics;
@@ -199,6 +221,23 @@ sub _compute_data($) {
 
   my $ua = Mojo::UserAgent->new;
   $ua->max_redirects(10);
+  $ua->inactivity_timeout(60);
+
+  # Configure Proxy
+  if ( $proxy_url =~ m!^default!i ) {
+      # If 'default', then use detect
+      $ua->proxy->detect;
+      my $proxy_http = $ua->proxy->http;
+      my $proxy_https = $ua->proxy->https;
+      push(@log, "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https].");
+  } elsif ( $proxy_url =~ m!^\s*$! ) {
+      # If something, then use it
+      $ua->proxy->http($proxy_url)->https($proxy_url);
+      push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
+  } else {
+      # If blank, then use no proxy
+      push(@log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
+  }
 
   # Read data from pmi file in $data_input
   my $json = $repofs->read_input($project_id, "import_pmi.json");
@@ -311,8 +350,8 @@ sub _compute_data($) {
   $ret_check->{'name'}        = $raw_project->{'title'};
   $ret_check->{'last_update'} = time();
 
-  $ua = Mojo::UserAgent->new;
-  $ua->max_redirects(10);
+  # $ua = Mojo::UserAgent->new;
+  # $ua->max_redirects(10);
 
   # Test title
   my $proj_name = $raw_project->{'title'};
@@ -349,7 +388,7 @@ sub _compute_data($) {
   if (exists($raw_project->{'website_url'}->[0]->{'url'})) {
     $info{"PMI_MAIN_URL"} = $raw_project->{'website_url'}->[0]->{'url'};
     $check->{'value'} = $info{"PMI_MAIN_URL"};
-    my $results = &_check_url($info{"PMI_MAIN_URL"}, 'Website');
+    my $results = &_check_url($ua, $info{"PMI_MAIN_URL"}, 'Website');
     push(@{$check->{'results'}}, $results);
     if ($results !~ /^OK/) {
       push(
@@ -390,7 +429,7 @@ sub _compute_data($) {
     my $url = $raw_project->{'wiki_url'}->[0]->{'url'};
     $info{"PMI_WIKI_URL"} = $url;
     $check->{'value'} = $info{"PMI_WIKI_URL"};
-    my $results = &_check_url($url, 'Wiki');
+    my $results = &_check_url($ua, $url, 'Wiki');
     push(@{$check->{'results'}}, $results);
     if ($results !~ /^OK/) {
       push(
@@ -426,7 +465,7 @@ sub _compute_data($) {
   if (exists($raw_project->{'bugzilla'}->[0]->{'create_url'})) {
     $url = $raw_project->{'bugzilla'}->[0]->{'create_url'};
     $check->{'value'} = $url;
-    push(@{$check->{'results'}}, &_check_url($url, 'Create'));
+    push(@{$check->{'results'}}, &_check_url($ua, $url, 'Create'));
   }
   else {
     push(@{$check->{'results'}}, "Failed: no URL defined for create_url.");
@@ -442,7 +481,7 @@ sub _compute_data($) {
   if (exists($raw_project->{'bugzilla'}->[0]->{'query_url'})) {
     $url = $raw_project->{'bugzilla'}->[0]->{'query_url'};
     $check->{'value'} = $url;
-    push(@{$check->{'results'}}, &_check_url($url, 'Query'));
+    push(@{$check->{'results'}}, &_check_url($ua, $url, 'Query'));
   }
   else {
     push(@{$check->{'results'}}, "Failed: no URL defined for query_url.");
@@ -468,7 +507,7 @@ sub _compute_data($) {
     $info{"PMI_DOWNLOAD_URL"} = $raw_project->{'download_url'}->[0]->{'url'};
     $url                      = $raw_project->{'download_url'}->[0]->{'url'};
     $check->{'value'}         = $url;
-    push(@{$check->{'results'}}, &_check_url($url, 'Download'));
+    push(@{$check->{'results'}}, &_check_url($ua, $url, 'Download'));
     if ($check->{'results'}[-1] !~ /^OK/) {
       push(
         @recs,
@@ -510,7 +549,7 @@ sub _compute_data($) {
       = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
     $url = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
     $check->{'value'} = $url;
-    push(@{$check->{'results'}}, &_check_url($url, 'Documentation'));
+    push(@{$check->{'results'}}, &_check_url($ua, $url, 'Documentation'));
     if ($check->{'results'}[-1] !~ /^OK/) {
       push(
         @recs,
@@ -565,7 +604,7 @@ sub _compute_data($) {
       = $raw_project->{'documentation_url'}->[0]->{'url'};
     $url = $raw_project->{'documentation_url'}->[0]->{'url'};
     $check->{'value'} = $url;
-    push(@{$check->{'results'}}, &_check_url($url, 'Documentation'));
+    push(@{$check->{'results'}}, &_check_url($ua, $url, 'Documentation'));
     if ($check->{'results'}[-1] !~ /^OK/) {
       push(
         @recs,
@@ -604,7 +643,7 @@ sub _compute_data($) {
     $info{"PMI_PLAN_URL"} = $raw_project->{'plan_url'}->[0]->{'url'};
     $url                  = $raw_project->{'plan_url'}->[0]->{'url'};
     $check->{'value'}     = $url;
-    push(@{$check->{'results'}}, &_check_url($url, 'Plan'));
+    push(@{$check->{'results'}}, &_check_url($ua, $url, 'Plan'));
     if ($check->{'results'}[-1] !~ /^OK/) {
       push(
         @recs,
@@ -639,7 +678,7 @@ sub _compute_data($) {
   if (exists($raw_project->{'proposal_url'}->[0]->{'url'})) {
     $url = $raw_project->{'proposal_url'}->[0]->{'url'};
     $check->{'value'} = $url;
-    push(@{$check->{'results'}}, &_check_url($url, 'Proposal'));
+    push(@{$check->{'results'}}, &_check_url($ua, $url, 'Proposal'));
     if ($check->{'results'}[-1] !~ /^OK/) {
       push(
         @recs,
@@ -675,7 +714,7 @@ sub _compute_data($) {
     $info{"PMI_MLS_DEV_URL"} = $raw_project->{'dev_list'}->{'url'};
     $url                     = $raw_project->{'dev_list'}->{'url'};
     $check->{'value'}        = $url;
-    my $results = &_check_url($url, 'Dev ML');
+    my $results = &_check_url($ua, $url, 'Dev ML');
     push(@{$check->{'results'}}, $results);
     if ($check->{'results'}[-1] !~ /^OK/) {
       push(
@@ -730,7 +769,7 @@ sub _compute_data($) {
         push(@{$check->{'results'}},
           "Failed: no email defined on [$name] ML .");
       }
-      push(@{$check->{'results'}}, &_check_url($url, "[$name] ML"));
+      push(@{$check->{'results'}}, &_check_url($ua, $url, "[$name] ML"));
     }
   }
   else {
@@ -761,7 +800,7 @@ sub _compute_data($) {
       else {
         push(@{$check->{'results'}}, "Failed: no name defined on forum.");
       }
-      push(@{$check->{'results'}}, &_check_url($url, "Forum [$name]"));
+      push(@{$check->{'results'}}, &_check_url($ua, $url, "Forum [$name]"));
       if ($check->{'results'}[-1] !~ /^OK/) {
         push(
           @recs,
@@ -815,7 +854,7 @@ sub _compute_data($) {
           "Failed. Source repo [$name] bad type [$type] or path [$path]."
         );
       }
-      push(@{$check->{'results'}}, &_check_url($url, "Source repo [$name]"));
+      push(@{$check->{'results'}}, &_check_url($ua, $url, "Source repo [$name]"));
       if ($check->{'results'}[-1] !~ /^OK/) {
         push(
           @recs,
@@ -880,7 +919,7 @@ sub _compute_data($) {
       else {
         push(@{$check->{'results'}}, "Failed. Update site has no title.");
       }
-      push(@{$check->{'results'}}, &_check_url($url, "Update site [$title]"));
+      push(@{$check->{'results'}}, &_check_url($ua, $url, "Update site [$title]"));
       if ($check->{'results'}[-1] !~ /^OK/) {
         push(
           @recs,
@@ -1070,12 +1109,10 @@ sub _compute_data($) {
 }
 
 
-sub _check_url($$) {
+sub _check_url($$$) {
+    my $ua = shift;
   my $url = shift || '';
   my $str = shift || '';
-
-  my $ua = Mojo::UserAgent->new;
-  $ua->max_redirects(10);
 
   my $fetch_result;
   if (defined($url) && $url =~ m!^http! && $ua->head($url)) {

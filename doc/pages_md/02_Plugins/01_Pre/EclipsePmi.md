@@ -26,7 +26,7 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/EclipsePmi.pm.htm
 See the project's wiki for more information.
 * **Parameters**:
   * `project_pmi` The project ID used to identify the project on the PMI server. Look for it in the URL of the project on [http://projects.eclipse.org](http://projects.eclipse.org).
-
+  * `proxy` If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the `default` keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.
 -----
 
 # Provides
