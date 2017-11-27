@@ -166,7 +166,7 @@ sub run_plugin($$) {
       my $proxy_http = $ua->proxy->http;
       my $proxy_https = $ua->proxy->https;
       push(@{$ret{'log'}}, "[Plugins::SonarQube45] Using default proxy [$proxy_http] and [$proxy_https].");
-  } elsif ( $proxy_url =~ m!\S+$! ) {
+  } elsif ( $proxy_url =~ m!\S+! ) {
       # If something, then use it
       $ua->proxy->http($proxy_url)->https($proxy_url);
       push(@{$ret{'log'}}, "[Plugins::SonarQube45] Using provided proxy [$proxy_url].");

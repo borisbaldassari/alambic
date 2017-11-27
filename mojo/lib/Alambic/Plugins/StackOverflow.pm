@@ -152,7 +152,7 @@ sub _retrieve_data() {
 	my $proxy_http = $ua->proxy->http;
 	my $proxy_https = $ua->proxy->https;
 	push(@log, "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https].");
-    } elsif ( $proxy_url =~ m!\S+$! ) {
+    } elsif ( $proxy_url =~ m!\S+! ) {
 	# If something, then use it
 	$ua->proxy->http($proxy_url)->https($proxy_url);
 	push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
