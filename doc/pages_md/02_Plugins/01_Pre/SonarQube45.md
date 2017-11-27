@@ -24,6 +24,7 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/SonarQube.pm.html
 * **Parameters**:
   * `sonar_url` The base URL of the SonarQube 4.5.x instance.
   * `sonar_project` The ID of the project within the SonarQube instance.
+  * `proxy` If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the `default` keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.
 
 -----
 

@@ -41,6 +41,8 @@ my %conf = (
     "sonar_url" =>
       "The base URL for the SonarQube instance (e.g. http://localhost:9000).",
     "sonar_project" => "The Project ID in the SonarQube instance.",
+    "proxy" =>
+      'If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
   },
   "provides_info" => ["SQ_URL",],
 
@@ -147,12 +149,31 @@ sub run_plugin($$) {
   my $sonar_url     = $conf->{'sonar_url'};
   my $sonar_project = $conf->{'sonar_project'};
   $ret{'info'}{'SQ_URL'} = $sonar_url . "/dashboard/index?id=" . $sonar_project;
+  my $proxy_url = $conf->{'proxy'} || '';
 
   # Create RepoFS object for writing and reading files on FS.
   my $repofs = Alambic::Model::RepoFS->new();
 
   # Prepare UserAgent.
   my $ua = Mojo::UserAgent->new;
+  $ua->max_redirects(10);
+  $ua->inactivity_timeout(60);
+
+  # Configure Proxy
+  if ( $proxy_url =~ m!^default!i ) {
+      # If 'default', then use detect
+      $ua->proxy->detect; 
+      my $proxy_http = $ua->proxy->http;
+      my $proxy_https = $ua->proxy->https;
+      push(@{$ret{'log'}}, "[Plugins::SonarQube45] Using default proxy [$proxy_http] and [$proxy_https].");
+  } elsif ( $proxy_url =~ m!\S+$! ) {
+      # If something, then use it
+      $ua->proxy->http($proxy_url)->https($proxy_url);
+      push(@{$ret{'log'}}, "[Plugins::SonarQube45] Using provided proxy [$proxy_url].");
+  } else {
+      # If blank, then use no proxy
+      push(@{$ret{'log'}}, "[Plugins::SonarQube45] No proxy defined [$proxy_url].");
+  }
 
   # Check auth
   my $url_auth = $sonar_url . "/api/authentication/validate?format=json";
