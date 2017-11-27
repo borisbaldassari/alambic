@@ -92,7 +92,7 @@ sub run_plugin($$) {
   $ret{'log'} = &_retrieve_data($project_id, $hudson_url, $proxy_url, $repofs);
 
   # Analyse retrieved data, generate info, metrics, plots and visualisation.
-  my $tmp_ret = &_compute_data($project_id, $hudson_url, $proxy_url, $repofs);
+  my $tmp_ret = &_compute_data($project_id, $hudson_url, $repofs);
 
   $ret{'metrics'} = $tmp_ret->{'metrics'};
   $ret{'recs'}    = $tmp_ret->{'recs'};
@@ -150,7 +150,6 @@ sub _retrieve_data($) {
 sub _compute_data($) {
   my $project_id = shift;
   my $hudson_url = shift;
-  my $proxy_url  = shift;
   my $repofs     = shift;
 
   my @log;
