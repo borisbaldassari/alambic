@@ -153,16 +153,13 @@ sub _retrieve_data($$$) {
       $ua->proxy->detect; 
       my $proxy_http = $ua->proxy->http;
       my $proxy_https = $ua->proxy->https;
-      print "proxy [$proxy_http] and [$proxy_https].\n";
       push(@log, "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https].");
-  } elsif ( $proxy_url =~ m!\S+$! ) {
+  } elsif ( $proxy_url =~ m!\S+! ) {
       # If something, then use it
       $ua->proxy->http($proxy_url)->https($proxy_url);
-      print "proxy [$proxy_url]\n";
       push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
   } else {
       # If blank, then use no proxy
-      print "[Plugins::EclipsePmi] No proxy defined [$proxy_url].\n";
       push(@log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
   }
       
@@ -230,7 +227,7 @@ sub _compute_data($) {
       my $proxy_http = $ua->proxy->http;
       my $proxy_https = $ua->proxy->https;
       push(@log, "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https].");
-  } elsif ( $proxy_url =~ m!^\s*$! ) {
+  } elsif ( $proxy_url =~ m!\S+! ) {
       # If something, then use it
       $ua->proxy->http($proxy_url)->https($proxy_url);
       push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
