@@ -439,7 +439,7 @@ sub jobs_purge {
 
   my $user = $self->session('session_user');
 
-  foreach my $job (@{$self->minion->backend->list_jobs()}) {
+  foreach my $job (@{$self->minion->backend->list_jobs->{'jobs'}}) {
 
     # Remove minion job if state == failed or finished.
     if ($job->{'state'} =~ m!^failed$! or $job->{'state'} =~ m!^finished$!) {

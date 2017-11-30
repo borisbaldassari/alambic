@@ -94,7 +94,7 @@
 		      <th>Status</th>
 		      <th>Actions</th>
 		    </tr>
-% foreach my $job (@{app->minion->backend->list_jobs}) {
+% foreach my $job (@{app->minion->backend->list_jobs->{'jobs'}}) {
 %   my $icon = "fa-question"; my $results = "";
 %   if ($job->{'state'} =~ m!^active!) { $icon = "fa-spinner fa-spin"; }
 %   elsif ($job->{'state'} =~ m!^inactive!) { $icon = "fa-hourglass-o"; }
