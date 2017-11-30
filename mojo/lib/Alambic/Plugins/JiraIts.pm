@@ -331,7 +331,7 @@ sub run_plugin($$) {
   $repofs->write_plugin('JiraIts', $project_id . "_jira.csv", $csv_out);
   $repofs->write_output($project_id, "metrics_jira.csv", $csv_out);
 
-  # Write commits history json file to disk.
+  # Write commits history csv file to disk.
   my %timeline = (%timeline_a, %timeline_c);
   my @timeline
     = map { $_ . "," . $timeline_c{$_} . "," . scalar(keys %{$timeline_a{$_}}) }
