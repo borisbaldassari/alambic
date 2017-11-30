@@ -36,7 +36,10 @@ my %conf = (
 #   "project"
   ],
   "type"             => "tool",
-  "params"           => {"path_git" => "The absolute path to the git binary.",},
+  "params"           => {
+      "path_git" => "The absolute path to the git binary.",
+      "proxy"    => "The URL of a proxy, if any.",
+    },
   "provides_methods" => {
     "git_clone" => "Clone a project git repository locally.",
     "git_pull"  => "Execute a pull from a git repository.",
@@ -64,13 +67,24 @@ sub new {
 
   my $dir = &_get_src_path($class, $project_id);
 
+  # Will be used for the configuration of the git::repository object.
+  my $conf;
+  
+  # Should we use a proxy?
+  if ( defined($conf->{'params'}{'proxy'}) ) {
+      $conf->{'env'}{'HTTP_PROXY'} = $conf->{'params'}{'proxy'};
+      $conf->{'env'}{'HTTPS_PROXY'} = $conf->{'params'}{'proxy'};
+  }
+  
   # Create projects input dir if it does not exist
   if (not &_is_a_git_directory($dir)) {
     Git::Repository->run(clone => $git_url => $dir);
   }
 
   # Now create Git object with dir.
-  $git = Git::Repository->new(work_tree => $dir);
+  $git = Git::Repository->new(
+      work_tree => $dir,
+      $conf );
   $repofs = Alambic::Model::RepoFS->new();
 
   return bless {}, $class;
