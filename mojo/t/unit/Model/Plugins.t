@@ -105,16 +105,25 @@ my $ret = $plugins->run_plugin('tools.cdt', 'EclipsePmi',
   {'project_pmi' => 'tools.cdt'});
 is($ret->{'info'}{'PMI_BUGZILLA_PRODUCT'}, 'CDT', "Bugzilla product is CDT.")
   or Dumper explain $ret;
+
 is(
   $ret->{'info'}{'PMI_TITLE'},
   'Eclipse C/C++ Development Tooling (CDT)',
   "PMI title is correct."
 ) or Dumper explain $ret;
+
 is(
   $ret->{'log'}[0],
-  '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].',
-  "Checking first line of log: using eclipse pmi infra at..."
+  '[Plugins::EclipsePmi] No proxy defined [].',
+  "Checking first line of log: no proxy..."
 ) or Dumper explain $ret;
+
+is(
+  $ret->{'log'}[1],
+  '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].',
+  "Checking second line of log: using eclipse pmi infra at..."
+) or Dumper explain $ret;
+
 is($ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.")
   or Dumper explain $ret;
 
@@ -122,16 +131,25 @@ note("Executing EclipsePmi run_plugin with project_pmi.");
 $ret = $plugins->run_plugin('tools.cdt', 'EclipsePmi', {});
 is($ret->{'info'}{'PMI_BUGZILLA_PRODUCT'}, 'CDT', "Bugzilla product is CDT.")
   or Dumper explain $ret;
+
 is(
   $ret->{'info'}{'PMI_TITLE'},
   'Eclipse C/C++ Development Tooling (CDT)',
   "PMI title is correct."
 ) or Dumper explain $ret;
+
 is(
   $ret->{'log'}[0],
+  '[Plugins::EclipsePmi] No proxy defined [].',
+  "Checking first line of log: no proxy defined."
+) or Dumper explain $ret;
+
+is(
+  $ret->{'log'}[1],
   '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].',
   "Checking first line of log."
 ) or Dumper explain $ret;
+
 is($ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.")
   or Dumper explain $ret;
 
