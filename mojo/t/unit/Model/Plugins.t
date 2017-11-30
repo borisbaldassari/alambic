@@ -164,4 +164,4 @@ is($ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.")
 #print Dumper($ret);
 
 
-done_testing(24);
+done_testing();

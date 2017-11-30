@@ -109,7 +109,7 @@ sub run_post($$) {
   my $badge = &_create_badge($proxy_url, \@log, 'alambic', $qm->[0]{"ind"});
   $repofs->write_output($project_id, "badge_attr_alambic.svg", $badge);
   $badge = &_create_badge($proxy_url, \@log, $qm->[0]{'name'}, $qm->[0]{'ind'});
-  $repofs->write_output($proxy_url, $project_id, "badge_attr_root.svg", $badge);
+  $repofs->write_output($project_id, "badge_attr_root.svg", $badge);
 
   my $psum_attrs = &_create_psum_attrs($self, $params);
   $repofs->write_output($project_id, "badge_psum_attrs.html", $psum_attrs);
