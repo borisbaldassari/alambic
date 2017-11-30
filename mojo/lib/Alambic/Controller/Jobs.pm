@@ -43,10 +43,10 @@ sub redo {
   my $job_id = $self->param('id');
 
   # Enqueue job
-  my $job_info = $self->minion->backend->job_info($job_id);
+  my $job_info = shift @{$self->minion->backend->list_jobs(0,1, { ids => [$job_id] })->{'jobs'}};
   my $job      = $self->minion->enqueue(
-    $job_info->{'task'} => $job_info->{'args'} => {delay => 0});
-
+      $job_info->{'task'} => $job_info->{'args'} => {delay => 0});
+  
   $self->flash(msg => "Job has been relaunched with ID [$job].");
   $self->redirect_to("/admin/jobs/$job");
 
