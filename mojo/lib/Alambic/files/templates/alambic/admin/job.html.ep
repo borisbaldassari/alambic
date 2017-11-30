@@ -17,11 +17,12 @@
 
 %= include 'alambic/admin/admin_menu', current => '/admin/jobs'
 
-% my $job_info = app->minion->backend->list_jobs(0, 1, { ids => [$job_id] });
+% my $job_info = shift @{app->minion->backend->list_jobs(0, 1, { ids => [$job_id] })->{'jobs'}};
 % my $log = ""; my $info = ""; my $metrics = ""; my $attrs = ""; my $recs = "";
-% if ($job_info->{'state'} =~ m!^failed!) { $log = ref($job_info->{'result'}) =~ /ARRAY/ ? $job_info->{'result'}{'log'} : $job_info->{'result'} }
-% elsif ($job_info->{'state'} =~ m!^finished!) { 
-%     $log = defined($job_info->{'result'}) ?
+% if ($job_info->{'state'} =~ m!^failed!) { 
+%   $log = ref($job_info->{'result'}) =~ /ARRAY/ ? $job_info->{'result'}{'log'} : $job_info->{'result'} 
+% } elsif ($job_info->{'state'} =~ m!^finished!) { 
+%   $log = defined($job_info->{'result'}) ?
 %              ( exists($job_info->{'result'}{'log'}) && ref($job_info->{'result'}{'log'}) =~ /ARRAY/ ?
 %                join( '<br />', @{$job_info->{'result'}{'log'}} ) :
 %                $job_info->{'result'}{'log'} ) :
