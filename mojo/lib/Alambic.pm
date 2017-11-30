@@ -102,7 +102,7 @@ sub startup {
       my ($job, $project_id, $user) = @_;
 
       # Check that the project is not currently run
-      my $jobs = $self->minion->backend->list_jobs;
+      my $jobs = $self->minion->backend->list_jobs->{'jobs'};
       foreach my $j (@$jobs) {
         if ( $j->{'args'}[0] =~ m!^${project_id}$!
           && $j->{'state'} =~ 'active'
