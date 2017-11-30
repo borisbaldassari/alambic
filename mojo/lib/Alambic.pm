@@ -63,6 +63,13 @@ sub startup {
   };
   $self->plugin('mail' => $conf_mail);
 
+  # Load pluginf or Minion admin UI
+  $self->plugin('Minion::Admin' => { 
+      return_to => '/admin/summary', 
+      route => $self->app->routes->any('/admin/minion'),
+    }
+  );
+  
   # Set layout for pages.
   $self->defaults(layout => 'default');
 
