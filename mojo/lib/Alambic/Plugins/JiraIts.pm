@@ -45,6 +45,8 @@ my %conf = (
     "jira_project" => "The project ID to be requested on the Jira server.",
     "jira_open_states" =>
       "The states names considered to be open, as a coma-separated list.",
+    "proxy" =>
+      'If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
   },
   "provides_cdata" => [],
   "provides_info"  => ["JIRA_URL",],
@@ -124,9 +126,33 @@ sub run_plugin($$) {
   my $jira_user    = $conf->{'jira_user'};
   my $jira_passwd  = $conf->{'jira_passwd'};
   my $jira_project = $conf->{'jira_project'};
+  my $proxy_url = $conf->{'proxy'} || '';
 
-  my $jira = JIRA::REST->new(
-    {url => $jira_url, username => $jira_user, password => $jira_passwd});
+  my $jira_conf = {
+	  url => $jira_url, 
+	  username => $jira_user, 
+	  password => $jira_passwd,
+      };
+  # Configure Proxy
+  if ( $proxy_url =~ m!^default!i ) {
+      # If 'default', then use detect
+      foreach my $v ( ('https_proxy', 'HTTPS_PROXY', 'http_proxy', 'HTTP_PROXY') ) {
+	  if (defined($ENV{$v})) {
+	      $jira_conf->{'proxy'} = $ENV{$v} ;
+	      push(@{$ret{'log'}}, "[Plugins::JiraIts] Using default proxy [" . $jira_conf->{'proxy'} . "].");
+	      last;
+	  }
+      }
+  } elsif ( $proxy_url =~ m!\S+$! ) {
+      # If something, then use it
+      $jira_conf->{'proxy'} = $proxy_url;
+      push(@{$ret{'log'}}, "[Plugins::JiraIts] Using provided proxy [$proxy_url].");
+  } else {
+      # If blank, then use no proxy
+      push(@{$ret{'log'}}, "[Plugins::JiraIts] No proxy defined [$proxy_url].");
+  }
+  
+  my $jira = JIRA::REST->new($jira_conf);
 
   $ret{'info'}{'JIRA_URL'} = $jira_url . "/projects/" . $jira_project . "/";
 

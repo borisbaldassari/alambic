@@ -41,6 +41,8 @@ my %conf = (
   "params"  => {
     "hudson_url" =>
       "The base URL for the Hudson instance. In other words, the URL one would point to to get the main page of the project's Hudson, with the list of jobs.",
+    "proxy" =>
+      'If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
   },
   "provides_info"    => [],
   "provides_metrics" => {
@@ -84,9 +86,10 @@ sub run_plugin($$) {
   my $repofs = Alambic::Model::RepoFS->new();
 
   my $hudson_url = $conf->{'hudson_url'};
+  my $proxy_url = $conf->{'proxy'} || '';
 
   # Retrieve and store data from the remote repository.
-  $ret{'log'} = &_retrieve_data($project_id, $hudson_url, $repofs);
+  $ret{'log'} = &_retrieve_data($project_id, $hudson_url, $proxy_url, $repofs);
 
   # Analyse retrieved data, generate info, metrics, plots and visualisation.
   my $tmp_ret = &_compute_data($project_id, $hudson_url, $repofs);
@@ -101,6 +104,7 @@ sub run_plugin($$) {
 sub _retrieve_data($) {
   my $project_id = shift;
   my $hudson_url = shift;
+  my $proxy_url  = shift;
   my $repofs     = shift;
 
   my $hudson;
@@ -113,6 +117,25 @@ sub _retrieve_data($) {
 
   # Fetch json file from the dashboard.eclipse.org
   my $ua   = Mojo::UserAgent->new;
+  $ua->max_redirects(10);
+  $ua->inactivity_timeout(60);
+
+  # Configure Proxy
+  if ( $proxy_url =~ m!^default!i ) {
+      # If 'default', then use detect
+      $ua->proxy->detect; 
+      my $proxy_http = $ua->proxy->http;
+      my $proxy_https = $ua->proxy->https;
+      push(@log, "[Plugins::Hudson] Using default proxy [$proxy_http] and [$proxy_https].");
+  } elsif ( $proxy_url =~ m!\S+! ) {
+      # If something, then use it
+      $ua->proxy->http($proxy_url)->https($proxy_url);
+      push(@log, "[Plugins::Hudson] Using provided proxy [$proxy_url].");
+  } else {
+      # If blank, then use no proxy
+      push(@log, "[Plugins::Hudson] No proxy defined [$proxy_url].");
+  }
+  
   my $json = $ua->get($url)->res->body;
   if (length($json) < 10) {
     push(@log, "[Plugins::Hudson] Cannot find [$url].\n");
@@ -335,8 +358,8 @@ sub _compute_data($) {
 
 =head1 NAME
 
-B<Alambic::Plugins::Hudson> - A plugin to fetch information from the
-Eclipse PMI repository.
+B<Alambic::Plugins::Hudson> - A plugin to fetch information from a Hudson
+Continuous Integration server.
 
 =head1 DESCRIPTION
 

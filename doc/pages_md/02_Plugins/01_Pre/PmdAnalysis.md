@@ -33,6 +33,7 @@ Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Plugins/
 * **Parameters**:
     * `url_pmd_conf` The URL to the XML configuration file used to run PMD.
     * `url_pmd_xml` The URL to the XML PMD results for the project.
+    * `proxy` If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the `default` keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.
 
 -----
 
