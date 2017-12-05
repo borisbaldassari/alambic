@@ -30,12 +30,12 @@ my %conf = (
   "desc" => [
     "The Project Summary plugin creates a bunch of exportable HTML snippets, images and badges.",
   ],
-  "type"             => "post",
-  "ability"          => ['figs', 'viz'],
-  "params"           => {
+  "type"    => "post",
+  "ability" => ['figs', 'viz'],
+  "params"  => {
     "proxy" =>
       'If a proxy is required to access the <a href="https://shileds.io">shields.io</a> web site, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
-    },
+  },
   "provides_cdata"   => [],
   "provides_info"    => [],
   "provides_data"    => {},
@@ -78,9 +78,9 @@ sub get_conf() {
 
 # Run plugin: retrieves data + compute_data
 sub run_post($$) {
-    my ($self, $project_id, $conf) = @_;
+  my ($self, $project_id, $conf) = @_;
 
-    # Get the params
+  # Get the params
   my $proxy_url = $conf->{'proxy'} || '';
 
   my @log;
@@ -144,10 +144,10 @@ sub run_post($$) {
 }
 
 sub _create_badge($$$) {
-    my $proxy_url = shift;
-  my $log   = shift;
-  my $name  = shift || "";
-  my $value = shift || 0;
+  my $proxy_url = shift;
+  my $log       = shift;
+  my $name      = shift || "";
+  my $value     = shift || 0;
 
   my @colours = ("red", "orange", "yellow", "green", "brightgreen");
 
@@ -157,23 +157,29 @@ sub _create_badge($$$) {
     . $value
     . '%20%2F%205-'
     . $colours[int($value)] . '.svg';
-  
-  my $ua  = Mojo::UserAgent->new;
-  
+
+  my $ua = Mojo::UserAgent->new;
+
   # Configure Proxy
-  if ( $proxy_url =~ m!^default!i ) {
-      # If 'default', then use detect
-      $ua->proxy->detect; 
-      my $proxy_http = $ua->proxy->http;
-      my $proxy_https = $ua->proxy->https;
-      push(@$log, "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https].");
-  } elsif ( $proxy_url =~ m!\S+! ) {
-      # If something, then use it
-      $ua->proxy->http($proxy_url)->https($proxy_url);
-      push(@$log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
-  } else {
-      # If blank, then use no proxy
-      push(@$log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
+  if ($proxy_url =~ m!^default!i) {
+
+    # If 'default', then use detect
+    $ua->proxy->detect;
+    my $proxy_http  = $ua->proxy->http;
+    my $proxy_https = $ua->proxy->https;
+    push(@$log,
+      "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https]."
+    );
+  }
+  elsif ($proxy_url =~ m!\S+!) {
+
+    # If something, then use it
+    $ua->proxy->http($proxy_url)->https($proxy_url);
+    push(@$log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
+  }
+  else {
+    # If blank, then use no proxy
+    push(@$log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
   }
 
   # GET the resource

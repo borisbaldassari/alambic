@@ -110,7 +110,7 @@ sub run_plugin($$) {
   my ($self, $project_id, $conf) = @_;
 
   my $project_pmi = $conf->{'project_pmi'} || $project_id;
-  my $proxy_url = $conf->{'proxy'} || '';
+  my $proxy_url   = $conf->{'proxy'}       || '';
 
   my %ret = ('metrics' => {}, 'info' => {}, 'recs' => [], 'log' => [],);
 
@@ -148,27 +148,34 @@ sub _retrieve_data($$$) {
   $ua->inactivity_timeout(60);
 
   # Configure Proxy
-  if ( $proxy_url =~ m!^default!i ) {
-      # If 'default', then use detect
-      $ua->proxy->detect; 
-      my $proxy_http = $ua->proxy->http;
-      my $proxy_https = $ua->proxy->https;
-      push(@log, "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https].");
-  } elsif ( $proxy_url =~ m!\S+! ) {
-      # If something, then use it
-      $ua->proxy->http($proxy_url)->https($proxy_url);
-      push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
-  } else {
-      # If blank, then use no proxy
-      push(@log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
+  if ($proxy_url =~ m!^default!i) {
+
+    # If 'default', then use detect
+    $ua->proxy->detect;
+    my $proxy_http  = $ua->proxy->http;
+    my $proxy_https = $ua->proxy->https;
+    push(@log,
+      "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https]."
+    );
   }
-      
+  elsif ($proxy_url =~ m!\S+!) {
+
+    # If something, then use it
+    $ua->proxy->http($proxy_url)->https($proxy_url);
+    push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
+  }
+  else {
+    # If blank, then use no proxy
+    push(@log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
+  }
+
   # Fetch json file from projects.eclipse.org
   my ($url, $content);
   if ($project_id =~ m!^polarsys!) {
     $url = $polarsys_url . $project_pmi;
     push(@log, "[Plugins::EclipsePmi] Using PolarSys PMI infra at [$url].");
     $content = $ua->get($url)->res->body;
+
 #    sleep 1; why the hell do we sleep?
   }
   else {
@@ -221,19 +228,25 @@ sub _compute_data($) {
   $ua->inactivity_timeout(60);
 
   # Configure Proxy
-  if ( $proxy_url =~ m!^default!i ) {
-      # If 'default', then use detect
-      $ua->proxy->detect;
-      my $proxy_http = $ua->proxy->http;
-      my $proxy_https = $ua->proxy->https;
-      push(@log, "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https].");
-  } elsif ( $proxy_url =~ m!\S+! ) {
-      # If something, then use it
-      $ua->proxy->http($proxy_url)->https($proxy_url);
-      push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
-  } else {
-      # If blank, then use no proxy
-      push(@log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
+  if ($proxy_url =~ m!^default!i) {
+
+    # If 'default', then use detect
+    $ua->proxy->detect;
+    my $proxy_http  = $ua->proxy->http;
+    my $proxy_https = $ua->proxy->https;
+    push(@log,
+      "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https]."
+    );
+  }
+  elsif ($proxy_url =~ m!\S+!) {
+
+    # If something, then use it
+    $ua->proxy->http($proxy_url)->https($proxy_url);
+    push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
+  }
+  else {
+    # If blank, then use no proxy
+    push(@log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
   }
 
   # Read data from pmi file in $data_input
@@ -851,7 +864,10 @@ sub _compute_data($) {
           "Failed. Source repo [$name] bad type [$type] or path [$path]."
         );
       }
-      push(@{$check->{'results'}}, &_check_url($ua, $url, "Source repo [$name]"));
+      push(
+        @{$check->{'results'}},
+        &_check_url($ua, $url, "Source repo [$name]")
+      );
       if ($check->{'results'}[-1] !~ /^OK/) {
         push(
           @recs,
@@ -916,7 +932,10 @@ sub _compute_data($) {
       else {
         push(@{$check->{'results'}}, "Failed. Update site has no title.");
       }
-      push(@{$check->{'results'}}, &_check_url($ua, $url, "Update site [$title]"));
+      push(
+        @{$check->{'results'}},
+        &_check_url($ua, $url, "Update site [$title]")
+      );
       if ($check->{'results'}[-1] !~ /^OK/) {
         push(
           @recs,
@@ -1107,7 +1126,7 @@ sub _compute_data($) {
 
 
 sub _check_url($$$) {
-    my $ua = shift;
+  my $ua  = shift;
   my $url = shift || '';
   my $str = shift || '';
 

@@ -12,7 +12,7 @@
 #
 #########################################################
 
-AL_V=3.3.2-dev
+AL_V=3.3.3-dev
 AL_DIR_PERLDOC=doc/public/perldoc/
 
 AL_DESC="Alambic developer documentation (Perlpod). Checkout the \

@@ -118,33 +118,47 @@ ok(grep(/^\[Tools::R\] Exec \[Rsc.*jira_summary.rmd/, @{$ret->{'log'}}) == 1,
   "Checking if log contains jira_summary.rmd R code exec.")
   or diag explain $ret;
 
-ok($ret->{'metrics'}{'JIRA_VOL'} =~ /^\d+$/, "JIRA_VOL is a digit.")  or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_OPEN'} =~ /^\d+$/, "JIRA_OPEN is a digit.") or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_OPEN_PERCENT'} =~ /^\d\d?$/, "JIRA_OPEN_PERCENT is xx.")
+ok($ret->{'metrics'}{'JIRA_VOL'} =~ /^\d+$/, "JIRA_VOL is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_OPEN_UNASSIGNED'} =~ /^\d+$/, "JIRA_OPEN_UNASSIGNED is a digit.")
+ok($ret->{'metrics'}{'JIRA_OPEN'} =~ /^\d+$/, "JIRA_OPEN is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_CREATED_1M'} =~ /^\d+$/, "JIRA_CREATED_1M is a digit.")
+ok($ret->{'metrics'}{'JIRA_OPEN_PERCENT'} =~ /^\d\d?$/,
+  "JIRA_OPEN_PERCENT is xx.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_CREATED_1Y'} =~ /^\d+$/, "JIRA_CREATED_1Y is a digit.")
+ok($ret->{'metrics'}{'JIRA_OPEN_UNASSIGNED'} =~ /^\d+$/,
+  "JIRA_OPEN_UNASSIGNED is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_CREATED_1W'} =~ /^\d+$/, "JIRA_CREATED_1W is a digit.")
+ok($ret->{'metrics'}{'JIRA_CREATED_1M'} =~ /^\d+$/,
+  "JIRA_CREATED_1M is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_UPDATED_1M'} =~ /^\d+$/, "JIRA_UPDATED_1M is a digit.")
+ok($ret->{'metrics'}{'JIRA_CREATED_1Y'} =~ /^\d+$/,
+  "JIRA_CREATED_1Y is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_UPDATED_1W'} =~ /^\d+$/, "JIRA_UPDATED_1W is a digit.")
+ok($ret->{'metrics'}{'JIRA_CREATED_1W'} =~ /^\d+$/,
+  "JIRA_CREATED_1W is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_UPDATED_1Y'} =~ /^\d+$/, "JIRA_UPDATED_1Y is a digit.")
+ok($ret->{'metrics'}{'JIRA_UPDATED_1M'} =~ /^\d+$/,
+  "JIRA_UPDATED_1M is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_AUTHORS_1W'} =~ /^\d+$/, "JIRA_AUTHORS_1W is a digit.")
+ok($ret->{'metrics'}{'JIRA_UPDATED_1W'} =~ /^\d+$/,
+  "JIRA_UPDATED_1W is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_AUTHORS_1M'} =~ /^\d+$/, "JIRA_AUTHORS_1M is a digit.")
+ok($ret->{'metrics'}{'JIRA_UPDATED_1Y'} =~ /^\d+$/,
+  "JIRA_UPDATED_1Y is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_AUTHORS_1Y'} =~ /^\d+$/, "JIRA_AUTHORS_1Y is a digit.")
+ok($ret->{'metrics'}{'JIRA_AUTHORS_1W'} =~ /^\d+$/,
+  "JIRA_AUTHORS_1W is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'JIRA_AUTHORS_1M'} =~ /^\d+$/,
+  "JIRA_AUTHORS_1M is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'JIRA_AUTHORS_1Y'} =~ /^\d+$/,
+  "JIRA_AUTHORS_1Y is a digit.")
   or diag explain $ret;
 ok($ret->{'metrics'}{'JIRA_AUTHORS'} =~ /^\d+$/, "JIRA_AUTHORS is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_LATE'} =~ /^\d+$/, "JIRA_LATE is a digit.") or diag explain $ret;
+ok($ret->{'metrics'}{'JIRA_LATE'} =~ /^\d+$/, "JIRA_LATE is a digit.")
+  or diag explain $ret;
 
 
 ok(scalar(@{$ret->{'recs'}}) == 1, "Ret has 1 rec.");

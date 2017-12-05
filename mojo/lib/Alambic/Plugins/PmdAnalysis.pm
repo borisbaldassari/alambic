@@ -110,12 +110,13 @@ sub run_plugin($$) {
   # Create RepoFS object for writing and reading files on FS.
   my $repofs = Alambic::Model::RepoFS->new();
 
-  my $url_xml  = $conf->{'url_pmd_xml'};
-  my $url_conf = $conf->{'url_pmd_conf'};
+  my $url_xml   = $conf->{'url_pmd_xml'};
+  my $url_conf  = $conf->{'url_pmd_conf'};
   my $proxy_url = $conf->{'proxy'} || '';
 
   # Retrieve and store data from the remote repository.
-  $ret{'log'} = &_retrieve_data($project_id, $url_xml, $url_conf, $proxy_url, $repofs);
+  $ret{'log'}
+    = &_retrieve_data($project_id, $url_xml, $url_conf, $proxy_url, $repofs);
 
   # Analyse retrieved data, generate info, metrics, plots and visualisation.
   my $tmp_ret = &_compute_data($project_id, $repofs);
@@ -135,26 +136,32 @@ sub _retrieve_data($$$$) {
   push(@log,
     "[Plugins::PmdAnalysis] Starting retrieve data for [$project_id].");
 
-  my $ua          = Mojo::UserAgent->new;
+  my $ua = Mojo::UserAgent->new;
   $ua->max_redirects(10);
   $ua->inactivity_timeout(60);
 
   # Configure Proxy
-  if ( $proxy_url =~ m!^default!i ) {
-      # If 'default', then use detect
-      $ua->proxy->detect; 
-      my $proxy_http = $ua->proxy->http;
-      my $proxy_https = $ua->proxy->https;
-      push(@log, "[Plugins::PmdAnalysis] Using default proxy [$proxy_http] and [$proxy_https].");
-  } elsif ( $proxy_url =~ m!\S+! ) {
-      # If something, then use it
-      $ua->proxy->http($proxy_url)->https($proxy_url);
-      push(@log, "[Plugins::PmdAnalysis] Using provided proxy [$proxy_url].");
-  } else {
-      # If blank, then use no proxy
-      push(@log, "[Plugins::PmdAnalysis] No proxy defined [$proxy_url].");
+  if ($proxy_url =~ m!^default!i) {
+
+    # If 'default', then use detect
+    $ua->proxy->detect;
+    my $proxy_http  = $ua->proxy->http;
+    my $proxy_https = $ua->proxy->https;
+    push(@log,
+      "[Plugins::PmdAnalysis] Using default proxy [$proxy_http] and [$proxy_https]."
+    );
   }
-  
+  elsif ($proxy_url =~ m!\S+!) {
+
+    # If something, then use it
+    $ua->proxy->http($proxy_url)->https($proxy_url);
+    push(@log, "[Plugins::PmdAnalysis] Using provided proxy [$proxy_url].");
+  }
+  else {
+    # If blank, then use no proxy
+    push(@log, "[Plugins::PmdAnalysis] No proxy defined [$proxy_url].");
+  }
+
   my $content_xml = $ua->get($url_xml)->res->body;
   if (length($content_xml) < 10) {
     push(@log, "[Plugins::PmdAnalysis] Cannot find [$url_xml].\n");

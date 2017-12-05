@@ -83,8 +83,13 @@
 <li><strong>Abilities</strong>: figs, viz</li>
 <li><strong>Description</strong>:
 The Project Summary plugin creates a bunch of exportable HTML snippets, images and badges.</li>
-<li><strong>Parameters</strong>:</li>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>proxy</code> If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.</li>
+</ul></li>
 </ul>
+
+<p>Please note that this plugin uses the <a href="https://shields.io">shields.io</a> services to generate the badges. If this web site is behind a proxy, then one needs to fill the proxy field in.</p>
 
 <hr />
 

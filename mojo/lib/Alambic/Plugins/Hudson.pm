@@ -116,26 +116,32 @@ sub _retrieve_data($) {
   );
 
   # Fetch json file from the dashboard.eclipse.org
-  my $ua   = Mojo::UserAgent->new;
+  my $ua = Mojo::UserAgent->new;
   $ua->max_redirects(10);
   $ua->inactivity_timeout(60);
 
   # Configure Proxy
-  if ( $proxy_url =~ m!^default!i ) {
-      # If 'default', then use detect
-      $ua->proxy->detect; 
-      my $proxy_http = $ua->proxy->http;
-      my $proxy_https = $ua->proxy->https;
-      push(@log, "[Plugins::Hudson] Using default proxy [$proxy_http] and [$proxy_https].");
-  } elsif ( $proxy_url =~ m!\S+! ) {
-      # If something, then use it
-      $ua->proxy->http($proxy_url)->https($proxy_url);
-      push(@log, "[Plugins::Hudson] Using provided proxy [$proxy_url].");
-  } else {
-      # If blank, then use no proxy
-      push(@log, "[Plugins::Hudson] No proxy defined [$proxy_url].");
+  if ($proxy_url =~ m!^default!i) {
+
+    # If 'default', then use detect
+    $ua->proxy->detect;
+    my $proxy_http  = $ua->proxy->http;
+    my $proxy_https = $ua->proxy->https;
+    push(@log,
+      "[Plugins::Hudson] Using default proxy [$proxy_http] and [$proxy_https]."
+    );
   }
-  
+  elsif ($proxy_url =~ m!\S+!) {
+
+    # If something, then use it
+    $ua->proxy->http($proxy_url)->https($proxy_url);
+    push(@log, "[Plugins::Hudson] Using provided proxy [$proxy_url].");
+  }
+  else {
+    # If blank, then use no proxy
+    push(@log, "[Plugins::Hudson] No proxy defined [$proxy_url].");
+  }
+
   my $json = $ua->get($url)->res->body;
   if (length($json) < 10) {
     push(@log, "[Plugins::Hudson] Cannot find [$url].\n");
