@@ -21,6 +21,7 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/Jira.pm.html) in 
   * `jira_passwd` The password for authentication on the Jira server.
   * `jira_project` The project ID to be requested on the Jira server.
   * `jira_open_states` The states names considered to be open, as a coma-separated list.
+  * `proxy` If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the `default` keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.
 
 -----
 

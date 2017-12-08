@@ -18,6 +18,7 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/StackOverflow.pm.
   Retrieves questions and answers related to a specific tag from the Stack Overflow question/answer web site.
 * **Parameters**:
     * `so_keyword` A Stack Overflow tag to retrieve questions from.
+    * `proxy` If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the `default` keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.
 
 -----
 

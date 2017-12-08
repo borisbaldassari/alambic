@@ -4,13 +4,26 @@ navi_name: Releases
 
 # Alambic releases
 
+## Alambic 3.3.3
+
+Date: 2017-12-05
+
+Changelog:
+
+* Minor [bug fixes](https://bitbucket.org/BorisBaldassari/alambic/issues?milestone=Alambic+3.3.3).
+* New [Proxy feature](https://alambic.io/Documentation/Admins/Projects.html) for all plugins, contributed by [Thales Group](https://www.thalesgroup.com).
+* Support for [Mojo::Minion](http://mojolicious.org/perldoc/Minion) 8 new API.
+* Updated documentation, available on [https://alambic.io](https://alambic.io).
+
+If one intends to run Alambic with a recent version of Minion (>= 8), then this release (or greater) is needed.
+
 ## Alambic 3.3.2
 
 Date: 2017-09-15
 
 Changelog:
 
-* Several bug fixes: https://bitbucket.org/BorisBaldassari/alambic/issues?milestone=Alambic+3.3.2.
+* Minor [bug fixes](https://bitbucket.org/BorisBaldassari/alambic/issues?milestone=Alambic+3.3.2).
 * New [Jira plugin](/Plugins/Pre/Jira.html), contributed by [Thales Group](https://www.thalesgroup.com).
 * New [Git plugin](/Plugins/Pre/Git.html), contributed by [Thales Group](https://www.thalesgroup.com).
 * New [SonarQube 4.5.x plugin](/Plugins/Pre/SonarQube45.html), contributed by [Thales Group](https://www.thalesgroup.com).
@@ -66,7 +79,7 @@ Changelog:
     * Hudson CI
     * PMD Analysis
 * Add google analysis tracking code: [#70](https://bitbucket.org/BorisBaldassari/alambic/issues/70/add-google-tracking-edit)
-* Add user and delay attributes on runs: []#69](https://bitbucket.org/BorisBaldassari/alambic/issues/69/add-delay-and-user-to-runs)
+* Add user and delay attributes on runs: [#69](https://bitbucket.org/BorisBaldassari/alambic/issues/69/add-delay-and-user-to-runs)
 * Fix plots in PMD Analysis: [#47](https://bitbucket.org/BorisBaldassari/alambic/issues/47/plot-in-pmdanalysis-shows-wrong-values) [#62](https://bitbucket.org/BorisBaldassari/alambic/issues/62/404-in-plugin-pmdanalysis)
 * Fix various typos and bugs in plugins: [#65](https://bitbucket.org/BorisBaldassari/alambic/issues/65/tidy-up-hudson-plugin) [#66](https://bitbucket.org/BorisBaldassari/alambic/issues/66/eclipse-scm-plugin-has-wrong-pluginid)
 * Fix escape in backups: [#67](https://bitbucket.org/BorisBaldassari/alambic/issues/67/backups-are-incomplete)

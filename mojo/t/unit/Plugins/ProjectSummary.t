@@ -136,12 +136,16 @@ note("Checking retrieved file. ");
 
 # Check that files have been created.
 note("Check that files have been created. ");
+
 ok(-e "projects/test.project/output/test.project_badge_attr_alambic.svg",
   "Check that file badge_attr_alambic.svg exists.");
+
 ok(-e "projects/test.project/output/test.project_badge_attr_Metric 1.svg",
   "Check that file badge_attr_Metric 1.svg exists.");
+
 ok(-e "projects/test.project/output/test.project_badge_attr_root.svg",
   "Check that file badge_attr_root.svg exists.");
+
 ok(-e "projects/test.project/output/test.project_badges.inc",
   "Check that file badges.inc exists.");
 
