@@ -11,7 +11,7 @@ Date: 2017-12-05
 Changelog:
 
 * Minor [bug fixes](https://bitbucket.org/BorisBaldassari/alambic/issues?milestone=Alambic+3.3.3).
-* New [Proxy feature](https://alambic.io/Documentation/Projects.html) for all plugins, contributed by [Thales Group](https://www.thalesgroup.com).
+* New [Proxy feature](https://alambic.io/Documentation/Admins/Projects.html) for all plugins, contributed by [Thales Group](https://www.thalesgroup.com).
 * Support for [Mojo::Minion](http://mojolicious.org/perldoc/Minion) 8 new API.
 * Updated documentation, available on [https://alambic.io](https://alambic.io).
 

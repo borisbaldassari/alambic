@@ -9,6 +9,12 @@ Alambic itself doesn't provide a means to run cron-like runs of projects. It is 
 
 TODO add documentation from alambic app here.
 
+## What is the default password for administrator?
+
+When initialising Alambic, a default login/password pair is created, so administrators can connect, create more users and obviously change the password.
+
+Default login is `administrator` and default password is `password`.
+
 ## How to configure Alambic to run another port?
 
 The port number Alambic listens to can be configured in the `alambic.conf` file, in the `$ALAMBIC_HOME/mojo` directory. Change the following line to whatever port you'd like. Please note however that usign a port <= 1024 requires root privileges.
@@ -26,7 +32,7 @@ Then head to http://localhost/ and start playing with Alambic.
 
 ## How did Alambic start?
 
-The idea of Alambic originates from the [Polarsys](https://polarsys.org) Working Group and the Maturity Assessment task force](https://wiki.polarsys.org/Maturity_Assessment_WG). A [dashboard](http://dashboard.polarsys.org) was developed as a support of the discusssion. The application was then entirely re-written to be more generic and adaptable to other contexts by [Castalia Solutions](http://castalia.solutions).
+The idea of Alambic originates from the [Polarsys](https://polarsys.org) Working Group and the [Maturity Assessment task force](https://wiki.polarsys.org/Maturity_Assessment_WG). A [dashboard](http://dashboard.polarsys.org) was developed as a support of the discusssion. The application was then entirely re-written to be more generic and adaptable to other contexts by [Castalia Solutions](http://castalia.solutions).
 
 Since Alambic is a fork of the PolarSys dashboard, there is a lot of information (mostly historical by now, but still relevant) available on the PolarSys wiki, since the project started there. From the beginning the PolarSys dashboard has been driven by the PolarSys members: the definition of the quality model, attributes, metrics has been discussed on the [public mailing list](https://dev.eclipse.org/mailman/listinfo/polarsys-iwg), and the full retrieval and analysis process has received a common agreement on the mailing list. The project and/or its features have also been presented a few times:
 

@@ -44,7 +44,7 @@ The list of projects proposes some basic information on each project, and action
 
 Displays all information pertaining to a single project, and means to edit the plugins, run a complete or partial analysis, and set the project's parameters (name, description, active, etc.).
 
-![Alambic Admin Web UI](/images/admins_projectpng)
+![Alambic Admin Web UI](/images/admins_project.png)
 
 * Project ID, e.g. `modeling.sirius`
 * Project name, e.g. `Sirius`
