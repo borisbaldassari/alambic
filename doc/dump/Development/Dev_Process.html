@@ -1,0 +1,239 @@
+<!doctype html>
+<html>
+<head>
+    <title>Development process - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../Documentation.html">Documentation</a>
+        </li>
+        <li class="active">
+            <a href="../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="Contributing.html">Contribute</a>
+        </li>
+        <li class="active">
+            <a href="Dev_Process.html">Development process</a>
+        </li>
+        <li class="">
+            <a href="Ethics.html">Ethics</a>
+        </li>
+        <li class="">
+            <a href="Releases.html">Releases</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Alambic Development Process</h1>
+
+<h2>Continuous integration</h2>
+
+<p>For historical reasons, Alambic uses two different services for Continuous Integration. In both cases we use Docker to make sure that the environment is pristine.</p>
+
+<h3>Codefresh</h3>
+
+<p>The <strong><a href="https://codefresh.io">Codefresh</a></strong> service builds the official building channel for the docker images. It notably builds the following images:</p>
+
+<ul>
+<li><p><code>image_base_centos</code> is a base CentOS image with all requirements installed: system packages, R and Perl modules. <a href="https://g.codefresh.io/repositories/BorisBaldassari/alambic/builds?filter=trigger:build;branch:master;service:589f16b56f0280010035a254~alambic_base_centos"><img src="https://g.codefresh.io/api/badges/build?repoOwner=BorisBaldassari&amp;repoName=alambic&amp;branch=master&amp;pipelineName=alambic_base_centos&amp;accountName=borisbaldassari&amp;type=cf-1" alt="Codefresh build status" /></a></p></li>
+<li><p><code>image_test</code> is run on every <code>git push</code>. It installs Alambic and runs the complete test suite using <code>bin/alambic test</code>. On success it pushes the image to <code>https://hub.docker.com/r/bbaldassari/alambic_test/</code>. <a href="https://g.codefresh.io/repositories/BorisBaldassari/alambic/builds?filter=trigger:build;branch:master;service:589ee0d5a567350100749f20~alambic_test"><img src="https://g.codefresh.io/api/badges/build?repoOwner=BorisBaldassari&amp;repoName=alambic&amp;branch=master&amp;pipelineName=alambic_test&amp;accountName=borisbaldassari&amp;type=cf-1" alt="Codefresh build status" /></a></p></li>
+<li><p><code>image_ci</code> is run on every <code>git push</code>. It installs Alambic and initialises the application, and then waits for connections on port <code>3000</code>. <a href="https://g.codefresh.io/repositories/BorisBaldassari/alambic/builds?filter=trigger:build;branch:master;service:589f19636f0280010035a5f2~alambic_run"><img src="https://g.codefresh.io/api/badges/build?repoOwner=BorisBaldassari&amp;repoName=alambic&amp;branch=master&amp;pipelineName=alambic_run&amp;accountName=borisbaldassari&amp;type=cf-1" alt="Codefresh build status" /></a></p></li>
+</ul>
+
+<h3>Codeship</h3>
+
+<p><strong><a href="https://codeship.io">Codeship</a></strong> executes only the Alambic test image to ensure that testing is done thoroughly and independently of the CI setup (even docker sometimes has caveats).</p>
+
+<p><a href="https://app.codeship.com/projects/189806"><img src="https://app.codeship.com/projects/8f5ae970-a10d-0134-6d00-664a346b6816/status?branch=master" alt="CI status" /></a></p>
+
+<h3>Results on BitBucket</h3>
+
+<p>Both services push their results back to the BitBucket repository and set build flags, as shown on the right of the image below.</p>
+
+<hr />
+
+<p><img src="/images/alambic_ci_flags.png" alt="Alambic CI status" /></p>
+
+<hr />
+
+<h2>Release engineering</h2>
+
+<p>Before any release (and hopefully before any commit) the release script located in <code>$ALAMBIC_HOME/resources/scripts/releng/alambic_release.sh</code> must be executed. The script executes the following actions:</p>
+
+<ul>
+<li>Run various checks,</li>
+<li>Tidy up code of all Perl files located under <code>lib/</code> and <code>t/</code>,</li>
+<li>Generate POD from Perl code and move it to the web site section in <code>$ALAMBIC_HOME/doc/public/perldoc</code>.</li>
+</ul>
+
+<p>Example run:</p>
+
+<pre><code>boris@midkemia bb_alambic $ sh resources/scripts/releng/alambic_release.sh 
+
+Hi. working on version [3.3.1-dev] of Alambic.
+
+----- Creating tmp directory: /tmp/tmp.YvSi0lnRsH.
+
+----- Creating log file: /home/boris/Projects/bb_alambic/resources/scripts/releng/alambic_checks.txt.
+
+----- Checking Alambic version.
+[OK]  Checking that alambic.conf has the correct version.
+
+----- Executing SLOCCount on Alambic code.
+  * Found 5855 lines of Perl code in lib dir.
+  * Found 1645 lines of Perl code in test (t/) dir.
+
+----- Tidying source files.
+Tidy all files in mojo/lib/.
+mojo/lib/Alambic.pm
+mojo/lib/Alambic/Tools/Git.pm
+mojo/lib/Alambic/Tools/R.pm
+mojo/lib/Alambic/Model/Alambic.pm
+mojo/lib/Alambic/Model/Tools.pm
+mojo/lib/Alambic/Model/RepoFS.pm
+mojo/lib/Alambic/Model/Plugins.pm
+mojo/lib/Alambic/Model/Users.pm
+mojo/lib/Alambic/Model/Models.pm
+mojo/lib/Alambic/Model/RepoDB.pm
+mojo/lib/Alambic/Model/Wizards.pm
+mojo/lib/Alambic/Model/Project.pm
+mojo/lib/Alambic/Commands/backup.pm
+mojo/lib/Alambic/Commands/init.pm
+mojo/lib/Alambic/Commands/about.pm
+mojo/lib/Alambic/Commands/password.pm
+mojo/lib/Alambic/Controller/Admin.pm
+mojo/lib/Alambic/Controller/Alambic.pm
+mojo/lib/Alambic/Controller/Dashboard.pm
+mojo/lib/Alambic/Controller/Tools.pm
+mojo/lib/Alambic/Controller/Users.pm
+mojo/lib/Alambic/Controller/Repo.pm
+mojo/lib/Alambic/Controller/Documentation.pm
+mojo/lib/Alambic/Controller/Jobs.pm
+mojo/lib/Alambic/Wizards/EclipsePmi.pm
+mojo/lib/Alambic/Plugins/EclipsePmi.pm
+mojo/lib/Alambic/Plugins/PmdAnalysis.pm
+mojo/lib/Alambic/Plugins/StackOverflow.pm
+mojo/lib/Alambic/Plugins/ProjectSummary.pm
+mojo/lib/Alambic/Plugins/Hudson.pm
+Tidy all files in mojo/t/.
+mojo/t/ui/010_admin.t
+mojo/t/ui/011_auth.t
+mojo/t/ui/002_documentation.t
+mojo/t/ui/001_basic.t
+mojo/t/unit/Tools/R.t
+mojo/t/unit/Tools/Git.t
+mojo/t/unit/Model/Plugins.t
+mojo/t/unit/Model/RepoFS.t
+mojo/t/unit/Model/Alambic.t
+mojo/t/unit/Model/Users.t
+mojo/t/unit/Model/Tools.t
+mojo/t/unit/Model/RepoDB.t
+mojo/t/unit/Model/Project.t
+mojo/t/unit/Model/Models.t
+mojo/t/unit/Model/Wizards.t
+mojo/t/unit/Plugins/EclipsePmi.t
+
+----- Generating web site from markdown.
+dumping everything to /home/boris/Projects/bb_alambic/doc/dump ...
+index.html ... done.
+About.html ... done.
+About/Features.html ... done.
+About/Community.html ... done.
+About/FAQ.html ... done.
+About/For_research.html ... done.
+Plugins.html ... done.
+Plugins/Pre.html ... done.
+Plugins/Pre/EclipsePmi.html ... done.
+Plugins/Pre/Hudson.html ... done.
+Plugins/Pre/PmdAnalysis.html ... done.
+Plugins/Pre/StackOverflow.html ... done.
+Plugins/Post.html ... done.
+Plugins/Post/ProjectSummary.html ... done.
+Plugins/Tools.html ... done.
+Plugins/Tools/Git.html ... done.
+Plugins/Wizards.html ... done.
+Plugins/Wizards/EclipsePmi.html ... done.
+Setup.html ... done.
+Setup/Prerequisites.html ... done.
+Setup/Install.html ... done.
+Setup/Run.html ... done.
+Setup/Upgrade.html ... done.
+Setup/Docker.html ... done.
+Documentation.html ... done.
+Documentation/Users.html ... done.
+Documentation/Users/Dashboard.html ... done.
+Documentation/Users/QualityModel.html ... done.
+Documentation/Admins.html ... done.
+Documentation/Admins/Summary.html ... done.
+Documentation/Admins/Database.html ... done.
+Documentation/Admins/ModelsAdmin.html ... done.
+Documentation/Admins/Jobs.html ... done.
+Documentation/Admins/Users.html ... done.
+Documentation/Admins/Tools.html ... done.
+Documentation/Tasks.html ... done.
+Documentation/Tasks/Backups.html ... done.
+Documentation/Tasks/Customise.html ... done.
+Documentation/Tasks/CLI.html ... done.
+Development.html ... done.
+Development/Contributing.html ... done.
+Development/Dev_Process.html ... done.
+Development/Ethics.html ... done.
+done!
+
+----- Generating perldoc html files in doc section.
+
+----- Processing completed. Have a good day!
+</code></pre>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

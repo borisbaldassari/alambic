@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+<head>
+    <title>Eclipse PMI - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="../Pre.html">Pre</a>
+        </li>
+        <li class="">
+            <a href="../Post.html">Post</a>
+        </li>
+        <li class="">
+            <a href="../Tools.html">Tools</a>
+        </li>
+        <li class="">
+            <a href="../Wizards.html">Wizards</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="active">
+            <a href="EclipsePmi.html">EclipsePmi</a>
+        </li>
+        <li class="">
+            <a href="Git.html">Git</a>
+        </li>
+        <li class="">
+            <a href="Hudson.html">Hudson</a>
+        </li>
+        <li class="">
+            <a href="Jira.html">Jira</a>
+        </li>
+        <li class="">
+            <a href="PmdAnalysis.html">PmdAnalysis</a>
+        </li>
+        <li class="">
+            <a href="SonarQube45.html">SonarQube45</a>
+        </li>
+        <li class="">
+            <a href="StackOverflow.html">StackOverflow</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Eclipse PMI</h1>
+
+<p>This plugin retrieves information from <a href="http://projects.eclipse.org">the PMI repository</a> and checks for inconsistencies and bad data in its entries.</p>
+
+<p>The Project Management Infrastructure is described in the Eclipse wiki:</p>
+
+<ul>
+<li><a href="https://wiki.eclipse.org/Project_Management_Infrastructure">https://wiki.eclipse.org/Project_Management_Infrastructure</a></li>
+<li><a href="https://wiki.eclipse.org/Project_Management_Infrastructure/Overview">https://wiki.eclipse.org/Project_Management_Infrastructure/Overview</a></li>
+<li><a href="https://wiki.eclipse.org/Project_Management_Infrastructure/Development">https://wiki.eclipse.org/Project_Management_Infrastructure/Development</a></li>
+<li><a href="https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices">https://wiki.eclipse.org/Project_Management_Infrastructure/Technology_Choices</a></li>
+<li><a href="https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design">https://wiki.eclipse.org/Project_Management_Infrastructure/Overview_and_Design</a></li>
+</ul>
+
+<p>Check the <a href="/perldoc/Alambic/Plugins/EclipsePmi.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
+
+<hr />
+
+<h1>Basic information</h1>
+
+<ul>
+<li><strong>ID</strong>: EclipsePmi</li>
+<li><strong>Abilities</strong>: metrics, info, data, recs, viz</li>
+<li><strong>Description</strong>:
+Eclipse PMI Retrieves meta data about the project from the Eclipse PMI infrastructure.
+See the project's wiki for more information.</li>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>project_pmi</code> The project ID used to identify the project on the PMI server. Look for it in the URL of the project on <a href="http://projects.eclipse.org">http://projects.eclipse.org</a>.</li>
+<li><code>proxy</code> If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h1>Provides</h1>
+
+<h2>Downloads</h2>
+
+<ul>
+<li><code>pmi.json</code>: The PMI file as returned by the Eclipse repository (JSON).</li>
+<li><code>pmi_checks.csv</code>: The list of PMI checks and their results (CSV).</li>
+<li><code>pmi_checks.json</code>: The list of PMI checks and their results (JSON).</li>
+</ul>
+
+<h2>Figures</h2>
+
+<h2>Information</h2>
+
+<p>MLS_DEV_URL, MLS_USR_URL, PMI_BUGZILLA_COMPONENT, PMI_BUGZILLA_CREATE_URL, PMI_BUGZILLA_PRODUCT, PMI_BUGZILLA_QUERY_URL, PMI_CI_URL, PMI_DESC, PMI_DOCUMENTATION_URL, PMI_DOWNLOAD_URL, PMI_GETTINGSTARTED_URL, PMI_ID, PMI_MAIN_URL, PMI_SCM_URL, PMI_TITLE, PMI_UPDATESITE_URL, PMI_WIKI_URL</p>
+
+<h2>Metrics</h2>
+
+<ul>
+<li>PMI_ITS_INFO,
+The quantity of ITS-related information made available through the PMI.</li>
+<li>PMI_SCM_INFO
+The quantity of SCM-related information made available through the PMI.</li>
+</ul>
+
+<h2>Recommendations</h2>
+
+<p>PMI_EMPTY_BUGZILLA_CREATE, PMI_EMPTY_BUGZILLA_QUERY, PMI_EMPTY_CI, PMI_EMPTY_DEV_ML, PMI_EMPTY_DOC, PMI_EMPTY_DOWNLOAD, PMI_EMPTY_GETTING_STARTED, PMI_EMPTY_PLAN, PMI_EMPTY_PROPOSAL, PMI_EMPTY_REL, PMI_EMPTY_SCM, PMI_EMPTY_TITLE, PMI_EMPTY_UPDATE, PMI_EMPTY_USER_ML, PMI_EMPTY_WEB, PMI_EMPTY_WIKI, PMI_NOK_BUGZILLA_CREATE, PMI_NOK_BUGZILLA_QUERY, PMI_NOK_CI, PMI_NOK_DEV_ML, PMI_NOK_DOC, PMI_NOK_DOWNLOAD, PMI_NOK_GETTING_STARTED, PMI_NOK_PLAN, PMI_NOK_PROPOSAL, PMI_NOK_SCM, PMI_NOK_UPDATE, PMI_NOK_USER_ML, PMI_NOK_WEB, PMI_NOK_WIKI</p>
+
+<h2>Visualisation</h2>
+
+<ul>
+<li>Eclipse PMI Checks</li>
+</ul>
+
+<h1>PMI Checks</h1>
+
+<ul>
+<li>PMI_EMPTY_BUGZILLA_PRODUCT
+The Bugzilla product entry is empty in the PMI. People willing to enter a bug for the first time will look for it.</li>
+<li>PMI_EMPTY_BUGZILLA_CREATE
+The Bugzilla URL entry to create a bug is empty in the PMI. People willing to enter a bug for the first time will look for it.</li>
+<li>PMI_NOK_BUGZILLA_CREATE
+The Bugzilla URL entry to create bug in the PMI cannot be accessed.</li>
+<li>PMI_EMPTY_BUGZILLA_QUERY
+The Bugzilla URL entry to query bugs is empty in the PMI. People willing to search for a bug for the first time will look for it.</li>
+<li>PMI_NOK_BUGZILLA_QUERY
+The Bugzilla URL entry to query bugs in the PMI cannot be accessed. People willing to search for a bug for the first time will look for it.</li>
+<li>PMI_EMPTY_TITLE
+The title entry is empty in the PMI.</li>
+<li>PMI_NOK_WEB
+The web site URL cannot be retrieved in the PMI. The URL should be checked.</li>
+<li>PMI_EMPTY_WEB
+The web site URL is missing in the PMI.</li>
+<li>PMI_NOK_WIKI
+The wiki URL in the PMI cannot be retrieved. It helps people understand and use the product and should be fixed.</li>
+<li>PMI_EMPTY_WIKI
+The wiki URL is missing in the PMI. It helps people understand and use the product and should be filled.</li>
+<li>PMI_NOK_DOWNLOAD
+The download URL cannot be retrieved in the PMI. People need it to download, use, and contribute to the project and should be correctly filled</li>
+<li>PMI_EMPTY_DOWNLOAD
+The download URL is empty in the PMI. People need it to download, use, and contribute to the project and should be correctly filled.</li>
+<li>PMI_NOK_GETTING_STARTED
+The getting started URL cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled.</li>
+<li>PMI_EMPTY_GETTING_STARTED
+The getting started URL is empty in the PMI. It helps people use, and contribute to, the project and should be correctly filled.</li>
+<li>PMI_NOK_DOC
+The documentation URL cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled.</li>
+<li>PMI_EMPTY_DOC
+The documentation URL is empty in the PMI. It helps people use, and contribute to, the project and should be correctly filled.</li>
+<li>PMI_NOK_PLAN
+The plan document URL cannot be retrieved in the PMI. It helps people understand the roadmap of the project and should be correctly filled.</li>
+<li>PMI_EMPTY_PLAN
+The plan document URL is empty in the PMI. It helps people understand the roadmap of the project and should be filled.</li>
+<li>PMI_NOK_PROPOSAL
+The proposal document URL cannot be retrieved in the PMI. It helps people understand the genesis of the project and should be correctly filled.</li>
+<li>PMI_EMPTY_PROPOSAL
+The proposal document URL is empty in the PMI. It helps people understand the genesis of the project and should be filled.</li>
+<li>PMI_NOK_DEV_ML
+The developer mailing list URL in the PMI cannot be retrieved. It helps people know where to ask questions if they want to contribute.</li>
+<li>PMI_EMPTY_DEV_ML
+The developer mailing list URL is empty in the PMI. It helps people know where to ask questions if they want to contribute.</li>
+<li>PMI_NOK_USER_ML
+The user mailing list / forum URL in the PMI cannot be retrieved. It helps people know where to ask questions if they want to use the product and should be fixed.</li>
+<li>PMI_EMPTY_USER_ML
+The user mailing list URL is empty in the PMI. It helps people know where to ask questions if they want to use the product and should be filled.</li>
+<li>PMI_NOK_SCM
+The source repository URL in the PMI cannot be retrieved. People need it if they want to contribute to the product, and it should be fixed.</li>
+<li>PMI_EMPTY_SCM
+The source repository URL is empty in the PMI. People need it if they want to contribute to the product, and it should be filled.</li>
+<li>PMI_NOK_UPDATE
+The update site URL in the PMI cannot be retrieved. People need it if they want to use the product, and it should be fixed.</li>
+<li>PMI_EMPTY_UPDATE
+The update site URL is empty in the PMI. People need it if they want to use the product, and it should be filled.</li>
+<li>PMI_NOK_CI
+The Hudson CI engine URL [$url] in the PMI is not detected as the root of a Hudson instance.</li>
+<li>PMI_EMPTY_CI
+The Hudson CI engine URL [$url] in the PMI is empty.</li>
+<li>PMI_EMPTY_REL
+There is no release defined in the PMI. Adding releases helps people evaluate the evolution and organisation of the project.</li>
+</ul>
+
+<hr />
+
+<h1>Screenshot</h1>
+
+<p><img src="/images/eclipse_pmi.png" alt="eclipse_pmi.png" /></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

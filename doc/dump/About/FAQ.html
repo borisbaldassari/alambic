@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+    <title>Frequently Asked Questions - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="active">
+            <a href="../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="Features.html">Features</a>
+        </li>
+        <li class="">
+            <a href="Community.html">Resources</a>
+        </li>
+        <li class="active">
+            <a href="FAQ.html">F.A.Q.</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Frequently Asked Questions</h1>
+
+<h2>How can I run project analyses regularly?</h2>
+
+<p>Alambic itself doesn't provide a means to run cron-like runs of projects. It is recommended to use a scheduler for that, like Jenkins or Hudson -- that's what we use for the <a href="http://eclipse.castalia.camp">demonstration instances</a>. Most Alambic features are available through the REST API.</p>
+
+<p>TODO add documentation from alambic app here.</p>
+
+<h2>What is the default password for administrator?</h2>
+
+<p>When initialising Alambic, a default login/password pair is created, so administrators can connect, create more users and obviously change the password.</p>
+
+<p>Default login is <code>administrator</code> and default password is <code>password</code>.</p>
+
+<h2>How to configure Alambic to run another port?</h2>
+
+<p>The port number Alambic listens to can be configured in the <code>alambic.conf</code> file, in the <code>$ALAMBIC_HOME/mojo</code> directory. Change the following line to whatever port you'd like. Please note however that usign a port &lt;= 1024 requires root privileges.</p>
+
+<pre><code>"hypnotoad" =&gt; {
+  listen =&gt; ['http://*:3010'],
+},
+</code></pre>
+
+<p>In the docker image, mapped port can be modified in the docker-compose file by changing the line <code>ports:</code>, e.g. to use port 80 of the host:</p>
+
+<pre><code>ports:
+- "80:3000"
+</code></pre>
+
+<p>Then head to http://localhost/ and start playing with Alambic.</p>
+
+<h2>How did Alambic start?</h2>
+
+<p>The idea of Alambic originates from the <a href="https://polarsys.org">Polarsys</a> Working Group and the <a href="https://wiki.polarsys.org/Maturity_Assessment_WG">Maturity Assessment task force</a>. A <a href="http://dashboard.polarsys.org">dashboard</a> was developed as a support of the discusssion. The application was then entirely re-written to be more generic and adaptable to other contexts by <a href="http://castalia.solutions">Castalia Solutions</a>.</p>
+
+<p>Since Alambic is a fork of the PolarSys dashboard, there is a lot of information (mostly historical by now, but still relevant) available on the PolarSys wiki, since the project started there. From the beginning the PolarSys dashboard has been driven by the PolarSys members: the definition of the quality model, attributes, metrics has been discussed on the <a href="https://dev.eclipse.org/mailman/listinfo/polarsys-iwg">public mailing list</a>, and the full retrieval and analysis process has received a common agreement on the mailing list. The project and/or its features have also been presented a few times:</p>
+
+<ul>
+<li>EclipseCon France 2016. <a href="https://www.eclipsecon.org/france2016/session/eclipse-projects-and-open-data-get-know-your-project-alambic">Eclipse projects and Open data: get to know your project with Alambic</a></li>
+<li>International Conference on Software &amp; Systems Engineering and their Applications, 2016. <a href="http://castalia.camp/dl/pub/icssea_2016_the_alambic_platform.pdf">Alambic: An Open-Source Platform for Software Engineering Data Management. The Case of Embedded Software Development</a></li>
+<li>EclipseCon France 2015 Unconference (working session).</li>
+<li>EclipseCon Europe 2014. <a href="https://www.eclipsecon.org/europe2014/session/assessing-project-quality-improvement-polarsys-maturity-assessment-initiative">Assessing project quality for improvement: the PolarSys Maturity Assessment initiative</a></li>
+<li>EclipseCon Europe 2014 Unconference: https://polarsys.org/wiki/EclipseConEurope2014</li>
+<li>EclipseCon France 2014 Unconference: https://wiki.eclipse.org/Eclipse_WG_Unconference_France_2014</li>
+<li>EclipseCon France 2013. <a href="http://www.eclipsecon.org/france2013/sessions/software-quality-eclipse-way-and-beyond">Software Quality: The Eclipse Way and Beyond </a></li>
+</ul>
+
+<h2>How can I contribute?</h2>
+
+<p>Any contribution, user, code, test, talk, nice word, smile, beer, is welcome.</p>
+
+<p>There are many different ways to contribute to Alambic:</p>
+
+<ul>
+<li><strong>Documentation</strong>: this wiki can be improved. If there is anything you can say about Alambic, please go, create and edit !</li>
+<li><strong>Code and tests</strong>: you can fork the project, pick up an issue, edit and send in a pull request. Pull requests will be checked quickly, promise! :-)</li>
+<li><strong>Communication &amp; dissemination</strong> are important matters too.</li>
+</ul>
+
+<p>If in doubt, do not hesitate to <a href="http://castalia.solutions/contact.html">contact me</a> and I'll be happy to help.</p>
+
+<h2>What is the severity on recommendations?</h2>
+
+<ul>
+<li>High is severity 3</li>
+<li>Normal is severity 2</li>
+<li>Low is severity 1</li>
+<li>Info is severity 0</li>
+</ul>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

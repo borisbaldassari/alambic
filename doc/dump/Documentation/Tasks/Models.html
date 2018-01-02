@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+<head>
+    <title>Models - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Basics.html">Basics</a>
+        </li>
+        <li class="">
+            <a href="../Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="../Admins.html">Admins</a>
+        </li>
+        <li class="active">
+            <a href="../Tasks.html">AdminTasks</a>
+        </li>
+        <li class="">
+            <a href="../Research.html">Research</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="Backups.html">Backups</a>
+        </li>
+        <li class="">
+            <a href="Customise.html">Customise</a>
+        </li>
+        <li class="active">
+            <a href="Models.html">Models</a>
+        </li>
+        <li class="">
+            <a href="CLI.html">CLI</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Customising Models</h1>
+
+<p>The quality model, quality attributes and metrics are stored in the database. They are usually imported from JSON files stored in specific folders of the install</p>
+
+<h1>Attributes File format</h1>
+
+<p>A working example of a JSON attributes definition file is provided in the source code at <code>/mojo/lib/Alambic/files/models/attributes</code>.</p>
+
+<pre><code>{
+  "name": "Alambic Attributes",
+  "version": "0.1",
+  "children": [
+    {
+      "name": "Project Maturity",
+      "mnemo": "QM_QUALITY",
+      "desc": [
+        "The overall Maturity of the project.",
+        "In the context of embedded software, Maturity is usually associated with some [SNIP]."
+      ]
+    }
+  ]
+}
+</code></pre>
+
+<h1>Metrics File format</h1>
+
+<p>A working example of a JSON metrics definition file is provided in the source code at <code>/mojo/lib/Alambic/files/models/metrics</code>.</p>
+
+<pre><code>{
+  "name": "Alambic Metrics for Issue Tracking",
+  "version": "0.1",
+  "children": [
+    {
+      "name": "ITS issues opened lifetime",
+      "mnemo": "ITS_OPENED",
+      "desc": [
+            "Number of issues opened during the overall time range covered by the analysis.",
+            "The subset of tickets considered from the issue tracking system are those specified [SNIP]."
+      ],
+      "scale": [1,2,3,4]
+      }
+  ]
+}
+</code></pre>
+
+<h1>Quality Model File format</h1>
+
+<p>The quality model is defined as a json file. A working example of a JSON quality model is provided in the source code at <code>/mojo/lib/Alambic/files/models/qm</code>.</p>
+
+<pre><code>{
+  "name": "Alambic Quality Model",
+  "version": "0.1",
+  "children": [
+    {
+      "mnemo" =&gt; "ATTR1",
+      "type" =&gt; "attribute",
+      "active": "true",
+      "children" =&gt; [
+        {
+          "mnemo" =&gt; "METRIC1",
+          "type" =&gt; "metric",
+          "active": "true",
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

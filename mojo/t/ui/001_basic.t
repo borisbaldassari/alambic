@@ -19,10 +19,9 @@ if ($@) {
 
 # Enable redirects (used e.g. for login)
 $t->ua->max_redirects(5);
-print "# 1 \n";
 
 # Check that we have the right home page.
-$a
+my $a
   = $t->get_ok('/')->status_is(200)
   ->content_like(
   qr!<h1 class="al-h1"><small>Welcome to the</small> Alambic Dashboard</h1>!i,
@@ -36,14 +35,13 @@ $a
   qr!<a href="/admin/summary"><i class="fa fa-wrench fa-fw" style="color: orange;"></i> Admin panel</a></li>!i,
   'Main page contains the Admin menu entry.'
   )->content_like(
-  qr!<blockquote>Default CLI Init description</blockquote>!i,
+  qr!<blockquote>.*esc.*</blockquote>!i,
   'Main page contains the description blockquote.'
   )->content_like(qr!Projects</div>!i, 'Main page contains projects panel.')
   ->content_like(qr!Documentation</a>!i,
   'Main page contains documentation panel.')
   ->content_like(qr!Administration tools</a>!i,
   'Main page contains administration tools panel.');
-print "# 1 \n";
 
 
 # Login
@@ -94,13 +92,12 @@ ok(ref($json) eq 'HASH', 'Quality model full def returns hash.');
 $a
   = $t->get_ok('/about.html')->status_is(200)
   ->content_like(qr!<h1 class="al-h1"><small>About</small> This web site</h1>!i,
-  'About page contains the correct title.')->content_like(
-  qr!<p><b>Name</b> <br />\s*Default CLI init</p>!i,
-  'About page contains correct instance name.'
-  )
-  ->content_like(
-  qr!<p><b>Description</b> <br />\s*Default CLI Init description</p>!i,
-  'About page contains correct instance description.')->content_like(
+  'About page contains the correct title.')
+  ->content_like(qr!<p><b>Name</b> <br />!i,
+  'About page contains instance name.')->content_like(
+  qr!<p><b>Description</b> <br />!i,
+  'About page contains instance description.'
+  )->content_like(
   qr!<strong>Send message to administrator!i,
   'About main page contains contact form.'
   )->element_exists('input[name=name][type=text]')

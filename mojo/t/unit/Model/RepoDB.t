@@ -1,5 +1,20 @@
 #! perl -I../../lib/
 
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+
 use strict;
 use warnings;
 
@@ -22,7 +37,7 @@ my $conf;
 }
 
 my $conf_e  = eval $conf;
-my $conf_db = $conf_e->{'conf_pg_alambic'};
+my $conf_db = $conf_e->{'conf_pg_alambic_test'};
 
 # If no database is defined, skip all tests.
 my ($pg, $repodb, $is_init);
@@ -95,23 +110,25 @@ SKIP: {
     while (my $next = $results->hash) {
       $values{$next->{'param'}} = $next->{'val'};
     }
-    is($values{'name'}, "Default CLI init", "Name in DB is Default CLI init.")
-      or diag explain %values;
-    is(
-      $values{'desc'},
-      "Default CLI Init description",
-      "Desc in DB is Default CLI Init description."
+    ok(
+      $values{'name'} =~ /MyDBNameInit/
+        || $values{'name'} =~ /Default CLI init/,
+      "Name in DB is ok."
+    ) or diag explain %values;
+    ok(
+      $values{'desc'} =~ /MyDBDescInit/
+        || $values{'desc'} =~ /Default CLI Init description/,
+      "Desc in DB is ok."
     ) or diag explain %values;
 
     my $name = $repodb->name();
-    is($name, 'Default CLI init', "Name from module is Default CLI init.")
+    ok($name =~ /MyDBNameInit/ || $name =~ /Default CLI init/,
+      "Name from module is MyDBNameInit.")
       or diag explain $name;
     my $desc = $repodb->desc();
-    is(
-      $desc,
-      'Default CLI Init description',
-      "Desc from module is Default CLI Init description."
-    ) or diag explain $name;
+    ok($desc =~ /MyDBDescInit/ || $desc =~ /Default CLI Init description/,
+      "Desc from module is MyDBDescInit.")
+      or diag explain $name;
 
     # Check instance information.
     note("Check instance information.");
@@ -146,7 +163,7 @@ SKIP: {
 
 
     my $metric = $repodb->get_metrics();
-    is_deeply($metric, {},
+    is_ok(ref($metric) =~ m!^HASH$!,
       "get_metrics() Get all metrics returns empty hash when there is none.")
       or diag explain $metric;
 

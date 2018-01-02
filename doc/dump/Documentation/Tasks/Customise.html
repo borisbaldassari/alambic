@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+    <title>Customising Alambic - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Basics.html">Basics</a>
+        </li>
+        <li class="">
+            <a href="../Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="../Admins.html">Admins</a>
+        </li>
+        <li class="active">
+            <a href="../Tasks.html">AdminTasks</a>
+        </li>
+        <li class="">
+            <a href="../Research.html">Research</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="Backups.html">Backups</a>
+        </li>
+        <li class="active">
+            <a href="Customise.html">Customise</a>
+        </li>
+        <li class="">
+            <a href="Models.html">Models</a>
+        </li>
+        <li class="">
+            <a href="CLI.html">CLI</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Customising Alambic</h1>
+
+<h2>The templating system</h2>
+
+<p>Mojolicious -- and Alambic -- use embedded Perl as a <a href="http://www.mojolicious.org/perldoc/Mojolicious/Guides/Rendering">templating system</a>. It is  basically composed of pure HTML and Perl code snippets and can be easily customised to display different layouts or types of information. Mojolicious generates pages according to:</p>
+
+<ul>
+<li><p>A <a href="http://www.mojolicious.org/perldoc/Mojolicious/Guides/Rendering#Layouts">layout</a> that provides headers and footers and defines the overall site look and feel (i.e. theme). One can have several layouts and switch forth and back. The default layout used in Alambic is defined in <code>$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/layouts/</code>.</p></li>
+<li><p>Distinct <a href="http://www.mojolicious.org/perldoc/Mojolicious/Guides/Rendering#Embedded-Perl">embedded Perl</a> pages for the different pages of the web site. These really define the content and design of each page and can be found for Alambic in <code>$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/</code>.</p></li>
+</ul>
+
+<h2>Example pages</h2>
+
+<p>All pages are stored in <code>$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/*</code>.</p>
+
+<ul>
+<li>The user dashboard UI pages can be found in <code>$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/*</code>.</li>
+<li>Project Summary is <code>$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/dashboard.html.ep</code>.</li>
+<li>Quality Model is <code>$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/qm.html.ep</code>.</li>
+<li>History is <code>$ALAMBIC_HOME/mojo/lib/Alambic/files/templates/alambic/dashboard/history.html.ep</code>.</li>
+</ul>
+
+<p>The existing files (along with all <code>*.html.ep</code> files in the <code>$ALAMBIC_HOME/mojo/Alambic/files/templates/alambic</code>) can also serve as examples.</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

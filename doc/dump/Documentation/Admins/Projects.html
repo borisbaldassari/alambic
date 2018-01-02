@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+<head>
+    <title>Admin &gt; Projects - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Basics.html">Basics</a>
+        </li>
+        <li class="">
+            <a href="../Users.html">Users</a>
+        </li>
+        <li class="active">
+            <a href="../Admins.html">Admins</a>
+        </li>
+        <li class="">
+            <a href="../Tasks.html">AdminTasks</a>
+        </li>
+        <li class="">
+            <a href="../Research.html">Research</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="Summary.html">Summary</a>
+        </li>
+        <li class="">
+            <a href="Database.html">Database</a>
+        </li>
+        <li class="">
+            <a href="Models.html">Models</a>
+        </li>
+        <li class="">
+            <a href="Jobs.html">Jobs</a>
+        </li>
+        <li class="active">
+            <a href="Projects.html">Projects</a>
+        </li>
+        <li class="">
+            <a href="Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="Tools.html">Tools</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Admin > Projects</h1>
+
+<p>This section displays the list of projects, or all information about a single selected project. Administrators can add, edit or delete projects from this page.</p>
+
+<h2>Proxies</h2>
+
+<p>Most plugins have a proxy field to access remote resources.</p>
+
+<ul>
+<li>Blank means no proxy</li>
+<li><code>default</code> means use env vars; i.e. check environment variables HTTP_PROXY, http_proxy, HTTPS_PROXY, https_proxy, NO_PROXY and no_proxy for proxy information. Automatic proxy detection can be enabled with the MOJO_PROXY environment variable. See <a href="http://mojolicious.org/perldoc/Mojo/UserAgent/Proxy">Mojo::UserAgent documentation</a> for more details on this feature.</li>
+<li>Anything else means use that proxy.</li>
+</ul>
+
+<p>Various types of proxies are supported:</p>
+
+<ul>
+<li>HTTP CONNECT for HTTPS/WebSockets, e.g. <code>http://127.0.0.1:8080</code></li>
+<li>SOCKS5, e.g. <code>socks://127.0.0.1:9050</code></li>
+<li>UNIX domain socket, e.g. <code>http+unix://%2Ftmp%2Fproxy.sock</code></li>
+</ul>
+
+<p>For authentication put credentials in the URL itself, as in <code>http://sri:secret@127.0.0.1:8080</code>. 
+Please note that any weird character must be URL-encoded.</p>
+
+<h2>All projects UI</h2>
+
+<p>Displays the list of all projects and links to create new ones. </p>
+
+<p><img src="/images/admins_projects.png" alt="Alambic Admin Web UI" /></p>
+
+<p>The list of projects proposes some basic information on each project, and actions to create a new project. New projects can be created either empty, or using a wizard.</p>
+
+<ul>
+<li>Project ID, e.g. <code>modeling.sirius</code></li>
+<li>Project name, e.g. <code>Sirius</code></li>
+<li>Is active, e.g. Yes or No.</li>
+<li>Last update, the last time a complete analysis has been run (only complete analyses store their results in database), e.g. 2017-11-23 10:54:45</li>
+<li>A series of actions to:
+<ul>
+<li>show the project's details</li>
+<li>start a full analysis (i.e. submit a job)</li>
+<li>delete the project (warning: this action cannot be undone!)</li>
+</ul></li>
+</ul>
+
+<h2>Information displayed for a single project</h2>
+
+<p>Displays all information pertaining to a single project, and means to edit the plugins, run a complete or partial analysis, and set the project's parameters (name, description, active, etc.).</p>
+
+<p><img src="/images/admins_project.png" alt="Alambic Admin Web UI" /></p>
+
+<ul>
+<li>Project ID, e.g. <code>modeling.sirius</code></li>
+<li>Project name, e.g. <code>Sirius</code></li>
+<li>Project description, e.g. <code>Eclipse Sirius enables the specification of a modeling ....</code></li>
+<li>Is active, e.g. Yes or No.</li>
+<li>Last run, the last time a complete analysis has been run (only complete analyses store their results in database), e.g. <code>2017-11-23 10:54:45</code></li>
+</ul>
+
+<p>It also shows the information available from the latest analysis, with links to go to the dedicated pages:</p>
+
+<ul>
+<li>Info</li>
+<li>Data</li>
+<li>Figures</li>
+<li>Metrics</li>
+<li>Indicators</li>
+<li>Attributes</li>
+<li>Recommendations</li>
+</ul>
+
+<p>It also shows the list of runs and generated files.</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

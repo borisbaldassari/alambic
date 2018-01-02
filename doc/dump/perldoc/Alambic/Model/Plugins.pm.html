@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Alambic::Model::Plugins &mdash; Alambic Perldoc</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
+  <h1 class="t1">Alambic Perldoc</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Alambic</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Alambic Perldoc</a> &gt; Perl Modules &gt;
+  Alambic::Model::Plugins
+</div>
+<div>
+<a href="../../src/Alambic/Model/Plugins.pm">Source</a>
+</div>
+
+<div class="pod">
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+      <li><a href="#get_names_all">get_names_all()</a></li>
+      <li><a href="#get_conf_all">get_conf_all()</a></li>
+      <li><a href="#get_list_plugins_pre">get_list_plugins_pre()</a></li>
+      <li><a href="#get_list_plugins_cdata">get_list_plugins_cdata()</a></li>
+      <li><a href="#get_list_plugins_post">get_list_plugins_post()</a></li>
+      <li><a href="#get_list_plugins_global">get_list_plugins_global()</a></li>
+      <li><a href="#get_list_plugins_data">get_list_plugins_data()</a></li>
+      <li><a href="#get_list_plugins_metrics">get_list_plugins_metrics()</a></li>
+      <li><a href="#get_list_plugins_figs">get_list_plugins_figs()</a></li>
+      <li><a href="#get_list_plugins_info">get_list_plugins_info()</a></li>
+      <li><a href="#get_list_plugins_recs">get_list_plugins_recs()</a></li>
+      <li><a href="#get_list_plugins_viz">get_list_plugins_viz()</a></li>
+      <li><a href="#get_plugin">get_plugin()</a></li>
+      <li><a href="#run_plugin">run_plugin()</a></li>
+      <li><a href="#run_post">run_post()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>Alambic::Model::Plugins</b> - Interface to all plugins defined in Alambic.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    my $plugins = Alambic::Model::Plugins-&gt;new();
+    
+    my $plugin_so = $plugins-&gt;get_plugin(&#39;StackOverflow&#39;);
+    my $list_pre = $plugins-&gt;get_list_plugins_pre();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><b>Alambic::Model::Plugins</b> provides a complete interface to the Plugins management of Alambic, with ability to get lists of plugins according to their type or ability. Also provides access to the plugin objects themselves.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="new"><code>new()</code></h2>
+
+<pre><code>    my $plugins = Alambic::Model::Plugins-&gt;new();</code></pre>
+
+<p>Create a new <a href="Plugins.pm.html">Alambic::Model::Plugins</a> object and initialises it with the list of plugins on the file system (i.e. Alambic/Plugins/*.pm).</p>
+
+<h2 id="get_names_all"><code>get_names_all()</code></h2>
+
+<pre><code>    my $names = $plugins-&gt;get_names_all();</code></pre>
+
+<p>Get a list of all plugins with their names. Returns a hash ref:</p>
+
+<pre><code>    {
+      &#39;plugin1&#39; =&gt; &#39;Plugin number 1&#39;,
+      &#39;plugin2&#39; =&gt; &#39;Plugin number 2&#39;,
+    }</code></pre>
+
+<h2 id="get_conf_all"><code>get_conf_all()</code></h2>
+
+<pre><code>    my $conf = $plugins-&gt;get_conf_all();</code></pre>
+
+<p>Get configuration hashes for all plugins.</p>
+
+<pre><code>    { 
+      &#39;ProjectSummary&#39; =&gt; {
+        &#39;name&#39; =&gt; &#39;Project summary&#39;,
+        &#39;type&#39; =&gt; &#39;post&#39;,
+        &#39;provides_cdata&#39; =&gt; [],
+        &#39;provides_recs&#39; =&gt; [],
+        &#39;provides_data&#39; =&gt; {},
+        &#39;desc&#39; =&gt; [
+          &#39;The Project Summary plugin creates a bunch of exportable HTML snippets, images and badges.&#39;
+        ],
+        &#39;id&#39; =&gt; &#39;ProjectSummary&#39;,
+        &#39;provides_info&#39; =&gt; [],
+        &#39;params&#39; =&gt; {},
+        &#39;provides_figs&#39; =&gt; {
+          &#39;badge_qm&#39; =&gt; &#39;A HTML snippet that displays main quality attributes.&#39;,
+          &#39;badge_qm_viz&#39; =&gt; &#39;A HTML snippet that displays the quality model visualisation.&#39;,
+        },
+        &#39;provides_viz&#39; =&gt; {
+          &#39;badges.html&#39; =&gt; &#39;Badges&#39;
+        },
+        &#39;ability&#39; =&gt; [ &#39;figs&#39;, &#39;viz&#39; ],
+        &#39;provides_metrics&#39; =&gt; {}
+      }
+    }</code></pre>
+
+<h2 id="get_list_plugins_pre"><code>get_list_plugins_pre()</code></h2>
+
+<pre><code>    my $list = $plugins-&gt;get_list_plugins_pre();</code></pre>
+
+<p>Get a list (array) of all pre- plugin ids.</p>
+
+<h2 id="get_list_plugins_cdata"><code>get_list_plugins_cdata()</code></h2>
+
+<pre><code>    my $list = $plugins-&gt;get_list_plugins_cdata();</code></pre>
+
+<p>Get a list (array) of all cdata- plugin ids.</p>
+
+<h2 id="get_list_plugins_post"><code>get_list_plugins_post()</code></h2>
+
+<pre><code>    my $list = $plugins-&gt;get_list_plugins_post();</code></pre>
+
+<p>Get a list (array) of all post- plugin ids.</p>
+
+<h2 id="get_list_plugins_global"><code>get_list_plugins_global()</code></h2>
+
+<pre><code>    my $list = $plugins-&gt;get_list_plugins_global();</code></pre>
+
+<p>Get a list (array) of all global- plugin ids.</p>
+
+<h2 id="get_list_plugins_data"><code>get_list_plugins_data()</code></h2>
+
+<pre><code>    my $list = $plugins-&gt;get_list_plugins_data();</code></pre>
+
+<p>Get a list (array of ids) of all plugins with &#39;data&#39; ability.</p>
+
+<h2 id="get_list_plugins_metrics"><code>get_list_plugins_metrics()</code></h2>
+
+<pre><code>    my $list = $plugins-&gt;get_list_plugins_metrics();</code></pre>
+
+<p>Get a list (array of ids) of all plugins with &#39;metrics&#39; ability.</p>
+
+<h2 id="get_list_plugins_figs"><code>get_list_plugins_figs()</code></h2>
+
+<pre><code>    my $list = $plugins-&gt;get_list_plugins_figs();</code></pre>
+
+<p>Get a list (array of ids) of all plugins with &#39;figs&#39; ability.</p>
+
+<h2 id="get_list_plugins_info"><code>get_list_plugins_info()</code></h2>
+
+<pre><code>    my $list = $plugins-&gt;get_list_plugins_info();</code></pre>
+
+<p>Get a list (array of ids) of all plugins with &#39;info&#39; ability.</p>
+
+<h2 id="get_list_plugins_recs"><code>get_list_plugins_recs()</code></h2>
+
+<pre><code>    my $list = $plugins-&gt;get_list_plugins_recs();</code></pre>
+
+<p>Get a list (array of ids) of all plugins with &#39;recs&#39; ability.</p>
+
+<h2 id="get_list_plugins_viz"><code>get_list_plugins_viz()</code></h2>
+
+<pre><code>    my $list = $plugins-&gt;get_list_plugins_viz();</code></pre>
+
+<p>Get a list (array of ids) of all plugins with &#39;viz&#39; ability.</p>
+
+<h2 id="get_plugin"><code>get_plugin()</code></h2>
+
+<pre><code>    my $conf = $plugins-&gt;get_plugin(&#39;StackOverflow&#39;)-&gt;get_conf();</code></pre>
+
+<p>Get the Alambic::Plugins::Plugin object for the provided id.</p>
+
+<h2 id="run_plugin"><code>run_plugin()</code></h2>
+
+<pre><code>    my $results = $plugins-&gt;run_plugin(
+      &#39;modeling.sirius&#39;, 
+      &#39;StackOverflow&#39;, 
+      $conf
+    );</code></pre>
+
+<p>Run a specific pre plugin on a project.</p>
+
+<h2 id="run_post"><code>run_post()</code></h2>
+
+<pre><code>    my $results = $plugins-&gt;run_post(
+      &#39;modeling.sirius&#39;, 
+      &#39;ProjectSummary&#39;, 
+      $conf
+    );</code></pre>
+
+<p>Run a specific post plugin on a project.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="http://metacpan.org/module/Mojolicious">Mojolicious</a>, <a href="http://alambic.io">http://alambic.io</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a></p>
+
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

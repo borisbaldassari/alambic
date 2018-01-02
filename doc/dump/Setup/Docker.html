@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+<head>
+    <title>Alambic in Docker - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../Plugins.html">Plugins</a>
+        </li>
+        <li class="active">
+            <a href="../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="Prerequisites.html">Prerequisites</a>
+        </li>
+        <li class="">
+            <a href="Install.html">Install</a>
+        </li>
+        <li class="">
+            <a href="Run.html">Run</a>
+        </li>
+        <li class="">
+            <a href="Upgrade.html">Upgrade</a>
+        </li>
+        <li class="active">
+            <a href="Docker.html">Docker</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Executing Alambic in Docker</h1>
+
+<p>A few Docker images are setup:</p>
+
+<ul>
+<li>A <strong>base image</strong> built from a CentOS 7 (<code>alambic_base_centos</code>) that contains all dependencies: Postgresql, Perl, Mojolicious, R, and all required modules.</li>
+<li>A <strong>test image</strong> <code>image_test</code> built from <code>alambic_base_centos</code> that clones the Alambic repository and executes all tests.</li>
+<li>A <strong>release image</strong> <code>alambic_ci</code> built from <code>alambic_base_centos</code> that provides a complete Alambic ready to use.</li>
+</ul>
+
+<p>The official repository for Alambic images is:</p>
+
+<ul>
+<li><a href="https://hub.docker.com/r/bbaldassari/">https://hub.docker.com/r/bbaldassari/</a></li>
+</ul>
+
+<p>Please note that both test and ci images need a postgresql container to run. A compose file is provided to run the complete setup in one single neat command.</p>
+
+<h2>Running Alambic using compose</h2>
+
+<p>You can execute Alambic in a single command line, thanks to docker compose. The <code>docker-compose.run.yml</code> file at the root of the repository provides an integrated environment that uses the official docker <code>postgresql:9.5</code> and <code>bbaldassari/alambic</code> images, runs an init script and sets the application up for use.</p>
+
+<p>In the root of the Alambic repository, execute:</p>
+
+<pre><code>$ docker-compose -f docker-compose.run.yml up
+</code></pre>
+
+<p>Then head up to <a href="http://localhost:3000">http://localhost:3000</a> and play with Alambic. Default login/password is <code>administrator</code>/<code>password</code>. Note that in some (docker corner) cases one needs to identify the container's network interface, e.g. <a href="http://172.19.0.3:3000">http://172.19.0.3:3000</a>.</p>
+
+<h2>Running Alambic tests using compose</h2>
+
+<p>The <code>docker-compose.test.yml</code> file at the root of the repository provides an integrated environment that uses the official docker <code>postgresql:9.5</code> image, runs all perl tests and outputs the result of <a href="http://search.cpan.org/~leont/Test-Harness/lib/Test/Harness.pm">Test::Harness</a>.</p>
+
+<p>In the root of the Alambic repository, execute:</p>
+
+<pre><code>$ docker-compose -f docker-compose.test.yml run alambic_test
+</code></pre>
+
+<h2>Using Docker volumes</h2>
+
+<p>The test and CI Docker images both export a set of volumes:</p>
+
+<ul>
+<li>alambic_db is the directory of the PostgreSQL cluster</li>
+<li>alambic_fs is the directory of the Alambic code itself. It also contains file-system visualisations and data files for all analysed projects.</li>
+</ul>
+
+<p>These volumes can easily be identified using the <code>docker volumes list</code> command:</p>
+
+<pre><code>$ docker volume list
+DRIVER              VOLUME NAME
+local               alambic_db
+local               alambic_fs
+</code></pre>
+
+<p>Volumes can be directly accessed on the host filesystem, usually in the docker lib directory: <code>/var/lib/docker/volumes/</code>.</p>
+
+<p>When run without the compose file, the docker image can be started with a volume using the following command:</p>
+
+<pre><code>docker run -P --network=bbalambic_default --mount \
+  source=alambic_fs,target=/home/alambic \
+  bbaldassari/alambic_ci
+</code></pre>
+
+<h1>Building Docker images</h1>
+
+<h2>Building the base image</h2>
+
+<p>The base image is continuously built on codefresh, and pushed to the docker hub at</p>
+
+<ul>
+<li><a href="https://hub.docker.com/r/bbaldassari/alambic_base_centos/">https://hub.docker.com/r/bbaldassari/alambic_base_centos/</a></li>
+</ul>
+
+<p>In the <code>$AL_HOME/docker/image_base_centos directory</code>, execute:</p>
+
+<pre><code>$ docker build -t bbaldassari/alambic_base_centos -f Dockerfile .
+</code></pre>
+
+<p>It creates a Centos docker image, with:</p>
+
+<ul>
+<li>Postgresql 9.5 (client),</li>
+<li>Perlbrew, Perl, Mojolicious and all required modules,</li>
+<li>The latest release of R and all required packages.</li>
+</ul>
+
+<p>You can also get the image directly from docker hub with the docker cli, like this:</p>
+
+<pre><code>docker pull bbaldassari/alambic_base_centos
+</code></pre>
+
+<h2>Building the latest Alambic test image</h2>
+
+<p>The test image is continuously built on codefresh, and pushed to the docker hub:</p>
+
+<ul>
+<li><a href="https://hub.docker.com/r/bbaldassari/alambic_test">https://hub.docker.com/r/bbaldassari/alambic_test</a></li>
+</ul>
+
+<p>In the <code>$AL_HOME/docker/image_test</code> directory, execute:</p>
+
+<pre><code>$ docker build -t bbaldassari/alambic_test -f Dockerfile .
+</code></pre>
+
+<p>It creates an image called <code>bbaldassari/alambic_test</code> with Alambic installed and ready for test.</p>
+
+<p>You can also get individually from docker like this:</p>
+
+<pre><code>docker pull bbaldassari/alambic_test
+</code></pre>
+
+<h2>Building the latest Alambic CI image</h2>
+
+<p>The ci image is continuously built on codefresh, and pushed to the docker hub:</p>
+
+<ul>
+<li><a href="https://hub.docker.com/r/bbaldassari/alambic_ci">https://hub.docker.com/r/bbaldassari/alambic_ci</a></li>
+</ul>
+
+<p>In the <code>$AL_HOME/docker/image_ci</code> directory, execute:</p>
+
+<pre><code>$ docker build -t bbaldassari/alambic_ci -f Dockerfile .
+</code></pre>
+
+<p>It creates an image called <code>bbaldassari/alambic_ci</code> with Alambic installed and ready for test.</p>
+
+<p>You can also get individually from docker like this:</p>
+
+<pre><code>$ docker pull bbaldassari/alambic_ci
+</code></pre>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

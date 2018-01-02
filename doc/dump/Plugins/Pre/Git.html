@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+<head>
+    <title>Git - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="../Pre.html">Pre</a>
+        </li>
+        <li class="">
+            <a href="../Post.html">Post</a>
+        </li>
+        <li class="">
+            <a href="../Tools.html">Tools</a>
+        </li>
+        <li class="">
+            <a href="../Wizards.html">Wizards</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="EclipsePmi.html">EclipsePmi</a>
+        </li>
+        <li class="active">
+            <a href="Git.html">Git</a>
+        </li>
+        <li class="">
+            <a href="Hudson.html">Hudson</a>
+        </li>
+        <li class="">
+            <a href="Jira.html">Jira</a>
+        </li>
+        <li class="">
+            <a href="PmdAnalysis.html">PmdAnalysis</a>
+        </li>
+        <li class="">
+            <a href="SonarQube45.html">SonarQube45</a>
+        </li>
+        <li class="">
+            <a href="StackOverflow.html">StackOverflow</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Git</h1>
+
+<p>This plugin retrieves information from a Git repository and runs a basic analysis on its log. It notably displays graphics about commits and authors.</p>
+
+<p>Check the <a href="/perldoc/Alambic/Plugins/Git.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
+
+<hr />
+
+<h1>Basic information</h1>
+
+<ul>
+<li><strong>ID</strong>: Git</li>
+<li><strong>Abilities</strong>: metrics, info, data, recs, viz</li>
+<li><strong>Description</strong>:
+Retrieves configuration management data from a git local repository. This plugin uses the Git Tool in Alambic.</li>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>git_url</code> The URL of the Git repository to analyse. It can be either a https or ssh URL, e.g. https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git.</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h1>Provides</h1>
+
+<h2>Downloads</h2>
+
+<ul>
+<li><code>import_git.txt</code>: The original git log file as retrieved from git (TXT).</li>
+<li><code>git_commits.csv</code>: Evolution of number of commits and authors by day (CSV).</li>
+<li><code>metrics_git.csv</code>: Current metrics for the SCM Git plugin (CSV).</li>
+<li><code>metrics_git.json</code>: Current metrics for the SCM Git plugin (JSON).</li>
+</ul>
+
+<h2>Figures</h2>
+
+<ul>
+<li><code>git_summary.html</code>
+HTML export of Git main metrics.</li>
+<li><code>git_evol_summary.html</code>
+HTML export of Git SCM evolution summary.</li>
+<li><code>git_evol_authors.png</code>
+PNG export of Git SCM authors evolution.</li>
+<li><code>git_evol_authors.svg</code>
+SVG export of Git SCM authors evolution.</li>
+<li><code>git_evol_authors.html</code>
+HTML export of Git authors evolution.</li>
+<li><code>git_evol_commits.png</code>
+PNG export of Git SCM commits evolution.</li>
+<li><code>git_evol_commits.svg</code>
+SVG export of Git SCM commits evolution.</li>
+<li><code>git_evol_commits.html</code>
+HTML export of Git commits evolution.</li>
+</ul>
+
+<h2>Information</h2>
+
+<ul>
+<li>GIT_URL
+The URL of the Git repository used for the analysis.</li>
+</ul>
+
+<h2>Metrics</h2>
+
+<ul>
+<li>SCM_AUTHORS,
+Total number of identities found as authors of commits in source code management repository.</li>
+<li>SCM_AUTHORS_1W
+Total number of identities found as authors of commits in source code management repositories dated during the last week.</li>
+<li>SCM_AUTHORS_1M
+Total number of identities found as authors of commits in source code management repositories dated during the last month.</li>
+<li>SCM_AUTHORS_1Y
+Total number of identities found as authors of commits in source code management repositories dated during the last year.</li>
+<li>SCM_COMMITS,
+Total number of commits in source code management repositories.</li>
+<li>SCM_COMMITS_1W
+Total number of commits in source code management repositories dated during the last week.</li>
+<li>SCM_COMMITS_1M
+Total number of commits in source code management repositories dated during the last month.</li>
+<li>SCM_COMMITS_1Y
+Total number of commits in source code management repositories dated during the last year.</li>
+<li>SCM_COMMITTERS,
+Total number of identities found as authors of commits in source code management repository.</li>
+<li>SCM_COMMITTERS_1W
+Total number of identities found as committers of commits in source code management repositories dated during the last week.</li>
+<li>SCM_COMMITTERS_1M
+Total number of identities found as committers of commits in source code management repositories dated during the last month.</li>
+<li>SCM_COMMITTERS_1Y
+Total number of identities found as committers of commits in source code management repositories dated during the last year.</li>
+<li>SCM_FILES
+Total number of files touched by commits in source code management repositories dated during the last three months.</li>
+</ul>
+
+<h2>Recommendations</h2>
+
+<ul>
+<li>SCM_LOW_ACTIVITY
+Emit a recommendation if there have been less than 12 commits during the last year.</li>
+<li>SCM_ZERO_ACTIVITY
+Emit a recommendation if there has been zero (0) commit during last year.</li>
+<li>SCM_LOW_DIVERSITY
+Emit a recommendation if there have been less than 2 authors during the last year.</li>
+</ul>
+
+<h2>Visualisation</h2>
+
+<ul>
+<li>Git SCM</li>
+</ul>
+
+<hr />
+
+<h1>Screenshot</h1>
+
+<p><img src="/images/git_scm.png" alt="eclipse_git.png" /></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

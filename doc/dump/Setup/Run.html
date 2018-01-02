@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+    <title>Running Alambic - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../Plugins.html">Plugins</a>
+        </li>
+        <li class="active">
+            <a href="../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="Prerequisites.html">Prerequisites</a>
+        </li>
+        <li class="">
+            <a href="Install.html">Install</a>
+        </li>
+        <li class="active">
+            <a href="Run.html">Run</a>
+        </li>
+        <li class="">
+            <a href="Upgrade.html">Upgrade</a>
+        </li>
+        <li class="">
+            <a href="Docker.html">Docker</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Running Alambic</h1>
+
+<h2>Starting the UI</h2>
+
+<h3>For production use</h3>
+
+<p>For production use Hypnotoad is recommended for its prefork ability. Learn more about the <a href="http://mojolicio.us/perldoc/Mojolicious/Guides/Cookbook#Morbo">development and production environments of Mojolicious</a>.</p>
+
+<pre><code>hypnotoad bin/alambic
+</code></pre>
+
+<p>The hypnotoad server can be reloaded by re-executing the same launch command.</p>
+
+<p>It can be stopped gracefully using the -s flag:</p>
+
+<pre><code>hypnotoad -s bin/alambic
+</code></pre>
+
+<p>Note: this is the same as using the prefork command within Alambic:</p>
+
+<pre><code>bin/alambic prefork
+</code></pre>
+
+<h3>For development</h3>
+
+<p>For development, it is easier to use <code>morbo</code>. <a href="http://mojolicious.org/perldoc/morbo">Morbo</a> is Mojolicious' single-thread web server for development. It notably has a auto-reload feature when files change.</p>
+
+<pre><code>morbo bin/alambic
+</code></pre>
+
+<p>Note: this is the same as using the prefork command within Alambic:</p>
+
+<pre><code>bin/alambic daemon
+</code></pre>
+
+<h2>Minion job queueing</h2>
+
+<p>The above commands start the UI daemon, but all long-running operations (e.g. project analyses) use a job queueing system, <a href="http://mojolicious.org/perldoc/Minion">Minion</a>. One needs to start a minion worker to actually do the work:</p>
+
+<pre><code>bin/alambic minion worker
+</code></pre>
+
+<h2>Post tasks</h2>
+
+<p>From there everything can be done from the web interface. The dashboard is served by default on <a href="http://localhost:3010">http://localhost:3010</a> if run under hypnotoad, and <a href="http://localhost:3000">http://localhost:3000</a> if run under morbo. You can go to the Admin Panel and start creating projects, attach data source plugins to them, and run the analysis.</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

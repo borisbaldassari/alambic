@@ -1,3 +1,4 @@
+% use Data::Dumper;
 
             <h1 class="al-h1"><small>Documentation</small> Metrics</h1>
             <br />

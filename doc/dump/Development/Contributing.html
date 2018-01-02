@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+<head>
+    <title>Contributing to Alambic - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../Documentation.html">Documentation</a>
+        </li>
+        <li class="active">
+            <a href="../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="Contributing.html">Contribute</a>
+        </li>
+        <li class="">
+            <a href="Dev_Process.html">Development process</a>
+        </li>
+        <li class="">
+            <a href="Ethics.html">Ethics</a>
+        </li>
+        <li class="">
+            <a href="Releases.html">Releases</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Developing Alambic</h1>
+
+<p>Contributions to Alambic are warmly welcome, and should take place on BitBucket:</p>
+
+<ul>
+<li><a href="https://bitbucket.org/BorisBaldassari/alambic"><i class="fa fa-bitbucket fa-lg"></i> &nbsp; Project Development Home</a></li>
+</ul>
+
+<p>Issues and pull requests will be treated diligently.</p>
+
+<p>GitHub is used for dissemination only, there should be no issue filled there. Pull requests however will be monitored and treated.</p>
+
+<h2>Perldoc</h2>
+
+<p>All Alambic Perl modules have perldoc embedded; the output can be found on this web site (perldoc is updated daily from the code).</p>
+
+<ul>
+<li><a href="/perldoc/index.html">http://alambic.io/perldoc/index.html</a></li>
+</ul>
+
+<h2>Environment</h2>
+
+<p>Mojolicious has a special feature to help developers write code. By executing the <code>morbo</code> command instead of hypnotoad, the application is restarted every time a file is modified. Go to the mojo directory and open a terminal (or command) and type in:</p>
+
+<pre><code>morbo bin/alambic
+</code></pre>
+
+<p>It is still required to run the minion job management system in order to run projects.</p>
+
+<pre><code>bin/alambic minion worker
+</code></pre>
+
+<p>This will start the Mojolicious 'development' server and listen to port 3000, making all file changes instantly available in the running application. Note however that the minion plugin does not provide such a hot-reload mechanism, and the workers need to be restarted to see new changes.</p>
+
+<h2>Conventions</h2>
+
+<p>Alambic follows Mojolicious' style rules for its code. You can check it out here:</p>
+
+<ul>
+<li><a href="http://mojolicious.org/perldoc/Mojolicious/Guides/Contributing">http://mojolicious.org/perldoc/Mojolicious/Guides/Contributing</a></li>
+</ul>
+
+<p>Main points:</p>
+
+<ul>
+<li>Code has to be run through <a href="http://search.cpan.org/~shancock/Perl-Tidy-20170521/">Perl::Tidy</a> with the included <a href="https://bitbucket.org/BorisBaldassari/alambic/src/53e12e36a356dcda1556261c28f4fff2b8281d63/resources/scripts/releng/perltidyrc?at=master">.perltidyrc</a>, and everything should look like it was written by a single person.</li>
+<li>Code shoud come with tests and documentation.</li>
+</ul>
+
+<h2>Testing</h2>
+
+<p>All tests should be placed into the <code>mojo/t/</code> directory, and use the <code>.t</code> extension. This way they are automatically run by Alambic (and the continuous integration system, btw).</p>
+
+<p>To run all Alambic tests, simply execute the Alambic <code>test</code> command:</p>
+
+<pre><code>boris@midkemia mojo $ bin/alambic test
+Running tests from "/home/boris/Projects/bb_alambic/mojo/bin/../t".
+/home/boris/Projects/bb_alambic/mojo/bin/../t/ui/001_basic.t ............. ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/ui/002_documentation.t ..... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/ui/010_admin.t ............. ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/ui/011_auth.t .............. ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Alambic.t ....... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Models.t ........ ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Plugins.t ....... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Project.t ....... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/RepoDB.t ........ ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/RepoFS.t ........ ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Tools.t ......... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Users.t ......... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Model/Wizards.t ....... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Plugins/EclipsePmi.t .. ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Tools/Git.t ........... ok
+/home/boris/Projects/bb_alambic/mojo/bin/../t/unit/Tools/R.t ............. ok
+All tests successful.
+Files=16, Tests=603, 160 wallclock secs ( 0.09 usr  0.05 sys +  9.34 cusr  0.90 csys = 10.38 CPU)
+Result: PASS
+</code></pre>
+
+<p>To execute single tests, use the <code>prove</code> command:</p>
+
+<pre><code>boris@midkemia mojo $ prove -v -l lib t/unit/Model/Models.t
+t/unit/Model/Models.t ..
+ok 1 - use Alambic::Model::Models;
+ok 2 - An object of class 'Alambic::Model::Models' isa 'Alambic::Model::Models'
+ok 3 - Full QM children tree is conform.
+ok 4 - Full QM name is conform.
+ok 5 - Single metric retrieval is ok.
+ok 6 - Metrics retrieved are ok.
+ok 7 - Get full metrics children tree is conform on desc.
+ok 8 - Get full metrics children tree is conform on parents.
+ok 9 - Full metrics name is conform.
+ok 10 - Only one active metric is defined (METRIC1).
+ok 11 - get_metrics_repos is ok: one repository containing 1 metric.
+ok 12 - Single attribute retrieval is ok.
+ok 13 - Attributes retrieved are ok.
+ok 14 - Get full attributes children tree is conform on desc.
+ok 15 - Get full attributes children tree is conform on name.
+ok 16 - Full attributes name is conform.
+ok 17 - Quality model retrieval is ok.
+ok 18 - An object of class 'Alambic::Model::Models' isa 'Alambic::Model::Models'
+ok 19 - Attributes retrieved are ok.
+ok 20 - Single metric retrieved is ok.
+ok 21 - Metrics retrieved are ok.
+1..21
+ok
+All tests successful.
+Files=1, Tests=21,  0 wallclock secs ( 0.01 usr  0.00 sys +  0.03 cusr  0.01 csys =  0.05 CPU)
+Result: PASS
+</code></pre>
+
+<p>Note that you can also use the <code>perl</code> command instead:</p>
+
+<pre><code>boris@midkemia mojo $ perl -I lib t/unit/Model/Models.t
+ok 1 - use Alambic::Model::Models;
+ok 2 - An object of class 'Alambic::Model::Models' isa 'Alambic::Model::Models'
+ok 3 - Full QM children tree is conform.
+ok 4 - Full QM name is conform.
+ok 5 - Single metric retrieval is ok.
+ok 6 - Metrics retrieved are ok.
+ok 7 - Get full metrics children tree is conform on desc.
+ok 8 - Get full metrics children tree is conform on parents.
+ok 9 - Full metrics name is conform.
+ok 10 - Only one active metric is defined (METRIC1).
+ok 11 - get_metrics_repos is ok: one repository containing 1 metric.
+ok 12 - Single attribute retrieval is ok.
+ok 13 - Attributes retrieved are ok.
+ok 14 - Get full attributes children tree is conform on desc.
+ok 15 - Get full attributes children tree is conform on name.
+ok 16 - Full attributes name is conform.
+ok 17 - Quality model retrieval is ok.
+ok 18 - An object of class 'Alambic::Model::Models' isa 'Alambic::Model::Models'
+ok 19 - Attributes retrieved are ok.
+ok 20 - Single metric retrieved is ok.
+ok 21 - Metrics retrieved are ok.
+1..21
+</code></pre>
+
+<p>HTML reports can be generated using <a href="http://search.cpan.org/~spurkis/TAP-Formatter-HTML-0.11/">TAP::Formatter::HTML</a>:</p>
+
+<pre><code>prove -P HTML=outfile:test_output.html,force_inline_css:1,force_inline_js:1 -Ilib -r --timer -Q t/
+</code></pre>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

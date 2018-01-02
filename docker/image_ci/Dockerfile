@@ -8,10 +8,11 @@ EXPOSE 3000
 USER alambic
 
 # Clone Alambic repository
-RUN echo "REBUILD ME now please! vd"
-RUN git clone https://bitbucket.org/BorisBaldassari/alambic.git /home/alambic/alambic
+WORKDIR /home/alambic/alambic/
+COPY . .
 
 USER root
+RUN chown -R alambic:alambic /home/alambic/alambic
 
 # Execute processes
 CMD [ "su", "-", "alambic", "-c", "sh /home/alambic/alambic/docker/image_ci/alambic_init_start.sh"]

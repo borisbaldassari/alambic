@@ -35,7 +35,7 @@ $a
   qr!<a href="/admin/summary"><i class="fa fa-wrench fa-fw" style="color: orange;"></i> Admin panel</a></li>!i,
   'Main page contains the Admin menu entry.'
   )->content_like(
-  qr!<blockquote>Default CLI Init description</blockquote>!i,
+  qr!<blockquote>.*esc.*</blockquote>!i,
   'Main page contains the description blockquote.'
   )->content_like(qr!Projects</div>!i, 'Main page contains projects panel.')
   ->content_like(qr!Documentation</a>!i,
@@ -129,8 +129,6 @@ $a
   'Documentation plugins pre page contains exporting figures section.')
   ->content_like(qr!<h3>Data source plugins</h3>!i,
   'Documentation plugins pre page contains data source plugins section.')
-  ->content_like(qr!<h4 id="EclipseIts">Eclipse ITS</h4>!i,
-  'Documentation plugins pre page contains EclipseIts plugin.')
   ->content_like(qr!<h4 id="Hudson">Hudson CI</h4>!i,
   'Documentation plugins pre page contains Hudson plugin.');
 

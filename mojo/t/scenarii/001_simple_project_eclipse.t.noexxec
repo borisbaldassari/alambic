@@ -1,0 +1,142 @@
+#! perl -I../../lib/
+
+use strict;
+use warnings;
+
+use Test::More;
+use Test::Mojo;
+
+use Data::Dumper;
+
+
+my $t;
+
+# If no database is defined, skip all tests.
+eval { $t = Test::Mojo->new('Alambic'); };
+
+if ($@) {
+  plan skip_all => 'Test irrelevant when no database is defined.';
+}
+
+# Enable redirects (used e.g. for login)
+$t->ua->max_redirects(5);
+
+# Login
+note("Login");
+$t->get_ok('/login')->status_is(200)
+    ->element_exists('input[name=username][type=text]')
+    ->element_exists('input[name=password][type=password]');
+
+my $post_in = {username => 'administrator', password => 'password'};
+my $ret = $t->post_ok('/login' => form => $post_in);
+
+# Import metrics definition
+$t->get_ok('/admin/models/import?file=alambic_metrics_git.json&type=metrics')
+  ->status_is(200, 'Import Git metrics definition is 200.')
+  ->content_like(qr!File alambic_metrics_git.json has been imported!i,
+  'Import metrics definition is ok.')
+  ->content_like(qr!16 metrics defined.!i, 
+		 'Metrics are loaded in models.');
+$t->get_ok('/admin/models/import?file=alambic_metrics_hudson.json&type=metrics')
+  ->status_is(200, 'Import Hudson metrics definition is 200.')
+  ->content_like(qr!File alambic_metrics_hudson.json has been imported!i,
+  'Import metrics definition is ok.')
+  ->content_like(qr!22 metrics defined.!i, 
+		 'Metrics are loaded in models.');
+$t->get_ok('/admin/models/import?file=alambic_metrics_pmi.json&type=metrics')
+  ->status_is(200, 'Import PMI metrics definition is 200.')
+  ->content_like(qr!File alambic_metrics_pmi.json has been imported!i,
+  'Import metrics definition is ok.')
+  ->content_like(qr!27 metrics defined.!i, 
+		 'Metrics are loaded in models.');
+$t->get_ok('/admin/models/import?file=alambic_metrics_so.json&type=metrics')
+  ->status_is(200, 'Import SO metrics definition is 200.')
+  ->content_like(qr!File alambic_metrics_so.json has been imported!i,
+  'Import metrics definition is ok.')
+  ->content_like(qr!33 metrics defined.!i, 
+		 'Metrics are loaded in models.');
+
+# Import attributes definition
+$t->get_ok('/admin/models/import?file=alambic_attributes.json&type=attributes')
+  ->status_is(200, 'Import attributes definition is 200.')
+  ->content_like(qr!File alambic_attributes.json has been imported!i,
+  'Import attributes definition is ok.')
+  ->content_like(qr!20 attributes defined.!i, 
+		 'Attributes are loaded in models.');
+
+# Import quality model definition
+$t->get_ok('/admin/models/import?file=alambic_quality_model.json&type=qm')
+  ->status_is(200, 'Import quality model definition is 200.')
+  ->content_like(qr!File alambic_quality_model.json has been imported!i,
+  'Import quality model definition is ok.')
+  ->content_like(qr!Quality model defined, with \[QM_QUALITY\] at its root.!i, 
+		 'Quality model is loaded in models.');
+
+
+# Add Sirius project
+$post_in = {project_id => 'modeling.sirius'};
+$t->post_ok('/admin/projects/new/EclipsePmi' => form => $post_in)
+    ->content_like(qr!Project \[modeling.sirius\] has been created.!)
+    ->content_like(qr!<dt>Name</dt><dd>Eclipse Sirius</dd>!)
+    ->content_unlike(qr!<li><a href="/projects/modeling.sirius.html">Eclipse Sirius</a></li>!, 
+		     'Sirius is not active.')
+    ->content_like(qr!<td>Eclipse PMI</td><td>EclipsePmi</td>!, 
+		   "EclipsePmi plugin is defined for project.")
+    ->content_like(qr!<td>Git</td><td>Git</td>!, 
+		   "Git plugin is defined for project.")
+    ->content_like(qr!<td>Hudson CI</td><td>Hudson</td>!, 
+		   "Hudson plugin is defined for project.")
+    ->content_like(qr!<td>Project summary</td><td>ProjectSummary</td>!, 
+		   "ProjectSummary plugin is defined for project.");
+
+# Edit git_url in Git plugin
+$post_in = {git_url => 'https://git.eclipse.org/r/sirius/org.eclipse.sirius'};
+$t->post_ok('/admin/projects/modeling.sirius/setp/Git' => form => $post_in)
+    ->content_like(qr!project_pmi: <code>modeling.sirius</code>!,
+		   "Plugin edit has same project_pmi.")
+    ->content_like(qr!git_url: <code>https://git.eclipse.org/r/sirius/org.eclipse.sirius!,
+		   "Plugin edit has changed git_url.")
+    ->content_like(qr!hudson_url: <code>https://hudson.eclipse.org/sirius/</code>!,
+		   "Plugin edit has same hudson_url.");
+
+# Run project full analysis
+$t->get_ok('/admin/projects/modeling.sirius/run')->status_is(200)
+    ->content_like(qr!Project run for modeling.sirius has been enqueued!);
+
+# Now wait for the job to finish.
+while (1) {
+    sleep(10); 
+    note("Waiting..");
+    $ret = $t->ua->get("/admin/jobs")->res->body; print Dumper($ret);
+    last if  ($ret =~ m!<td>run_project</td>\s*<td><i class="fa fa-lg fa-smile-o"></i> &nbsp; finished</td>!);
+}
+
+
+$t->get_ok('/projects/modeling.sirius/metrics.json', "Get the metrics JSON file.")
+    ->json_has('/CI_JOBS', "Metrics has CI_JOBS")
+    ->json_has('/CI_JOBS_GREEN_RATIO', "Metrics has CI_JOBS_GREEN_RATIO")
+    ->json_has('/PMI_DOC_INFO', "Metrics has PMI_DOC_INFO")
+    ->json_has('/PMI_ACCESS_INFO', "Metrics has PMI_ACCESS_INFO")
+    ->json_has('/PMI_SCM_INFO', "Metrics has PMI_SCM_INFO")
+    ->json_has('/SCM_AUTHORS_1Y', "Metrics has SCM_AUTHORS_1Y")
+    ->json_has('/SCM_COMMITS_1M', "Metrics has SCM_COMMITS_1M")
+    ->json_has('/SCM_MOD_LINES_1M', "Metrics has SCM_MOD_LINES_1M");
+    
+
+$t->get_ok('/projects/modeling.sirius/attributes.json', "Get the metrics JSON file.")
+    ->json_has('/QM_ECOSYSTEM', "Attributes has QM_ECOSYSTEM")
+    ->json_has('/QM_ACTIVITY', "Attributes has QM_ACTIVITY")
+    ->json_has('/QM_PROCESS', "Attributes has QM_PROCESS")
+    ->json_hasnt('/QM_RELENG', "Attributes has NOT QM_RELENG");
+
+$t->get_ok('/projects/modeling.sirius/recs.json', "Get the recommendation JSON file.")->status_is(200);
+#    ->json_has('/CI_FAILING_JOBS', "Metrics has CI_FAILING_JOBS")
+#    ->json_has('/./PMI_EMPTY_PLAN', "Recs has PMI_EMPTY_PLAN")
+
+$t->get_ok('/projects/modeling.sirius/info.json', "Get the information JSON file.")
+    ->json_has('/GIT_URL', "Metrics has GIT_URL")
+    ->json_has('/PMI_DESC', "Metrics has PMI_DESC")
+    ->json_has('/PMI_DOWNLOAD_URL', "Metrics has PMI_DOWNLOAD_URL")
+    ->json_has('/PMI_TITLE', "Metrics has PMI_TITLE");
+
+done_testing();

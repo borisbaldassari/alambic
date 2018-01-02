@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+    <title>Quality Model - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="../Basics.html">Basics</a>
+        </li>
+        <li class="">
+            <a href="../Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="../Admins.html">Admins</a>
+        </li>
+        <li class="">
+            <a href="../Tasks.html">AdminTasks</a>
+        </li>
+        <li class="">
+            <a href="../Research.html">Research</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="Terminology.html">Terminology</a>
+        </li>
+        <li class="active">
+            <a href="QualityModel.html">QualityModel</a>
+        </li>
+        <li class="">
+            <a href="Exports.html">Exports</a>
+        </li>
+        <li class="">
+            <a href="Dashboards.html">Dashboards</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>The Alambic quality model</h1>
+
+<p>One of the first things to setup when considering to use Alambic is the <strong>quality model</strong>.</p>
+
+<p>In a nutshell, the quality model states <strong>what</strong> is important to you (<em>your</em> definition of quality, in this very context) and <strong>how</strong> to measure it. It makes the link between the quality attributes and the metrics gathered or computed by Alambic.</p>
+
+<p><strong>Note</strong>
+See the definition of quality attributes, indicators, metrics and scales in the <a href="/Documentation/Basics/Terminology.html">Terminology section</a>.</p>
+
+<h2>Structure</h2>
+
+<p>The quality model is defined as a tree structure. The main quality attribute (at the root of the tree) is the main rating for the project (e.g. Project's Quality or Maturity). Each attribute is computed from its children, up to the leaves of the tree: the metrics retrieved or computed by Alambic.</p>
+
+<p>As an example, let's say we want to check the <em>activity</em> of our <em>ecosystem</em>. We decide to measure it through a set of metrics retrieved from mailing lists, forums and configuration management (git):</p>
+
+<p><img src="/images/basic_quality_model.png" alt="quality_model.png" /></p>
+
+<p>When the project is analysed, <strong>metrics</strong> are populated, converted to <strong>indicators</strong> using <strong>scales</strong>, and aggregated up to the root of the quality model.</p>
+
+<h2>Aggregating values</h2>
+
+<p>So from top to bottom the chain looks like:</p>
+
+<ul>
+<li>Quality attribute <strong>Ecosystem</strong> is subdivided into:
+<ul>
+<li>Quality attribute <strong>Activity</strong> which is measured through:
+<ul>
+<li>Number of emails on the Dev ML (say during one week)</li>
+<li>Number of messages on the User forums (say during one week)</li>
+<li>Number of commits (say during one week)</li>
+<li>Number of committed files (say during one week)</li>
+</ul></li>
+<li>Quality attribute <strong>Diversity</strong></li>
+<li>Quality attribute <strong>Responsiveness</strong></li>
+</ul></li>
+</ul>
+
+<p>On the other hand from the bottom up <strong>measures</strong> are converted to <strong>indicators</strong> using a 4-thresholds <strong>scale</strong>. Indicators are then <strong>aggregated</strong> up from the leaves to the root of the quality model tree. As an example:</p>
+
+<ul>
+<li>Metric 'Number of commits' has value <code>56</code> and a scale such as <code>[5,10,50,100]</code> => Indicator 'Number of commits' has value 4 out of 5</li>
+<li>Metric 'Number of commmitted files' has value <code>13</code> and a scale such as <code>[5,10,50,100]</code> => Indicator 'Number of committed files' has value 3 out of 5</li>
+<li>Metric 'Number of emails' has value <code>24</code> and a scale such as <code>[5,10,25,50]</code> => Indicator 'Number of emails' has value 3 out of 5</li>
+<li>Metric 'Number of messages' has value <code>7</code> and a scale such as <code>[5,10,25,50]</code> => Indicator 'Number of messages' has value 2 out of 5</li>
+</ul>
+
+<p>The Activity's value is the average of all its children, which is in this case 3 out of 5. Other attributes are computed the same way, and values are aggregated up to the root of the quality model.</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

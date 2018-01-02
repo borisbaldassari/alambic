@@ -19,9 +19,9 @@
                 <label for="id" class="control-label col-xs-2">Project ID</label>
                 <div class="col-xs-10">
 % if (defined($project_id)) {
-                  <input type="text" class="form-control" name="id" value="<%= $project_id %>" readonly>
+                  <input type="text" class="form-control" name="id" value="<%= $project_id %>" readonly />
 % } else {
-                  <input type="text" class="form-control" name="id">
+                  <input type="text" class="form-control" name="id" />
 % }
                 </div>
               </div>
@@ -29,7 +29,7 @@
               <div class="form-group">
                 <label for="name" class="control-label col-xs-2">Name</label>
                 <div class="col-xs-10">
-                  <input type="text" class="form-control" name="name" id="name" value="<%= $project_name %>">
+                  <input type="text" class="form-control" name="name" id="name" value="<%= $project_name %>" />
                 </div>
               </div>
 
@@ -43,17 +43,15 @@
               <div class="form-group">
                 <label for="is_active" class="control-label col-xs-2">Active</label>
                 <div class="col-xs-10">
-                  <div class="input-group">
 % my $is_active = $project_active ? " checked" : "";
-                      <input type="checkbox" class="form-control" name="is_active"<%= $is_active %>>
-                  </div>
+                  <input type="checkbox" name="is_active"<%= $is_active %> />
                 </div>
               </div>
 
               <br />
               <div class="form-group">
                 <div class="col-xs-offset-2 col-xs-10">
-                  <input class="btn btn-primary" type="submit" value="Save">
+                  <input class="btn btn-primary" type="submit" value="Save" />
                   <input class="btn btn-default" type="button" value="Cancel" onclick="history.go(-1);" />
                 </div>
               </div>

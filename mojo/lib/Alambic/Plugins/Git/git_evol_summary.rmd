@@ -1,0 +1,39 @@
+---
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and Thales Group.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+output: html_document
+---
+<div class="row"><div class="col-md-12">
+```{r init, echo=FALSE, fig.height=3, message=FALSE, warning=FALSE}
+library(plotly)
+library(reshape2)
+
+#project.id <- 'modeling.gendoc'
+file.evol = paste("", project.id, "_git_commits.csv", sep="")
+evol <- read.csv(file=file.evol, header=T)
+evol[is.na(evol)] <- 0
+evol <- evol[cumsum(abs(evol$commits + evol$authors)) != 0 & complete.cases(evol),]
+
+evol.i <- data.frame(seq(1:nrow(evol)), evol[,c('date','commits', 'authors')])
+names(evol.i)[1] <- 'index'
+
+p <- plot_ly(data=evol.i, x=~index, y=~commits, text= ~paste('Date: ', date), 
+		name="Commits", type='scatter', mode='lines', width=800, height=350)  %>% 
+	  add_trace(y=~authors, name='Authors', mode='lines') %>% 
+    layout(autosize = F,
+		yaxis = list( title = "Value" ))
+p
+```
+</div></div>

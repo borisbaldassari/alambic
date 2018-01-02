@@ -1,14 +1,14 @@
 alambic_base_centos_build:
   build:
     image: bbaldassari/alambic_base_centos
-    path: docker/image_base_centos/
-    dockerfile: Dockerfile
+    path: ./
+    dockerfile: docker/image_base_centos/Dockerfile
 
 alambic_test_build:
   build:
     image: bbaldassari/alambic_test
-    path: docker/image_test/
-    dockerfile: Dockerfile
+    path: ./
+    dockerfile: docker/image_test/Dockerfile
   links:
       - postgres
 

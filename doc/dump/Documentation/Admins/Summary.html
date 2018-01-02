@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+    <title>Admin &gt; Summary - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="active">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Basics.html">Basics</a>
+        </li>
+        <li class="">
+            <a href="../Users.html">Users</a>
+        </li>
+        <li class="active">
+            <a href="../Admins.html">Admins</a>
+        </li>
+        <li class="">
+            <a href="../Tasks.html">AdminTasks</a>
+        </li>
+        <li class="">
+            <a href="../Research.html">Research</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="active">
+            <a href="Summary.html">Summary</a>
+        </li>
+        <li class="">
+            <a href="Database.html">Database</a>
+        </li>
+        <li class="">
+            <a href="Models.html">Models</a>
+        </li>
+        <li class="">
+            <a href="Jobs.html">Jobs</a>
+        </li>
+        <li class="">
+            <a href="Projects.html">Projects</a>
+        </li>
+        <li class="">
+            <a href="Users.html">Users</a>
+        </li>
+        <li class="">
+            <a href="Tools.html">Tools</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Admin > Summary</h1>
+
+<p><img src="/images/admins_summary.png" alt="Alambic Admin Web UI" /></p>
+
+<h2>Instance information</h2>
+
+<p>Every instance has to set some parameters:</p>
+
+<ul>
+<li><strong>Name</strong>: the name of this very instance, is displayed in the title, on the top left corner, and on the main page.</li>
+<li><strong>Description</strong>: a text describing why this setup was installed, and a bit of context for people to better understand what is done here. Description is displayed on the main page of the instance.</li>
+<li><strong>Google tracking code</strong>: a google analytics tracking code that will be inserted in all generated pages. If no code is provided then the tracking mechanism is disabled (and the script is not integrated into the generated pages).</li>
+</ul>
+
+<h2>Databases</h2>
+
+<p>Details about the PostgreSQL databases defined for the instance -- check the <a href="/Documentation/Admins/Database.html">Database page</a> to know more about databases.</p>
+
+<p>The icon on the left of the postgresql URLs indicates if the connection could be established.</p>
+
+<h2>Models</h2>
+
+<p>Show the number of metrics and attributes defined in the instance, and the name of the quality model.</p>
+
+<h2>Projects</h2>
+
+<p>The list of projects defined on the host, with links to:</p>
+
+<ul>
+<li>the project's page,</li>
+<li>run a full analysis on the project,</li>
+<li>delete projects.</li>
+</ul>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

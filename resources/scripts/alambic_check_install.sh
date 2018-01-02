@@ -1,10 +1,24 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 
 # Return code:
 #  * 0 if ok
 #  * 1 if dependencies not met
 
 
-PB_V=5.24
+PB_V=5.26.1
 VERSION=3.2-dev
 LOG=alambic_install.log
 
@@ -36,7 +50,7 @@ _check_prerequisite() {
 echo "# Checking system prerequisites."
 echo "# Checking system prerequisites." >> $LOG
 # Not debian: libcurl-devel perl-CPAN libxml2-devel openssl-devel
-CMDS="wget passwd gcc make bzip2 git openssl"
+CMDS="wget passwd gcc make bzip2 git openssl pandoc"
 for c in `echo $CMDS | tr ' ' '\n'`; do
     _check_prerequisite $c;
 done
@@ -67,7 +81,10 @@ fi
 # Using perlbrew, install cpanm, recent version of perl, and all modules
 
 # Get last perl version from 5.24 series
-PB_V=`perlbrew list | grep  " perl-$PB_V" | cut -d- -f2`
+PB_V_R=`perlbrew list | grep  " perl-$PB_V" | cut -d- -f2`
+
+echo "# Identifying available perls: found [$PB_V_R]."
+echo "# Identifying available perls: found [$PB_V_R]." >> $LOG
 
 # Checking if cpanm is installed
 printf "  * Checking if cpanm is installed..."
@@ -91,21 +108,21 @@ perl --version | grep $PB_V > /dev/null
 if [ $? -ne 0 ]; then
     echo " Nope.\n  * Installing cpanm and perl $PB_V."
     echo " Nope.\n  * Installing cpanm and perl $PB_V." >> $LOG
-    perlbrew --notest install perl-$PB_V
+    perlbrew --notest install perl-$PB_V_R
 else
     echo " OK."
     echo " OK." >> $LOG
 fi
 
 
-
 # Checking if all modules are installed
-perlbrew use perl-$PB_V
+perlbrew switch perl-$PB_V
+#perlbrew switch perl-$PB_V_R
 
 echo "# Installing perl modules.."
 echo "# Installing perl modules.." >> $LOG
 POSTGRES_HOME=/usr/pgsql-9.5
-cpanm Crypt::PBKDF2 Date::Parse DateTime File::chdir File::Basename File::Copy File::Path File::stat List::Util List::MoreUtils Minion Mojolicious Mojo::JSON Mojo::UserAgent Mojo::Pg XML::LibXML Text::CSV Time::localtime Mojolicious::Plugin::Mail Test::More Test::Perl::Critic Net::IDN::Encode IO::Socket::SSL Git::Repository JIRA::REST >> $LOG
+cpanm Sub::Identify DBI DBD::Pg inc::Module::Install Digest::MD5 Crypt::PBKDF2 Date::Parse DateTime File::chdir File::Basename File::Copy File::Path File::stat List::Util List::MoreUtils Minion Mojolicious Mojo::JSON Mojo::UserAgent Mojo::Pg XML::LibXML Text::CSV Time::localtime Mojolicious::Plugin::Mail Test::More Test::Perl::Critic Net::IDN::Encode IO::Socket::SSL Git::Repository JIRA::REST Mojolicious::Plugin::InstallablePaths Pod::ProjectDocs GitLab::API:v3 Moose HTML::Entities Template >> $LOG
 if [ $? -eq 0 ]; then
     echo "# Perl modules installed"
     echo "# Perl modules installed" >> $LOG

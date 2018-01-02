@@ -1,5 +1,5 @@
 
-% my @all_jobs = sort { $b->{'id'} <=> $a->{'id'} } @{app->minion->backend->list_jobs};
+% my @all_jobs = sort { $b->{'id'} <=> $a->{'id'} } @{app->minion->backend->list_jobs->{'jobs'}};
 % my @project_jobs = grep {
 %    $_->{'task'} eq 'run_project' && $_->{'args'}[0] eq $project_id && $_->{'state'} eq 'finished'
 %   } @all_jobs;

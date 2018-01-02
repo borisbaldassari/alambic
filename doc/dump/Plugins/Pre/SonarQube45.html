@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+<head>
+    <title>SonarQube 4.5.x - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="../Pre.html">Pre</a>
+        </li>
+        <li class="">
+            <a href="../Post.html">Post</a>
+        </li>
+        <li class="">
+            <a href="../Tools.html">Tools</a>
+        </li>
+        <li class="">
+            <a href="../Wizards.html">Wizards</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="EclipsePmi.html">EclipsePmi</a>
+        </li>
+        <li class="">
+            <a href="Git.html">Git</a>
+        </li>
+        <li class="">
+            <a href="Hudson.html">Hudson</a>
+        </li>
+        <li class="">
+            <a href="Jira.html">Jira</a>
+        </li>
+        <li class="">
+            <a href="PmdAnalysis.html">PmdAnalysis</a>
+        </li>
+        <li class="active">
+            <a href="SonarQube45.html">SonarQube45</a>
+        </li>
+        <li class="">
+            <a href="StackOverflow.html">StackOverflow</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>SonarQube 4.5.x</h1>
+
+<h1>Purpose</h1>
+
+<p>This plugin retrieves information from a <a href="">SonarQube 4.5.x instance</a>.</p>
+
+<p>Please note that SonarQube changes its API at a unusual high rate. As a consequence different versions of SonarQube may not work with this plugin.</p>
+
+<p>Check the <a href="/perldoc/Alambic/Plugins/SonarQube.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
+
+<hr />
+
+<h1>Basic information</h1>
+
+<ul>
+<li><strong>ID</strong>: SonarQube45</li>
+<li><strong>Abilities</strong>:   metrics   info data    figs   viz</li>
+<li><strong>Description</strong>:
+Retrieves information from a SonarQube 4.5.x instance (i.e. metrics and violations), and visualises them.",
+Check the documentation for this plugin on the project wiki: <a href="http://alambic.io/Plugins/Pre/SonarQube45.html">http://alambic.io/Plugins/Pre/SonarQube45.html</a>.</li>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>sonar_url</code> The base URL of the SonarQube 4.5.x instance.</li>
+<li><code>sonar_project</code> The ID of the project within the SonarQube instance.</li>
+<li><code>proxy</code> If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h1>Provides</h1>
+
+<h2>Information</h2>
+
+<ul>
+<li>SQ_URL
+The URL of the project within the SonarQube instance.</li>
+</ul>
+
+<h2>Metrics</h2>
+
+<ul>
+<li>SQ_NCLOC
+Number of physical lines that contain at least one character which is neither a whitespace or a tabulation or part of a comment.
+For Cobol, generated lines of code and pre-processing instructions (SKIP1, SKIP2, SKIP3, COPY, EJECT, REPLACE) are not counted as lines of code.</li>
+<li>SQ_FILES
+The total number of files analysed.</li>
+<li>SQ_FUNCS
+Number of functions. Depending on the language, a function is either a function or a method or a paragraph.
+For Java, constructors are considered as methods and accessors are considered as methods if the sonar.squid.analyse.property.accessors property is set to false.
+For Cobol, it is the number of paragraphs.</li>
+<li>SQ_STATEMENTS
+Number of statements.
+For Java, it is the number of statements as defined in the Java Language Specification but without block definitions. Statements counter gets incremented by one each time a following keyword is encountered: <code>if, else, while, do, for, switch, break, continue, return, throw, synchronized, catch, finally</code>.
+Statements counter is not incremented by a class, method, field, annotation definition, package declaration and import declaration.
+For Cobol, a statement is one of <code>move, if, accept, add, alter, call, cancel, close, compute, continue, delete, display, divide, entry, evaluate, exitProgram, goback, goto, initialize, inspect, merge, multiply, open, perform, read, release, return, rewrite, search, set, sort, start, stop, string, subtract, unstring, write, exec, ibmXmlParse, ibmXmlGenerate, readyReset, mfCommit, mfRollback</code>.</li>
+<li>SQ_COMMENT_LINES
+Number of lines containing either comment or commented-out code.
+Non-significant comment lines (empty comment lines, comment lines containing only special characters, etc.) do not increase the number of comment lines.
+For Java, file headers are not counted as comment lines (as they usually define the license).
+Lines containing the following instructions are counted both as comments and lines of code: AUTHOR, INSTALLATION, DATE-COMPILED, DATE-WRITTEN, SECURITY.</li>
+<li>SQ_COMR
+Density of comment lines = Comment lines / (Lines of code + Comment lines) * 100.
+With such a formula, 50% means that the number of lines of code equals the number of comment lines and 100% means that the file only contains comment lines</li>
+<li>SQ_CPX
+It is the complexity calculated based on the number of paths through the code. Whenever the control flow of a function splits, the complexity counter gets incremented by one. Each function has a minimum complexity of 1. This calculation varies slightly by language because keywords and functionalities do.
+For more information on line counting for each language, see <a href="https://docs.sonarqube.org/display/SONAR/Metrics+-+Complexity">https://docs.sonarqube.org/display/SONAR/Metrics+-+Complexity</a>.</li>
+<li>SQ_CPX_FILE_IDX
+Average complexity by file.</li>
+<li>SQ_CPX_CLASS_IDX</li>
+<li>SQ_CPX_FUNC_IDX</li>
+<li>SQ_COVERAGE
+Overall test coverage.</li>
+<li>SQ_PUBLIC_API
+Number of public Classes + number of public Functions + number of public Properties</li>
+<li>SQ_PUBLIC_API_DOC_DENSITY
+Density of public documented API = (Public API - Public undocumented API) / Public API * 100</li>
+<li>SQ_PUBLIC_UNDOC_API</li>
+<li>SQ_FILES_CYCLES</li>
+<li>SQ_PACKAGES_CYCLES</li>
+<li>SQ_PACKAGES_TANGLE_IDX</li>
+<li>SQ_COM_CODE
+Commented lines of code
+See more information about commented code on the <a href="https://blog.sonarsource.com/commented-out-code-eradication-with-sonar/">SonarQube doc web site</a>. There is a well-documented debate on <a href="http://softwareengineering.stackexchange.com/questions/190096/can-commented-out-code-be-valuable-documentation">Stack Overflow</a> as well.</li>
+<li>SQ_TESTS</li>
+<li>SQ_TEST_SUCCESSFUL_DENSITY</li>
+<li>SQ_COVERAGE_LINE
+Line test coverage.</li>
+<li>SQ_COVERAGE_BRANCH
+Branch test coverage.</li>
+<li><p>SQ_DUPLICATED_LINES</p></li>
+<li><p>SQ_DUPLICATED_BLOCKS</p></li>
+<li><p>SQ_DUPLICATED_FILES</p></li>
+<li><p>SQ_DUPLICATED_LINES_DENSITY</p></li>
+<li><p>SQ_VIOLATIONS</p></li>
+<li><p>SQ_VIOLATIONS_BLOCKER
+The total number of issues (violations) found by SonarQube with a severity equal to BLOCKER.</p></li>
+<li>SQ_VIOLATIONS_CRITICAL
+The total number of issues (violations) found by SonarQube with a severity equal to CRITICAL.</li>
+<li>SQ_VIOLATIONS_MAJOR
+The total number of issues (violations) found by SonarQube with a severity equal to MAJOR.</li>
+<li>SQ_VIOLATIONS_MINOR
+The total number of issues (violations) found by SonarQube with a severity equal to MINOR.</li>
+<li>SQ_VIOLATIONS_INFO
+The total number of issues (violations) found by SonarQube with a severity equal to INFO.</li>
+<li><p>SQ_ISSUES_OPEN</p></li>
+<li><p>SQ_ISSUES_UNREVIEWED</p></li>
+</ul>
+
+<h2>Figures</h2>
+
+<ul>
+<li>sonarqube_violations_bar.svg
+Repartition of violations severity (SVG)</li>
+<li>sonarqube_violations_pie.html
+Pie chart of repartition of violations severity (HTML)</li>
+<li>sonarqube_summary.html
+Summary of main SonarQube metrics (HTML)</li>
+<li>sonarqube_violations.html
+Summary of SonarQube violations (HTML)</li>
+</ul>
+
+<h2>Downloads</h2>
+
+<ul>
+<li>import_sq_issues_blocker.json: The original list of blocker issues as sent out by SonarQube (JSON).</li>
+<li>import_sq_issues_critical.json: The original list of critical issues as sent out by SonarQube (JSON).</li>
+<li>import_sq_issues_major.json: The original list of major issues as sent out by SonarQube (JSON).</li>
+<li>sq_issues_blocker.csv: A list of all blocker issues for the project (CSV).</li>
+<li>sq_issues_critical.csv: A list of all critical issues for the project (CSV).</li>
+<li>sq_issues_major.csv: A list of all major issues for the project (CSV).</li>
+<li>sq_metrics.csv: A list of all metrics with their values (CSV).</li>
+</ul>
+
+<h2>Recommendations</h2>
+
+<h2>Visualisation</h2>
+
+<p>SonarQube</p>
+
+<hr />
+
+<h1>Screenshot</h1>
+
+<p><img src="/images/sonarqube_45.png" alt="sonarqube.png" /></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+    <title>Stack Overflow - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="../Pre.html">Pre</a>
+        </li>
+        <li class="">
+            <a href="../Post.html">Post</a>
+        </li>
+        <li class="">
+            <a href="../Tools.html">Tools</a>
+        </li>
+        <li class="">
+            <a href="../Wizards.html">Wizards</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="EclipsePmi.html">EclipsePmi</a>
+        </li>
+        <li class="">
+            <a href="Git.html">Git</a>
+        </li>
+        <li class="">
+            <a href="Hudson.html">Hudson</a>
+        </li>
+        <li class="">
+            <a href="Jira.html">Jira</a>
+        </li>
+        <li class="">
+            <a href="PmdAnalysis.html">PmdAnalysis</a>
+        </li>
+        <li class="">
+            <a href="SonarQube45.html">SonarQube45</a>
+        </li>
+        <li class="active">
+            <a href="StackOverflow.html">StackOverflow</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Stack Overflow</h1>
+
+<p>The Stack Overflow plugin retrieves <a href="https://stackoverflow.com">Stack Overflow</a> questions and answers related to the project tag, and provides a summary, a list of hot questions and recommendations to ensure a fine support to users on the web site.</p>
+
+<p>Check the <a href="/perldoc/Alambic/Plugins/StackOverflow.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
+
+<hr />
+
+<h1>Basic information</h1>
+
+<ul>
+<li><strong>ID</strong>: StackOverflow</li>
+<li><strong>Abilities</strong>: metrics, figs, recs, viz</li>
+<li><strong>Description</strong>:
+Retrieves questions and answers related to a specific tag from the Stack Overflow question/answer web site.</li>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>so_keyword</code> A Stack Overflow tag to retrieve questions from.</li>
+<li><code>proxy</code> If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h1>Provides</h1>
+
+<h2>Metrics</h2>
+
+<ul>
+<li>SO_QUESTIONS_VOL_5Y</li>
+<li>SO_ANSWERS_VOL_5Y</li>
+<li>SO_ANSWER_RATE_5Y</li>
+<li>SO_VOTES_VOL_5Y</li>
+<li>SO_VIEWS_VOL_5Y</li>
+<li>SO_ASKERS_5Y</li>
+</ul>
+
+<h2>Figures</h2>
+
+<ul>
+<li>hudson_pie.html A pie chart of the status of jobs.</li>
+</ul>
+
+<h2>Recommendations</h2>
+
+<ul>
+<li>SO_IMPROVE_SUPPORT</li>
+<li>SO_WATCH_QUESTION</li>
+</ul>
+
+<h2>Visualisation</h2>
+
+<ul>
+<li>Stack Overflow</li>
+</ul>
+
+<hr />
+
+<p>Notes:</p>
+
+<ul>
+<li>The queried time range spans the last 5 years.</li>
+<li>The Stack Overflow API uses daily quotas. Default is 300. If the Alambic instance exceeds this volume a OAuth-based setup is required.</li>
+</ul>
+
+<p>Dependencies:</p>
+
+<p>This plugin requires for execution a working R environment, and the following packages:</p>
+
+<ul>
+<li>ggplot2</li>
+<li>snowballC</li>
+<li>wordcloud</li>
+<li>tm</li>
+<li>xtable</li>
+<li>xts</li>
+</ul>
+
+<hr />
+
+<h1>Screenshot</h1>
+
+<p><img src="/images/Capture%20du%202016-09-26%2011-41-16.png" alt="Capture du 2016-09-26 11-41-16.png" /></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

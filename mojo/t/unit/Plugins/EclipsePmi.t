@@ -1,4 +1,18 @@
 #! perl -I../../lib/
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 
 use strict;
 use warnings;
@@ -197,6 +211,11 @@ is(
 ) or diag explain $ret;
 is(
   $ret->{'log'}[0],
+  '[Plugins::EclipsePmi] No proxy defined [].',
+  "Checking first line of log."
+) or diag explain $ret;
+is(
+  $ret->{'log'}[1],
   '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].',
   "Checking first line of log."
 ) or diag explain $ret;

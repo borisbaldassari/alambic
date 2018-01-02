@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+<head>
+    <title>Alambic Releases - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../About.html">About</a>
+        </li>
+        <li class="">
+            <a href="../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../Documentation.html">Documentation</a>
+        </li>
+        <li class="active">
+            <a href="../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="Contributing.html">Contribute</a>
+        </li>
+        <li class="">
+            <a href="Dev_Process.html">Development process</a>
+        </li>
+        <li class="">
+            <a href="Ethics.html">Ethics</a>
+        </li>
+        <li class="active">
+            <a href="Releases.html">Releases</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Alambic releases</h1>
+
+<h2>Alambic 3.3.3</h2>
+
+<p>Date: 2017-12-05</p>
+
+<p>Changelog:</p>
+
+<ul>
+<li>Minor <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?milestone=Alambic+3.3.3">bug fixes</a>.</li>
+<li>New <a href="https://alambic.io/Documentation/Admins/Projects.html">Proxy feature</a> for all plugins, contributed by <a href="https://www.thalesgroup.com">Thales Group</a>.</li>
+<li>Support for <a href="http://mojolicious.org/perldoc/Minion">Mojo::Minion</a> 8 new API.</li>
+<li>Updated documentation, available on <a href="https://alambic.io">https://alambic.io</a>.</li>
+</ul>
+
+<p>If one intends to run Alambic with a recent version of Minion (>= 8), then this release (or greater) is needed.</p>
+
+<h2>Alambic 3.3.2</h2>
+
+<p>Date: 2017-09-15</p>
+
+<p>Changelog:</p>
+
+<ul>
+<li>Minor <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?milestone=Alambic+3.3.2">bug fixes</a>.</li>
+<li>New <a href="/Plugins/Pre/Jira.html">Jira plugin</a>, contributed by <a href="https://www.thalesgroup.com">Thales Group</a>.</li>
+<li>New <a href="/Plugins/Pre/Git.html">Git plugin</a>, contributed by <a href="https://www.thalesgroup.com">Thales Group</a>.</li>
+<li>New <a href="/Plugins/Pre/SonarQube45.html">SonarQube 4.5.x plugin</a>, contributed by <a href="https://www.thalesgroup.com">Thales Group</a>.</li>
+<li>New <a href="/Plugins/Post/GenericR.html">Generic R plugin</a> for better <a href="/Documentation/Research.html">reproducible research</a>.</li>
+</ul>
+
+<h2>Alambic 3.3.1</h2>
+
+<p>Date: 2017-04-22</p>
+
+<p>Changelog:</p>
+
+<ul>
+<li>Security fix.</li>
+<li>Minor <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?milestone=Alambic+3.3.1">bug fixes</a>.</li>
+</ul>
+
+<h2>Alambic 3.3</h2>
+
+<p>Date: 2017-04-17</p>
+
+<p>Changelog:</p>
+
+<ul>
+<li>Various <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?kind=bug&amp;milestone=Alambic+3.3">bug fixes</a>.</li>
+<li>More tests, documentation, reliability and usability improvements.</li>
+<li>Continuous integration through codeship and codefresh.</li>
+<li>Improved install process to easily setup Alambic. The docker image is still up-to-date!</li>
+<li>A new plugin for sharing: ProjectSummary.</li>
+</ul>
+
+<h2>Alambic 3.2</h2>
+
+<p>Date: 2016-12-31</p>
+
+<p>Changelog:</p>
+
+<ul>
+<li>Various <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?kind=bug&amp;milestone=Alambic+3.2">bug fixes</a>.</li>
+<li>The <a href="/Plugins/Pre/StackOverflow.html">StackOverflow</a> plugin has been added to the list of plugins.</li>
+<li>More tests, documentation, reliability and usability improvements.</li>
+<li>Continuous integration through codeship.</li>
+<li>A docker image! Still in development, check the <a href="https://hub.docker.com/r/bbaldassari/alambic/">docker hub repository</a>!</li>
+</ul>
+
+<h2>Alambic 3.1</h2>
+
+<p>Date: 2016-08-11</p>
+
+<p>Changelog:</p>
+
+<ul>
+<li>Various <a href="https://bitbucket.org/BorisBaldassari/alambic/issues?kind=bug&amp;milestone=Alambic+3.1">bug fixes</a>.</li>
+<li>Documentation has been updated and improved: Install, Backups..</li>
+<li>Plugins documentation for Alambic 3.x
+<ul>
+<li>Eclipse ITS</li>
+<li>Eclipse MLS</li>
+<li>Eclipse PMI</li>
+<li>Eclipse SCM</li>
+<li>Hudson CI</li>
+<li>PMD Analysis</li>
+</ul></li>
+<li>Add google analysis tracking code: <a href="https://bitbucket.org/BorisBaldassari/alambic/issues/70/add-google-tracking-edit">#70</a></li>
+<li>Add user and delay attributes on runs: <a href="https://bitbucket.org/BorisBaldassari/alambic/issues/69/add-delay-and-user-to-runs">#69</a></li>
+<li>Fix plots in PMD Analysis: <a href="https://bitbucket.org/BorisBaldassari/alambic/issues/47/plot-in-pmdanalysis-shows-wrong-values">#47</a> <a href="https://bitbucket.org/BorisBaldassari/alambic/issues/62/404-in-plugin-pmdanalysis">#62</a></li>
+<li>Fix various typos and bugs in plugins: <a href="https://bitbucket.org/BorisBaldassari/alambic/issues/65/tidy-up-hudson-plugin">#65</a> <a href="https://bitbucket.org/BorisBaldassari/alambic/issues/66/eclipse-scm-plugin-has-wrong-pluginid">#66</a></li>
+<li>Fix escape in backups: <a href="https://bitbucket.org/BorisBaldassari/alambic/issues/67/backups-are-incomplete">#67</a></li>
+<li>Improve UI: Fix links in home page (<a href="https://bitbucket.org/BorisBaldassari/alambic/issues/68/project-links-in-home-page-lead-to-admin">#68</a>), add footer with date and alambic version (<a href="https://bitbucket.org/BorisBaldassari/alambic/issues/72/prepare-for-alambic-31-release">#72</a>).</li>
+</ul>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2017
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

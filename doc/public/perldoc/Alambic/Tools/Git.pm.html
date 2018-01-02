@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Alambic::Tools::Git &mdash; Alambic Perldoc</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
+  <h1 class="t1">Alambic Perldoc</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Alambic</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Alambic Perldoc</a> &gt; Perl Modules &gt;
+  Alambic::Tools::Git
+</div>
+<div>
+<a href="../../src/Alambic/Tools/Git.pm">Source</a>
+</div>
+
+<div class="pod">
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+      <li><a href="#get_conf">get_conf()</a></li>
+      <li><a href="#version">version()</a></li>
+      <li><a href="#test">test()</a></li>
+      <li><a href="#git_clone_or_pull">git_clone_or_pull()</a></li>
+      <li><a href="#git_clone">git_clone()</a></li>
+      <li><a href="#git_log">git_log()</a></li>
+      <li><a href="#git_commits">git_commits()</a></li>
+      <li><a href="#git_pull">git_pull()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>Alambic::Tools::Git</b> - A plugin to manage a git repository.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><b>Alambic::Tools::Git</b> provides an interface to the Git software configuration management tool within Alambic. It specifically provides methods to clone and pull a repository, and to get the log of commits.</p>
+
+<p>For the complete configuration see the user documentation on the web site: <a href="https://alambic.io/Plugins/Tools/Git.html">https://alambic.io/Plugins/Tools/Git.html</a>.</p>
+
+<h2 id="new"><code>new()</code></h2>
+
+<pre><code>    my $tool = Alambic::Tools::Git-&gt;new(
+    &#39;test.project&#39;, 
+    &#39;https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git&#39;);
+    my $version = $tool-&gt;version();</code></pre>
+
+<p>Build a new Git object.</p>
+
+<p>If the git directory exists, the plugin will use it. Otherwise a clone will be automatically executed at object startup.</p>
+
+<h2 id="get_conf"><code>get_conf()</code></h2>
+
+<pre><code>    my $conf = $tool-&gt;get_conf();</code></pre>
+
+<p>Get configuration for this Git plugin instance. Returns a hash reference.</p>
+
+<pre><code>    (
+      &quot;id&quot; =&gt; &quot;git&quot;,
+      &quot;name&quot; =&gt; &quot;Git Tool&quot;,
+      &quot;desc&quot; =&gt; &quot;Provides Git commands and features.&quot;,
+      &quot;ability&quot; =&gt; [
+        &quot;methods&quot;, &quot;project&quot;
+      ],
+      &quot;type&quot; =&gt; &quot;tool&quot;,
+      &quot;params&quot; =&gt; {&quot;path_git&quot; =&gt; &quot;The absolute path to the git binary.&quot;,},
+      &quot;provides_methods&quot; =&gt; {
+        &quot;git_clone&quot; =&gt; &quot;Clone a project git repository locally.&quot;,
+        &quot;git_pull&quot; =&gt; &quot;Execute a pull from a git repository.&quot;,
+        &quot;git_clone_or_pull&quot; =&gt; &quot;Execute a pull from a git repository, 
+          clone if it doesn&#39;t exist.&quot;,
+        &quot;git_log&quot; =&gt; &quot;Retrieves log from a local git repository.&quot;,
+        &quot;git_commits&quot; =&gt; &quot;Retrieves commits for a git repository.&quot;,
+      },
+    )</code></pre>
+
+<h2 id="version"><code>version()</code></h2>
+
+<pre><code>    my $version = $tool-&gt;version();</code></pre>
+
+<p>Returns Git version as a string.</p>
+
+<h2 id="test"><code>test()</code></h2>
+
+<pre><code>    my $log = $tool-&gt;test();</code></pre>
+
+<p>Self-test method for the tool. Returns a log as an array reference.</p>
+
+<pre><code>    [
+      &#39;OK: Git exec found in PATH at [/usr/bin/git].&#39;
+    ]</code></pre>
+
+<h2 id="git_clone_or_pull"><code>git_clone_or_pull()</code></h2>
+
+<pre><code>    $log = $tool-&gt;git_clone_or_pull();</code></pre>
+
+<p>Function to get a git repository locally, not even knowing if it&#39;s already there or not. If it exists, it will be pulld. If it doesn&#39;t, it will be cloned</p>
+
+<h2 id="git_clone"><code>git_clone()</code></h2>
+
+<pre><code>    $log = $tool-&gt;git_clone(&#39;test.project&#39;,
+      &#39;https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git&#39;);</code></pre>
+
+<p>Function to clone a git repository locally. It assumes the repository doesn&#39;t already exists (fails otherwise).</p>
+
+<h2 id="git_log"><code>git_log()</code></h2>
+
+<pre><code>    $git-&gt;git-log(&#39;modeling.sirius&#39;);</code></pre>
+
+<p>Function to get the log from a git repository. It assumes the repository already exists (fails otherwise).</p>
+
+<p>Log file is written in the input directory of the project data space.</p>
+
+<h2 id="git_commits"><code>git_commits()</code></h2>
+
+<pre><code>    my $commits = $git-&gt;git_commits();</code></pre>
+
+<p>Returns an array of commits</p>
+
+<h2 id="git_pull"><code>git_pull()</code></h2>
+
+<pre><code>    $git-&gt;git_pull();</code></pre>
+
+<p>Function to pull from a git repository. It is assumed that the clone directory already exists.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="https://alambic.io/Plugins/Tools/Git.html">https://alambic.io/Plugins/Tools/Git.html</a>, <a href="https://stackoverflow.com">https://stackoverflow.com</a>,</p>
+
+<p><a href="http://metacpan.org/module/Mojolicious">Mojolicious</a>, <a href="http://alambic.io">http://alambic.io</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a></p>
+
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

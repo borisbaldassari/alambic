@@ -177,7 +177,7 @@
               <tr>
 		<td><%= $item %></td>
 		<td><%= $plugin_figs->{$item} %></td>
-		<td><a href="/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %>">/projects/<%= $project_id %>/<%= $plugin_id %>/<%= $item %></a></td>
+		<td><a href="<%= $c->url_for('/projects/' . $project_id . '/' . $plugin_id . '/' . $item) %>"><%= $c->url_for("/projects/$project_id/$plugin_id/$item") %></a></td>
 	      </tr>
 % }
             </table>

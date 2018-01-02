@@ -1,4 +1,18 @@
 #! perl -I../../lib/
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 
 use strict;
 use warnings;
@@ -9,7 +23,8 @@ use File::Path qw( remove_tree );
 
 BEGIN { use_ok('Alambic::Tools::Git'); }
 
-my $tool = Alambic::Tools::Git->new();
+my $tool = Alambic::Tools::Git->new('test.project',
+  'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
 isa_ok($tool, 'Alambic::Tools::Git');
 
 my $version = $tool->version();
@@ -44,18 +59,16 @@ if (-d $dir_src && $exec_cloning) {
 
 if ($exec_cloning) {
   note("Cloning Alambic.");
-  $log = $tool->git_clone('Test', 'test.project',
-    'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
+  $log = $tool->git_clone();
   ok(grep(/^\[Tools::Git\] Cloning /, @{$log}), "Log has Ok cloning.")
     or diag explain $log;
   ok(-e $dir_src, "Source directory exists after cloning.")
     or diag explain $log;
 }
 
-#diag explain $log;
-
-$log = $tool->git_clone_or_pull('Test', 'test.project',
-  'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
+note("Clone-or-pull Alambic.");
+$log = $tool->git_clone_or_pull();
+$log = $tool->git_clone_or_pull();
 ok(grep(/^\[Tools::Git\] Directory /, @{$log}), "Log has Directory.")
   or diag explain $log;
 ok(grep(/Version is /, @{$log}), "Log has Version.") or diag explain $log;
@@ -65,19 +78,29 @@ ok(grep(/^\[Tools::Git\] Pulling from origin/, @{$log}),
 ok(grep(/Already up-to-date/, @{$log}), "Pull is already up-to-date.")
   or diag explain $log;
 
+note("Get commits.");
 my $commits = $tool->git_commits();
-ok(ref($commits) eq 'ARRAY',      'Commits is an array.');
-ok(exists($commits->[0]{'mod'}),  'Commit has mod attribute.');
-ok(exists($commits->[0]{'auth'}), 'Commit has auth attribute.');
-ok(exists($commits->[0]{'msg'}),  'Commit has msg attribute.');
-ok(exists($commits->[0]{'cmtr'}), 'Commit has cmtr attribute.');
-ok(exists($commits->[0]{'time'}), 'Commit has time attribute.');
-ok(exists($commits->[0]{'add'}),  'Commit has add attribute.');
-ok(exists($commits->[0]{'id'}),   'Commit has id attribute.');
+ok(ref($commits) eq 'ARRAY', 'Commits is an array.') or diag explain $commits;
+ok(exists($commits->[0]{'mod'}), 'Commit has mod attribute.')
+  or diag explain $commits;
+ok(exists($commits->[0]{'auth'}), 'Commit has auth attribute.')
+  or diag explain $commits;
+ok(exists($commits->[0]{'msg'}), 'Commit has msg attribute.')
+  or diag explain $commits;
+ok(exists($commits->[0]{'cmtr'}), 'Commit has cmtr attribute.')
+  or diag explain $commits;
+ok(exists($commits->[0]{'time'}), 'Commit has time attribute.')
+  or diag explain $commits;
+ok(exists($commits->[0]{'id'}), 'Commit has id attribute.')
+  or diag explain $commits;
 
-$log = $tool->git_log('Test', 'test.project');
+note("Get log.");
+$log = $tool->git_log();
 ok(grep(/^\[Tools::Git\] Getting Git log for /, @{$log}),
   "Log has Getting log.")
+  or diag explain $log;
+ok(-e "projects/test.project/input/test.project_import_git.txt",
+  "Log file has been created in input directory.")
   or diag explain $log;
 
 done_testing();

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<title>Alambic::Controller::Admin &mdash; Alambic Perldoc</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" href="../../podstyle.css" type="text/css" />
+</head>
+<body><div class="box">
+  <h1 class="t1">Alambic Perldoc</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Alambic</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Alambic Perldoc</a> &gt; Perl Modules &gt;
+  Alambic::Controller::Admin
+</div>
+<div>
+<a href="../../src/Alambic/Controller/Admin.pm">Source</a>
+</div>
+
+<div class="pod">
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#summary">summary()</a></li>
+      <li><a href="#edit">edit()</a></li>
+      <li><a href="#edit_post">edit_post()</a></li>
+      <li><a href="#data_models">data_models()</a></li>
+      <li><a href="#models">models()</a></li>
+      <li><a href="#users">users()</a></li>
+      <li><a href="#users_new">users_new()</a></li>
+      <li><a href="#users_new_post">users_new_post()</a></li>
+      <li><a href="#users_edit">users_edit()</a></li>
+      <li><a href="#users_edit_post">users_edit_post()</a></li>
+      <li><a href="#users_del">users_del()</a></li>
+      <li><a href="#models_import">models_import()</a></li>
+      <li><a href="#models_init">models_init()</a></li>
+      <li><a href="#projects">projects()</a></li>
+      <li><a href="#projects_show">projects_show()</a></li>
+      <li><a href="#projects_new">projects_new()</a></li>
+      <li><a href="#projects_new_post">projects_new_post()</a></li>
+      <li><a href="#projects_wizards_new_init">projects_wizards_new_init()</a></li>
+      <li><a href="#projects_wizards_new_init_post">projects_wizards_new_init_post()</a></li>
+      <li><a href="#projects_run">projects_run()</a></li>
+      <li><a href="#projects_runall">projects_runall()</a></li>
+      <li><a href="#jobs_purge">jobs_purge()</a></li>
+      <li><a href="#projects_del">projects_del()</a></li>
+      <li><a href="#projects_edit">projects_edit()</a></li>
+      <li><a href="#projects_edit_post">projects_edit_post()</a></li>
+      <li><a href="#projects_add_plugin">projects_add_plugin()</a></li>
+      <li><a href="#projects_add_plugin_post">projects_add_plugin_post()</a></li>
+      <li><a href="#projects_run_plugin">projects_run_plugin()</a></li>
+      <li><a href="#projects_run_pre">projects_run_pre()</a></li>
+      <li><a href="#projects_run_qm">projects_run_qm()</a></li>
+      <li><a href="#projects_run_posts">projects_run_posts()</a></li>
+      <li><a href="#projects_del_plugin">projects_del_plugin()</a></li>
+      <li><a href="#del_input_file">del_input_file()</a></li>
+      <li><a href="#del_output_file">del_output_file()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>Alambic::Controller::Admin</b> - Routing logic for Alambic administration UI.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<p>Routing logic for all administration actions in the Alambic web ui. This is automatically called by the Mojolicious framework.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="summary"><code>summary()</code></h2>
+
+<p>Main screen for Alambic admin.</p>
+
+<h2 id="edit"><code>edit()</code></h2>
+
+<p>Edit information about the instance.</p>
+
+<h2 id="edit_post"><code>edit_post()</code></h2>
+
+<p>Edit information about the instance -- post processing.</p>
+
+<h2 id="data_models"><code>data_models()</code></h2>
+
+<p>JSON access for models data.</p>
+
+<h2 id="models"><code>models()</code></h2>
+
+<p>Models display screen for Alambic admin.</p>
+
+<h2 id="users"><code>users()</code></h2>
+
+<p>Display list of users for Alambic admin.</p>
+
+<h2 id="users_new"><code>users_new()</code></h2>
+
+<p>Add a new user.</p>
+
+<h2 id="users_new_post"><code>users_new_post()</code></h2>
+
+<p>Add a new user -- post processing.</p>
+
+<h2 id="users_edit"><code>users_edit()</code></h2>
+
+<p>Edit a user&#39;s parameters.</p>
+
+<h2 id="users_edit_post"><code>users_edit_post()</code></h2>
+
+<p>Edit a user&#39;s parameters -- post processing.</p>
+
+<h2 id="users_del"><code>users_del()</code></h2>
+
+<p>Delete a user from the database.</p>
+
+<h2 id="models_import"><code>models_import()</code></h2>
+
+<p>Models import for Alambic admin.</p>
+
+<h2 id="models_init"><code>models_init()</code></h2>
+
+<p>Reread all models. Models display screen for Alambic admin.</p>
+
+<h2 id="projects"><code>projects()</code></h2>
+
+<p>Projects screen for Alambic admin.</p>
+
+<h2 id="projects_show"><code>projects_show()</code></h2>
+
+<p>Display specific project screen for Alambic admin.</p>
+
+<h2 id="projects_new"><code>projects_new()</code></h2>
+
+<p>New project screen for Alambic admin.</p>
+
+<h2 id="projects_new_post"><code>projects_new_post()</code></h2>
+
+<p>New project screen for Alambic admin - post processing.</p>
+
+<h2 id="projects_wizards_new_init"><code>projects_wizards_new_init()</code></h2>
+
+<p>New project from wizard screen for Alambic admin.</p>
+
+<h2 id="projects_wizards_new_init_post"><code>projects_wizards_new_init_post()</code></h2>
+
+<p>New project from wizard screen for Alambic admin -- post processing.</p>
+
+<h2 id="projects_run"><code>projects_run()</code></h2>
+
+<p>Run (enqueue) a specific project.</p>
+
+<h2 id="projects_runall"><code>projects_runall()</code></h2>
+
+<p>Run (enqueue) all projects.</p>
+
+<h2 id="jobs_purge"><code>jobs_purge()</code></h2>
+
+<p>Purge all finished and failed jobs</p>
+
+<h2 id="projects_del"><code>projects_del()</code></h2>
+
+<p>Delete a project for Alambic admin.</p>
+
+<h2 id="projects_edit"><code>projects_edit()</code></h2>
+
+<p>Edit project screen for Alambic admin.</p>
+
+<h2 id="projects_edit_post"><code>projects_edit_post()</code></h2>
+
+<p>Edit project screen for Alambic admin -- post processing.</p>
+
+<h2 id="projects_add_plugin"><code>projects_add_plugin()</code></h2>
+
+<p>Add plugin to project screen for Alambic admin.</p>
+
+<h2 id="projects_add_plugin_post"><code>projects_add_plugin_post()</code></h2>
+
+<p>Add plugin to project screen for Alambic admin -- post processing.</p>
+
+<h2 id="projects_run_plugin"><code>projects_run_plugin()</code></h2>
+
+<p>Run specific plugin on a project.</p>
+
+<h2 id="projects_run_pre"><code>projects_run_pre()</code></h2>
+
+<p>Run pre plugins on a project.</p>
+
+<h2 id="projects_run_qm"><code>projects_run_qm()</code></h2>
+
+<p>Run quality model for a project.</p>
+
+<h2 id="projects_run_posts"><code>projects_run_posts()</code></h2>
+
+<p>Run post plugins for a project.</p>
+
+<h2 id="projects_del_plugin"><code>projects_del_plugin()</code></h2>
+
+<p>Delete a plugin from a project.</p>
+
+<h2 id="del_input_file"><code>del_input_file()</code></h2>
+
+<p>Delete a file from the input data directory on the file system.</p>
+
+<h2 id="del_output_file"><code>del_output_file()</code></h2>
+
+<p>Delete a file from the output data directory on the file system.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../../Alambic.pm.html">Alambic</a>, <a href="http://alambic.io">http://alambic.io</a>, <a href="https://bitbucket.org/BorisBaldassari/alambic">https://bitbucket.org/BorisBaldassari/alambic</a>, <a href="http://metacpan.org/module/Mojolicious">Mojolicious</a>.</p>
+
+</div><div class="footer">generated by <a href="http://metacpan.org/module/Pod::ProjectDocs">Pod::ProjectDocs</a></div></body></html>
+

@@ -1,4 +1,18 @@
 #! perl -I../../lib/
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 
 use strict;
 use warnings;
@@ -19,14 +33,29 @@ my $conf_al;
 
 my $conf_e = eval $conf_al;
 my %conf   = (
-  "conf_pg_alambic" => $conf_e->{'conf_pg_alambic'},
-  "alambic_version" => '3.2-test',
+  "conf_pg_alambic" => $conf_e->{'conf_pg_alambic_test'},
+  "alambic_version" => 'alambic-test',
 );
 
 SKIP: {
   # If no database is defined, skip all tests.
   my $alambic;
-  eval { $alambic = Alambic::Model::Alambic->new(\%conf); };
+
+  # Initialise the db.
+  my $repodb     = Alambic::Model::RepoDB->new($conf{'conf_pg_alambic'});
+  my $is_defined = $repodb->is_db_defined();
+  note("Initialising database (defined: $is_defined).");
+
+  # If database is not ok, init it.
+  # This will fail if the database is already populated.
+  $repodb->init_db();
+
+  eval {
+    $alambic = Alambic::Model::Alambic->new(\%conf);
+
+    # If the database was previously populated, then clean it.
+    $repodb->init_db();
+  };
 
   if ($@) {
     skip 'Tests irrelevant when no database is defined.', 25;
@@ -34,31 +63,28 @@ SKIP: {
 
   isa_ok($alambic, 'Alambic::Model::Alambic');
 
-  # Initialise the db.
-  note("Initialising database.");
-  $alambic->init();
-
   my $db_ok = $alambic->is_db_ok();
   ok($db_ok == 1, "Is db ok alambic returns 1.") or diag explain $db_ok;
   my $db_m_ok = $alambic->is_db_m_ok();
   ok($db_m_ok == 0, "Is db minion ok returns 0 (db was not defined).")
     or diag explain $db_m_ok;
 
+  $alambic->instance_name('MyDBNameInit');
   my $conf = $alambic->instance_name();
-  is($conf, 'Default CLI init', "Instance has correct default name")
+  is($conf, 'MyDBNameInit', "Instance has correct default name")
     or diag explain $conf;
+  $alambic->instance_desc('MyDBDescInit');
   $conf = $alambic->instance_desc();
-  is($conf, 'Default CLI Init description', "Instance has correct default desc")
+  is($conf, 'MyDBDescInit', "Instance has correct default desc")
     or diag explain $conf;
 
-#my $version = $alambic->instance_version();
-#is( $version, '3.2-dev', "Alambic version is $version, considered ok.") or diag explain $version;
+  my $version = $alambic->instance_version();
+  ok($version =~ m!^alambic-test$!,
+    "Alambic version is $version, considered ok.")
+    or diag explain $version;
 
   my $model = $alambic->get_models();
   isa_ok($model, 'Alambic::Model::Models');
-
-  my $repodb = $alambic->get_repo_db();
-  isa_ok($repodb, 'Alambic::Model::RepoDB');
 
   my $repofs = $alambic->get_repo_fs();
   isa_ok($repofs, 'Alambic::Model::RepoFS');
@@ -77,16 +103,12 @@ SKIP: {
     $sql =~ m!CREATE TABLE IF NOT EXISTS conf!,
     "SQL backup has create table for conf."
   ) or diag explain $sql;
-  ok(
-    $sql
-      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', 'Default CLI init'\);!,
-    "SQL backup has insert for name."
-  ) or diag explain $sql;
-  ok(
-    $sql
-      =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', 'Default CLI Init description'\);!,
-    "SQL backup has insert for desc."
-  ) or diag explain $sql;
+  ok($sql =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('name', !,
+    "SQL backup has insert for name.")
+    or diag explain $sql;
+  ok($sql =~ m!INSERT INTO conf \(param, val\)\s*VALUES \('desc', !,
+    "SQL backup has insert for desc.")
+    or diag explain $sql;
   ok($sql !~ /tools.cdt/, "SQL backup has still NOT tools.cdt.")
     or diag explain $sql;
 
@@ -121,11 +143,25 @@ SKIP: {
 
   my $plugins      = $alambic->get_plugins();
   my $plugins_list = $plugins->get_list_plugins_pre();
-  my $pv           = 7;
-  ok(scalar @{$plugins_list} == $pv, "Plugins pre list has $pv entries.")
-    or diag explain $plugins_list;
+  my $pv           = 4;
+  ok(
+    (scalar @{$plugins_list}) =~ /\d+/,
+    "Plugins pre list has a number of entries."
+  ) or diag explain $plugins_list;
+  ok(
+    grep(/^EclipsePmi$/, @{$plugins_list}) == 1,
+    "Plugins pre list has EclipsePmi."
+  ) or diag explain $plugins_list;
   ok(grep(/^Hudson$/, @{$plugins_list}) == 1, "Plugins pre list has Hudson.")
     or diag explain $plugins_list;
+  ok(
+    grep(/^PmdAnalysis$/, @{$plugins_list}) == 1,
+    "Plugins pre list has PmdAnalysis."
+  ) or diag explain $plugins_list;
+  ok(
+    grep(/^StackOverflow$/, @{$plugins_list}) == 1,
+    "Plugins pre list has StackOverflow."
+  ) or diag explain $plugins_list;
 
   my $projects_list = $alambic->get_projects_list();
   ok($projects_list->{'tools.cdt'} =~ m!^Tools CDT$!,
@@ -151,6 +187,54 @@ SKIP: {
   $alambic->restore($sql);
   $project = $alambic->get_project('tools.cdt');
   is($project, undef, "Get project tools.cdt returns undef after restore.");
+
+  # Now restore a backup to test history
+  note("Restoring database with Sirius history.");
+  my $file_sql = 'alambic_backup_201707290902.sql';
+  $sql = $repofs->read_backup($file_sql);
+  $alambic->restore($sql);
+  my $hist = $alambic->get_project_hist('modeling.sirius');
+  ok(scalar(@$hist) == 3, "History has 3 items after restore.")
+    or diag explain $hist;
+  ok($hist->[2]{'run_delay'} == 47, "First item in history has run_delay 47.")
+    or diag explain $hist;
+  ok($hist->[2]{'id'} == 1, "First item in history has id 1.")
+    or diag explain $hist;
+  ok(
+    $hist->[2]{'run_time'} =~ m!^2017-07-29!,
+    "First item in history has correct run_time."
+  ) or diag explain $hist->[2];
+
+  my $run = $alambic->get_project_last_run('modeling.sirius');
+
+  ok($run->{'run_delay'} == 49, "Last run has correct run_delay from backup.")
+    or diag explain $run;
+  ok($run->{'metrics'}{'CI_JOBS_RED'} == 8,
+    "Last run has correct metric CI_JOBS_RED from backup.")
+    or diag explain $run;
+  ok(
+    $run->{'info'}{'PMI_ID'} =~ m!^modeling.sirius$!,
+    "Last run has correct info PMI_ID from backup."
+  ) or diag explain $run;
+  ok(
+    $run->{'recs'}[0]{'rid'} =~ m!^PMI_EMPTY_TITLE$!,
+    "Last run has correct rec PMI_EMPTY_TITLE from backup."
+  ) or diag explain $run;
+  ok(
+    $run->{'project_id'} =~ m!^modeling.sirius$!,
+    "Last run has correct project_id from backup."
+  ) or diag explain $run;
+  ok($run->{'id'} == 3, "Last run has correct id from backup.")
+    or diag explain $run;
+  ok(
+    $run->{'run_time'} =~ m!^2017-07-29!,
+    "Last run has correct run_time from backup."
+  ) or diag explain $run;
+  ok(
+    $run->{'run_user'} =~ m!^administrator$!,
+    "Last run has correct run_user from backup."
+  ) or diag explain $run;
+
 }
 
 done_testing();

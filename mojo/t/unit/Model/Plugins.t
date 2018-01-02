@@ -1,4 +1,18 @@
 #! perl -I../../lib/
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
 
 use strict;
 use warnings;
@@ -13,13 +27,12 @@ my $plugins = Alambic::Model::Plugins->new();
 isa_ok($plugins, 'Alambic::Model::Plugins');
 
 my $list = $plugins->get_names_all();
-my $pv   = 8;
+my $pv   = 9;
 ok(scalar(keys %{$list}) == $pv,
-  "get_names_all There is a total of $pv plugins detected.")
-  or Dumper explain %$list;
+  "get_names_all there is a total of $pv plugins detected.")
+  or explain %$list;
 
 $list = $plugins->get_conf_all();
-$pv   = 8;
 ok(scalar(keys %{$list}) == $pv, "get_conf_all has $pv entries.")
   or explain Dumper %$list;
 
@@ -36,7 +49,7 @@ ok(scalar(@{$list}) == $pv,
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_post();
-$pv   = 1;
+$pv   = 2;
 ok(scalar(@{$list}) == $pv, "get_list_plugins_post List post has $pv entries.")
   or explain Dumper @$list;
 
@@ -48,33 +61,33 @@ ok(scalar(@{$list}) == $pv,
 
 # Check plugins ability
 $list = $plugins->get_list_plugins_data();
-$pv   = 5;
-ok(scalar @{$list} == $pv, "List data has $pv entries.")
+$pv   = 6;
+ok(scalar(@{$list}) =~ /^\d+$/, "List data has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_metrics();
 $pv   = 6;
-ok(scalar @{$list} == $pv, "List metrics has $pv entries.")
+ok(scalar(@{$list}) =~ /^\d+$/, "List metrics has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_figs();
 $pv   = 6;
-ok(scalar(@{$list}) == $pv, "List figs has $pv entries.")
+ok(scalar(@{$list}) =~ /^\d+$/, "List figs has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_info();
-$pv   = 1;
-ok(scalar(@{$list}) == $pv, "List info has $pv entries.")
+$pv   = 4;
+ok(scalar(@{$list}) =~ /^\d+$/, "List info has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_recs();
-$pv   = 7;
-ok(scalar(@{$list}) == $pv, "List recs has $pv entries.")
+$pv   = 6;
+ok(scalar(@{$list}) =~ /^\d+$/, "List recs has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_viz();
 $pv   = 8;
-ok(scalar(@{$list}) == $pv, "List viz has $pv entries.")
+ok(scalar(@{$list}) =~ /^\d+$/, "List viz has $pv entries.")
   or explain Dumper @$list;
 
 note("Loading EclipsePmi plugin.");
@@ -92,16 +105,25 @@ my $ret = $plugins->run_plugin('tools.cdt', 'EclipsePmi',
   {'project_pmi' => 'tools.cdt'});
 is($ret->{'info'}{'PMI_BUGZILLA_PRODUCT'}, 'CDT', "Bugzilla product is CDT.")
   or Dumper explain $ret;
+
 is(
   $ret->{'info'}{'PMI_TITLE'},
   'Eclipse C/C++ Development Tooling (CDT)',
   "PMI title is correct."
 ) or Dumper explain $ret;
+
 is(
   $ret->{'log'}[0],
-  '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].',
-  "Checking first line of log: using eclipse pmi infra at..."
+  '[Plugins::EclipsePmi] No proxy defined [].',
+  "Checking first line of log: no proxy..."
 ) or Dumper explain $ret;
+
+is(
+  $ret->{'log'}[1],
+  '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].',
+  "Checking second line of log: using eclipse pmi infra at..."
+) or Dumper explain $ret;
+
 is($ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.")
   or Dumper explain $ret;
 
@@ -109,16 +131,25 @@ note("Executing EclipsePmi run_plugin with project_pmi.");
 $ret = $plugins->run_plugin('tools.cdt', 'EclipsePmi', {});
 is($ret->{'info'}{'PMI_BUGZILLA_PRODUCT'}, 'CDT', "Bugzilla product is CDT.")
   or Dumper explain $ret;
+
 is(
   $ret->{'info'}{'PMI_TITLE'},
   'Eclipse C/C++ Development Tooling (CDT)',
   "PMI title is correct."
 ) or Dumper explain $ret;
+
 is(
   $ret->{'log'}[0],
+  '[Plugins::EclipsePmi] No proxy defined [].',
+  "Checking first line of log: no proxy defined."
+) or Dumper explain $ret;
+
+is(
+  $ret->{'log'}[1],
   '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].',
   "Checking first line of log."
 ) or Dumper explain $ret;
+
 is($ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.")
   or Dumper explain $ret;
 
@@ -133,4 +164,4 @@ is($ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.")
 #print Dumper($ret);
 
 
-done_testing(24);
+done_testing();
