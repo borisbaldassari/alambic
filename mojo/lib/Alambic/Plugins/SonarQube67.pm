@@ -8,7 +8,7 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
-#   Thales
+#   Gregoire Biette - Thales Group
 #   Boris Baldassari - Castalia Solutions
 #
 #########################################################
@@ -33,16 +33,16 @@ my %conf = (
   "name" => "SonarQube 6.7.x",
   "desc" => [
     "Retrieves information from a SonarQube 6.7.x instance (i.e. metrics and violations), and visualises them.",
-    "A copy fom SonarQube45 with some adaptations"
+    "Check the documentation for this plugin on the project wiki: <a href=\"http://alambic.io/Plugins/Pre/SonarQube67.html\">http://alambic.io/Plugins/Pre/SonarQube67.html</a>."
   ],
   "type"    => "pre",
   "ability" => ['metrics', 'info', 'data', 'viz', 'figs'],
   "params"  => {
     "sonar_url" =>
       "The base URL for the SonarQube instance (e.g. http://localhost:9000).",
-    "sonar_project" => "The Project ID in the SonarQube instance.",
-    "proxy" =>
-      'If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
+      "sonar_project" => "The Project ID in the SonarQube instance.",
+      "proxy" =>
+        'If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
   },
   "provides_info" => ["SQ_URL",],
 
@@ -117,7 +117,7 @@ my %conf = (
 #      'sonarqube_coverage.html' => "Bar plot of the different coverage metrics of SonarQube",
   },
   "provides_recs" => [],
-  "provides_viz"  => {"sonarqube45.html" => "SonarQube",},
+  "provides_viz"  => {"sonarqube67.html" => "SonarQube",},
 );
 
 
@@ -159,7 +159,7 @@ sub run_plugin($$) {
     $ua->proxy->detect;
     my $proxy_http  = $ua->proxy->http;
     my $proxy_https = $ua->proxy->https;
-  # say "COUCOU say";
+
     push(
       @{$ret{'log'}},
       "[Plugins::SonarQube67] Using default proxy [$proxy_http] and [$proxy_https]."
@@ -290,7 +290,7 @@ sub run_plugin($$) {
   );
   push(
     @{$ret{'log'}},
-    "[Plugins::SonarQube67676767676767676767676767676767676767676767676767676767676767676767676767676767676767676767676767676767676767676767676767676767676767] Got ["
+    "[Plugins::SonarQube67] Got ["
       . scalar @{($content->{'rules'} || [])}
       . "] rules."
   );
@@ -390,19 +390,29 @@ sub run_plugin($$) {
     "[Plugins::SonarQube67] Get resources from [${url_res}]."
   );
   $content = $ua->get($url_res)->res->json;
-  my @measures_array = @{$content->{'component'}->{'measures'}};
 
-  # Store all metrics with their Alambic names instead of SQ names.
-  foreach my $m (@measures_array) {
-    if (exists($conf{'provides_metrics'}{$m->{'metric'}})) {
-      $ret{'metrics'}{$conf{'provides_metrics'}{$m->{'metric'}}} = $m->{'value'};
+  if ( defined($content) ) {
+    my @measures_array = @{$content->{'component'}->{'measures'}};
+
+    # Store all metrics with their Alambic names instead of SQ names.
+    foreach my $m (@measures_array) {
+        if (exists($conf{'provides_metrics'}{$m->{'metric'}})) {
+            $ret{'metrics'}{$conf{'provides_metrics'}{$m->{'metric'}}} = $m->{'value'};
+        }
     }
+    push(
+        @{$ret{'log'}},
+        "[Plugins::SonarQube67] Got [" . scalar
+        keys(%{$ret{'metrics'}}) . "] metrics."
+        );
+  } else {
+    push(
+      @{$ret{'log'}},
+        "[Plugins::SonarQube67] Cannot get measures.. Access point is enabled in " 
+        . "SonarQube > 5.4, please check your version. URL was [${url_res}]."
+      );
   }
-  push(
-    @{$ret{'log'}},
-    "[Plugins::SonarQube67] Got [" . scalar
-      keys(%{$ret{'metrics'}}) . "] metrics."
-  );
+
 
   # Print main information to file system.
   my $url_info
@@ -506,11 +516,11 @@ Parameters:
 
 =back
 
-For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/SonarQube45.html>.
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/SonarQube67.html>.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/Pre/SonarQube45.html>, L<https://www.sonarqube.org>,
+L<https://alambic.io/Plugins/Pre/SonarQube67.html>, L<https://www.sonarqube.org>,
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 
