@@ -27,7 +27,7 @@ my $plugins = Alambic::Model::Plugins->new();
 isa_ok($plugins, 'Alambic::Model::Plugins');
 
 my $list = $plugins->get_names_all();
-my $pv   = 9;
+my $pv   = 10;
 ok(scalar(keys %{$list}) == $pv,
   "get_names_all there is a total of $pv plugins detected.")
   or explain %$list;
@@ -38,7 +38,7 @@ ok(scalar(keys %{$list}) == $pv, "get_conf_all has $pv entries.")
 
 # Check plugins types
 $list = $plugins->get_list_plugins_pre();
-$pv   = 7;
+$pv   = 8;
 ok(scalar(@{$list}) == $pv, "get_list_plugins_pre List pre has $pv entries.")
   or explain Dumper @$list;
 
@@ -61,32 +61,32 @@ ok(scalar(@{$list}) == $pv,
 
 # Check plugins ability
 $list = $plugins->get_list_plugins_data();
-$pv   = 6;
+$pv   = 7;
 ok(scalar(@{$list}) =~ /^\d+$/, "List data has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_metrics();
-$pv   = 6;
+$pv   = 7;
 ok(scalar(@{$list}) =~ /^\d+$/, "List metrics has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_figs();
-$pv   = 6;
+$pv   = 7;
 ok(scalar(@{$list}) =~ /^\d+$/, "List figs has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_info();
-$pv   = 4;
+$pv   = 5;
 ok(scalar(@{$list}) =~ /^\d+$/, "List info has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_recs();
-$pv   = 6;
+$pv   = 7;
 ok(scalar(@{$list}) =~ /^\d+$/, "List recs has $pv entries.")
   or explain Dumper @$list;
 
 $list = $plugins->get_list_plugins_viz();
-$pv   = 8;
+$pv   = 9;
 ok(scalar(@{$list}) =~ /^\d+$/, "List viz has $pv entries.")
   or explain Dumper @$list;
 
