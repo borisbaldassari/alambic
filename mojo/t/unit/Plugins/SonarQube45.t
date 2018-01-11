@@ -101,8 +101,8 @@ ok(grep(m!^\[Plugins::SonarQube45\] Got \[35\] rules.!, @log),
 ok(grep(m!^\[Plugins::SonarQube45\] Get resources from \[http!, @log),
   "Log returns get resources.")
   or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Got \[33\] metrics.!, @log),
-  "Log returns got 33 metrics.")
+ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] metrics.!, @log),
+  "Log returns got metrics.")
   or diag explain @log;
 
 # Test metrics
