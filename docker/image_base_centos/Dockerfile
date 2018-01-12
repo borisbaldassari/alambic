@@ -36,6 +36,7 @@ RUN yum -y install pandoc texlive-titling; yum clean all
 USER alambic
 
 # Install Perl, Mojolicious and all dependencies
+WORKDIR /home/alambic/
 RUN /bin/bash /home/alambic/alambic_install_perl_deps.sh
 
 # Switch back to user root

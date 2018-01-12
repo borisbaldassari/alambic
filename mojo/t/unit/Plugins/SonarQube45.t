@@ -76,6 +76,17 @@ ok(grep(m!sonarqube45.html!, keys %{$conf->{'provides_viz'}}),
 my $in_sonar_url     = "https://sonar.eclipse.org";
 my $in_sonar_project = "org.eclipse.sirius:sirius-parent";
 
+# Delete files before creating them, so we don't test a previous run.
+unlink (
+    "projects/test.project/input/test.project_import_sq_issues_blocker.json",
+    "projects/test.project/input/test.project_import_sq_issues_critical.json",
+    "projects/test.project/input/test.project_import_sq_issues_major.json",
+    "projects/test.project/output/test.project_sq_issues_blocker.csv",
+    "projects/test.project/output/test.project_sq_issues_critical.csv",
+    "projects/test.project/output/test.project_sq_issues_major.csv",
+    "projects/test.project/output/test.project_sq_metrics.csv",
+    );
+
 note("Executing the plugin with Sirius project. ");
 my $ret = $plugin->run_plugin("test.project",
   {'sonar_url' => $in_sonar_url, 'sonar_project' => $in_sonar_project});
@@ -101,8 +112,8 @@ ok(grep(m!^\[Plugins::SonarQube45\] Got \[35\] rules.!, @log),
 ok(grep(m!^\[Plugins::SonarQube45\] Get resources from \[http!, @log),
   "Log returns get resources.")
   or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Got \[33\] metrics.!, @log),
-  "Log returns got 33 metrics.")
+ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] metrics.!, @log),
+  "Log returns got metrics.")
   or diag explain @log;
 
 # Test metrics
