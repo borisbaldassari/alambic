@@ -1,9 +1,9 @@
 <!doctype html>
 <html>
 <head>
-    <title>Admin Tasks - Alambic</title>
+    <title>Startup Scripts - Alambic</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="../styles.css">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -19,24 +19,24 @@
 <body>
 <div id="top">
     <div id="inner">
-        <p id="name"><a href="..">
+        <p id="name"><a href="../..">
             Alambic
         </a></p>
     <ul class="navi" id="navi">
         <li class="">
-            <a href="../About.html">About</a>
+            <a href="../../About.html">About</a>
         </li>
         <li class="">
-            <a href="../Plugins.html">Plugins</a>
+            <a href="../../Plugins.html">Plugins</a>
         </li>
         <li class="">
-            <a href="../Setup.html">Setup</a>
+            <a href="../../Setup.html">Setup</a>
         </li>
         <li class="active">
-            <a href="../Documentation.html">Documentation</a>
+            <a href="../../Documentation.html">Documentation</a>
         </li>
         <li class="">
-            <a href="../Development.html">Development</a>
+            <a href="../../Development.html">Development</a>
         </li>
     </ul>
 
@@ -45,57 +45,62 @@
 <div id="main">
     <ul class="navi" id="subnavi">
         <li class="">
-            <a href="Basics.html">Basics</a>
+            <a href="../Basics.html">Basics</a>
         </li>
         <li class="">
-            <a href="Users.html">Users</a>
+            <a href="../Users.html">Users</a>
         </li>
         <li class="">
-            <a href="Admins.html">Admins</a>
+            <a href="../Admins.html">Admins</a>
         </li>
         <li class="active">
-            <a href="Tasks.html">AdminTasks</a>
+            <a href="../Tasks.html">AdminTasks</a>
         </li>
         <li class="">
-            <a href="Research.html">Research</a>
+            <a href="../Research.html">Research</a>
         </li>
     </ul>
     <ul class="navi" id="subsubnavi">
         <li class="">
-            <a href="Tasks/Backups.html">Backups</a>
+            <a href="Backups.html">Backups</a>
         </li>
         <li class="">
-            <a href="Tasks/Customise.html">Customise</a>
+            <a href="Customise.html">Customise</a>
         </li>
         <li class="">
-            <a href="Tasks/Models.html">Models</a>
+            <a href="Models.html">Models</a>
         </li>
         <li class="">
-            <a href="Tasks/CLI.html">CLI</a>
+            <a href="CLI.html">CLI</a>
         </li>
-        <li class="">
-            <a href="Tasks/Startup.html">Startup</a>
+        <li class="active">
+            <a href="Startup.html">Startup</a>
         </li>
     </ul>
 
 <div id="content">
+<h1>Systemd</h1>
 
-<h1>Documentation/Tasks</h1>
+<p>There is a script in the git repository to add Alambic as a service.</p>
 
-<div class="pull-right" style="width: 50%">
-  <div class="list-group">
-      <a href="Tasks/Backups.html" class="list-group-item">Backups</a>
-      <a href="Tasks/Customise.html" class="list-group-item">Customising Alambic</a>
-      <a href="Tasks/Models.html" class="list-group-item">Models</a>
-      <a href="Tasks/CLI.html" class="list-group-item">CLI commands</a>
-      <a href="Tasks/Startup.html" class="list-group-item">Startup Scripts</a>
-    </div>
-</div>
+<script src="https://bitbucket.org/BorisBaldassari/alambic/src/a492e0ac10ef64f40afb18602e1d29715e8866d2/resources/scripts/systemd/alambic.service?embed=t"></script>
 
-<p>This section describes common tasks for administrators of an instance of Alambic.</p>
+<p>To register and use the service:</p>
 
-<p><br /><br /><br /><br /><br /><br /><br /></p>
-
+<ul>
+<li>Open the file and edit/adapt the context and variables
+<ul>
+<li><code>User=&lt;user&gt;</code> the ID of the user executing Alambic.</li>
+<li><code>PIDFile=&lt;pid_file&gt;</code> is the full path to the hypnotoad.pid file.</li>
+<li>Update all references to Hypnotoad's binary: <code>/home/alambic/perl5/perlbrew/perls/perl-5.24.2/bin/hypnotoad</code></li>
+<li>Update all references to Alambic's home: <code>/home/alambic/alambic/mojo/</code></li>
+</ul></li>
+<li>Copy the file to <code>/etc/systemd/system/alambic.service</code></li>
+<li>Register the service: <code># systemctl enable alambic</code></li>
+<li>Start, stop the service:
+<code>systemctl start alambic</code>
+<code>systemctl stop alambic</code></li>
+</ul>
 
 
 </div><!-- content -->
