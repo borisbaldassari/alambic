@@ -31,7 +31,6 @@ my %conf = (
     "provides_cdata" => [
     ],
     "provides_info" => [
-      "PROJECT_MRS_URL",
       "PROJECT_COMMITS_URL",
       "PROJECT_URL",
       "PROJECT_NAME_SPACE",
@@ -40,13 +39,18 @@ my %conf = (
       "PROJECT_OWNER_ID",
       "PROJECT_OWNER_NAME",
       "PROJECT_ISSUES_ENABLED",
-      "PROJECT_BUILDS_ENABLED",
+      "PROJECT_ISSUES_URL",
+      "PROJECT_CI_ENABLED",
+      "PROJECT_CI_URL",
       "PROJECT_WIKI_ENABLED",
-      "PROJECT_MERGE_ENABLED",
+      "PROJECT_WIKI_URL",
+      "PROJECT_MRS_ENABLED",
+      "PROJECT_MRS_URL",
       "PROJECT_SNIPPETS_ENABLED",
       "PROJECT_CREATED_AT",
       "PROJECT_VISIBILITY",
       "PROJECT_REPO_SSH",
+      "PROJECT_REPO_HTTP",
     ],
     "provides_data" => {
 	"import_gitlab_project_contributors.json" => "Original JSON file listing contributors, as retrieved from the GitLab server (JSON).",
@@ -55,7 +59,10 @@ my %conf = (
 	"import_gitlab_project_commits.json" => "Original build file from GitLab server (JSON).",
 	"import_gitlab_project_merge_requests.json" => "Original build file from GitLab server (JSON).",
 
-	"gitlab_project_branches.csv" => "JSON file describing branches in the repository of the project (CSV).",
+	"metrics_gitlab_project.csv" => "All metrics computed by the GitLab Project plugin (CSV).",
+	"metrics_gitlab_project.json" => "All metrics computed by the GitLab Project plugin (JSON).",
+	"info_gitlab_project.csv" => "All information computed by the GitLab Project plugin (CSV).",
+	"gitlab_project_branches.csv" => "CSV file describing branches in the repository of the project (CSV).",
 	"gitlab_project_merge_requests.csv" => "List of merge requests (CSV).",
 	"gitlab_project_merge_requests.json" => "List of merge requests (JSON).",
 	"gitlab_project_commits.csv" => "List of commits (CSV).",
@@ -63,11 +70,10 @@ my %conf = (
 	"gitlab_project_commits_hist.csv" => "Evolution of commits, sorted by date (CSV).",
     },
     "provides_metrics" => {
-        "PROJECT_ISSUES_OPEN" => "PROJ_CHANGED_1W", 
-        "PROJECT_FORKS"       => "PROJ_CHANGED_1M", 
-        "PROJECT_STARS"       => "PROJ_CHANGED_1Y", 
-        "PROJECT_LAST_ACTIVITY_AT" => "PROJECT_LAST_ACTIVITY_AT
-",
+        "PROJECT_ISSUES_OPEN" => "PROJECT_ISSUES_OPEN", 
+        "PROJECT_FORKS"       => "PROJECT_FORKS", 
+        "PROJECT_STARS"       => "PROJECT_STARS", 
+        "PROJECT_LAST_ACTIVITY_AT" => "PROJECT_LAST_ACTIVITY_AT",
 	"PROJECT_AUTHORS"       => "PROJECT_AUTHORS",
 	"PROJECT_AUTHORS_1W"    => "PROJECT_AUTHORS_1W",
 	"PROJECT_AUTHORS_1M"    => "PROJECT_AUTHORS_1M",
@@ -138,10 +144,6 @@ sub run_plugin($$) {
     my $gl_id = $conf->{'gitlab_id'};
     my $gl_token = $conf->{'gitlab_token'};
 
-    $ret{'info'}{'PROJECT_MRS_URL'} = $gl_url . '/' . $gl_id . '/merge_requests';
-    $ret{'info'}{'PROJECT_COMMITS_URL'} = $gl_url . '/' . $gl_id . '/commits/master';
-    $ret{'info'}{'PROJECT_URL'} = $gl_url . '/' . $gl_id;
-    
     push( @{$ret{'log'}}, "[Plugins::GitLabProject] Retrieving data from [$gl_url] for project [$gl_id]." ); 
 
     # Create GitLab API object for all rest operations.
@@ -176,14 +178,32 @@ sub run_plugin($$) {
     $ret{'info'}{'PROJECT_OWNER_ID'} = $project->{'owner'}{'id'};
     $ret{'info'}{'PROJECT_OWNER_NAME'} = $project->{'owner'}{'name'};
     $ret{'info'}{'PROJECT_ISSUES_ENABLED'} = $project->{'issues_enabled'};
-    $ret{'info'}{'PROJECT_BUILDS_ENABLED'} = $project->{'builds_enabled'};
+    $ret{'info'}{'PROJECT_CI_ENABLED'} = $project->{'builds_enabled'};
     $ret{'info'}{'PROJECT_WIKI_ENABLED'} = $project->{'wiki_enabled'};
-    $ret{'info'}{'PROJECT_MERGE_ENABLED'} = $project->{'merge_requests_enabled'};
+    $ret{'info'}{'PROJECT_MRS_ENABLED'} = $project->{'merge_requests_enabled'};
     $ret{'info'}{'PROJECT_SNIPPETS_ENABLED'} = $project->{'snippets_enabled'};
     $ret{'info'}{'PROJECT_CREATED_AT'} = $project->{'created_at'};
-    $ret{'info'}{'PROJECT_VISIBILITY'} = $project->{'visibility_level'};
     $ret{'info'}{'PROJECT_REPO_SSH'} = $project->{'ssh_url_to_repo'};
+    $ret{'info'}{'PROJECT_REPO_HTTP'} = $project->{'http_url_to_repo'};
+
+    # Use constants for visibility
+    my $v = 'na';
+    if ($project->{'visibility_level'} == 20) { 
+        $v = 'public';
+    } elsif ($project->{'visibility_level'} == 10) {
+        $v = 'internal';
+    } elsif ($project->{'visibility_level'} == 0) {
+        $v = 'private';
+    }
+    $ret{'info'}{'PROJECT_VISIBILITY'} = $v;
     
+
+    $ret{'info'}{'PROJECT_URL'} = $gl_url . '/' . $gl_id;
+    $ret{'info'}{'PROJECT_MRS_URL'} = $gl_url . '/' . $gl_id . '/merge_requests';
+    $ret{'info'}{'PROJECT_COMMITS_URL'} = $gl_url . '/' . $gl_id . '/commits/master';
+    $ret{'info'}{'PROJECT_ISSUES_URL'} = $gl_url . '/' . $gl_id . '/issues';
+    $ret{'info'}{'PROJECT_CI_URL'} = $gl_url . '/' . $gl_id . '/pipelines';
+    $ret{'info'}{'PROJECT_WIKI_URL'} = $gl_url . '/' . $gl_id . '/wikis/home';
 
     # Request information about events for this specific project.
     my $events = $api->project_events( $gl_id );
@@ -237,10 +257,10 @@ sub run_plugin($$) {
     my %timeline_a;
     
     # Initialise some zero values for some metrics -- others are set to zero anyway.
-    $ret{'metrics'}{'SCM_COMMITS'}    = 0;
-    $ret{'metrics'}{'SCM_COMMITS_1W'} = 0;
-    $ret{'metrics'}{'SCM_COMMITS_1M'} = 0;
-    $ret{'metrics'}{'SCM_COMMITS_1Y'} = 0;
+    $ret{'metrics'}{'PROJECT_COMMITS'}    = 0;
+    $ret{'metrics'}{'PROJECT_COMMITS_1W'} = 0;
+    $ret{'metrics'}{'PROJECT_COMMITS_1M'} = 0;
+    $ret{'metrics'}{'PROJECT_COMMITS_1Y'} = 0;
 
     # The API returns an array of merge requests.
     if ( ref($commits) eq "ARRAY" ) {
@@ -285,7 +305,7 @@ sub run_plugin($$) {
 	    
 	    # Is the commit recent (<1W)?
 	    if ($date > $t_1w->epoch) {
-		$ret{'metrics'}{'SCM_COMMITS_1W'}++;
+		$ret{'metrics'}{'PROJECT_COMMITS_1W'}++;
 		if (defined($commit->{'author_email'})) {
 		    $authors_1w{$commit->{'author_email'}}++;
 		}
@@ -296,7 +316,7 @@ sub run_plugin($$) {
 	    
 	    # Is the commit recent (<1M)?
 	    if ($date > $t_1m->epoch) {
-		$ret{'metrics'}{'SCM_COMMITS_1M'}++;
+		$ret{'metrics'}{'PROJECT_COMMITS_1M'}++;
 		if (defined($commit->{'author_email'})) {
 		    $authors_1m{$commit->{'author_email'}}++;
 		}
@@ -307,7 +327,7 @@ sub run_plugin($$) {
 	    
 	    # Is the commit recent (<1Y)?
 	    if ($date > $t_1y->epoch) {
-		$ret{'metrics'}{'SCM_COMMITS_1Y'}++;
+		$ret{'metrics'}{'PROJECT_COMMITS_1Y'}++;
 		if (defined($commit->{'author_email'})) {
 		    $authors_1y{$commit->{'author_email'}}++;
 		}
@@ -320,17 +340,17 @@ sub run_plugin($$) {
  	}
 	
      	# Set metrics
-     	$ret{'metrics'}{'SCM_COMMITS'} = scalar(@commits_ret);
+     	$ret{'metrics'}{'PROJECT_COMMITS'} = scalar(@commits_ret) || 0;
 
-     	$ret{'metrics'}{'SCM_AUTHORS'} = scalar(keys %authors);
-     	$ret{'metrics'}{'SCM_AUTHORS_1W'} = scalar(keys %authors_1w);
-     	$ret{'metrics'}{'SCM_AUTHORS_1M'} = scalar(keys %authors_1m);
-     	$ret{'metrics'}{'SCM_AUTHORS_1Y'} = scalar(keys %authors_1y);
+     	$ret{'metrics'}{'PROJECT_AUTHORS'} = scalar(keys %authors) || 0;
+     	$ret{'metrics'}{'PROJECT_AUTHORS_1W'} = scalar(keys %authors_1w) || 0;
+     	$ret{'metrics'}{'PROJECT_AUTHORS_1M'} = scalar(keys %authors_1m) || 0;
+     	$ret{'metrics'}{'PROJECT_AUTHORS_1Y'} = scalar(keys %authors_1y) || 0;
 	
-     	$ret{'metrics'}{'SCM_COMMITTERS'} = scalar(keys %committers);
-     	$ret{'metrics'}{'SCM_COMMITTERS_1W'} = scalar(keys %committers_1w);
-     	$ret{'metrics'}{'SCM_COMMITTERS_1M'} = scalar(keys %committers_1m);
-     	$ret{'metrics'}{'SCM_COMMITTERS_1Y'} = scalar(keys %committers_1y);
+     	$ret{'metrics'}{'PROJECT_COMMITTERS'} = scalar(keys %committers) || 0;
+     	$ret{'metrics'}{'PROJECT_COMMITTERS_1W'} = scalar(keys %committers_1w) || 0;
+     	$ret{'metrics'}{'PROJECT_COMMITTERS_1M'} = scalar(keys %committers_1m) || 0;
+     	$ret{'metrics'}{'PROJECT_COMMITTERS_1Y'} = scalar(keys %committers_1y) || 0;
      } else {
      	# Happens when no git repo is defined on the project.
      	push( @{$ret{'log'}}, "Error: merge_requests is not an array.");
@@ -387,10 +407,10 @@ sub run_plugin($$) {
  	    $mymr{'id'} = $mr->{'iid'};
  	    $mymr{'title'} = $mr->{'title'};
  	    $mymr{'state'} = $mr->{'state'};
- 	    $mymr{'description'} = $mr->{'description'};
- 	    $mymr{'assignee'} = $mr->{'assignee'};
+ 	    $mymr{'description'} = $mr->{'description'}; 
+ 	    $mymr{'assignee'} = $mr->{'assignee'}{'name'} || '';
  	    $mymr{'web_url'} = $mr->{'web_url'};
- 	    $mymr{'labels'} = $mr->{'labels'};
+ 	    $mymr{'labels'} = join( ', ', @{$mr->{'labels'}} );
  	    $mymr{'merge_status'} = $mr->{'merge_status'};
  	    $mymr{'source_project_id'} = $mr->{'source_project_id'};
  	    $mymr{'source_branch'} = $mr->{'source_branch'};
@@ -412,26 +432,26 @@ sub run_plugin($$) {
      	my @mrs_merged = grep $_->{'state'} =~ m'merged', @$mrs;
      	my @mrs_closed = grep $_->{'state'} =~ m'closed', @$mrs;
 	
-     	my @mrs_opened_1w = grep $_->{'created_at'} < $t_1w, @$mrs;
-     	my @mrs_opened_1m = grep $_->{'created_at'} < $t_1m, @$mrs;
-     	my @mrs_opened_1y = grep $_->{'created_at'} < $t_1y, @$mrs;
-     	my @mrs_opened_still_1w = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} < $t_1w, @$mrs;
-     	my @mrs_opened_still_1m = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} < $t_1m, @$mrs;
-     	my @mrs_opened_still_1y = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} < $t_1y, @$mrs;
-     	my @mrs_opened_staled_1m = grep $_->{'state'} =~ m'opened' && $_->{'updated_at'} < $t_1m, @$mrs;
+     	my @mrs_opened_1w = grep $_->{'created_at'} > $t_1w, @$mrs;
+     	my @mrs_opened_1m = grep $_->{'created_at'} > $t_1m, @$mrs;
+     	my @mrs_opened_1y = grep $_->{'created_at'} > $t_1y, @$mrs;
+     	my @mrs_opened_still_1w = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} > $t_1w, @$mrs;
+     	my @mrs_opened_still_1m = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} > $t_1m, @$mrs;
+     	my @mrs_opened_still_1y = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} > $t_1y, @$mrs;
+     	my @mrs_opened_staled_1m = grep $_->{'state'} =~ m'opened' && $_->{'updated_at'} > $t_1m, @$mrs;
 	
      	# Set metrics
-     	$ret{'metrics'}{'SCM_MRS'} = scalar(@$mrs);
-     	$ret{'metrics'}{'SCM_MRS_OPENED'} = scalar(@mrs_opened);
-     	$ret{'metrics'}{'SCM_MRS_OPENED_1W'} = scalar(@mrs_opened_1w);
-     	$ret{'metrics'}{'SCM_MRS_OPENED_1M'} = scalar(@mrs_opened_1m);
-     	$ret{'metrics'}{'SCM_MRS_OPENED_1Y'} = scalar(@mrs_opened_1y);
-     	$ret{'metrics'}{'SCM_MRS_OPENED_STILL_1W'} = scalar(@mrs_opened_still_1w);
-     	$ret{'metrics'}{'SCM_MRS_OPENED_STILL_1M'} = scalar(@mrs_opened_still_1m);
-     	$ret{'metrics'}{'SCM_MRS_OPENED_STILL_1Y'} = scalar(@mrs_opened_still_1y);
-     	$ret{'metrics'}{'SCM_MRS_OPENED_STALED_1M'} = scalar(@mrs_opened_staled_1m);
-     	$ret{'metrics'}{'SCM_MRS_MERGED'} = scalar(@mrs_merged);
-     	$ret{'metrics'}{'SCM_MRS_CLOSED'} = scalar(@mrs_closed);
+     	$ret{'metrics'}{'PROJECT_MRS'} = scalar(@$mrs);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED'} = scalar(@mrs_opened);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_1W'} = scalar(@mrs_opened_1w);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_1M'} = scalar(@mrs_opened_1m);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_1Y'} = scalar(@mrs_opened_1y);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STILL_1W'} = scalar(@mrs_opened_still_1w);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STILL_1M'} = scalar(@mrs_opened_still_1m);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STILL_1Y'} = scalar(@mrs_opened_still_1y);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STALED_1M'} = scalar(@mrs_opened_staled_1m);
+     	$ret{'metrics'}{'PROJECT_MRS_MERGED'} = scalar(@mrs_merged);
+     	$ret{'metrics'}{'PROJECT_MRS_CLOSED'} = scalar(@mrs_closed);
 
      } else {
      	# Happens when no git repo is defined on the project.
@@ -446,9 +466,9 @@ sub run_plugin($$) {
     # Write list of merge requests to the disk, csv.
     $csv = Text::CSV->new({binary => 1, eol => "\n"});
     @cols = ('id', 'title', 'state', 'description', 'assignee', 'web_url', 'labels',
-	'merge_status', 'source_project_id', 'source_branch', 'target_project_id', 'target_branch',
-	'upvotes', 'downvotes', 'user_notes_count', 'milestone', 'author', 
-	     'created_at', 'updated_at');
+             'merge_status', 'source_project_id', 'source_branch', 'target_project_id', 
+             'target_branch', 'upvotes', 'downvotes', 'user_notes_count', 'milestone', 
+             'author', 'created_at', 'updated_at');
     $csv_out = join(',', @cols) . "\n";
     foreach my $mr (@mrs_ret) {
         my @mrs = map { $mr->{$_} } @cols;
@@ -468,7 +488,6 @@ sub run_plugin($$) {
     my $project_json = encode_json($contributors);
     $repofs->write_input( $project_id, "import_gitlab_project_contributors.json", $project_json );
 
-
     # Milestones ###############################################
 
     # Request information about milestones for this specific project.
@@ -478,23 +497,44 @@ sub run_plugin($$) {
         push( @$milestones, $milestone );
     }
 
-    my ($m_active);
-    my @m_names;
-    my @m_desc;
-    my @m_is_late;
+    my ($m_active, $m_late, $m_total) = (0, 0, 0);
+    my %ms_issues;
     foreach my $m (@$milestones) {
+        $m_total++;
 	if ( defined($m->{'due_date'}) and $m->{'due_date'} < $t_now->epoch ){
-	    # Add rec
-	    push( @m_is_late, $m );
+	    # TODO Add rec
+	    $m_late++;
 	}
-	$m_active++ if ( $m->{'state'} eq 'active' );
-	push( @m_names, $m->{'title'} );
-	push( @m_desc, $m->{'description'} );
-    }
-    $ret{'metrics'}{'MILESTONES_TOTAL'} = scalar @m_names;;
-    $ret{'metrics'}{'MILESTONES_LATE'} = scalar @m_is_late;;
-    $ret{'metrics'}{'MILESTONES_ACTIVE'} = $m_active;;
+	if ( $m->{'state'} eq 'active' ) { $m_active++ }
         
+        # Get issues for milestone
+        my $m_issues_all = $api->milestone_issues($gl_id, $m->{'id'}); 
+        my @m_issues_closed = grep { $_->{'state'} eq 'closed' } @$m_issues_all;
+        $ms_issues{ $m->{'id'} }{'total'} = scalar(@$m_issues_all);
+        $ms_issues{ $m->{'id'} }{'closed'} = scalar(@m_issues_closed);
+    }
+    $ret{'metrics'}{'MILESTONES_TOTAL'} = $m_total;
+    $ret{'metrics'}{'MILESTONES_LATE'} = $m_late;
+    $ret{'metrics'}{'MILESTONES_ACTIVE'} = $m_active;
+
+    # Write the original file to disk.
+    my $milestones_json = encode_json($milestones);
+    $repofs->write_input( $project_id, "import_gitlab_project_milestones.json", $milestones_json );
+        
+    # Write list of milestones to the disk, csv.
+    $csv = Text::CSV->new({binary => 1, eol => "\n"});
+    @cols = ('id', 'iid', 'title', 'state', 'description', 'due_date', 'start_date', 
+             'created_at', 'updated_at', 'issues_total', 'issues_opened', 'issues_closed');
+    $csv_out = join(',', @cols) . "\n";
+    foreach my $m (@$milestones) {
+        my @ms = map { $m->{$_} || '' } @cols;
+        $ms[-3] = $ms_issues{ $m->{'id'} }{'total'};
+        $ms[-2] = ($ms_issues{ $m->{'id'} }{'total'} - $ms_issues{ $m->{'id'} }{'closed'});
+        $ms[-1] = $ms_issues{ $m->{'id'} }{'closed'};
+        $csv->combine(@ms);
+        $csv_out .= $csv->string();
+    }    
+    $repofs->write_output($project_id, "gitlab_project_milestones.csv", $csv_out);
     
     # Users ###############################################
 
@@ -506,15 +546,25 @@ sub run_plugin($$) {
     }
     $repofs->write_users("GitLabProject", $project_id, $events);
 
+    # Metrics/Info  ###############################################
+
     # Write static metrics json file to disk.
     $repofs->write_output($project_id, "metrics_gitlab_project.json",
 			  encode_json($ret{'metrics'}));
 
     # Write static metrics csv file to disk.
-    my @metrics = sort map { $conf{'provides_metrics'}{$_} } keys %{$conf{'provides_metrics'}};
-    $csv_out = join(',', sort @metrics) . "\n";
-    $csv_out .= join(',', map { $ret{'metrics'}{$_} || '' } sort @metrics) . "\n";
+    my @metrics_def = sort map { $conf{'provides_metrics'}{$_} } keys %{$conf{'provides_metrics'}};
+    $csv_out = join(',', @metrics_def) . "\n";
+    my @values = map { $ret{'metrics'}{$_} } @metrics_def; 
+    $csv_out .= join(',', @values) . "\n";
     $repofs->write_output($project_id, "metrics_gitlab_project.csv", $csv_out);
+    
+    # Write info csv file to disk.
+    my @info_def = sort @{$conf{'provides_info'}};
+    $csv_out = join(',', @info_def) . "\n";
+    my @info_values = map { $ret{'info'}{$_} || '' } @info_def; 
+    $csv_out .= join(',', @info_values) . "\n";
+    $repofs->write_output($project_id, "info_gitlab_project.csv", $csv_out);
     
     # Generate R report ###############################################
 
