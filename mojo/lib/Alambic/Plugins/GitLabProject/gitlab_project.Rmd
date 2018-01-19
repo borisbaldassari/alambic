@@ -50,9 +50,9 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 #   * gitlab.url
 
 project.id <- 'alambic'
-gitlab.id <- 'bbaldassari/Alambic'
-gitlab.url <- 'https://gitlab.com'
-plugin.id <- 'GitLabProject'
+#gitlab.id <- 'bbaldassari/Alambic'
+#gitlab.url <- 'https://gitlab.com'
+#plugin.id <- 'GitLabProject'
 file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_gitlab_project.csv", sep="")
 file.info = paste("../../../../projects/", project.id, "/output/", project.id, "_info_gitlab_project.csv", sep="")
 file.commits.hist = paste("../../../../projects/", project.id, "/output/", project.id, "_gitlab_git_commits_hist.csv", sep="")

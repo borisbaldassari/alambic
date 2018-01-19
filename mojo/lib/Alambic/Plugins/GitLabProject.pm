@@ -263,6 +263,14 @@ sub run_plugin($$) {
     $ret{'metrics'}{'PROJECT_COMMITS_1W'} = 0;
     $ret{'metrics'}{'PROJECT_COMMITS_1M'} = 0;
     $ret{'metrics'}{'PROJECT_COMMITS_1Y'} = 0;
+    $ret{'metrics'}{'PROJECT_AUTHORS'}    = 0;
+    $ret{'metrics'}{'PROJECT_AUTHORS_1W'} = 0;
+    $ret{'metrics'}{'PROJECT_AUTHORS_1M'} = 0;
+    $ret{'metrics'}{'PROJECT_AUTHORS_1Y'} = 0;
+    $ret{'metrics'}{'PROJECT_COMMITTERS'}    = 0;
+    $ret{'metrics'}{'PROJECT_COMMITTERS_1W'} = 0;
+    $ret{'metrics'}{'PROJECT_COMMITTERS_1M'} = 0;
+    $ret{'metrics'}{'PROJECT_COMMITTERS_1Y'} = 0;
 
     # The API returns an array of merge requests.
     if ( ref($commits) eq "ARRAY" ) {
@@ -556,8 +564,8 @@ sub run_plugin($$) {
 
     # Write static metrics csv file to disk.
     my @metrics_def = sort map { $conf{'provides_metrics'}{$_} } keys %{$conf{'provides_metrics'}};
-    $csv_out = join(',', @metrics_def) . "\n";
-    my @values = map { $ret{'metrics'}{$_} || '' } @metrics_def; 
+    $csv_out = join(',', @metrics_def) . "\n"; 
+    my @values = map { $ret{'metrics'}{$_} } @metrics_def;
     $csv_out .= join(',', @values) . "\n";
     $repofs->write_output($project_id, "metrics_gitlab_project.csv", $csv_out);
     
