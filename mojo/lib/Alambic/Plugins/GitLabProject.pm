@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Alambic::Model::RepoFS;
+use Alambic::Tools::R;
 
 use GitLab::API::v3;
 use Mojo::JSON qw( decode_json encode_json );
@@ -62,12 +63,14 @@ my %conf = (
 	"metrics_gitlab_project.csv" => "All metrics computed by the GitLab Project plugin (CSV).",
 	"metrics_gitlab_project.json" => "All metrics computed by the GitLab Project plugin (JSON).",
 	"info_gitlab_project.csv" => "All information computed by the GitLab Project plugin (CSV).",
+
 	"gitlab_project_branches.csv" => "CSV file describing branches in the repository of the project (CSV).",
-	"gitlab_project_merge_requests.csv" => "List of merge requests (CSV).",
-	"gitlab_project_merge_requests.json" => "List of merge requests (JSON).",
-	"gitlab_project_commits.csv" => "List of commits (CSV).",
-	"gitlab_project_commits.json" => "List of commits (JSON).",
-	"gitlab_project_commits_hist.csv" => "Evolution of commits, sorted by date (CSV).",
+	"gitlab_project_milestones.csv" => "CSV file describing milestones of the project (CSV).",
+	"gitlab_git_merge_requests.csv" => "List of merge requests (CSV).",
+	"gitlab_git_merge_requests.json" => "List of merge requests (JSON).",
+	"gitlab_git_commits.csv" => "List of commits (CSV).",
+	"gitlab_git_commits.json" => "List of commits (JSON).",
+	"gitlab_git_commits_hist.csv" => "Evolution of commits, sorted by date (CSV).",
     },
     "provides_metrics" => {
         "PROJECT_ISSUES_OPEN" => "PROJECT_ISSUES_OPEN", 
