@@ -219,7 +219,7 @@ Summary:
 
 Activity: 
 
-* ``r metrics[['SCM_PRS_OPENED_STALLED_1M']]`` merge requests are open and have had no update since more than one month.
+* ``r metrics[['SCM_PRS_OPENED_STALED_1M']]`` merge requests are open and have had no update since more than one month.
 * ``r metrics[['SCM_PRS_OPENED_STILL_1W']]`` merge requests have been opened for more than one week, ``r metrics[['SCM_PRS_OPENED_STILL_1M']]`` for more than 1 month, and ``r metrics[['SCM_PRS_OPENED_STILL_1Y']]`` for more than one year.
 
 The following open merge requests are currently available:
