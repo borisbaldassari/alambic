@@ -1,0 +1,242 @@
+  {
+    "name": "Alambic Metrics for GitLab Project",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Open issues",
+        "mnemo": "PROJECT_ISSUES_OPEN",
+        "desc": [
+            "The number of issues opened at the time of analysis on the GitLab project.",
+            "This information is retrieved from GitLab itself, and may differ from numbers gathered from the actual issue tracking system used."
+        ]
+      },
+      {
+        "name": "Number of forks",
+        "mnemo": "PROJECT_FORKS",
+        "desc": [
+            "The number of forks for this project. More forks usually mean a greater activity."
+        ],
+          "scale": [0,1,5,10]
+      },
+      {
+        "name": "Number of stars",
+        "mnemo": "PROJECT_STARS",
+        "desc": [
+            "The number of times people have starred this project. Users use stars to show their interest for a project, and more stars usually mean a greater visibility and interest."
+        ],
+          "scale": [0,1,5,10]
+      },
+      {
+        "name": "Last activity",
+        "mnemo": "PROJECT_LAST_ACTIVITY_AT",
+        "desc": [
+            "The date of last activity for this project. This includes any type of action: changes on issues, git commits or pushes, merge requests, comments...",
+            "A project with a old last activity timestamp shows the project is dead (or in agony at least)."
+        ]
+      },
+	{
+            "name": "Project authors",
+            "mnemo": "PROJECT_AUTHORS",
+            "desc": [
+                "Total number of identities found as authors of commits in source code management repository.",
+	        "Source code management repositories are those considered as such in the project documentation. Commits in all branches are considered. Date used for each commit is 'author date' (when there is a difference between author date and committer date). An identity is considered as author if it appears as such in the commit record (for systems logging several identities related to the commit, authoring identity will be considered)."
+            ],
+            "scale": [1,2,3,18]
+        },
+        {
+            "name": "Project authors one week",
+            "mnemo": "PROJECT_AUTHORS_1W",
+            "desc": [
+                "Total number of identities found as authors of commits in source code management repositories dated during the last week.",
+	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one week period starting the day before the data retrieval."
+            ],
+            "scale": [1,2,3,18]
+        },
+        {
+            "name": "Project authors one month",
+            "mnemo": "PROJECT_AUTHORS_1M",
+            "desc": [
+                "Total number of identities found as authors of commits in source code management repositories dated during the last month.",
+	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            ],
+            "scale": [1,2,3,18]
+        },
+        {
+            "name": "Project authors one year",
+            "mnemo": "PROJECT_AUTHORS_1Y",
+            "desc": [
+                "Total number of identities found as authors of commits in source code management repositories dated during the last year.",
+	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one year period starting the day before the data retrieval (example: if retrieval is on Feb 3rd 2016, period is from Feb 3rd 2015 to Feb 3rd 2016, both included)."
+            ],
+            "scale": [1,2,3,18]
+        },
+        {
+            "name": "Project committers",
+            "mnemo": "PROJECT_COMMITTERS",
+            "desc": [
+                "Total number of identities found as committers of commits in source code management repository.",
+	        "Source code management repositories are those considered as such in the project documentation. Commits in all branches are considered. Date used for each commit is 'committer date' (when there is a difference between author date and committer date). An identity is considered as committer if it appears as such in the commit record."
+            ],
+            "scale": [1,2,3,18]
+        },
+        {
+            "name": "Project committers one week",
+            "mnemo": "PROJECT_COMMITTERS_1W",
+            "desc": [
+                "Total number of identities found as committers of commits in source code management repositories dated during the last week.",
+	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'committer date' (when there is a difference between author date and committer date). Time range is measured as a one week period starting the day before the data retrieval."
+            ],
+            "scale": [1,2,3,18]
+        },
+        {
+            "name": "Project committers one month",
+            "mnemo": "PROJECT_COMMITTERS_1M",
+            "desc": [
+                "Total number of identities found as committers of commits in source code management repositories dated during the last month.",
+	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'committer date' (when there is a difference between author date and committer date). Time range is measured as a one month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+            ],
+            "scale": [1,2,3,18]
+        },
+        {
+            "name": "Project committers one year",
+            "mnemo": "PROJECT_COMMITTERS_1Y",
+            "desc": [
+                "Total number of identities found as committers of commits in source code management repositories dated during the last year.",
+	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'committer date' (when there is a difference between author date and committer date). Time range is measured as a one year period starting the day before the data retrieval (example: if retrieval is on Feb 3rd 2016, period is from Feb 3rd 2015 to Feb 3rd 2016, both included)."
+            ],
+            "scale": [1,2,3,18]
+        },
+        {
+        "name": "Project Commits",
+        "mnemo": "PROJECT_COMMITS",
+        "desc": [
+            "Total number of commits in source code management repositories.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). "
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "Project Commits one week",
+        "mnemo": "PROJECT_COMMITS_1W",
+        "desc": [
+            "Total number of commits in source code management repositories dated during the last week.",
+	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one week period starting the day before the data retrieval."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "Project Commits one month",
+        "mnemo": "PROJECT_COMMITS_1M",
+        "desc": [
+            "Total number of commits in source code management repositories dated during the last month.",
+	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "Project Commits one year",
+        "mnemo": "PROJECT_COMMITS_1Y",
+        "desc": [
+            "Total number of commits in source code management repositories dated during the last year.",
+	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one year period starting the day before the data retrieval (example: if retrieval is on Feb 3rd 2016, period is from Feb 3rd 2015 to Feb 3rd 2016, both included)."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Pull requests",
+        "mnemo": "SCM_PRS",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs) in source code management repositories.",
+	    "Source code management repositories are those considered as such in the project documentation. "
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Open Pull requests",
+        "mnemo": "SCM_PRS_OPENED",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs) in the opened state in source code management repositories."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Open Pull requests one week",
+        "mnemo": "SCM_PRS_OPENED_1W",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs)that have been opened within the last week in source code management repositories.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one week period starting the day before the data retrieval."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Open Pull requests one month",
+        "mnemo": "SCM_PRS_OPENED_1M",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs)that have been opened within the last month in source code management repositories.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Open Pull requests one year",
+        "mnemo": "SCM_PRS_OPENED_1Y",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs) that have been opened within the last year in source code management repositories.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one year period starting the day before the data retrieval (example: if retrieval is on Feb 3rd 2016, period is from Feb 3rd 2015 to Feb 3rd 2016, both included)."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Still Open Pull requests one week",
+        "mnemo": "SCM_PRS_OPENED_STILL_1W",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs) that have been opened more than one week ago and are still in the opened state in source code management repositories.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one week period starting the day before the data retrieval."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Still Open Pull requests one month",
+        "mnemo": "SCM_PRS_OPENED_STILL_1M",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs) that have been opened more than one month ago and are still in the opened state in source code management repositories.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Still Open Pull requests one year",
+        "mnemo": "SCM_PRS_OPENED_STILL_1Y",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs) that have been opened more than one year ago and are still in the opened state in source code management repositories.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one year period starting the day before the data retrieval (example: if retrieval is on Feb 3rd 2016, period is from Feb 3rd 2015 to Feb 3rd 2016, both included)."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Staled Open Pull requests one month",
+        "mnemo": "SCM_PRS_OPENED_STALED_1M",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs) that are in the opened state and have not been updated since one month.",
+	    "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'author date' (when there is a difference between author date and committer date). Time range is measured as a one month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Closed Pull requests",
+        "mnemo": "SCM_PRS_CLOSED",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs) in the closed state in source code management repositories."
+        ],
+        "scale": [2,5,13,121]
+      },
+      {
+        "name": "SCM Merged Pull requests",
+        "mnemo": "SCM_PRS_MERGED",
+        "desc": [
+            "Total number of Pull Requests (PRs) or Merge Requests (MRs) in the 'merged' state in source code management repositories."
+        ],
+        "scale": [2,5,13,121]
+      }
+    ]
+  }
