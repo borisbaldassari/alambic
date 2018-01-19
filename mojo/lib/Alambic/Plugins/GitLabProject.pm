@@ -86,17 +86,17 @@ my %conf = (
 	"PROJECT_COMMITTERS_1W" => "PROJECT_COMMITTERS_1W",
 	"PROJECT_COMMITTERS_1M" => "PROJECT_COMMITTERS_1M",
 	"PROJECT_COMMITTERS_1Y" => "PROJECT_COMMITTERS_1Y",
-	"PROJECT_MRS"           => "PROJECT_MRS",
-	"PROJECT_MRS_OPENED"    => "PROJECT_MRS_OPENED",
-	"PROJECT_MRS_OPENED_1W"    => "PROJECT_MRS_OPENED_1W",
-	"PROJECT_MRS_OPENED_1M"    => "PROJECT_MRS_OPENED_1M",
-	"PROJECT_MRS_OPENED_1Y"    => "PROJECT_MRS_OPENED_1Y",
-	"PROJECT_MRS_OPENED_STILL_1W"    => "PROJECT_MRS_OPENED_STILL_1W",
-	"PROJECT_MRS_OPENED_STILL_1M"    => "PROJECT_MRS_OPENED_STILL_1M",
-	"PROJECT_MRS_OPENED_STILL_1Y"    => "PROJECT_MRS_OPENED_STILL_1Y",
-	"PROJECT_MRS_OPENED_STALED_1M" => "PROJECT_MRS_OPENED_STALED_1M",
-	"PROJECT_MRS_CLOSED"    => "PROJECT_MRS_CLOSED",
-	"PROJECT_MRS_MERGED"    => "PROJECT_MRS_MERGED",
+	"PROJECT_MRS"           => "SCM_PRS",
+	"PROJECT_MRS_OPENED"    => "SCM_PRS_OPENED",
+	"PROJECT_MRS_OPENED_1W"    => "SCM_PRS_OPENED_1W",
+	"PROJECT_MRS_OPENED_1M"    => "SCM_PRS_OPENED_1M",
+	"PROJECT_MRS_OPENED_1Y"    => "SCM_PRS_OPENED_1Y",
+	"PROJECT_MRS_OPENED_STILL_1W"    => "SCM_PRS_OPENED_STILL_1W",
+	"PROJECT_MRS_OPENED_STILL_1M"    => "SCM_PRS_OPENED_STILL_1M",
+	"PROJECT_MRS_OPENED_STILL_1Y"    => "SCM_PRS_OPENED_STILL_1Y",
+	"PROJECT_MRS_OPENED_STALED_1M" => "SCM_PRS_OPENED_STALED_1M",
+	"PROJECT_MRS_CLOSED"    => "SCM_PRS_CLOSED",
+	"PROJECT_MRS_MERGED"    => "SCM_PRS_MERGED",
     },
     "provides_figs" => {
     },
@@ -108,7 +108,6 @@ my %conf = (
     ],
     "provides_viz" => {
         "gitlab_project.html" => "GitLab Project",
-#        "gitlab_git.html" => "GitLab Git",
     },
 );
 
@@ -441,17 +440,17 @@ sub run_plugin($$) {
      	my @mrs_opened_staled_1m = grep $_->{'state'} =~ m'opened' && $_->{'updated_at'} > $t_1m, @$mrs;
 	
      	# Set metrics
-     	$ret{'metrics'}{'PROJECT_MRS'} = scalar(@$mrs);
-     	$ret{'metrics'}{'PROJECT_MRS_OPENED'} = scalar(@mrs_opened);
-     	$ret{'metrics'}{'PROJECT_MRS_OPENED_1W'} = scalar(@mrs_opened_1w);
-     	$ret{'metrics'}{'PROJECT_MRS_OPENED_1M'} = scalar(@mrs_opened_1m);
-     	$ret{'metrics'}{'PROJECT_MRS_OPENED_1Y'} = scalar(@mrs_opened_1y);
-     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STILL_1W'} = scalar(@mrs_opened_still_1w);
-     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STILL_1M'} = scalar(@mrs_opened_still_1m);
-     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STILL_1Y'} = scalar(@mrs_opened_still_1y);
-     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STALED_1M'} = scalar(@mrs_opened_staled_1m);
-     	$ret{'metrics'}{'PROJECT_MRS_MERGED'} = scalar(@mrs_merged);
-     	$ret{'metrics'}{'PROJECT_MRS_CLOSED'} = scalar(@mrs_closed);
+     	$ret{'metrics'}{'SCM_PRS'} = scalar(@$mrs);
+     	$ret{'metrics'}{'SCM_PRS_OPENED'} = scalar(@mrs_opened);
+     	$ret{'metrics'}{'SCM_PRS_OPENED_1W'} = scalar(@mrs_opened_1w);
+     	$ret{'metrics'}{'SCM_PRS_OPENED_1M'} = scalar(@mrs_opened_1m);
+     	$ret{'metrics'}{'SCM_PRS_OPENED_1Y'} = scalar(@mrs_opened_1y);
+     	$ret{'metrics'}{'SCM_PRS_OPENED_STILL_1W'} = scalar(@mrs_opened_still_1w);
+     	$ret{'metrics'}{'SCM_PRS_OPENED_STILL_1M'} = scalar(@mrs_opened_still_1m);
+     	$ret{'metrics'}{'SCM_PRS_OPENED_STILL_1Y'} = scalar(@mrs_opened_still_1y);
+     	$ret{'metrics'}{'SCM_PRS_OPENED_STALED_1M'} = scalar(@mrs_opened_staled_1m);
+     	$ret{'metrics'}{'SCM_PRS_MERGED'} = scalar(@mrs_merged);
+     	$ret{'metrics'}{'SCM_PRS_CLOSED'} = scalar(@mrs_closed);
 
      } else {
      	# Happens when no git repo is defined on the project.
@@ -555,7 +554,7 @@ sub run_plugin($$) {
     # Write static metrics csv file to disk.
     my @metrics_def = sort map { $conf{'provides_metrics'}{$_} } keys %{$conf{'provides_metrics'}};
     $csv_out = join(',', @metrics_def) . "\n";
-    my @values = map { $ret{'metrics'}{$_} } @metrics_def; 
+    my @values = map { $ret{'metrics'}{$_} || '' } @metrics_def; 
     $csv_out .= join(',', @values) . "\n";
     $repofs->write_output($project_id, "metrics_gitlab_project.csv", $csv_out);
     

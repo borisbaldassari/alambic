@@ -103,24 +103,24 @@ Data for project is directly available from the project&apos;s dashboard:
   <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
   <div class="list-group">
   <a href="#summary" class="list-group-item">Quick Summary</a>
+  <a href="#mrs" class="list-group-item">Milestones</a>
   <a href="#commits" class="list-group-item">Commits</a>
   <a href="#branches" class="list-group-item">Branches</a>
   <a href="#mrs" class="list-group-item">Merge Requests</a>
-  <a href="#mrs" class="list-group-item">Milestones</a>
   </div>
   </div>
 </div></div>
 
 ### <a name="quick-summary"></a>Quick Summary
 
-The project was created on `r info[['PROJECT_CREATED_AT']]` and was last updated on `r metrics[['PROJECT_LAST_ACTIVITY_AT']]`.
+The project was created on ``r info[['PROJECT_CREATED_AT']]`` and was last updated on ``r metrics[['PROJECT_LAST_ACTIVITY_AT']]``.
 
 The URLs to use to connect to the repository are:
 
 * SSH ``r info[['PROJECT_REPO_SSH']]``.
 * HTTP ``r info[['PROJECT_REPO_HTTP']]``.
 
-There is a total of `r ncol(metrics)` metrics retrieved:
+There is a total of ``r ncol(metrics)`` metrics retrieved:
 
 ```{r metrics_table, echo=FALSE, message=FALSE, results='asis'}
 t <- lapply(names(metrics), function(x) paste(x, ' <span class="badge">', metrics[[x]], '</span>, ', sep=''))
@@ -128,95 +128,13 @@ t <- paste(t, collapse=" ")
 cat(t)
 ```
 
-There is a total of `r ncol(info)` information retrieved:
+There is a total of ``r ncol(info)`` information retrieved:
 
 ```{r info_table, echo=FALSE, message=FALSE, results='asis'}
 t <- lapply(names(info), function(x) paste(x, ' <span class="badge">', info[[x]], '</span>, ', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
-
------
-
-### <a name="commits"></a> Commits
-
-There has been a total of `r metrics[['PROJECT_COMMITS']]` commits on the git repository (`r metrics[['PROJECT_COMMITS_1W']]` during last week, `r metrics[['PROJECT_COMMITS_1M']]` during last month, `r metrics[['PROJECT_COMMITS_1Y']]` during last year).
-
-`r metrics[['PROJECT_AUTHORS']]` authors have contributed during the lifetime of the project (`r metrics[['PROJECT_AUTHORS']]` during last week, `r metrics[['PROJECT_AUTHORS']]` during last month, and `r metrics[['PROJECT_AUTHORS']]` during last year).
-
------
-
-### <a name="branches"></a> Branches
-
-The following branches are defined in the Git repository, sorted by last activity date.
-
-<div class="panel panel-default">
-<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Git Branches</div>
-
-<table class="table table-striped">
-  <tr><th>Name</th><th>Commit title</th><th>Last commit date</th><th>Last committer</th></tr>
-```{r branches_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(branches[order(branches$commit_date, decreasing = T),], 1,
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td>',
-							    x[[4]], '</td><td>', x[[6]], '</td></tr>', sep=''))
-t <- paste(t, collapse=" ")
-cat(t)
-```
-</table>
-</div>
-
------
-
-### <a name="mrs"></a> Merge Requests
-
-Summary:
-
-* Total number of merge requests: `r metrics[['PROJECT_MRS_OPENED']]`.
-* Number of merge requests opened during last week: `r metrics[['PROJECT_MRS_OPENED_1W']]`, last month: `r metrics[['PROJECT_MRS_OPENED_1M']]`, last year: `r metrics[['PROJECT_MRS_OPENED_1Y']]`
-
-Activity: 
-
-* `r metrics[['PROJECT_MRS_OPENED_STALLED_1M']]` merge requests are open and have had no update since more than one month.
-* `r metrics[['PROJECT_MRS_OPENED_STILL_1W']]` merge requests have been opened for more than one week, `r metrics[['PROJECT_MRS_OPENED_STILL_1M']]` for more than 1 month, and `r metrics[['PROJECT_MRS_OPENED_STILL_1Y']]` for more than one year.
-* `r metrics[['PROJECT_MRS_OPENED_STILL_1M']]` merge requests are open and have had no update since more than one month.
-
-The following open merge requests are currently available:
-
-<div class="panel panel-default">
-<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Open Merge Requests</div>
-
-<table class="table table-striped">
-  <tr><th>ID</th><th>State</th><th>Title</th><th>Assignee</th><th>Source branch</th><th>Target branch</th><th>Created</th><th>Updated</th></tr>
-```{r mrs_table_open, eval=T, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(mrs[mrs$state == 'opened',], 1,
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td><a href="',
-		           x[[6]], '">', x[[2]], '</a></td><td>', x[[5]], '</td><td>', x[[10]],
-							 '</td><td>', x[[12]],'</td><td>', x[[14]], '</td><td>', x[[15]], 
-							 '</td></tr>', sep=''))
-t <- paste(t, collapse=" ")
-cat(t)
-```
-</table>
-</div>
-
-The following merged merge requests are currently available. Only the last `r list.mrs.count` merge requests are listed.
-
-<div class="panel panel-default">
-<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Open Merge Requests</div>
-
-<table class="table table-striped">
-  <tr><th>ID</th><th>State</th><th>Title</th><th>Assignee</th><th>Source branch</th><th>Target branch</th><th>Created</th><th>Updated</th></tr>
-```{r mrs_table_merged, eval=T, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(head(mrs[mrs$state == 'merged',], n=list.mrs.count), 1,
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td><a href="',
-		           x[[6]], '">', x[[2]], '</a></td><td>', x[[5]], '</td><td>', x[[10]],
-							 '</td><td>', x[[12]],'</td><td>', x[[14]], '</td><td>', x[[15]], 
-							 '</td></tr>', sep=''))
-t <- paste(t, collapse=" ")
-cat(t)
-```
-</table>
-</div>
 
 -----
 
@@ -260,3 +178,85 @@ cat(t)
 ```
 </table>
 </div>
+
+-----
+
+### <a name="commits"></a> Commits
+
+There has been a total of ``r metrics[['PROJECT_COMMITS']]`` commits on the git repository (``r metrics[['PROJECT_COMMITS_1W']]`` during last week, ``r metrics[['PROJECT_COMMITS_1M']]`` during last month, ``r metrics[['PROJECT_COMMITS_1Y']]`` during last year).
+
+``r metrics[['PROJECT_AUTHORS']]`` authors have contributed during the lifetime of the project (``r metrics[['PROJECT_AUTHORS']]`` during last week, ``r metrics[['PROJECT_AUTHORS']]`` during last month, and ``r metrics[['PROJECT_AUTHORS']]`` during last year).
+
+-----
+
+### <a name="branches"></a> Branches
+
+The following branches are defined in the Git repository, sorted by last activity date.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Git Branches</div>
+
+<table class="table table-striped">
+  <tr><th>Name</th><th>Commit title</th><th>Last commit date</th><th>Last committer</th></tr>
+```{r branches_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(branches[order(branches$commit_date, decreasing = T),], 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td>',
+							    x[[4]], '</td><td>', x[[6]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+-----
+
+### <a name="mrs"></a> Merge Requests
+
+Summary:
+
+* Total number of merge requests: ``r metrics[['PROJECT_MRS_OPENED']]``.
+* Number of merge requests opened during last week: ``r metrics[['PROJECT_MRS_OPENED_1W']]``, last month: ``r metrics[['PROJECT_MRS_OPENED_1M']]``, last year: ``r metrics[['PROJECT_MRS_OPENED_1Y']]``.
+
+Activity: 
+
+* ``r metrics[['PROJECT_MRS_OPENED_STALLED_1M']]`` merge requests are open and have had no update since more than one month.
+* ``r metrics[['PROJECT_MRS_OPENED_STILL_1W']]`` merge requests have been opened for more than one week, ``r metrics[['PROJECT_MRS_OPENED_STILL_1M']]`` for more than 1 month, and ``r metrics[['PROJECT_MRS_OPENED_STILL_1Y']]`` for more than one year.
+
+The following open merge requests are currently available:
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Open Merge Requests</div>
+
+<table class="table table-striped">
+  <tr><th>ID</th><th>State</th><th>Title</th><th>Assignee</th><th>Source branch</th><th>Target branch</th><th>Created</th><th>Updated</th></tr>
+```{r mrs_table_open, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(mrs[mrs$state == 'opened',], 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td><a href="',
+		           x[[6]], '">', x[[2]], '</a></td><td>', x[[5]], '</td><td>', x[[10]],
+							 '</td><td>', x[[12]],'</td><td>', x[[14]], '</td><td>', x[[15]], 
+							 '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+The following merged merge requests are currently available. Only the last `r list.mrs.count` merge requests are listed.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Open Merge Requests</div>
+
+<table class="table table-striped">
+  <tr><th>ID</th><th>State</th><th>Title</th><th>Assignee</th><th>Source branch</th><th>Target branch</th><th>Created</th><th>Updated</th></tr>
+```{r mrs_table_merged, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(head(mrs[mrs$state == 'merged',], n=list.mrs.count), 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td><a href="',
+		           x[[6]], '">', x[[2]], '</a></td><td>', x[[5]], '</td><td>', x[[10]],
+							 '</td><td>', x[[12]],'</td><td>', x[[14]], '</td><td>', x[[15]], 
+							 '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
