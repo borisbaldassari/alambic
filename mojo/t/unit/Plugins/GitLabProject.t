@@ -221,7 +221,7 @@ my $ret = $plugin->run_plugin(
       'gitlab_token' => $in_gitlab_token });
 
 # Test log
-my @log = @{$ret->{'log'}}; print "LOG " . Dumper( @log );
+my @log = @{$ret->{'log'}}; 
 ok(grep(!/^ERROR/, @log), "Log returns no ERROR") or diag explain @log;
 ok(grep(m!^\[Plugins::GitLabProject\] Retrieving project.!, @log),
   "Log returns Retrieving project.")
@@ -364,7 +364,7 @@ ok($ret->{'info'}{'PROJECT_REPO_SSH'} =~ m!git\@gitlab.com:bbaldassari/Alambic.g
   or diag explain $ret;
 ok($ret->{'info'}{'PROJECT_SNIPPETS_ENABLED'} == 0,
   "Info PROJECT_SNIPPETS_ENABLED is 0.")
-    or diag explain $ret; print "URL " . Dumper($ret->{'info'}{'PROJECT_URL'});
+    or diag explain $ret; 
 ok($ret->{'info'}{'PROJECT_URL'} =~ m!https://www.gitlab.com/bbaldassari/Alambic!,
   "Info PROJECT_URL is correct.")
   or diag explain $ret;
@@ -376,7 +376,7 @@ ok($ret->{'info'}{'PROJECT_WEB'} =~ m!https://gitlab.com/bbaldassari/Alambic!,
   or diag explain $ret;
 ok($ret->{'info'}{'PROJECT_WIKI_ENABLED'} == 1,
   "Info PROJECT_WIKI_ENABLED is 1.")
-  or diag explain $ret; print "WIKI " . Dumper($ret->{'info'}{'PROJECT_WIKI_URL'});
+  or diag explain $ret; 
 ok($ret->{'info'}{'PROJECT_WIKI_URL'} =~ m!https://www.gitlab.com/bbaldassari/Alambic/wikis/home!,
   "Info PROJECT_WIKI_URL is correct.")
   or diag explain $ret;

@@ -582,7 +582,7 @@ sub run_plugin($$) {
     push( @{$ret{'log'}}, "[Plugins::GitLabProject] Executing R main file." );
     my $r = Alambic::Tools::R->new();
     @{$ret{'log'}} = ( @{$ret{'log'}}, @{$r->knit_rmarkdown_inc( 
-					     'GitLabProject', $project_id, 'gitlab_project.Rmd',
+					     'GitLabProject', $project_id, 'gitlab_project.Rmd', [],
 					     { "gitlab.url" => $gl_url, 
 					       "gitlab.id" => $gl_id}
 					     )} );

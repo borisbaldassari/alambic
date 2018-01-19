@@ -49,10 +49,10 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 #   * gitlab.id
 #   * gitlab.url
 
-project.id <- 'alambic'
+#project.id <- 'alambic'
 #gitlab.id <- 'bbaldassari/Alambic'
 #gitlab.url <- 'https://gitlab.com'
-#plugin.id <- 'GitLabProject'
+plugin.id <- 'GitLabProject'
 file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_gitlab_project.csv", sep="")
 file.info = paste("../../../../projects/", project.id, "/output/", project.id, "_info_gitlab_project.csv", sep="")
 file.commits.hist = paste("../../../../projects/", project.id, "/output/", project.id, "_gitlab_git_commits_hist.csv", sep="")
@@ -214,13 +214,13 @@ cat(t)
 
 Summary:
 
-* Total number of merge requests: ``r metrics[['PROJECT_MRS_OPENED']]``.
-* Number of merge requests opened during last week: ``r metrics[['PROJECT_MRS_OPENED_1W']]``, last month: ``r metrics[['PROJECT_MRS_OPENED_1M']]``, last year: ``r metrics[['PROJECT_MRS_OPENED_1Y']]``.
+* Total number of merge requests: ``r metrics[['SCM_PRS_OPENED']]``.
+* Number of merge requests opened during last week: ``r metrics[['SCM_PRS_OPENED_1W']]``, last month: ``r metrics[['SCM_PRS_OPENED_1M']]``, last year: ``r metrics[['SCM_PRS_OPENED_1Y']]``.
 
 Activity: 
 
-* ``r metrics[['PROJECT_MRS_OPENED_STALLED_1M']]`` merge requests are open and have had no update since more than one month.
-* ``r metrics[['PROJECT_MRS_OPENED_STILL_1W']]`` merge requests have been opened for more than one week, ``r metrics[['PROJECT_MRS_OPENED_STILL_1M']]`` for more than 1 month, and ``r metrics[['PROJECT_MRS_OPENED_STILL_1Y']]`` for more than one year.
+* ``r metrics[['SCM_PRS_OPENED_STALLED_1M']]`` merge requests are open and have had no update since more than one month.
+* ``r metrics[['SCM_PRS_OPENED_STILL_1W']]`` merge requests have been opened for more than one week, ``r metrics[['SCM_PRS_OPENED_STILL_1M']]`` for more than 1 month, and ``r metrics[['SCM_PRS_OPENED_STILL_1Y']]`` for more than one year.
 
 The following open merge requests are currently available:
 
