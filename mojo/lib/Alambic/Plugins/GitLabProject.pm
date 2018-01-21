@@ -6,7 +6,7 @@ use warnings;
 use Alambic::Model::RepoFS;
 use Alambic::Tools::R;
 
-use GitLab::API::v3;
+use GitLab::API::v4;
 use Mojo::JSON qw( decode_json encode_json );
 use Mojo::Util qw( url_escape );
 use Date::Parse;
@@ -149,9 +149,9 @@ sub run_plugin($$) {
     push( @{$ret{'log'}}, "[Plugins::GitLabProject] Retrieving data from [$gl_url] for project [$gl_id]." ); 
 
     # Create GitLab API object for all rest operations.
-    my $api = GitLab::API::v3->new(
-        url   => $gl_url . "/api/v3",
-        token => $gl_token,
+    my $api = GitLab::API::v4->new(
+        url   => $gl_url . "/api/v4",
+        private_token => $gl_token,
 	);
 
     # Time::Piece object. Will be used for the date calculations.
@@ -180,25 +180,14 @@ sub run_plugin($$) {
     $ret{'info'}{'PROJECT_OWNER_ID'} = $project->{'owner'}{'id'};
     $ret{'info'}{'PROJECT_OWNER_NAME'} = $project->{'owner'}{'name'};
     $ret{'info'}{'PROJECT_ISSUES_ENABLED'} = $project->{'issues_enabled'};
-    $ret{'info'}{'PROJECT_CI_ENABLED'} = $project->{'builds_enabled'};
+    $ret{'info'}{'PROJECT_CI_ENABLED'} = $project->{'builds_enabled'} || $project->{'jobs_enabled'};
     $ret{'info'}{'PROJECT_WIKI_ENABLED'} = $project->{'wiki_enabled'};
     $ret{'info'}{'PROJECT_MRS_ENABLED'} = $project->{'merge_requests_enabled'};
     $ret{'info'}{'PROJECT_SNIPPETS_ENABLED'} = $project->{'snippets_enabled'};
     $ret{'info'}{'PROJECT_CREATED_AT'} = $project->{'created_at'};
     $ret{'info'}{'PROJECT_REPO_SSH'} = $project->{'ssh_url_to_repo'};
     $ret{'info'}{'PROJECT_REPO_HTTP'} = $project->{'http_url_to_repo'};
-
-    # Use constants for visibility
-    my $v = 'na';
-    if ($project->{'visibility_level'} == 20) { 
-        $v = 'public';
-    } elsif ($project->{'visibility_level'} == 10) {
-        $v = 'internal';
-    } elsif ($project->{'visibility_level'} == 0) {
-        $v = 'private';
-    }
-    $ret{'info'}{'PROJECT_VISIBILITY'} = $v;
-    
+    $ret{'info'}{'PROJECT_VISIBILITY'} = $project->{'visibility'};    
 
     $ret{'info'}{'PROJECT_URL'} = $gl_url . '/' . $gl_id;
     $ret{'info'}{'PROJECT_MRS_URL'} = $gl_url . '/' . $gl_id . '/merge_requests';
@@ -243,8 +232,8 @@ sub run_plugin($$) {
     # Commits ###############################################
 
     # Retrieve information about all merge requests. Returns an array
-    # of mrs, see GitLab::API::v3 doc:
-    # https://metacpan.org/pod/GitLab::API::v3#MERGE-REQUEST-METHODS
+    # of mrs, see GitLab::API::v4 doc:
+    # https://metacpan.org/pod/GitLab::API::v4#MERGE-REQUEST-METHODS
     my $commits_p = $api->paginator( 'commits', $gl_id );
     my $commits;
     while (my $commit = $commits_p->next()) {
@@ -397,8 +386,8 @@ sub run_plugin($$) {
     # Merge requests ###############################################
 
     # Retrieve information about all merge requests. Returns an array
-    # of mrs, see GitLab::API::v3 doc:
-    # https://metacpan.org/pod/GitLab::API::v3#MERGE-REQUEST-METHODS
+    # of mrs, see GitLab::API::v4 doc:
+    # https://metacpan.org/pod/GitLab::API::v4#MERGE-REQUEST-METHODS
     my $mrs_p = $api->paginator( 'merge_requests', $gl_id );
     my $mrs;
     while (my $mr = $mrs_p->next()) {
@@ -501,7 +490,7 @@ sub run_plugin($$) {
     # Milestones ###############################################
 
     # Request information about milestones for this specific project.
-    my $milestones_p = $api->paginator( 'milestones', $gl_id );
+    my $milestones_p = $api->paginator( 'project_milestones', $gl_id );
     my $milestones = [];
     while (my $milestone = $milestones_p->next()) {
         push( @$milestones, $milestone );
@@ -511,14 +500,15 @@ sub run_plugin($$) {
     my %ms_issues;
     foreach my $m (@$milestones) {
         $m_total++;
-	if ( defined($m->{'due_date'}) and $m->{'due_date'} < $t_now->epoch ){
+#	if ( defined($m->{'due_date'}) and $m->{'due_date'} < $t_now->epoch ){
+	if ( defined($m->{'due_date'}) and str2time($m->{'due_date'}) < $t_now->epoch ){
 	    # TODO Add rec
 	    $m_late++;
 	}
 	if ( $m->{'state'} eq 'active' ) { $m_active++ }
         
         # Get issues for milestone
-        my $m_issues_all = $api->milestone_issues($gl_id, $m->{'id'}); 
+        my $m_issues_all = $api->project_milestone_issues($gl_id, $m->{'id'}); 
         my @m_issues_closed = grep { $_->{'state'} eq 'closed' } @$m_issues_all;
         $ms_issues{ $m->{'id'} }{'total'} = scalar(@$m_issues_all);
         $ms_issues{ $m->{'id'} }{'closed'} = scalar(@m_issues_closed);

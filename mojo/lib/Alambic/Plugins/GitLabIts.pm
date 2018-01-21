@@ -6,7 +6,7 @@ use warnings;
 use Alambic::Model::RepoFS;
 use Alambic::Tools::R;
 
-use GitLab::API::v3;
+use GitLab::API::v4;
 use Mojo::JSON qw( decode_json encode_json );
 use Date::Parse;
 use Time::Piece;
@@ -32,13 +32,20 @@ my %conf = (
     "provides_cdata" => [
     ],
     "provides_info" => [
-      "GL_ITS_URL",
+      "ITS_URL",
     ],
     "provides_data" => {
 	"import_gitlab_its.json" => "Original JSON file as retrieved from the GitLab server (JSON).",
-	"gitlab_its_issues.json" => "Restricted (attributes-wise) set of issues extracted from the server for metrics calculation (JSON).",
+	"gitlab_its_issues.json" => "Restricted (attributes-wise) set of issues extracted from the "
+            . "server for metrics calculation (JSON).",
 	"gitlab_its_issues.csv" => 
 	    "Restricted (attributes-wise) set of issues extracted from the server " 
+	    . "for metrics calculation (CSV).",
+	"gitlab_its_issues_late.csv" => 
+	    "Restricted (attributes-wise) set of late (at the time of analysis)) issues "
+            . "extracted from the server for metrics calculation (CSV).",
+	"gitlab_its_issues_open.csv" => 
+	    "Restricted (attributes-wise) set of open issues extracted from the server " 
 	    . "for metrics calculation (CSV).",
     },
     "provides_metrics" => {
@@ -53,11 +60,13 @@ my %conf = (
 	"ITS_ISSUES_ALL" => "ITS_ISSUES_ALL",
 	"ITS_ISSUES_LATE" => "ITS_ISSUES_LATE",
 	"ITS_ISSUES_UNASSIGNED" => "ITS_ISSUES_UNASSIGNED",
+	"ITS_ISSUES_UNASSIGNED_OPEN" => "ITS_ISSUES_UNASSIGNED_OPEN",
 	"ITS_TOTAL_DOWNVOTES" => "ITS_TOTAL_DOWNVOTES",
 	"ITS_TOTAL_UPVOTES" => "ITS_TOTAL_UPVOTES",
 	"ITS_AUTHORS" => "ITS_AUTHORS",
-	#TODO
+	"ITS_AUTHORS_1W" => "ITS_AUTHORS_1W",
 	"ITS_AUTHORS_1M" => "ITS_AUTHORS_1M",
+	"ITS_AUTHORS_1Y" => "ITS_AUTHORS_1Y",
 	"ITS_PEOPLE" => "ITS_PEOPLE",
     },
     "provides_figs" => {
@@ -103,22 +112,18 @@ sub run_plugin($$) {
     my $gl_id = $conf->{'gitlab_id'};
     my $gl_token = $conf->{'gitlab_token'};
 
-    $ret{'info'}{'GL_ITS_URL'} = $gl_url . '/' . $gl_id . '/issues';
+    $ret{'info'}{'ITS_URL'} = $gl_url . '/' . $gl_id . '/issues';
     
     push( @{$ret{'log'}}, "[Plugins::GitLabIts] Retrieving data from [$gl_url] for project [$gl_id]." ); 
 
     # Create GitLab API object for all rest operations.
-    my $api = GitLab::API::v3->new(
-        url   => $gl_url . "/api/v3",
-        token => $gl_token,
+    my $api = GitLab::API::v4->new(
+        url   => $gl_url . "/api/v4",
+        private_token => $gl_token,
 	);
     
     # Request information about issues for this specific project.
-    my $issues_p = $api->paginator( 'issues', $gl_id );
-    my $issues;
-    while (my $issue = $issues_p->next()) {
-        push( @$issues, $issue );
-    }
+    my $issues = $api->paginator( 'issues', $gl_id )->all;
 
     push( @{$ret{'log'}}, "[Plugins::GitLabIts] Retrieved " . scalar @$issues . " issues from server." ); 
     
@@ -135,8 +140,8 @@ sub run_plugin($$) {
 	$issues_created_1w, $issues_created_1m, $issues_created_1y,
 	$issues_changed_1w, $issues_changed_1m, $issues_changed_1y,
 	$total_upvotes, $total_downvotes) = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    my (@issues_unassigned, @issues_late);
-    my (%milestones, %authors, %people);
+    my (@issues_unassigned, @issues_unassigned_open, @issues_late);
+    my (%milestones, %authors, %authors_1w, %authors_1m, %authors_1y, %people, %notes);
 
     # Time::Piece object. Will be used for the date calculations.
     my $t_now = localtime;
@@ -156,7 +161,7 @@ sub run_plugin($$) {
 	$issues_l{'created_at'} = $issue->{'created_at'};
 	$issues_l{'updated_at'} = $issue->{'updated_at'};
 	$issues_l{'due_date'} = $issue->{'due_date'};
-	$issues_l{'user_notes_count'} = $issue->{'user_notes_count'};
+	$issues_l{'user_notes_count'} = $issue->{'user_notes_count'}; 
 
 	if ( $issue->{'state'} =~ m!^open! ) {
 	    $issues_open++;
@@ -173,18 +178,36 @@ sub run_plugin($$) {
 	my $date_changed = str2time($issue->{'updated_at'});
 	my $date_due = str2time($issue->{'due_date'});
 
-	# Compute/set metrics
+	# Compute/set metrics on votes
 	$total_upvotes += $issue->{'upvotes'};
 	$total_downvotes += $issue->{'downvotes'};
 
 	# Check if issue's due date has past
 	if ( defined($date_due) and $date_due < $t_now->epoch ) { 
-	    push( @issues_late, $issue->{'iid'} ); 
+	    push( @issues_late, $issue ); 
 	}
 
-	$issues_created_1w++ if ( $date_created > $t_1w->epoch );
-	$issues_created_1m++ if ( $date_created > $t_1m->epoch );
-	$issues_created_1y++ if ( $date_created > $t_1y->epoch );
+        # Check 1w, 1m, 1y for issues created, issues changed, and authors.
+	if ( $date_created > $t_1w->epoch ) {
+            $issues_created_1w++;
+            if ( defined( $issue->{'author'} ) ) {
+                $authors_1w{ $issue->{'author'}{'username'} }++;
+            }            
+        }
+
+	if ( $date_created > $t_1m->epoch ) {
+            $issues_created_1m++;
+            if ( defined( $issue->{'author'} ) ) {
+                $authors_1m{ $issue->{'author'}{'username'} }++;
+            }            
+        }
+
+	if ( $date_created > $t_1y->epoch ) {
+            $issues_created_1y++;
+            if ( defined( $issue->{'author'} ) ) {
+                $authors_1y{ $issue->{'author'}{'username'} }++;
+            } 
+        }
 
 	$issues_changed_1w++ if ( $date_changed > $t_1w->epoch );
 	$issues_changed_1m++ if ( $date_changed > $t_1m->epoch );
@@ -192,23 +215,40 @@ sub run_plugin($$) {
 
 	# Track milestones information
 	if ( defined( $issue->{'milestone'}{'id'} ) ) {
-	    $milestones{$issue->{'milestone'}{'id'}} = $issue->{'milestone'};
+	    $milestones{ $issue->{'milestone'}{'id'} }{'def'} = $issue->{'milestone'};
+	    $milestones{ $issue->{'milestone'}{'id'} }{'total'}++;
+            if ( $issue->{'state'} =~ m!opened! ) {
+                $milestones{ $issue->{'milestone'}{'id'} }{'opened'}++;
+            } else {
+                $milestones{ $issue->{'milestone'}{'id'} }{'closed'}++;
+            }
 	}
 
 	# Gather people (i.e. all people who interact with the its) 
 	# and authors (number of times each person has submitted an issue).
 	if ( defined( $issue->{'author'} ) ) {
-	    $people{$issue->{'author'}{'username'}} =  $issue->{'author'};
+	    $people{$issue->{'author'}{'username'}}++;
 	    $authors{$issue->{'author'}{'username'}}++;
 	}
 	if ( defined($issue->{'assignee'}) ) {
-	    $people{$issue->{'assignee'}{'username'}} =  $issue->{'assignee'};
+	    $people{$issue->{'assignee'}{'username'}}++;
 	} else {
-	    push( @issues_unassigned, $issue->{'iid'} ) 
+	    push( @issues_unassigned, $issue );
+	    push( @issues_unassigned_open, $issue ) 
 		if ($issue->{'state'} =~ m'^open'); 
 	}
 	push( @issues_f, \%issues_l );
 
+        # Request information about notes for this specific issue.
+# This has been commented because it takes too long. It works, however.
+# Simple uncomment it to have it. You should also add some code to write it 
+# to a CSV file if you'd like.
+#        my $notes = $api->notes( $gl_id, 'issues', $issue->{'id'} );
+#        foreach my $n (@$notes) {
+#	    $people{ $n->{'author'}{'username'} }++;
+#            push( @{$notes{ $issue->{'iid'} }}, $n );
+#        }
+        
 	# Recommendations    
 	if ( ($issue->{'state'} eq 'open') && ($date_changed < $t_1y->epoch) ) {
 	    push( @{$ret{'recs'}}, { 'rid' => 'ITS_LONG_STANDING_OPEN', 
@@ -240,21 +280,66 @@ sub run_plugin($$) {
     
     $repofs->write_output($project_id, "gitlab_its_issues.csv", $csv_out);
         
+    # Write our own list of late issues.
+    $csv = Text::CSV->new({binary => 1, eol => "\n"});
+    @cols = ('id', 'state', 'title', 'web_url', 'created_at', 'updated_at', 
+		'due_date', 'upvotes', 'downvotes', 'user_notes_count');
+    $csv_out = join(',', @cols) . "\n";
+    foreach my $i (@issues_late) { 
+	my @issues = map { $i->{$_} } @cols;
+	$csv->combine(@issues);
+	$csv_out .= $csv->string();
+    }
+    $repofs->write_output($project_id, "gitlab_its_issues_late.csv", $csv_out);
+        
+    # Write our own list of open, unassigned issues.
+    $csv = Text::CSV->new({binary => 1, eol => "\n"});
+    @cols = ('id', 'state', 'title', 'web_url', 'created_at', 'updated_at', 
+		'due_date', 'upvotes', 'downvotes', 'user_notes_count');
+    $csv_out = join(',', @cols) . "\n";
+    foreach my $i (@issues_unassigned_open) { 
+	my @issues = map { $i->{$_} } @cols;
+	$csv->combine(@issues);
+	$csv_out .= $csv->string();
+    }
+    $repofs->write_output($project_id, "gitlab_its_issues_unassigned_open.csv", $csv_out);
+        
+    # Write our own list of open issues.
+    $csv = Text::CSV->new({binary => 1, eol => "\n"});
+    @cols = ('id', 'state', 'title', 'web_url', 'created_at', 'updated_at', 
+		'due_date', 'upvotes', 'downvotes', 'user_notes_count');
+    $csv_out = join(',', @cols) . "\n";
+    foreach my $i ( grep { $_->{'state'} eq 'opened' }  @issues_f) {
+	my @issues = map { $i->{$_} } @cols;
+	$csv->combine(@issues);
+	$csv_out .= $csv->string();
+    }    
+    $repofs->write_output($project_id, "gitlab_its_issues_open.csv", $csv_out);
+        
+    # Write our own list of milestones (CSV).
+    $csv = Text::CSV->new({binary => 1, eol => "\n"});
+    @cols = ('iid', 'id', 'state', 'title', 'created_at', 'updated_at', 'start_date', 
+             'due_date', 'description', 'issues_total', 'issues_opened', 'issues_closed');
+    $csv_out = join(',', @cols) . "\n";
+    foreach my $ms (keys %milestones) {
+	my @ms = map { $milestones{$ms}{'def'}{$_} } @cols;
+        $ms[-3] = $milestones{$ms}{'total'} || 0;
+        $ms[-2] = $milestones{$ms}{'opened'} || 0;
+        $ms[-1] = $milestones{$ms}{'closed'} || 0;
 
-    # Write metrics csv file
-    my @metrics = sort map { $conf{'provides_metrics'}{$_} } keys %{$conf{'provides_metrics'}};
-    $csv_out = join(',', sort keys %{$ret{'metrics'}}) . "\n";
-    $csv_out
-	.= join(',', map { $ret{'metrics'}{$_} || '' } sort keys %{$ret{'metrics'}})
-	. "\n";
-    $repofs->write_output($project_id, "metrics_gitlab_its.csv", $csv_out);
+	$csv->combine(@ms);
+	$csv_out .= $csv->string();
+    }
     
+    $repofs->write_output($project_id, "gitlab_its_milestones.csv", $csv_out);
+            
     # Analyse retrieved data, generate info, metrics, plots and visualisation.
     $ret{'metrics'}{'ITS_ISSUES_OPEN'} = $issues_open;
     $ret{'metrics'}{'ITS_ISSUES_CLOSED'} = $issues_closed;
     $ret{'metrics'}{'ITS_ISSUES_ALL'} = $issues_vol;
     $ret{'metrics'}{'ITS_ISSUES_LATE'} = scalar @issues_late;
-    $ret{'metrics'}{'ITS_ISSUES_UNASSIGNED_OPEN'} = scalar @issues_unassigned;
+    $ret{'metrics'}{'ITS_ISSUES_UNASSIGNED'} = scalar @issues_unassigned;
+    $ret{'metrics'}{'ITS_ISSUES_UNASSIGNED_OPEN'} = scalar @issues_unassigned_open;
     $ret{'metrics'}{'ITS_TOTAL_DOWNVOTES'} = $total_downvotes;
     $ret{'metrics'}{'ITS_TOTAL_UPVOTES'} = $total_upvotes;
     # time series
@@ -265,8 +350,31 @@ sub run_plugin($$) {
     $ret{'metrics'}{'ITS_CHANGED_1M'} = $issues_changed_1m;
     $ret{'metrics'}{'ITS_CHANGED_1Y'} = $issues_changed_1y;
     $ret{'metrics'}{'ITS_AUTHORS'} = scalar keys %authors;
+    $ret{'metrics'}{'ITS_AUTHORS_1W'} = scalar keys %authors_1w;
+    $ret{'metrics'}{'ITS_AUTHORS_1M'} = scalar keys %authors_1m;
+    $ret{'metrics'}{'ITS_AUTHORS_1Y'} = scalar keys %authors_1y;
     $ret{'metrics'}{'ITS_PEOPLE'} = scalar keys %people;
 
+    # Write metrics csv file
+    my @metrics_def = sort map { $conf{'provides_metrics'}{$_} } keys %{$conf{'provides_metrics'}};
+    $csv_out = join(',', @metrics_def) . "\n";
+    $csv_out
+	.= join(',', map { $ret{'metrics'}{$_} } @metrics_def )
+	. "\n";
+    $repofs->write_output($project_id, "metrics_gitlab_its.csv", $csv_out);
+
+    # Generate R report ###############################################
+
+    # Now execute the main R script.
+    push( @{$ret{'log'}}, "[Plugins::GitLabIts] Executing R main file." );
+    my $r = Alambic::Tools::R->new();
+    @{$ret{'log'}} = ( @{$ret{'log'}}, @{$r->knit_rmarkdown_inc( 
+					     'GitLabIts', $project_id, 'gitlab_its.Rmd', [],
+					     { "gitlab.url" => $gl_url, 
+					       "gitlab.id" => $gl_id}
+					     )} );
+    
+    
     push( @{$ret{'log'}}, "[Plugins::GitLabIts] GitLabIts execution finished." ); 
     
     return \%ret;    
