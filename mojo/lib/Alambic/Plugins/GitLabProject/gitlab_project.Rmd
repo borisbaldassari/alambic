@@ -31,7 +31,7 @@ output:
 ```{r init, echo=FALSE, message=FALSE}
 library(knitr)
 library(xts)
-library(reshape2)
+require('reshape2')
 require(ggplot2)
 require(xtable)
 
@@ -39,7 +39,6 @@ knitr::opts_chunk$set(fig.path = "figures/")
 
 suppressPackageStartupMessages(library(googleVis))
 options(gvis.plot.tag='chart')
-require('reshape2')
 
 # Enable font awesome
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
@@ -49,9 +48,11 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 #   * gitlab.id
 #   * gitlab.url
 
+project.id <- 'gitlab-runner'
+gitlab.id <- 'gitlab-org/gitlab-runner'
 #project.id <- 'alambic'
 #gitlab.id <- 'bbaldassari/Alambic'
-#gitlab.url <- 'https://gitlab.com'
+gitlab.url <- 'https://gitlab.com'
 plugin.id <- 'GitLabProject'
 file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_gitlab_project.csv", sep="")
 file.info = paste("../../../../projects/", project.id, "/output/", project.id, "_info_gitlab_project.csv", sep="")
@@ -70,8 +71,9 @@ mrs <- read.csv(file=file.mrs, header=T)
 milestones <- read.csv(file=file.milestones, header=T)
 
 geticon <- function(value) {
+  if (is.na(value)) { value <- FALSE }
   if (value == 1) {
-    return('fa-check-square-o') 
+    return('fa-check-square-o') # TODO BUG
   } else {
     return('fa-square-o') 
   }
@@ -91,7 +93,7 @@ GitLab offers generic hosting services for software development. This plugin ret
 
 Data for project is directly available from the project&apos;s dashboard:
 
-* Project summary: `r gitlab.url`/`r gitlab.id`
+* Project Summary: `r gitlab.url`/`r gitlab.id`
 * Commits: `r info['PROJECT_COMMITS_URL']` 
 * Merge Requests: `r info['PROJECT_MRS_URL']` <i class="fa `r geticon(info['PROJECT_MRS_ENABLED'])`"></i>
 * CI: `r info['PROJECT_CI_URL']` <i class="fa `r geticon(info['PROJECT_CI_ENABLED'])`"></i>
@@ -185,7 +187,7 @@ cat(t)
 
 There has been a total of ``r metrics[['PROJECT_COMMITS']]`` commits on the git repository (``r metrics[['PROJECT_COMMITS_1W']]`` during last week, ``r metrics[['PROJECT_COMMITS_1M']]`` during last month, ``r metrics[['PROJECT_COMMITS_1Y']]`` during last year).
 
-``r metrics[['PROJECT_AUTHORS']]`` authors have contributed during the lifetime of the project (``r metrics[['PROJECT_AUTHORS']]`` during last week, ``r metrics[['PROJECT_AUTHORS']]`` during last month, and ``r metrics[['PROJECT_AUTHORS']]`` during last year).
+``r metrics[['PROJECT_AUTHORS']]`` authors have contributed during the lifetime of the project (``r metrics[['PROJECT_AUTHORS_1W']]`` during last week, ``r metrics[['PROJECT_AUTHORS_1M']]`` during last month, and ``r metrics[['PROJECT_AUTHORS_1Y']]`` during last year).
 
 -----
 
@@ -230,10 +232,12 @@ The following open merge requests are currently available:
 <table class="table table-striped">
   <tr><th>ID</th><th>State</th><th>Title</th><th>Assignee</th><th>Source branch</th><th>Target branch</th><th>Created</th><th>Updated</th></tr>
 ```{r mrs_table_open, eval=T, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(mrs[mrs$state == 'opened',], 1,
+mrs_opened <- mrs[mrs$state == 'opened',]
+t <- apply(mrs_opened, 1,
 		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td><a href="',
 		           x[[6]], '">', x[[2]], '</a></td><td>', x[[5]], '</td><td>', x[[10]],
-							 '</td><td>', x[[12]],'</td><td>', x[[14]], '</td><td>', x[[15]], 
+							 '</td><td>', x[[12]],'</td><td>', as.POSIXct(as.integer(x[[18]]), origin="1970-01-01"), 
+							 '</td><td>', as.POSIXct(as.integer(x[[19]]), origin="1970-01-01"), 
 							 '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
@@ -252,7 +256,8 @@ The following merged merge requests are currently available. Only the last `r li
 t <- apply(head(mrs[mrs$state == 'merged',], n=list.mrs.count), 1,
 		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td><a href="',
 		           x[[6]], '">', x[[2]], '</a></td><td>', x[[5]], '</td><td>', x[[10]],
-							 '</td><td>', x[[12]],'</td><td>', x[[14]], '</td><td>', x[[15]], 
+							 '</td><td>', x[[12]],'</td><td>', as.POSIXct(as.integer(x[[18]]), origin="1970-01-01"), 
+							 '</td><td>', as.POSIXct(as.integer(x[[19]]), origin="1970-01-01"), 
 							 '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
