@@ -8,8 +8,6 @@ This plugin retrieves information from a [GitLab](https://about.gitlab.com/) iss
 
 Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/GitLabIts.pm.html) in the [perldoc](/perldoc/index.html) section.
 
-> This plugin targets the GitLab API v3, i.e. GitLab 8.x (up to 9.4.x too). See the [official GitLab announcement](https://docs.gitlab.com/ce/api/v3_to_v4.html) for more details.
-
 
 -----
 
@@ -29,11 +27,29 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/GitLabIts.pm.html
 
 ## Metrics
 
-* JOBS,
-* JOBS_GREEN,
-* JOBS_YELLOW,
-* JOBS_RED,
-* JOBS_FAILED_1W
+* ITS_AUTHORS 	
+* ITS_AUTHORS_1M 	
+* ITS_AUTHORS_1W 	
+* ITS_AUTHORS_1Y 	
+* ITS_CHANGED_1M 	
+* ITS_CHANGED_1W 	
+* ITS_CHANGED_1Y 	
+* ITS_CREATED_1M 	
+* ITS_CREATED_1W 	
+* ITS_CREATED_1Y 	
+* ITS_ISSUES_ALL 	
+* ITS_ISSUES_CLOSED 	
+* ITS_ISSUES_LATE 	
+* ITS_ISSUES_OPEN 	
+* ITS_ISSUES_UNASSIGNED 	
+* ITS_ISSUES_UNASSIGNED_OPEN 	
+* ITS_PEOPLE 	
+* ITS_TOTAL_DOWNVOTES 	
+* ITS_TOTAL_UPVOTES
+
+## Information
+
+* ITS_URL
 
 ## Figures
 
@@ -42,14 +58,15 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/GitLabIts.pm.html
 
 ## Recommendations
 
-* CI_FAILING_JOBS
+* ITS_LONG_STANDING_OPEN
+Issues that have not been updated during the last year and are still open. Long-standing bugs have a negative impact on people's perception. You should either close the bug or add some more information to revive it.
 
 ## Visualisation
 
-Hudson CI
+* GitLab ITS
 
 -----
 
 # Screenshot
 
-![hudson_ci.png](/images/hudson_ci.png)
+![gitlab_its_ui.png](/images/gitlab_its_ui.png)

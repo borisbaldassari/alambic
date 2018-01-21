@@ -71,6 +71,9 @@
             <a href="GitLabIts.html">GitLabIts</a>
         </li>
         <li class="">
+            <a href="GitLabProject.html">GitLabProject</a>
+        </li>
+        <li class="">
             <a href="Hudson.html">Hudson</a>
         </li>
         <li class="">
@@ -93,10 +96,6 @@
 <p>This plugin retrieves information from a <a href="https://about.gitlab.com/">GitLab</a> issue tracking system, displays a summary of its issues, and provides recommendations to better use the issue tracking system.</p>
 
 <p>Check the <a href="/perldoc/Alambic/Plugins/GitLabIts.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
-
-<blockquote>
-  <p>This plugin targets the GitLab API v3, i.e. GitLab 8.x (up to 9.4.x too). See the <a href="https://docs.gitlab.com/ce/api/v3_to_v4.html">official GitLab announcement</a> for more details.</p>
-</blockquote>
 
 <hr />
 
@@ -121,11 +120,31 @@ Retrieves information from a GitLab Issue Tracking System, displays a summary of
 <h2>Metrics</h2>
 
 <ul>
-<li>JOBS,</li>
-<li>JOBS_GREEN,</li>
-<li>JOBS_YELLOW,</li>
-<li>JOBS_RED,</li>
-<li>JOBS_FAILED_1W</li>
+<li>ITS_AUTHORS   </li>
+<li>ITS_AUTHORS_1M    </li>
+<li>ITS_AUTHORS_1W    </li>
+<li>ITS_AUTHORS_1Y    </li>
+<li>ITS_CHANGED_1M    </li>
+<li>ITS_CHANGED_1W    </li>
+<li>ITS_CHANGED_1Y    </li>
+<li>ITS_CREATED_1M    </li>
+<li>ITS_CREATED_1W    </li>
+<li>ITS_CREATED_1Y    </li>
+<li>ITS_ISSUES_ALL    </li>
+<li>ITS_ISSUES_CLOSED     </li>
+<li>ITS_ISSUES_LATE   </li>
+<li>ITS_ISSUES_OPEN   </li>
+<li>ITS_ISSUES_UNASSIGNED     </li>
+<li>ITS_ISSUES_UNASSIGNED_OPEN    </li>
+<li>ITS_PEOPLE    </li>
+<li>ITS_TOTAL_DOWNVOTES   </li>
+<li>ITS_TOTAL_UPVOTES</li>
+</ul>
+
+<h2>Information</h2>
+
+<ul>
+<li>ITS_URL</li>
 </ul>
 
 <h2>Figures</h2>
@@ -138,18 +157,21 @@ Retrieves information from a GitLab Issue Tracking System, displays a summary of
 <h2>Recommendations</h2>
 
 <ul>
-<li>CI_FAILING_JOBS</li>
+<li>ITS_LONG_STANDING_OPEN
+Issues that have not been updated during the last year and are still open. Long-standing bugs have a negative impact on people's perception. You should either close the bug or add some more information to revive it.</li>
 </ul>
 
 <h2>Visualisation</h2>
 
-<p>Hudson CI</p>
+<ul>
+<li>GitLab ITS</li>
+</ul>
 
 <hr />
 
 <h1>Screenshot</h1>
 
-<p><img src="/images/hudson_ci.png" alt="hudson_ci.png" /></p>
+<p><img src="/images/gitlab_its_ui.png" alt="gitlab_its_ui.png" /></p>
 
 
 </div><!-- content -->
@@ -157,7 +179,7 @@ Retrieves information from a GitLab Issue Tracking System, displays a summary of
 <div id="footer">
     <p id="copyright">
         &copy;
-        2017
+        2018
         Boris Baldassari
     </p>
     <p id="built_with">
