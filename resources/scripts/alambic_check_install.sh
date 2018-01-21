@@ -122,7 +122,7 @@ perlbrew switch perl-$PB_V
 echo "# Installing perl modules.."
 echo "# Installing perl modules.." >> $LOG
 POSTGRES_HOME=/usr/pgsql-9.5
-cpanm Sub::Identify DBI DBD::Pg inc::Module::Install Digest::MD5 Crypt::PBKDF2 Date::Parse DateTime File::chdir File::Basename File::Copy File::Path File::stat List::Util List::MoreUtils Minion Mojolicious Mojo::JSON Mojo::UserAgent Mojo::Pg XML::LibXML Text::CSV Time::localtime Mojolicious::Plugin::Mail Test::More Test::Perl::Critic Net::IDN::Encode IO::Socket::SSL Git::Repository JIRA::REST Mojolicious::Plugin::InstallablePaths Pod::ProjectDocs GitLab::API::v3 Moose HTML::Entities Template Mojolicious::Plugin::Minion::Admin URI::Escape::XS >> $LOG
+cpanm Sub::Identify DBI DBD::Pg inc::Module::Install Digest::MD5 Crypt::PBKDF2 Date::Parse DateTime File::chdir File::Basename File::Copy File::Path File::stat List::Util List::MoreUtils Minion Mojolicious Mojo::JSON Mojo::UserAgent Mojo::Pg XML::LibXML Text::CSV Time::localtime Mojolicious::Plugin::Mail Test::More Test::Perl::Critic Net::IDN::Encode IO::Socket::SSL Git::Repository JIRA::REST Mojolicious::Plugin::InstallablePaths Pod::ProjectDocs GitLab::API::v4 Moose HTML::Entities Template Mojolicious::Plugin::Minion::Admin URI::Escape::XS >> $LOG
 
 if [ $? -eq 0 ]; then
     echo "# Perl modules installed"
