@@ -523,8 +523,8 @@ sub run_plugin($$) {
         
     # Write list of milestones to the disk, csv.
     $csv = Text::CSV->new({binary => 1, eol => "\n"});
-    @cols = ('id', 'iid', 'title', 'state', 'description', 'due_date', 'start_date', 
-             'created_at', 'updated_at', 'issues_total', 'issues_opened', 'issues_closed');
+    @cols = ('iid', 'id', 'state', 'title', 'created_at', 'updated_at', 'start_date', 
+             'due_date', 'description', 'issues_total', 'issues_opened', 'issues_closed');
     $csv_out = join(',', @cols) . "\n";
     foreach my $m (@$milestones) {
         my @ms = map { $m->{$_} || '' } @cols;

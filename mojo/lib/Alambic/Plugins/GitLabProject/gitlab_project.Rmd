@@ -48,11 +48,17 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 #   * gitlab.id
 #   * gitlab.url
 
-project.id <- 'gitlab-runner'
-gitlab.id <- 'gitlab-org/gitlab-runner'
+# project.id <- 'inkscape'
+# gitlab.id <- 'inkscape/inkscape'
+# gitlab.url <- 'https://gitlab.com'
+
+# project.id <- 'gitlab-runner'
+# gitlab.id <- 'gitlab-org/gitlab-runner'
+# gitlab.url <- 'https://gitlab.com'
+
 #project.id <- 'alambic'
 #gitlab.id <- 'bbaldassari/Alambic'
-gitlab.url <- 'https://gitlab.com'
+#gitlab.url <- 'https://gitlab.com'
 plugin.id <- 'GitLabProject'
 file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_gitlab_project.csv", sep="")
 file.info = paste("../../../../projects/", project.id, "/output/", project.id, "_info_gitlab_project.csv", sep="")
@@ -69,18 +75,20 @@ commits.hist <- read.csv(file=file.commits.hist, header=T)
 branches <- read.csv(file=file.branches, header=T)
 mrs <- read.csv(file=file.mrs, header=T)
 milestones <- read.csv(file=file.milestones, header=T)
+milestones.active <- milestones[milestones$state == 'active',]
 
 geticon <- function(value) {
   if (is.na(value)) { value <- FALSE }
   if (value == 1) {
-    return('fa-check-square-o') # TODO BUG
+    return('fa-check-square-o') 
   } else {
     return('fa-square-o') 
   }
 }
 
 # Configuration of visuals
-list.mrs.count <- 5
+list.mrs.count.opened <- 10
+list.mrs.count.merged <- 5
 ```
 
 ## GitLab Project `r gitlab.id`
@@ -100,6 +108,11 @@ Data for project is directly available from the project&apos;s dashboard:
 * Issues: `r info['PROJECT_ISSUES_URL']` <i class="fa `r geticon(info['PROJECT_ISSUES_ENABLED'])`"></i>
 * Wiki: `r info['PROJECT_WIKI_URL']` <i class="fa `r geticon(info['PROJECT_WIKI_ENABLED'])`"></i>
 
+The URLs to use to connect to the repository are:
+
+* SSH ``r info[['PROJECT_REPO_SSH']]``.
+* HTTP ``r info[['PROJECT_REPO_HTTP']]``.
+
 </div><div class="col-sm-4">
   <div class="panel panel-default">
   <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
@@ -117,12 +130,41 @@ Data for project is directly available from the project&apos;s dashboard:
 
 The project was created on ``r info[['PROJECT_CREATED_AT']]`` and was last updated on ``r metrics[['PROJECT_LAST_ACTIVITY_AT']]``.
 
-The URLs to use to connect to the repository are:
+<div class="row"><div class="col-sm-3">
+<span style="font-size:18pt"><span class="fa fa-heartbeat"></span> </span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_FORKS']]``</span> Forks</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_STARS']]``</span> Stars</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_ISSUES_OPEN']]``</span> Issues open</span>
+</div></div>
 
-* SSH ``r info[['PROJECT_REPO_SSH']]``.
-* HTTP ``r info[['PROJECT_REPO_HTTP']]``.
+Git activity during last month:
 
-There is a total of ``r ncol(metrics)`` metrics retrieved:
+<div class="row"><div class="col-sm-3">
+<span style="font-size:18pt"><span class="fa fa-git"></span> </span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_COMMITS_1M']]``</span> Commits</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_COMMITTERS_1M']]``</span> Committers</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_AUTHORS_1M']]``</span> Authors</span>
+</div></div>
+
+Merge Requests activity during last month:
+
+<div class="row"><div class="col-sm-3">
+<span style="font-size:18pt"><span class="fa fa-random"></span> </span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['SCM_PRS_OPENED_1M']]``</span> MRs created last month</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['SCM_PRS_OPENED_STILL_1M']]``</span> MRs created within last month and still opened</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['SCM_PRS_OPENED_STALED_1M']]``</span> MRs staled (no update) for one month</span>
+</div></div>
+
+There is a total of ``r ncol(metrics)`` metrics retrieved.
 
 ```{r metrics_table, echo=FALSE, message=FALSE, results='asis'}
 t <- lapply(names(metrics), function(x) paste(x, ' <span class="badge">', metrics[[x]], '</span>, ', sep=''))
@@ -133,8 +175,8 @@ cat(t)
 There is a total of ``r ncol(info)`` information retrieved:
 
 ```{r info_table, echo=FALSE, message=FALSE, results='asis'}
-t <- lapply(names(info), function(x) paste(x, ' <span class="badge">', info[[x]], '</span>, ', sep=''))
-t <- paste(t, collapse=" ")
+t <- lapply(names(info), function(x) paste('* ', x, ': ', info[[x]], "\n", sep=''))
+t <- paste(t, collapse="")
 cat(t)
 ```
 
@@ -142,21 +184,20 @@ cat(t)
 
 ### <a name="milestones"></a> Milestones
 
-The following plots show the number of issues (opened, closed) on all active milestones for the project.
+The following plot show the number of issues (opened, closed) on all active milestones for the project.
 
 <div class="row">
-```{r milestones_donuts, echo=FALSE, message=FALSE, results='asis'}
-for (i in 1:nrow(milestones[milestones$state == 'active',])) {
+```{r milestones_donuts, eval=nrow(milestones.active)>0, echo=FALSE, message=FALSE, results='asis'}
+for (i in 1:nrow(milestones.active)) {
   cat('<div class="col-md-3">')
-  ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(milestones[i,c('issues_opened', 'issues_closed')]))
-
+  ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(milestones.active[i,c('issues_opened', 'issues_closed')]))
+  
   p <- gvisPieChart(ms,
                   options = list(
-                    title=paste("Issues for milestone ", milestones[i,3], sep=""),
+                    title=paste("Issues for milestone ", milestones.active[i,4], sep=""),
                     colors="['red', 'green']",
                     width=350, height=280,
                     pieHole= 0.4))
-
   print(p, 'chart')
   cat('</div>')
 }
@@ -168,13 +209,13 @@ for (i in 1:nrow(milestones[milestones$state == 'active',])) {
 <div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Active Milestones</div>
 
 <table class="table table-striped">
-  <tr><th>ID</th><th>IID</th><th>Title</th><th>Description</th><th>Issues (open/total)</th><th>Start date</th><th>Due date</th><th>Created</th><th>Updated</th></tr>
-```{r milestones_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(milestones[milestones$state == 'active',], 1,
+  <tr><th>IID</th><th>ID</th><th>Title</th><th>Issues (open/total)</th><th>Start date</th><th>Due date</th><th>Created</th><th>Updated</th></tr>
+```{r milestones_table, eval=nrow(milestones.active)>0, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(milestones.active, 1,
 		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td><td>',
-		           x[[3]], '</td><td>', x[[4]], '</td><td>', x[[11]], ' / ', x[[10]],
-							 '</td><td>', x[[7]],'</td><td>', x[[6]], '</td><td>', x[[8]], 
-							 '</td><td>', x[[9]], '</td></tr>', sep=''))
+		           x[[4]], '</td><td>', x[[11]], ' / ', x[[10]],
+							 '</td><td>', x[[7]],'</td><td>', x[[8]], '</td><td>', as.Date(x[[5]]), 
+							 '</td><td>', as.Date(x[[6]]), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
@@ -216,7 +257,7 @@ cat(t)
 
 Summary:
 
-* Total number of merge requests: ``r metrics[['SCM_PRS_OPENED']]``.
+* Total number of merge requests: ``r metrics[['SCM_PRS']]``, total number of open merge requests: ``r metrics[['SCM_PRS_OPENED']]``.
 * Number of merge requests opened during last week: ``r metrics[['SCM_PRS_OPENED_1W']]``, last month: ``r metrics[['SCM_PRS_OPENED_1M']]``, last year: ``r metrics[['SCM_PRS_OPENED_1Y']]``.
 
 Activity: 
@@ -224,7 +265,7 @@ Activity:
 * ``r metrics[['SCM_PRS_OPENED_STALED_1M']]`` merge requests are open and have had no update since more than one month.
 * ``r metrics[['SCM_PRS_OPENED_STILL_1W']]`` merge requests have been opened for more than one week, ``r metrics[['SCM_PRS_OPENED_STILL_1M']]`` for more than 1 month, and ``r metrics[['SCM_PRS_OPENED_STILL_1Y']]`` for more than one year.
 
-The following open merge requests are currently available:
+The following open merge requests are currently available. Only the last `r list.mrs.count.opened` merge requests are listed.
 
 <div class="panel panel-default">
 <div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Open Merge Requests</div>
@@ -233,7 +274,7 @@ The following open merge requests are currently available:
   <tr><th>ID</th><th>State</th><th>Title</th><th>Assignee</th><th>Source branch</th><th>Target branch</th><th>Created</th><th>Updated</th></tr>
 ```{r mrs_table_open, eval=T, echo=FALSE, message=FALSE, results='asis'}
 mrs_opened <- mrs[mrs$state == 'opened',]
-t <- apply(mrs_opened, 1,
+t <- apply(head(mrs_opened, n = list.mrs.count.opened), 1,
 		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td><a href="',
 		           x[[6]], '">', x[[2]], '</a></td><td>', x[[5]], '</td><td>', x[[10]],
 							 '</td><td>', x[[12]],'</td><td>', as.POSIXct(as.integer(x[[18]]), origin="1970-01-01"), 
@@ -245,15 +286,15 @@ cat(t)
 </table>
 </div>
 
-The following merged merge requests are currently available. Only the last `r list.mrs.count` merge requests are listed.
+The following merged merge requests are currently available. Only the last `r list.mrs.count.merged` merge requests are listed.
 
 <div class="panel panel-default">
-<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Open Merge Requests</div>
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Merged Merge Requests</div>
 
 <table class="table table-striped">
   <tr><th>ID</th><th>State</th><th>Title</th><th>Assignee</th><th>Source branch</th><th>Target branch</th><th>Created</th><th>Updated</th></tr>
 ```{r mrs_table_merged, eval=T, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(head(mrs[mrs$state == 'merged',], n=list.mrs.count), 1,
+t <- apply(head(mrs[mrs$state == 'merged',], n=list.mrs.count.merged), 1,
 		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td><a href="',
 		           x[[6]], '">', x[[2]], '</a></td><td>', x[[5]], '</td><td>', x[[10]],
 							 '</td><td>', x[[12]],'</td><td>', as.POSIXct(as.integer(x[[18]]), origin="1970-01-01"), 
