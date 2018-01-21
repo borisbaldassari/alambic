@@ -54,6 +54,10 @@ ok(grep(m!ITS_ISSUES_ALL!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > its_issues_all");
 ok(grep(m!ITS_ISSUES_LATE!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > its_issues_late");
+ok(grep(m!ITS_ISSUES_UNASSIGNED!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > its_issues_unassigned");
+ok(grep(m!ITS_ISSUES_UNASSIGNED_OPEN!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > its_issues_unassigned_open");
 
 ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
 ok(grep(m!info!,    @{$conf->{'ability'}}), "Conf has ability > info");
@@ -75,6 +79,18 @@ ok(grep(m!ITS_LONG_STANDING_OPEN!, @{$conf->{'provides_recs'}}),
 my $in_gitlab_url     = "https://www.gitlab.com";
 my $in_gitlab_id      = "bbaldassari/Alambic";
 my $in_gitlab_token   = "tiPs2VdkhaDnfmteiToD";
+
+# Delete files before creating them, so we don't test a previous run.
+unlink (
+    "projects/test.gitlabits/input/test.gitlabits_import_gitlab_its.json",
+    "projects/test.gitlabits/output/test.gitlabits_its.inc",
+    "projects/test.gitlabits/output/test.gitlabits_its_issues.csv",
+    "projects/test.gitlabits/output/test.gitlabits_its_issues.json",
+    "projects/test.gitlabits/output/test.gitlabits_its_issues_late.csv",
+    "projects/test.gitlabits/output/test.gitlabits_its_issues_open.csv",
+    "projects/test.gitlabits/output/test.gitlabits_its_issues_unassigned_open.csv",
+    "projects/test.gitlabits/output/test.gitlabits_its_milestones.csv",
+    );
 
 note("Executing the plugin with Alambic project. ");
 my $ret = $plugin->run_plugin(
@@ -140,14 +156,42 @@ ok($ret->{'metrics'}{'ITS_TOTAL_UPVOTES'} =~ /\d+/,
 done_testing();
 exit;
 
-# Checking output/* files
+# Checking input/* files
+
 ok(
-  -e "projects/test.gitlab/output/test.gitlab_import_its.json",
-  "Check that file test.gitlab_import_its.json exists."
+  -e "projects/test.gitlabits/input/test.gitlabits_import_gitlab_its.json",
+  "Check that file test.gitlabits_import_gitlab_its.json exists."
+);
+
+# Checking output/* files
+
+ok(
+  -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its.inc",
+  "Check that file test.gitlabits_gitlab_its.inc exists."
 );
 ok(
-  -e "projects/test.gitlab/output/test.gitlab_its_issues.json",
-  "Check that file test.gitlab_import_its_issues.json exists."
+  -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its_issues.json",
+  "Check that file test.gitlabits_import_gitlab_its_issues.json exists."
+);
+ok(
+  -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its_issues.csv",
+  "Check that file test.gitlabits_import_gitlab_its_issues.csv exists."
+);
+ok(
+  -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its_issues_late.csv",
+  "Check that file test.gitlabits_import_gitlab_its_issues_late.csv exists."
+);
+ok(
+  -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its_issues_open.csv",
+  "Check that file test.gitlabits_import_gitlab_its_issues_open.csv exists."
+);
+ok(
+  -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its_issues_unassigned_open.csv",
+  "Check that file test.gitlabits_import_gitlab_its_issues_unassigned_open.csv exists."
+);
+ok(
+  -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its_milestones.json",
+  "Check that file test.gitlabits_import_gitlab_its_milestones.json exists."
 );
 
 done_testing();
