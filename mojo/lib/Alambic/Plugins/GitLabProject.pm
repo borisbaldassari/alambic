@@ -434,10 +434,10 @@ sub run_plugin($$) {
      	my @mrs_opened_1w = grep $_->{'created_at'} > $t_1w, @$mrs;
      	my @mrs_opened_1m = grep $_->{'created_at'} > $t_1m, @$mrs;
      	my @mrs_opened_1y = grep $_->{'created_at'} > $t_1y, @$mrs;
-     	my @mrs_opened_still_1w = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} > $t_1w, @$mrs;
-     	my @mrs_opened_still_1m = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} > $t_1m, @$mrs;
-     	my @mrs_opened_still_1y = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} > $t_1y, @$mrs;
-     	my @mrs_opened_staled_1m = grep $_->{'state'} =~ m'opened' && $_->{'updated_at'} > $t_1m, @$mrs;
+     	my @mrs_opened_still_1w = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} < $t_1w, @$mrs;
+     	my @mrs_opened_still_1m = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} < $t_1m, @$mrs;
+     	my @mrs_opened_still_1y = grep $_->{'state'} =~ m'opened' && $_->{'created_at'} < $t_1y, @$mrs;
+     	my @mrs_opened_staled_1m = grep $_->{'state'} =~ m'opened' && $_->{'updated_at'} < $t_1m, @$mrs;
 	
      	# Set metrics
      	$ret{'metrics'}{'SCM_PRS'} = scalar(@$mrs);

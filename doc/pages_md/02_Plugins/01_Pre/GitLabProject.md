@@ -57,26 +57,26 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/GitLabProject.pm.
 
 ## Information
 
-PROJECT_AVATAR e.g. https://assets.gitlab-static.net/uploads/-/system/project/avatar/250833/runner_logo.png
-PROJECT_CI_ENABLED e.g. 1
-PROJECT_CI_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner/pipelines
-PROJECT_COMMITS_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner/commits/master
-PROJECT_CREATED_AT e.g. 2015-04-27T21:10:25.322Z
-PROJECT_ISSUES_ENABLED e.g. 1
-PROJECT_ISSUES_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner/issues
-PROJECT_MRS_ENABLED e.g. 1
-PROJECT_MRS_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner/merge_requests
-PROJECT_NAME_SPACE e.g. GitLab.org / gitlab-runner
-PROJECT_OWNER_ID e.g.905787
-PROJECT_OWNER_NAME e.g. Boris Baldassari
-PROJECT_REPO_HTTP e.g. https://gitlab.com/gitlab-org/gitlab-runner.git
-PROJECT_REPO_SSH e.g. git@gitlab.com:gitlab-org/gitlab-runner.git
-PROJECT_SNIPPETS_ENABLED e.g. 0
-PROJECT_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner
-PROJECT_VISIBILITY e.g. public
-PROJECT_WEB e.g. https://gitlab.com/gitlab-org/gitlab-runner
-PROJECT_WIKI_ENABLED e.g. 0
-PROJECT_WIKI_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner/wikis/home
+* PROJECT_AVATAR e.g. https://assets.gitlab-static.net/uploads/-/system/project/avatar/250833/runner_logo.png
+* PROJECT_CI_ENABLED e.g. 1
+* PROJECT_CI_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner/pipelines
+* PROJECT_COMMITS_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner/commits/master
+* PROJECT_CREATED_AT e.g. 2015-04-27T21:10:25.322Z
+* PROJECT_ISSUES_ENABLED e.g. 1
+* PROJECT_ISSUES_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner/issues
+* PROJECT_MRS_ENABLED e.g. 1
+* PROJECT_MRS_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner/merge_requests
+* PROJECT_NAME_SPACE e.g. GitLab.org / gitlab-runner
+* PROJECT_OWNER_ID e.g.905787
+* PROJECT_OWNER_NAME e.g. Boris Baldassari
+* PROJECT_REPO_HTTP e.g. https://gitlab.com/gitlab-org/gitlab-runner.git
+* PROJECT_REPO_SSH e.g. git@gitlab.com:gitlab-org/gitlab-runner.git
+* PROJECT_SNIPPETS_ENABLED e.g. 0
+* PROJECT_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner
+* PROJECT_VISIBILITY e.g. public
+* PROJECT_WEB e.g. https://gitlab.com/gitlab-org/gitlab-runner
+* PROJECT_WIKI_ENABLED e.g. 0
+* PROJECT_WIKI_URL e.g. https://gitlab.com/gitlab-org/gitlab-runner/wikis/home
 
 
 ## Downloads
