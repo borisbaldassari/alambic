@@ -31,6 +31,9 @@ knitr::opts_chunk$set(fig.path = "figures/")
 #   * gitlab.id
 #   * gitlab.url
 
+#project.id <- 'gitlab-runner'
+#gitlab.id <- 'gitlab-org/gitlab-runner'
+#gitlab.url <- 'https://gitlab.com'
 #project.id <- 'alambic'
 #gitlab.id <- 'bbaldassari/Alambic'
 #gitlab.url <- 'https://gitlab.com'
@@ -45,13 +48,14 @@ file.issues.unassigned.open = paste("../../../../projects/", project.id, "/outpu
 
 metrics <- read.csv(file=file.metrics, header=T)
 #info <- read.csv(file=file.info, header=T)
-milestones <- read.csv(file=file.milestones, header=T)
 issues <- read.csv(file=file.issues, header=T)
 issues.late <- read.csv(file=file.issues.late, header=T)
 issues.open <- read.csv(file=file.issues.open, header=T)
 issues.unassigned.open <- read.csv(file=file.issues.unassigned.open, header=T)
 evol <- xts(x = issues, order.by = as.POSIXct(issues$created_at))
 evol.weekly <- apply.weekly(x=evol, FUN = nrow)
+milestones <- read.csv(file=file.milestones, header=T)
+milestones.active <- milestones[milestones$state == 'active',]
 
 ```
 
@@ -84,10 +88,16 @@ Data for project is directly available from the project&apos;s dashboard:
 
 ### <a name="quick-summary"></a>Quick Summary
 
-There is a total of `r ncol(metrics)` metrics retrieved.
+<div class="row"><div class="col-sm-3">
+<span style="font-size:18pt"><span class="fa fa-users"></span> </span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['ITS_AUTHORS']]``</span> issue authors</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['ITS_PEOPLE']]``</span> people involved</span>
+</div></div>
 
 <div class="row"><div class="col-sm-3">
-<span style="font-size:24pt"><span class="fa fa-bug"></span> </span>
+<span style="font-size:18pt"><span class="fa fa-bug"></span> </span>
 </div><div class="col-sm-3">
 <span><span style="font-size:24pt">``r metrics[['ITS_ISSUES_ALL']]``</span> issues total</span>
 </div><div class="col-sm-3">
@@ -96,13 +106,7 @@ There is a total of `r ncol(metrics)` metrics retrieved.
 <span><span style="font-size:24pt">``r metrics[['ITS_ISSUES_OPEN']]``</span> issues open</span>
 </div></div>
 
-<div class="row"><div class="col-sm-4">
-<span style="font-size:24pt"><span class="fa fa-users"></span> </span>
-</div><div class="col-sm-4">
-<span><span style="font-size:24pt">``r metrics[['ITS_AUTHORS']]``</span> issue authors</span>
-</div><div class="col-sm-4">
-<span><span style="font-size:24pt">``r metrics[['ITS_PEOPLE']]``</span> people involved</span>
-</div></div>
+There is a total of `r ncol(metrics)` metrics retrieved.
 
 * Number of issues recently submitted: ``r metrics[['ITS_CREATED_1W']]`` last week, ``r metrics[['ITS_CREATED_1M']]`` last month, ``r metrics[['ITS_CREATED_1Y']]`` last year.
 * The overall set of issues on this project has received ``r sum( issues[,c('user_notes_count')] )`` comments, ``r metrics[['ITS_TOTAL_UPVOTES']]`` upvotes and ``r metrics[['ITS_TOTAL_DOWNVOTES']]`` downvotes. 
@@ -115,10 +119,6 @@ t <- paste(t, collapse=" ")
 cat(t)
 ```
 
-The following plot uses [plotly services](http://plot.ly) to enable users to play with data itself, and its associated plot. Hover on the graph for more options.
-
-<!-- iframe src="/projects/`r project.id`/EclipseIts/its_evol_summary.html" frameborder="0" style="width: 100%; height: 370px"></iframe -->
-
 -----
 
 ### <a name="milestones"></a> Milestones
@@ -127,13 +127,13 @@ The following plots show the number of issues (opened, closed) on all active mil
 
 <div class="row">
 ```{r milestones_donuts, echo=FALSE, message=FALSE, results='asis'}
-for (i in 1:nrow(milestones[milestones$state == 'active',])) {
+for (i in 1:nrow(milestones.active)) {
   cat('<div class="col-md-3">')
-  ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(milestones[i,c('issues_opened', 'issues_closed')]))
+  ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(milestones.active[i,c('issues_opened', 'issues_closed')]))
 
   p <- gvisPieChart(ms,
                   options = list(
-                    title=paste("Issues for milestone ", milestones[i,3], sep=""),
+                    title=paste("Issues for milestone ", milestones.active[i,4], sep=""),
                     colors="['red', 'green']",
                     width=350, height=280,
                     pieHole= 0.4))
@@ -149,13 +149,13 @@ for (i in 1:nrow(milestones[milestones$state == 'active',])) {
 <div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Active Milestones</div>
 
 <table class="table table-striped">
-  <tr><th>ID</th><th>IID</th><th>Title</th><th>Description</th><th>Issues (open/total)</th><th>Start date</th><th>Due date</th><th>Created</th><th>Updated</th></tr>
+  <tr><th>IID</th><th>ID</th><th>Title</th><th>Issues (open/total)</th><th>Start date</th><th>Due date</th><th>Created</th><th>Updated</th></tr>
 ```{r milestones_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(milestones[milestones$state == 'active',], 1,
+t <- apply(milestones.active, 1,
 		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td><td>',
-		           x[[3]], '</td><td>', x[[4]], '</td><td>', x[[11]], ' / ', x[[10]],
-							 '</td><td>', x[[7]],'</td><td>', x[[6]], '</td><td>', x[[8]], 
-							 '</td><td>', x[[9]], '</td></tr>', sep=''))
+		           x[[4]], '</td><td>', x[[11]], ' / ', x[[10]],
+							 '</td><td>', x[[7]],'</td><td>', x[[8]], '</td><td>', as.Date(x[[5]]), 
+							 '</td><td>', as.Date(x[[6]]), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
@@ -164,7 +164,7 @@ cat(t)
 
 -----
 
-## <a name="late_issues"></a>Late issues
+### <a name="late_issues"></a>Late issues
 
 ``r nrow(issues.late)`` issues have a past due date (compared to current time). Display is limited to 10 issues for readability.
 
@@ -207,33 +207,4 @@ cat(t)
 ```
 </table>
 </div>
-
------
-
-### <a name="downloads"></a>Downloads
-
-The visualisations on this page can be exported and easily reused on an external web site. You can find more information on iframes and pictures reuse in [the project&apos;s wiki](https://bitbucket.org/BorisBaldassari/alambic/wiki/Using_autogenerated_pictures/). Remember to change the server name in the code samples provided.
-
-Plot of main evolution metrics of the issue tracking system
-
-    <iframe src="http://server/projects/`r project.id`/EclipseIts/its_evol_summary.html" frameborder="0" style="width: 100%; height: 370px"></iframe>
-
-Evolution of updates on issues
-
-    <iframe src="http://server/projects/`r project.id`/EclipseIts/its_evol_changed.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
-
-Evolution of people involved in the issue tracking system
-
-    <iframe src="http://server/projects/`r project.id`/EclipseIts/its_evol_people.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
-    
-Evolution of opened and closed issues
-
-    <iframe src="http://server/projects/`r project.id`/EclipseIts/its_evol_opened.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
-
-The visualisations used in this document rely on a number of flat CSV and JSON data files. You can download and play with them if you want to thereafter:
-
-* List of raw static metrics retrieved from the eclipse dashboard [ <a href="import_its.json">Download JSON</a> ]
-* List of computed static metrics for ITS [ <a href="metrics_its.csv">Download CSV</a> | <a href="metrics_its.json">Download JSON</a> ]
-* List of evolution metrics for ITS [ <a href="metrics_evol_its.csv">Download CSV</a> | <a href="metrics_evol_its.json">Download JSON</a> ]
-
 
