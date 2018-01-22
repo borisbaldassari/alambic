@@ -53,6 +53,7 @@
                 <br />
                 <div class="list-group">
                   <a class="list-group-item" href="/admin/jobs/" role="button"><i class="fa fa-bars"></i> &nbsp; Return to jobs</a>
+                  <a class="list-group-item" href="/admin/minion" role="button"><i class="fa fa-dashboard"></i> &nbsp; Minion UI</a>
                   <a class="list-group-item" href="/admin/jobs/<%= $job_id %>/run" role="button"><i class="fa fa-refresh"></i> &nbsp; Restart job</a>
                   <a class="list-group-item" href="/admin/jobs/<%= $job_id %>/del" role="button"><i class="fa fa-ban"></i> &nbsp; Remove job</a>
                 </div>

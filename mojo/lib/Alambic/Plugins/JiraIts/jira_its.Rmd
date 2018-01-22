@@ -24,7 +24,7 @@ require(xtable)
 
 knitr::opts_chunk$set(fig.path = 'figures/')
 
-#project.id <- 'modeling.sirius'
+#project.id <- 'openattic'
 plugin.id <- 'JiraIts'
 
 file.metrics <- paste("../../../../projects/", project.id, "/output/",

@@ -23,8 +23,9 @@
               </div>
               <div class="col-sm-6">
                 <div class="list-group">
-                  <a class="list-group-item" href="/admin/purgejobs" role="button"><i class="fa fa-bars"></i> &nbsp; Purge jobs</a>
-                  <a class="list-group-item" href="/admin/projects/runall" role="button"><i class="fa fa-bars"></i> &nbsp; Run all active projects</a>
+                  <a class="list-group-item" href="/admin/purgejobs" role="button"><i class="fa fa-ban"></i> &nbsp; Purge jobs</a>
+                  <a class="list-group-item" href="/admin/minion" role="button"><i class="fa fa-dashboard"></i> &nbsp; Minion UI</a>
+                  <a class="list-group-item" href="/admin/projects/runall" role="button"><i class="fa fa-gears"></i> &nbsp; Run all active projects</a>
                 </div>
               </div>
             </div>
