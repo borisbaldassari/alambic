@@ -49,6 +49,10 @@ my %conf = (
   "provides_data"  => {
     "import_bugzilla.json" =>
       "The original file of current information, downloaded from the Bugzilla server (JSON).",
+    "metrics_bugzilla.csv" =>
+      "The list of metrics with their values (CSV).",
+    "metrics_bugzilla.json" =>
+      "The list of metrics with their values (JSON).",
     "bugzilla_evol.csv" =>
       "The evolution of issues created and authors by day (CSV).",
     "bugzilla_issues.csv" =>
@@ -59,6 +63,12 @@ my %conf = (
       "The list of open issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).",
     "bugzilla_issues_open_unassigned.csv" =>
       "The list of open and unassigned issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).",
+    "bugzilla_components.csv" =>
+      "The list of components that have at least one bug registered against them (CSV).",
+    "bugzilla_milestones.csv" =>
+      "The list of milestones that have at least one bug targeted for (CSV).",
+    "bugzilla_versions.csv" =>
+      "The list of software versions that have at least one bug registered against them (CSV).",
   },
   "provides_metrics" => {
     "BZ_VOL"             => "BZ_VOL",
@@ -166,7 +176,7 @@ sub run_plugin($$) {
              'assigned_to', 'last_change_time', 'target_milestone', 'url');
 
   my $url = $url_base . "rest/bug?product=" . $bugzilla_project . 
-      "&include_fields=" . join(',', @attrs_def);
+      "&include_fields=" . join(',', @attrs_def) . ",is_open";
   
   push(@{$ret{'log'}}, "[Plugins::Bugzilla] Using URL [$url].");
   my $res = $ua->get($url)->result;
@@ -195,15 +205,17 @@ sub run_plugin($$) {
   my ($bz_created_1w, $bz_created_1m, $bz_created_1y) = (0, 0, 0);
   my ($bz_updated_1w, $bz_updated_1m, $bz_updated_1y) = (0, 0, 0);
   my (%authors, %authors_1w, %authors_1m, %authors_1y, %people);
+  my (%components, %milestones, %versions);
   my (@open, @unassigned_open);
   my %timeline_c;
   my %timeline_a;
   
   my $csv                 = Text::CSV->new({binary => 1, eol => "\n"});
+# It seems that the deadline field is never filled (i.e. always undef).
 #  my $csv_late            = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_open            = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_unassigned_open = Text::CSV->new({binary => 1, eol => "\n"});
-
+  my $first = 10;
   foreach my $issue (@{$data->{'bugs'}}) {
 
       # Convert string dates to epoch seconds      
@@ -219,15 +231,31 @@ sub run_plugin($$) {
       $authors{$issue->{'creator'}}++;
 
       # Rebuild the URL for the issue.
-      my $issue->{'url'} = $url_base . '/bugs/show_bug.cgi?id=' . $issue->{'id'};
+      $issue->{'url'} = $url_base . '/bugs/show_bug.cgi?id=' . $issue->{'id'};
       
       my @attrs_v = map { $issue->{$_} } @attrs_def;
       $csv->combine(@attrs_v);
       $csv_out .= $csv->string();
-      
-      if ( $issue->{'is_open'} ) {
+      if ($first) { print "KEYS " . Dumper(%$issue); $first-- }
+      if ( $issue->{'is_open'} ) {print "# ISSUE IS OPEN!\n";
           push(@open, $issue->{'id'});
           $csv_open_out .= $csv->string();
+      }
+
+
+      # list components
+      if ( defined($issue->{'component'}) ) {
+          $components{$issue->{'component'}}++;
+      }
+
+      # list target_milestones
+      if ( defined($issue->{'target_milestone'}) ) {
+          $milestones{$issue->{'target_milestone'}}++;
+      }
+
+      # list versions
+      if ( defined($issue->{'version'}) ) {
+          $versions{$issue->{'version'}}++;
       }
 
       #   # Check if issue's due date has past
@@ -306,6 +334,38 @@ sub run_plugin($$) {
   $repofs->write_output($project_id, "bugzilla_issues_open.csv", $csv_open_out);
   $repofs->write_output($project_id, "bugzilla_issues_open_unassigned.csv",
                         $csv_unassigned_open_out);
+
+  # Compute lists (components, milestones, versions)
+  # Milestones
+  $csv = Text::CSV->new({binary => 1, eol => "\n"});
+  $csv_out = "Milestone,Bugs\n";
+  foreach my $i (sort keys %milestones) {
+      $csv->combine( ($i, $milestones{$i} ) );
+      $csv_out .= $csv->string();
+  }
+  $repofs->write_output($project_id, "bugzilla_milestones.csv", $csv_out);
+
+  # Components
+  $csv = Text::CSV->new({binary => 1, eol => "\n"});
+  $csv_out = "Component,Bugs\n";
+  foreach my $i (sort keys %components) {
+      $csv->combine( ($i, $components{$i} ) );
+      $csv_out .= $csv->string();
+  }
+  $repofs->write_output($project_id, "bugzilla_components.csv", $csv_out);
+
+  # Versions
+  $csv = Text::CSV->new({binary => 1, eol => "\n"});
+  $csv_out = "Version,Bugs\n";
+  foreach my $i (sort keys %versions) {
+      $csv->combine( ($i, $versions{$i} ) );
+      $csv_out .= $csv->string();
+  }
+  $repofs->write_output($project_id, "bugzilla_versions.csv", $csv_out);
+
+
+
+
 
   # Compute and store metrics
   $ret{'metrics'}{'BZ_VOL'}     = scalar @{$data->{'bugs'}};

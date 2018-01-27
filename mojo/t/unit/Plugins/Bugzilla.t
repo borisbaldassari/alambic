@@ -48,6 +48,10 @@ ok(grep(m!BZ_URL!, @{$conf->{'provides_info'}}),
 
 ok(grep(m!import_bugzilla.json!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > import_bugzilla.json");
+ok(grep(m!metrics_bugzilla.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > metrics_bugzilla.csv");
+ok(grep(m!metrics_bugzilla.json!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > metrics_bugzilla.json");
 ok(grep(m!bugzilla_evol.csv!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > bugzilla_evol.csv");
 ok(grep(m!bugzilla_issues.csv!, keys %{$conf->{'provides_data'}}),
@@ -56,6 +60,12 @@ ok(grep(m!bugzilla_issues_open.csv!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > bugzilla_issues_open.csv");
 ok(grep(m!bugzilla_issues_open_unassigned.csv!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > bugzilla_issues_open_unassigned.csv");
+ok(grep(m!bugzilla_components.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > bugzilla_components.csv");
+ok(grep(m!bugzilla_milestones.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > bugzilla_milestones.csv");
+ok(grep(m!bugzilla_versions.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > bugzilla_versions.csv");
 
 
 ok(grep(m!BZ_VOL!, keys %{$conf->{'provides_metrics'}}),
@@ -63,7 +73,7 @@ ok(grep(m!BZ_VOL!, keys %{$conf->{'provides_metrics'}}),
 ok(grep(m!BZ_AUTHORS!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > BZ_AUTHORS");
 ok(grep(m!BZ_AUTHORS_1M!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > BZ_AUTHORS_1M");
+   "Conf has provides_metrics > BZ_AUTHORS_1M");
 ok(grep(m!BZ_AUTHORS_1W!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > BZ_AUTHORS_1W");
 ok(grep(m!BZ_AUTHORS_1Y!, keys %{$conf->{'provides_metrics'}}),
@@ -79,6 +89,19 @@ ok(grep(m!BZ_OPEN_UNASSIGNED!, keys %{$conf->{'provides_metrics'}}),
 
 ok(grep(m!bugzilla_summary.html!, keys %{$conf->{'provides_figs'}}),
   "Conf has provides_figs > bugzilla_summary.html");
+
+# Remove file before trying to create them.
+unlink (
+    "projects/test.bugzilla/input/test.bugzilla_import.json",
+    "projects/test.bugzilla/output/test.bugzilla_metrics.bugzilla.csv",
+    "projects/test.bugzilla/output/test.bugzilla_metrics.bugzilla.json",
+    "projects/test.bugzilla/output/test.bugzilla_issues.csv",
+    "projects/test.bugzilla/output/test.bugzilla_issues_open.csv",
+    "projects/test.bugzilla/output/test.bugzilla_issues_open_unassigned.csv",
+    "projects/test.bugzilla/output/test.bugzilla_components.csv",
+    "projects/test.bugzilla/output/test.bugzilla_milestones.csv",
+    "projects/test.bugzilla/output/test.bugzilla_versions.csv",
+    );
 
 note("Executing the plugin with acceleo project. ");
 my $ret = $plugin->run_plugin(
@@ -181,6 +204,13 @@ ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_issues_open.csv",
   "Check that file bugzilla_issues_open.csv exists.");
 ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_issues_open_unassigned.csv",
   "Check that file bugzilla_issues_open_unassigned.csv exists.");
+
+ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_components.csv",
+  "Check that file bugzilla_components.csv exists.");
+ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_milestones.csv",
+  "Check that file bugzilla_milestones.csv exists.");
+ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_versions.csv",
+  "Check that file bugzilla_versions.csv exists.");
 
 #ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_summary.html",
 #  "Check that file bugzilla_summary.html exists.");
