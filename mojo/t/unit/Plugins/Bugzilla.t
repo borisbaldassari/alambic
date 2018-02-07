@@ -138,44 +138,44 @@ ok(grep(m!\[Plugins::Bugzilla\] Writing user events file!, @{$ret->{'log'}}),
 #  "Checking if log contains bugzilla_summary.rmd R code exec.")
 #  or diag explain $ret;
 
-ok($ret->{'metrics'}{'BZ_VOL'} =~ /^\d+$/, "BZ_VOL is a digit.")
+ok($ret->{'metrics'}{'ITS_ISSUES_ALL'} =~ /^\d+$/, "ITS_ISSUES_ALL is a digit.")
   or print Dumper($ret);
-ok($ret->{'metrics'}{'BZ_OPEN'} =~ /^\d+$/, "BZ_OPEN is a digit.")
+ok($ret->{'metrics'}{'ITS_OPEN'} =~ /^\d+$/, "ITS_OPEN is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_OPEN_PERCENT'} =~ /^\d\d?$/,
-  "BZ_OPEN_PERCENT is a digit.")
+ok($ret->{'metrics'}{'ITS_OPEN_PERCENT'} =~ /^\d\d?$/,
+  "ITS_OPEN_PERCENT is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_OPEN_UNASSIGNED'} =~ /^\d+$/,
-  "BZ_OPEN_UNASSIGNED is a digit.")
+ok($ret->{'metrics'}{'ITS_OPEN_UNASSIGNED'} =~ /^\d+$/,
+  "ITS_OPEN_UNASSIGNED is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_CREATED_1M'} =~ /^\d+$/,
-  "BZ_CREATED_1M is a digit.")
+ok($ret->{'metrics'}{'ITS_CREATED_1M'} =~ /^\d+$/,
+  "ITS_CREATED_1M is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_CREATED_1Y'} =~ /^\d+$/,
-  "BZ_CREATED_1Y is a digit.")
+ok($ret->{'metrics'}{'ITS_CREATED_1Y'} =~ /^\d+$/,
+  "ITS_CREATED_1Y is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_CREATED_1W'} =~ /^\d+$/,
-  "BZ_CREATED_1W is a digit.")
+ok($ret->{'metrics'}{'ITS_CREATED_1W'} =~ /^\d+$/,
+  "ITS_CREATED_1W is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_UPDATED_1M'} =~ /^\d+$/,
-  "BZ_UPDATED_1M is a digit.")
+ok($ret->{'metrics'}{'ITS_UPDATED_1M'} =~ /^\d+$/,
+  "ITS_UPDATED_1M is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_UPDATED_1W'} =~ /^\d+$/,
-  "BZ_UPDATED_1W is a digit.")
+ok($ret->{'metrics'}{'ITS_UPDATED_1W'} =~ /^\d+$/,
+  "ITS_UPDATED_1W is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_UPDATED_1Y'} =~ /^\d+$/,
-  "BZ_UPDATED_1Y is a digit.")
+ok($ret->{'metrics'}{'ITS_UPDATED_1Y'} =~ /^\d+$/,
+  "ITS_UPDATED_1Y is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_AUTHORS_1W'} =~ /^\d+$/,
-  "BZ_AUTHORS_1W is a digit.")
+ok($ret->{'metrics'}{'ITS_AUTHORS_1W'} =~ /^\d+$/,
+  "ITS_AUTHORS_1W is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_AUTHORS_1M'} =~ /^\d+$/,
-  "BZ_AUTHORS_1M is a digit.")
+ok($ret->{'metrics'}{'ITS_AUTHORS_1M'} =~ /^\d+$/,
+  "ITS_AUTHORS_1M is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_AUTHORS_1Y'} =~ /^\d+$/,
-  "BZ_AUTHORS_1Y is a digit.")
+ok($ret->{'metrics'}{'ITS_AUTHORS_1Y'} =~ /^\d+$/,
+  "ITS_AUTHORS_1Y is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'BZ_AUTHORS'} =~ /^\d+$/, "BZ_AUTHORS is a digit.")
+ok($ret->{'metrics'}{'ITS_AUTHORS'} =~ /^\d+$/, "ITS_AUTHORS is a digit.")
   or diag explain $ret;
 
 
@@ -184,7 +184,7 @@ ok($ret->{'metrics'}{'BZ_AUTHORS'} =~ /^\d+$/, "BZ_AUTHORS is a digit.")
 #  "Ret has rec > JIRA_LATE_ISSUE.");
 
 ok($ret->{'info'}{'BZ_URL'} eq 'https://bugs.eclipse.org/bugs//buglist.cgi?product=acceleo',
-  "Ret has correct info BZ_URL.") or print Dumper($ret);
+  "Ret has correct info ITS_URL.") or print Dumper($ret);
 
 
 note("Check that files have been created. ");

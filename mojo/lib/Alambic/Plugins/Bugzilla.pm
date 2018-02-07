@@ -71,21 +71,21 @@ my %conf = (
       "The list of software versions that have at least one bug registered against them (CSV).",
   },
   "provides_metrics" => {
-    "BZ_VOL"             => "BZ_VOL",
-    "BZ_AUTHORS"         => "BZ_AUTHORS",
-    "BZ_AUTHORS_1W"      => "BZ_AUTHORS_1W",
-    "BZ_AUTHORS_1M"      => "BZ_AUTHORS_1M",
-    "BZ_AUTHORS_1Y"      => "BZ_AUTHORS_1Y",
-    "BZ_CREATED_1W"      => "BZ_CREATED_1W",
-    "BZ_CREATED_1M"      => "BZ_CREATED_1M",
-    "BZ_CREATED_1Y"      => "BZ_CREATED_1Y",
-    "BZ_UPDATED_1W"      => "BZ_UPDATED_1W",
-    "BZ_UPDATED_1M"      => "BZ_UPDATED_1M",
-    "BZ_UPDATED_1Y"      => "BZ_UPDATED_1Y",
-    "BZ_OPEN"            => "BZ_OPEN",
-    "BZ_OPEN_PERCENT"    => "BZ_OPEN_PERCENT",
-#    "BZ_LATE"            => "BZ_LATE",
-    "BZ_OPEN_UNASSIGNED" => "BZ_OPEN_UNASSIGNED",
+    "BZ_VOL"             => "ITS_ISSUES_ALL",
+    "BZ_AUTHORS"         => "ITS_AUTHORS",
+    "BZ_AUTHORS_1W"      => "ITS_AUTHORS_1W",
+    "BZ_AUTHORS_1M"      => "ITS_AUTHORS_1M",
+    "BZ_AUTHORS_1Y"      => "ITS_AUTHORS_1Y",
+    "BZ_CREATED_1W"      => "ITS_CREATED_1W",
+    "BZ_CREATED_1M"      => "ITS_CREATED_1M",
+    "BZ_CREATED_1Y"      => "ITS_CREATED_1Y",
+    "BZ_UPDATED_1W"      => "ITS_UPDATED_1W",
+    "BZ_UPDATED_1M"      => "ITS_UPDATED_1M",
+    "BZ_UPDATED_1Y"      => "ITS_UPDATED_1Y",
+    "BZ_OPEN"            => "ITS_OPEN",
+    "BZ_OPEN_PERCENT"    => "ITS_OPEN_PERCENT",
+#    "BZ_LATE"            => "ITS_LATE",
+    "BZ_OPEN_UNASSIGNED" => "ITS_OPEN_UNASSIGNED",
   },
   "provides_figs" => {
     'bugzilla_summary.html' => "HTML summary of Bugzilla issues main metrics (HTML)",
@@ -197,7 +197,7 @@ sub run_plugin($$) {
                         encode_json($data->{'bugs'}) );
 
   # my (@late, @open, @unassigned_open, %people);
-  my $csv_out = join( ',', @attrs_def );
+  my $csv_out = join( ',', @attrs_def ) . "\n";
 
   my $csv_open_out            = $csv_out;
   my $csv_unassigned_open_out = $csv_out;
@@ -236,8 +236,8 @@ sub run_plugin($$) {
       my @attrs_v = map { $issue->{$_} } @attrs_def;
       $csv->combine(@attrs_v);
       $csv_out .= $csv->string();
-      if ($first) { print "KEYS " . Dumper(%$issue); $first-- }
-      if ( $issue->{'is_open'} ) {print "# ISSUE IS OPEN!\n";
+#      if ($first) { print "KEYS " . Dumper(%$issue); $first-- }
+      if ( $issue->{'is_open'} ) {
           push(@open, $issue->{'id'});
           $csv_open_out .= $csv->string();
       }
@@ -368,22 +368,22 @@ sub run_plugin($$) {
 
 
   # Compute and store metrics
-  $ret{'metrics'}{'BZ_VOL'}     = scalar @{$data->{'bugs'}};
-  $ret{'metrics'}{'BZ_AUTHORS'} = scalar keys %authors;
-  $ret{'metrics'}{'BZ_OPEN'}    = scalar @open;
-  $ret{'metrics'}{'BZ_OPEN_PERCENT'}
+  $ret{'metrics'}{'ITS_ISSUES_ALL'}     = scalar @{$data->{'bugs'}};
+  $ret{'metrics'}{'ITS_AUTHORS'} = scalar keys %authors;
+  $ret{'metrics'}{'ITS_OPEN'}    = scalar @open;
+  $ret{'metrics'}{'ITS_OPEN_PERCENT'}
   = sprintf("%.0f", 100 * (scalar @open) / (scalar @{$data->{'bugs'}}));
-  # $ret{'metrics'}{'BZ_LATE'}            = scalar @late            || 0;
-  $ret{'metrics'}{'BZ_OPEN_UNASSIGNED'} = scalar @unassigned_open || 0;
-  $ret{'metrics'}{'BZ_AUTHORS_1W'}      = scalar keys %authors_1w || 0;
-  $ret{'metrics'}{'BZ_AUTHORS_1M'}      = scalar keys %authors_1m || 0;
-  $ret{'metrics'}{'BZ_AUTHORS_1Y'}      = scalar keys %authors_1y || 0;
-  $ret{'metrics'}{'BZ_CREATED_1W'}      = $bz_created_1w;
-  $ret{'metrics'}{'BZ_CREATED_1M'}      = $bz_created_1m;
-  $ret{'metrics'}{'BZ_CREATED_1Y'}      = $bz_created_1y;
-  $ret{'metrics'}{'BZ_UPDATED_1W'}      = $bz_updated_1w;
-  $ret{'metrics'}{'BZ_UPDATED_1M'}      = $bz_updated_1m;
-  $ret{'metrics'}{'BZ_UPDATED_1Y'}      = $bz_updated_1y;
+  # $ret{'metrics'}{'ITS_LATE'}            = scalar @late            || 0;
+  $ret{'metrics'}{'ITS_OPEN_UNASSIGNED'} = scalar @unassigned_open || 0;
+  $ret{'metrics'}{'ITS_AUTHORS_1W'}      = scalar keys %authors_1w || 0;
+  $ret{'metrics'}{'ITS_AUTHORS_1M'}      = scalar keys %authors_1m || 0;
+  $ret{'metrics'}{'ITS_AUTHORS_1Y'}      = scalar keys %authors_1y || 0;
+  $ret{'metrics'}{'ITS_CREATED_1W'}      = $bz_created_1w;
+  $ret{'metrics'}{'ITS_CREATED_1M'}      = $bz_created_1m;
+  $ret{'metrics'}{'ITS_CREATED_1Y'}      = $bz_created_1y;
+  $ret{'metrics'}{'ITS_UPDATED_1W'}      = $bz_updated_1w;
+  $ret{'metrics'}{'ITS_UPDATED_1M'}      = $bz_updated_1m;
+  $ret{'metrics'}{'ITS_UPDATED_1Y'}      = $bz_updated_1y;
   
   # Set user information for profile
   push(@{$ret{'log'}}, "[Plugins::Bugzilla] Writing user events file.");
