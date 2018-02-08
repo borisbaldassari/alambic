@@ -364,9 +364,6 @@ sub run_plugin($$) {
   $repofs->write_output($project_id, "bugzilla_versions.csv", $csv_out);
 
 
-
-
-
   # Compute and store metrics
   $ret{'metrics'}{'ITS_ISSUES_ALL'}     = scalar @{$data->{'bugs'}};
   $ret{'metrics'}{'ITS_AUTHORS'} = scalar keys %authors;
@@ -415,13 +412,13 @@ sub run_plugin($$) {
   $csv_out .= join("\n", @timeline) . "\n";
   $repofs->write_output($project_id, "bugzilla_evol.csv", $csv_out);
 
-  # # Now execute the main R script.
-  # push(@{$ret{'log'}}, "[Plugins::Bugzilla] Executing R main file.");
-  # my $r = Alambic::Tools::R->new();
-  # @{$ret{'log'}} = (
-  #   @{$ret{'log'}},
-  #   @{$r->knit_rmarkdown_inc('Bugzilla', $project_id, 'bugzilla_its.Rmd')}
-  # );
+  # Now execute the main R script.
+  push(@{$ret{'log'}}, "[Plugins::Bugzilla] Executing R main file.");
+  my $r = Alambic::Tools::R->new();
+  @{$ret{'log'}} = (
+    @{$ret{'log'}},
+    @{$r->knit_rmarkdown_inc('Bugzilla', $project_id, 'bugzilla.Rmd')}
+  );
 
   # # And execute the figures R scripts.
   # @{$ret{'log'}} = (
