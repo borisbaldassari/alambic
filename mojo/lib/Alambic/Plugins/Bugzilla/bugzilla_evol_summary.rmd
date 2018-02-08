@@ -30,7 +30,7 @@ evol.monthly <- apply.monthly(x=evol.xts, FUN = nrow)
 
 p <-dygraph(evol.monthly[,1],
         main = paste('Issues submissions for ', project.id, sep=''),
-        width = "750px", height = 200 ) %>%
+        width = "750px", height = 250 ) %>%
       dyRangeSelector()
 p
 ```

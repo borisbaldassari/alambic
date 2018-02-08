@@ -143,7 +143,8 @@ cat(t)
 
 ### Evolution of issues creation 
 
-<iframe src="/projects/`r project.id`/Bugzilla/bugzilla_evol_summary.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+<br />
+<iframe src="/projects/`r project.id`/Bugzilla/bugzilla_evol_summary.html" frameborder="0" style="width: 100%; height: 270px"></iframe>
 
 ### <a name="milestones"></a> Milestones
 

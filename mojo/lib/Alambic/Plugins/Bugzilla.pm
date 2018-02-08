@@ -86,8 +86,9 @@ my %conf = (
     "BZ_OPEN_UNASSIGNED" => "ITS_OPEN_UNASSIGNED",
   },
   "provides_figs" => {
-#    'bugzilla_summary.html' => "HTML summary of Bugzilla issues main metrics (HTML)",
     'bugzilla_evol_summary.html' => "Evolution of Bugzilla issues submission",
+    'bugzilla_components.html' => "Bar plot of all components defined for project in Bugzilla (HTML)",
+    'bugzilla_versions.html' => "Bar plot of all versions defined for project in Bugzilla (HTML).",
   },
   "provides_recs" => ["BZ_LATE_ISSUES",],
   "provides_viz"  => {"bugzilla.html" => "Bugzilla",},

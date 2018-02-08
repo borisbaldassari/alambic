@@ -87,20 +87,28 @@ ok(grep(m!BZ_OPEN!, keys %{$conf->{'provides_metrics'}}),
 ok(grep(m!BZ_OPEN_UNASSIGNED!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > BZ_OPEN_UNASSIGNED");
 
-ok(grep(m!bugzilla_summary.html!, keys %{$conf->{'provides_figs'}}),
-  "Conf has provides_figs > bugzilla_summary.html");
+ok(grep(m!bugzilla_evol_summary.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > bugzilla_evol_summary.html");
+ok(grep(m!bugzilla_components.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > bugzilla_components.html");
+ok(grep(m!bugzilla_versions.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > bugzilla_versions.html");
 
 # Remove file before trying to create them.
 unlink (
-    "projects/test.bugzilla/input/test.bugzilla_import.json",
+    "projects/test.bugzilla/input/test.bugzilla_import_bugzilla.json",
     "projects/test.bugzilla/output/test.bugzilla_metrics.bugzilla.csv",
     "projects/test.bugzilla/output/test.bugzilla_metrics.bugzilla.json",
-    "projects/test.bugzilla/output/test.bugzilla_issues.csv",
-    "projects/test.bugzilla/output/test.bugzilla_issues_open.csv",
-    "projects/test.bugzilla/output/test.bugzilla_issues_open_unassigned.csv",
-    "projects/test.bugzilla/output/test.bugzilla_components.csv",
-    "projects/test.bugzilla/output/test.bugzilla_milestones.csv",
-    "projects/test.bugzilla/output/test.bugzilla_versions.csv",
+    "projects/test.bugzilla/output/test.bugzilla_bugzilla_issues.csv",
+    "projects/test.bugzilla/output/test.bugzilla_bugzilla_evol.csv",
+    "projects/test.bugzilla/output/test.bugzilla_bugzilla_issues_open.csv",
+    "projects/test.bugzilla/output/test.bugzilla_bugzilla_issues_open_unassigned.csv",
+    "projects/test.bugzilla/output/test.bugzilla_bugzilla_components.csv",
+    "projects/test.bugzilla/output/test.bugzilla_bugzilla_milestones.csv",
+    "projects/test.bugzilla/output/test.bugzilla_bugzilla_versions.csv",
+    "projects/test.bugzilla/output/test.bugzilla_bugzilla_components.html",
+    "projects/test.bugzilla/output/test.bugzilla_bugzilla_versions.html",
+    "projects/test.bugzilla/output/test.bugzilla_bugzilla_evol_summary.html",
     );
 
 note("Executing the plugin with acceleo project. ");
@@ -121,22 +129,25 @@ ok(grep(m!\[Plugins::Bugzilla\] Found \d+ issues.!, @{$ret->{'log'}}),
   "Ret has log > Found xxx issues.");
 ok(grep(m!\[Plugins::Bugzilla\] Writing user events file!, @{$ret->{'log'}}),
   "Ret has log > Writing user events file.");
-#ok(grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla_its.Rmd/, @{$ret->{'log'}}) == 1,
-#  "Checking if log contains bugzilla_its.Rmd R code exec.")
-#  or diag explain $ret;
-#ok(
-#  grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla_evol_authors.rmd/, @{$ret->{'log'}})
-#    == 1,
-#  "Checking if log contains bugzilla_evol_authors.rmd R code exec."
-#) or diag explain $ret;
-#ok(
-#  grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla_evol_created.rmd/, @{$ret->{'log'}})
-#    == 1,
-#  "Checking if log contains bugzilla_evol_created.rmd R code exec."
-#) or diag explain $ret;
-#ok(grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla_summary.rmd/, @{$ret->{'log'}}) == 1,
-#  "Checking if log contains bugzilla_summary.rmd R code exec.")
-#  or diag explain $ret;
+
+ok(grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla.Rmd/, @{$ret->{'log'}}) == 1,
+ "Checking if log contains bugzilla.Rmd R code exec.")
+ or diag explain $ret;
+ok(
+ grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla_evol_summary.rmd/, @{$ret->{'log'}})
+   == 1,
+ "Checking if log contains bugzilla_evol_summary.rmd R code exec."
+) or diag explain $ret;
+ok(
+ grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla_components.rmd/, @{$ret->{'log'}})
+   == 1,
+ "Checking if log contains bugzilla_components.rmd R code exec."
+) or diag explain $ret;
+ok(
+ grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla_versions.rmd/, @{$ret->{'log'}})
+   == 1,
+ "Checking if log contains bugzilla_versions.rmd R code exec."
+) or diag explain $ret;
 
 ok($ret->{'metrics'}{'ITS_ISSUES_ALL'} =~ /^\d+$/, "ITS_ISSUES_ALL is a digit.")
   or print Dumper($ret);
@@ -212,24 +223,15 @@ ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_milestones.csv",
 ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_versions.csv",
   "Check that file bugzilla_versions.csv exists.");
 
-#ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_summary.html",
-#  "Check that file bugzilla_summary.html exists.");
-#ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_its.inc",
-#  "Check that file bugzilla_its.inc exists.");
+ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla.inc",
+  "Check that file bugzilla.inc exists.");
 
-# ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_evol_authors.html",
-#   "Check that file bugzilla_evol_authors.html exists.");
-# ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_evol_authors.svg",
-#   "Check that file bugzilla_evol_authors.svg exists.");
-# ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_evol_authors.png",
-#   "Check that file bugzilla_evol_authors.png exists.");
-
-# ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_evol_created.html",
-#   "Check that file bugzilla_evol_created.html exists.");
-# ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_evol_created.svg",
-#   "Check that file bugzilla_evol_created.svg exists.");
-# ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_evol_created.png",
-#   "Check that file bugzilla_evol_created.png exists.");
+ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_evol_summary.html",
+  "Check that file bugzilla_evol_summary.html exists.");
+ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_components.html",
+  "Check that file bugzilla_components.html exists.");
+ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_versions.html",
+  "Check that file bugzilla_versions.html exists.");
 
 done_testing();
 
