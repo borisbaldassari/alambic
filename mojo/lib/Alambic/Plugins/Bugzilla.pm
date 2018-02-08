@@ -57,8 +57,6 @@ my %conf = (
       "The evolution of issues created and authors by day (CSV).",
     "bugzilla_issues.csv" =>
       "The list of issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).",
-    # "bugzilla_issues_late.csv" =>
-    #   "The list of late issues (i.e. their due_date has past), with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).",
     "bugzilla_issues_open.csv" =>
       "The list of open issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).",
     "bugzilla_issues_open_unassigned.csv" =>
@@ -88,10 +86,8 @@ my %conf = (
     "BZ_OPEN_UNASSIGNED" => "ITS_OPEN_UNASSIGNED",
   },
   "provides_figs" => {
-    'bugzilla_summary.html' => "HTML summary of Bugzilla issues main metrics (HTML)",
-    'bugzilla_evol_summary.html' => "Evolution of Bugzilla main metrics (HTML)",
-    'bugzilla_evol_created.html' => "Evolution of Bugzilla issues creation (HTML)",
-    'bugzilla_evol_authors.html' => "Evolution of Bugzilla issues authors (HTML)",
+#    'bugzilla_summary.html' => "HTML summary of Bugzilla issues main metrics (HTML)",
+    'bugzilla_evol_summary.html' => "Evolution of Bugzilla issues submission",
   },
   "provides_recs" => ["BZ_LATE_ISSUES",],
   "provides_viz"  => {"bugzilla.html" => "Bugzilla",},
@@ -215,7 +211,6 @@ sub run_plugin($$) {
 #  my $csv_late            = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_open            = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_unassigned_open = Text::CSV->new({binary => 1, eol => "\n"});
-  my $first = 10;
   foreach my $issue (@{$data->{'bugs'}}) {
 
       # Convert string dates to epoch seconds      
@@ -236,7 +231,6 @@ sub run_plugin($$) {
       my @attrs_v = map { $issue->{$_} } @attrs_def;
       $csv->combine(@attrs_v);
       $csv_out .= $csv->string();
-#      if ($first) { print "KEYS " . Dumper(%$issue); $first-- }
       if ( $issue->{'is_open'} ) {
           push(@open, $issue->{'id'});
           $csv_open_out .= $csv->string();
@@ -412,40 +406,43 @@ sub run_plugin($$) {
   $csv_out .= join("\n", @timeline) . "\n";
   $repofs->write_output($project_id, "bugzilla_evol.csv", $csv_out);
 
+  # Execute R stuff
+  # Create options hash
+  my $opts = { 
+      'bz.url' => $ret{'info'}{'BZ_URL'},
+      'bz.project' => $bugzilla_project,
+  };
+
   # Now execute the main R script.
   push(@{$ret{'log'}}, "[Plugins::Bugzilla] Executing R main file.");
   my $r = Alambic::Tools::R->new();
   @{$ret{'log'}} = (
     @{$ret{'log'}},
-    @{$r->knit_rmarkdown_inc('Bugzilla', $project_id, 'bugzilla.Rmd')}
+    @{$r->knit_rmarkdown_inc('Bugzilla', $project_id, 'bugzilla.Rmd', [], $opts)}
   );
 
-  # # And execute the figures R scripts.
-  # @{$ret{'log'}} = (
-  #   @{$ret{'log'}},
-  #   @{
-  #     $r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_evol_authors.rmd',
-  #       ['bugzilla_evol_authors.png', 'bugzilla_evol_authors.svg'])
-  #   }
-  # );
-  # @{$ret{'log'}} = (
-  #   @{$ret{'log'}},
-  #   @{
-  #     $r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_evol_created.rmd',
-  #       ['bugzilla_evol_created.png', 'bugzilla_evol_created.svg'])
-  #   }
-  # );
-  # @{$ret{'log'}} = (
-  #   @{$ret{'log'}},
-  #   @{
-  #     $r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_evol_summary.rmd',
-  #       [])
-  #   }
-  # );
-  # @{$ret{'log'}} = (
-  #   @{$ret{'log'}},
-  #   @{$r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_summary.rmd', [])}
-  # );
+  # And execute the figures R scripts.
+  @{$ret{'log'}} = (
+    @{$ret{'log'}},
+    @{
+      $r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_evol_summary.rmd',
+        ['bugzilla_evol_summary.png', 'bugzilla_evol_summary.svg'], $opts )
+    }
+  );
+  @{$ret{'log'}} = (
+    @{$ret{'log'}},
+    @{
+      $r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_versions.rmd',
+        ['bugzilla_versions.png', 'bugzilla_versions.svg'], $opts )
+    }
+  );
+  @{$ret{'log'}} = (
+    @{$ret{'log'}},
+    @{
+      $r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_components.rmd',
+        ['bugzilla_components.png', 'bugzilla_components.svg'], $opts )
+    }
+  );
 
   # # Recommendation for late issues
   # if (scalar @late) {
