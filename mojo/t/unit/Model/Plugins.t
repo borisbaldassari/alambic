@@ -27,7 +27,7 @@ my $plugins = Alambic::Model::Plugins->new();
 isa_ok($plugins, 'Alambic::Model::Plugins');
 
 my $list = $plugins->get_names_all();
-my $pv   = 9;
+my $pv   = 10;
 ok(scalar(keys %{$list}) == $pv,
   "get_names_all there is a total of $pv plugins detected.")
   or explain %$list;
@@ -38,7 +38,7 @@ ok(scalar(keys %{$list}) == $pv, "get_conf_all has $pv entries.")
 
 # Check plugins types
 $list = $plugins->get_list_plugins_pre();
-$pv   = 7;
+$pv   = 8;
 ok(scalar(@{$list}) == $pv, "get_list_plugins_pre List pre has $pv entries.")
   or explain Dumper @$list;
 
