@@ -58,7 +58,7 @@ SKIP: {
   }
 
 
-  like($version, qr/^PostgreSQL 9.5/, "Postgres has version 9.5.")
+  like($version, qr/^PostgreSQL /, "Postgres returns version.")
     or diag explain $version;
 
   my @tables;
