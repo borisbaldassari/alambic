@@ -40,6 +40,8 @@ my %conf = (
   "ability" => ['info', 'metrics', 'data', 'figs', 'recs', 'viz', 'users'],
   "params"  => {
     "bugzilla_url"     => "The URL of the Bugzilla server, e.g. https://bugs.eclipse.org/bugs/.",
+    "bugzilla_user"     => "The login to be used for the Bugzilla server, e.g. user1.",
+    "bugzilla_passwd"     => "The password to be used for the Bugzilla server, e.g. mypassword.",
     "bugzilla_project" => "The project ID to be requested on the bugzilla server.",
     "proxy" =>
       'If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
@@ -123,15 +125,17 @@ sub run_plugin($$) {
   my $t_1y  = $t_now - ONE_YEAR;
 
   my $bugzilla_url         = $conf->{'bugzilla_url'};
+  my $bugzilla_user = $conf->{'bugzilla_user'};
+  my $bugzilla_passwd = $conf->{'bugzilla_passwd'};
   my $bugzilla_project = $conf->{'bugzilla_project'};
   my $proxy_url    = $conf->{'proxy'} || '';
 
   # Set info BZ_URL
-  my $url_base = "https://bugs.eclipse.org/bugs/";
+  my $bugzilla_conf
+    = {url => $bugzilla_url, username => $bugzilla_user, password => $bugzilla_passwd,};
+  #  my $url_base = "https://bugs.eclipse.org/bugs/";
+  my $url_base = $bugzilla_url;
   $ret{'info'}{'BZ_URL'} = $url_base . '/buglist.cgi?product=' . $bugzilla_project;
-
-#  my $bugzilla_conf
-#    = {url => $bugzilla_url, username => $bugzilla_user, password => $bugzilla_passwd,};
 
   # Configure Proxy
   if ($proxy_url =~ m!^default!i) {
@@ -172,26 +176,43 @@ sub run_plugin($$) {
              'platform', 'product', 'version', 'component', 'creation_time', 'creator', 
              'assigned_to', 'last_change_time', 'target_milestone', 'url');
 
-  my $url = $url_base . "rest/bug?product=" . $bugzilla_project . 
-      "&include_fields=" . join(',', @attrs_def) . ",is_open";
+  my $max = 1000;
+  my $offset = 0;
+  $url_base = $url_base . "rest/bug?product=" . $bugzilla_project . 
+      "&include_fields=" . join(',', @attrs_def) . ",is_open&limit=$max&offset=";
+
+  my $res; my $bugs;
+  my $url = $url_base;
+  while ( $res = $ua->get($url_base . $offset)->result ) {
   
-  push(@{$ret{'log'}}, "[Plugins::Bugzilla] Using URL [$url].");
-  my $res = $ua->get($url)->result;
-  
-  if (not $res->is_success) {
-      push(@{$ret{'log'}}, 
-           "[Plugins::Bugzilla] ERROR: Could not get resource [$url].\n" . 
-           "Message is: " . $res->message . "\n" );
-      return \%ret;
+      push(@{$ret{'log'}}, "[Plugins::Bugzilla] Using URL [$url].");
+      print "[Plugins::Bugzilla] Offset $offset Using URL [$url_base$offset].\n";
+      if ($res->is_success) {
+	  my $json = $res->body;
+	  my $data = decode_json($json);
+	  
+	  push(@{$ret{'log'}}, "[Plugins::Bugzilla] Found " . 
+	       scalar(@{$data->{'bugs'}}) . " issues.\n");
+	  print "[Plugins::Bugzilla] Found " . 
+	      scalar(@{$data->{'bugs'}}) . " issues.\n";
+#	  print Dumper($data);
+	  push( @$bugs, @{$data->{'bugs'}} );
+	  $offset += $max;
+
+	  if ( scalar(@{$data->{'bugs'}}) < $max ) { last; }
+
+      } else {
+	  push(@{$ret{'log'}}, 
+	       "[Plugins::Bugzilla] ERROR: Could not get resource [$url].\n" . 
+	       "Message is: " . $res->message . "\n" ); print "TESTTTTTT";
+	  return \%ret;
+	  last;
+      }      
   }
-  
-  my $json = $res->body;
-  my $data = decode_json($json); 
-  push(@{$ret{'log'}}, "[Plugins::Bugzilla] Found " . scalar(@{$data->{'bugs'}}) . " issues.\n");
-  
+  print "BUGS " . scalar(@$bugs);
   # Write json file to import directory
   $repofs->write_input( $project_id, "import_bugzilla.json",
-                        encode_json($data->{'bugs'}) );
+                        encode_json($bugs) );
 
   # my (@late, @open, @unassigned_open, %people);
   my $csv_out = join( ',', @attrs_def ) . "\n";
@@ -212,8 +233,7 @@ sub run_plugin($$) {
 #  my $csv_late            = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_open            = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_unassigned_open = Text::CSV->new({binary => 1, eol => "\n"});
-  foreach my $issue (@{$data->{'bugs'}}) {
-
+  foreach my $issue (@$bugs) {
       # Convert string dates to epoch seconds      
       my $date_created
           = Time::Piece->strptime(int(str2time($issue->{'creation_time'}) || 0), "%s");
@@ -360,11 +380,11 @@ sub run_plugin($$) {
 
 
   # Compute and store metrics
-  $ret{'metrics'}{'ITS_ISSUES_ALL'}     = scalar @{$data->{'bugs'}};
+  $ret{'metrics'}{'ITS_ISSUES_ALL'}     = scalar @{$bugs};
   $ret{'metrics'}{'ITS_AUTHORS'} = scalar keys %authors;
   $ret{'metrics'}{'ITS_OPEN'}    = scalar @open;
   $ret{'metrics'}{'ITS_OPEN_PERCENT'}
-  = sprintf("%.0f", 100 * (scalar @open) / (scalar @{$data->{'bugs'}}));
+  = sprintf("%.0f", 100 * (scalar @open) / (scalar @{$bugs}));
   # $ret{'metrics'}{'ITS_LATE'}            = scalar @late            || 0;
   $ret{'metrics'}{'ITS_OPEN_UNASSIGNED'} = scalar @unassigned_open || 0;
   $ret{'metrics'}{'ITS_AUTHORS_1W'}      = scalar keys %authors_1w || 0;

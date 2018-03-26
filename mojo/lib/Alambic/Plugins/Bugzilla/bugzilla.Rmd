@@ -44,9 +44,9 @@ knitr::opts_chunk$set(fig.path = "figures/")
 #   * bz.project
 #   * bz.url
 
-# project.id <- 'test.bugzilla'
-# bz.project <- 'acceleo'
-# bz.url <- 'https://bugs.eclipse.org/bugs'
+ project.id <- 'modeling.sirius'
+ bz.project <- 'sisu'
+ bz.url <- 'https://bugs.eclipse.org/bugs'
 
 bz.urlfull <- paste(bz.url, '/', '/show_bug.cgi?id=', bz.project, sep="")
 
@@ -86,7 +86,7 @@ versions <- read.csv(file=file.versions, header=T)
 
 This plugin retrieves data about Issues from a [Bugzilla v5+](https://www.bugzilla.org) instance using its [REST API](https://wiki.mozilla.org/Bugzilla:REST_API). Bugzilla provides a complete issues tracking system for software development, used by thousands of OSS and private projects around the world. 
 
-The full list of bugs for this project can be reached at `r bz.url`.
+The full list of bugs for this project can be reached at `r bz.urlfull`.
 
 </div><div class="col-sm-4">
   <div class="panel panel-default">
@@ -152,12 +152,17 @@ The following plots show the number of issues (opened, closed) on the last 8 mil
 
 <div class="row">
 ```{r milestones_donuts, echo=FALSE, message=FALSE, results='asis'}
-for (i in 1:nrow(milestones[seq(1,8),])) {
+#milestones <- milestones[order(milestones$Milestone, decreasing = T),]
+count <- 8
+for (i in 1:nrow(milestones)) { #[seq(1,8),]
   cat('<div class="col-md-3">')
   issues.m <- issues[issues$target_milestone == milestones[i,1],]
-  issues.m.opened <- nrow(issues.m[issues.m$status == 'OPENED',])
-  issues.m.closed <- nrow(issues.m[issues.m$status == 'CLOSED',])
-  ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(c(issues.m.opened, issues.m.closed)))
+  issues.m.opened <- nrow(issues.m[issues.m$status == 'NEW',])
+  issues.m.closed <- nrow(issues.m[issues.m$status != 'NEW',])
+  if(count != 0) {
+    ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(c(issues.m.opened, issues.m.closed)))
+    count <- count - 1
+  } 
   
   milestones[i,c('issues.opened')] <- issues.m.opened
   milestones[i,c('issues.closed')] <- issues.m.closed
