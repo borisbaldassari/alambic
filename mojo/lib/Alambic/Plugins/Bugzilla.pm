@@ -278,7 +278,7 @@ sub run_plugin($$) {
       #     push(@late, $issue->{'key'});
       #     $csv_late_out .= $csv->string();
       #   }
-      
+
       # Check if issue is assigned and open
       if ( (not defined($issue->{'assigned_to'}))
            && grep($issue->{'is_open'}) ) {

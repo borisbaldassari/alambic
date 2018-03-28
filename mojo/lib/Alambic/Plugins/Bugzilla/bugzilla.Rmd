@@ -44,34 +44,49 @@ knitr::opts_chunk$set(fig.path = "figures/")
 #   * bz.project
 #   * bz.url
 
- project.id <- 'modeling.sirius'
- bz.project <- 'sisu'
- bz.url <- 'https://bugs.eclipse.org/bugs'
+# project.id <- 'modeling.sirius'
+# bz.project <- 'sisu'
+# bz.url <- 'https://bugs.eclipse.org/bugs'
 
-bz.urlfull <- paste(bz.url, '/', '/show_bug.cgi?id=', bz.project, sep="")
+bz.urlfull <- paste(bz.url, '/describecomponents.cgi?product=', bz.project, sep="")
 
-#project.id <- 'alambic'
-#gitlab.id <- 'bbaldassari/Alambic'
-#gitlab.url <- 'https://gitlab.com'
 plugin.id <- 'Bugzilla'
-file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_bugzilla.csv", sep="")
-file.evol = paste("../../../../projects/", project.id, "/output/", project.id, "_bugzilla_evol.csv", sep="")
-file.issues = paste("../../../../projects/", project.id, "/output/", project.id, "_bugzilla_issues.csv", sep="")
-file.issues.open = paste("../../../../projects/", project.id, "/output/", project.id, "_bugzilla_issues_open.csv", sep="")
-file.issues.unassigned.open = paste("../../../../projects/", project.id, "/output/", project.id, "_bugzilla_issues_open_unassigned.csv", sep="")
-file.milestones = paste("../../../../projects/", project.id, "/output/", project.id, "_bugzilla_milestones.csv", sep="")
-file.components = paste("../../../../projects/", project.id, "/output/", project.id, "_bugzilla_components.csv", sep="")
-file.versions = paste("../../../../projects/", project.id, "/output/", project.id, "_bugzilla_versions.csv", sep="")
+file.metrics = paste(
+    "../../../../projects/", project.id, "/output/", 
+    project.id, "_metrics_bugzilla.csv", sep="")
+file.evol = paste(
+  "../../../../projects/", project.id, "/output/", 
+  project.id, "_bugzilla_evol.csv", sep="")
+file.issues = paste(
+  "../../../../projects/", project.id, "/output/", 
+  project.id, "_bugzilla_issues.csv", sep="")
+file.issues.open = paste(
+  "../../../../projects/", project.id, "/output/", 
+  project.id, "_bugzilla_issues_open.csv", sep="")
+file.issues.unassigned.open = paste(
+  "../../../../projects/", project.id, 
+  "/output/", project.id, "_bugzilla_issues_open_unassigned.csv", sep="")
+file.milestones = paste(
+  "../../../../projects/", project.id, "/output/", 
+  project.id, "_bugzilla_milestones.csv", sep="")
+file.components = paste(
+  "../../../../projects/", project.id, "/output/", 
+  project.id, "_bugzilla_components.csv", sep="")
+file.versions = paste("../../../../projects/", project.id, "/output/",
+                      project.id, "_bugzilla_versions.csv", sep="")
 
 metrics <- read.csv(file=file.metrics, header=T)
 evol <- read.csv(file=file.evol, header=T)
+
 issues <- read.csv(file=file.issues, header=T)
 issues.open <- read.csv(file=file.issues.open, header=T)
 issues.unassigned.open <- read.csv(file=file.issues.unassigned.open, header=T)
+issues.xts <- xts(x = issues, order.by = as.POSIXct(issues$last_change_time))
+
 evol <- read.csv(file=file.evol, header=T)
 evol.xts <- xts(x = evol, order.by = as.POSIXct(evol$date))
 evol.monthly <- apply.monthly(x=evol.xts, FUN = nrow)
-#evol.weekly <- apply.weekly(x=evol.xts, FUN = nrow)
+
 milestones <- read.csv(file=file.milestones, header=T)
 components <- read.csv(file=file.components, header=T)
 versions <- read.csv(file=file.versions, header=T)
@@ -146,27 +161,59 @@ cat(t)
 <br />
 <iframe src="/projects/`r project.id`/Bugzilla/bugzilla_evol_summary.html" frameborder="0" style="width: 100%; height: 270px"></iframe>
 
+-----
+
+### Old open issues
+
+```{r open_old_issues, echo=F, message=F}
+date.1y <- Sys.Date() - 365
+old.open.issues <- issues.xts[issues.xts$status == "NEW" & issues.xts$last_change_time < as.character(date.1y),]
+
+```
+
+There are ``r nrow(old.open.issues)`` open issues (with a status NEW) that have not been updated for more than one year. You probably should review them to make sure they're still relevant or if they need some more details or information. A high number of open, dormant issues clutters the lists and general tracking of issues, and decreases the confidence in the tracker and process.
+
+The following table lists the 10 oldest issues that are still open and have not been updated during the last year.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Milestones</div>
+
+<table class="table table-striped">
+  <tr><th>ID</th><th>Summary</th><th>Created on</th><th>Assigned to</th><th>Last update on</th></tr>
+```{r old_open_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(old.open.issues[seq(1,10),], 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td><td>',
+		           x[[12]], '</td><td>', x[[14]], '</td><td>', x[[15]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+-----
+
 ### <a name="milestones"></a> Milestones
 
-The following plots show the number of issues (opened, closed) on the last 8 milestones for the project.
+The following plots show the number of issues (opened, closed) on all the milestones of the project that have at least one open task.
 
 <div class="row">
 ```{r milestones_donuts, echo=FALSE, message=FALSE, results='asis'}
 #milestones <- milestones[order(milestones$Milestone, decreasing = T),]
-count <- 8
+
 for (i in 1:nrow(milestones)) { #[seq(1,8),]
-  cat('<div class="col-md-3">')
   issues.m <- issues[issues$target_milestone == milestones[i,1],]
   issues.m.opened <- nrow(issues.m[issues.m$status == 'NEW',])
   issues.m.closed <- nrow(issues.m[issues.m$status != 'NEW',])
-  if(count != 0) {
-    ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(c(issues.m.opened, issues.m.closed)))
-    count <- count - 1
-  } 
-  
+
   milestones[i,c('issues.opened')] <- issues.m.opened
   milestones[i,c('issues.closed')] <- issues.m.closed
 
+  ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(c(issues.m.opened, issues.m.closed)))
+
+  # We want to display only milestones with open tasks.
+  if(issues.m.opened == 0) { next }
+
+  cat('<div class="col-md-3">')
   p <- gvisPieChart(ms,
                   options = list(
                     title=paste("Issues for milestone ", milestones[i,1], sep=""),
