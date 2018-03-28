@@ -115,7 +115,7 @@ note("Executing the plugin with acceleo project. ");
 my $ret = $plugin->run_plugin(
   "test.bugzilla",
   {
-    'bugzilla_url'         => 'https://bugs.eclipse.org/bugs',
+    'bugzilla_url'         => 'https://bugs.eclipse.org/bugs/',
     'bugzilla_project'     => 'acceleo',
   }
 );

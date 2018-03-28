@@ -39,7 +39,7 @@ my %conf = (
   "type"    => "pre",
   "ability" => ['info', 'metrics', 'data', 'figs', 'recs', 'viz', 'users'],
   "params"  => {
-    "bugzilla_url"     => "The URL of the Bugzilla server, e.g. https://bugs.eclipse.org/bugs/.",
+    "bugzilla_url"     => "The URL of the Bugzilla server (WITH a trailing slash), e.g. https://bugs.eclipse.org/bugs/.",
     "bugzilla_user"     => "The login to be used for the Bugzilla server, e.g. user1.",
     "bugzilla_passwd"     => "The password to be used for the Bugzilla server, e.g. mypassword.",
     "bugzilla_project" => "The project ID to be requested on the bugzilla server.",
@@ -186,16 +186,12 @@ sub run_plugin($$) {
   while ( $res = $ua->get($url_base . $offset)->result ) {
   
       push(@{$ret{'log'}}, "[Plugins::Bugzilla] Using URL [$url].");
-      print "[Plugins::Bugzilla] Offset $offset Using URL [$url_base$offset].\n";
       if ($res->is_success) {
 	  my $json = $res->body;
 	  my $data = decode_json($json);
 	  
 	  push(@{$ret{'log'}}, "[Plugins::Bugzilla] Found " . 
 	       scalar(@{$data->{'bugs'}}) . " issues.\n");
-	  print "[Plugins::Bugzilla] Found " . 
-	      scalar(@{$data->{'bugs'}}) . " issues.\n";
-#	  print Dumper($data);
 	  push( @$bugs, @{$data->{'bugs'}} );
 	  $offset += $max;
 
@@ -204,12 +200,12 @@ sub run_plugin($$) {
       } else {
 	  push(@{$ret{'log'}}, 
 	       "[Plugins::Bugzilla] ERROR: Could not get resource [$url].\n" . 
-	       "Message is: " . $res->message . "\n" ); print "TESTTTTTT";
+	       "Message is: " . $res->message . "\n" ); 
 	  return \%ret;
 	  last;
       }      
   }
-  print "BUGS " . scalar(@$bugs);
+
   # Write json file to import directory
   $repofs->write_input( $project_id, "import_bugzilla.json",
                         encode_json($bugs) );
