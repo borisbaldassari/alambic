@@ -165,8 +165,8 @@ ok(
 
 # Checking *_commits files
 ok(
-  -e "projects/alambic.test/output/alambic.test_git_evol_commits.svg",
-  "Check that file alambic.test_git_evol_commits.svg exists."
+  -e "projects/alambic.test/output/alambic.test_git_evol_commits.png",
+  "Check that file alambic.test_git_evol_commits.png exists."
 );
 ok(
   -e "projects/alambic.test/output/alambic.test_git_evol_commits.svg",
