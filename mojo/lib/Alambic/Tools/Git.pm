@@ -75,6 +75,8 @@ sub new {
     $conf->{'env'}{'HTTP_PROXY'}  = $conf->{'params'}{'proxy'};
     $conf->{'env'}{'HTTPS_PROXY'} = $conf->{'params'}{'proxy'};
   }
+  
+  $conf->{'env'}{'LANG'} = "en_GB";
 
   # Create projects input dir if it does not exist
   if (not &_is_a_git_directory($dir)) {
@@ -99,20 +101,6 @@ sub _get_src_path($) {
 
   return "projects/" . $project . "/src";
 }
-
-# sub _url() {
-#   my ($self, $url) = @_;
-#
-#   my $ret;
-#   if (scalar @_ > 1) {
-#     $git_url = $url;
-#   }
-#   else {
-#     $url = $git_url;
-#   }
-#
-#   return $url;
-# }
 
 # Automated setup procedure for the tool.
 sub install() {
@@ -302,7 +290,7 @@ sub git_pull() {
   }
   else {
     push(@log,
-      "[Tools::Git] Pulling from origin. Pull output: " . @output . ".");
+      "[Tools::Git] Pulling from origin. Pull output: " . $output[0] . ".");
   }
 
   return \@log;
