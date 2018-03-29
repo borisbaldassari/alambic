@@ -106,7 +106,7 @@ $t->get_ok('/admin/models/import?file=alambic_metrics_hudson.json&type=metrics')
   ->status_is(200, 'Import metrics definition is 200.')
   ->content_like(qr!File alambic_metrics_hudson.json has been imported!i,
   'Import metrics definition is ok.')
-  ->content_like(qr!6 metrics defined.!i, 'Metrics are loaded in models.');
+  ->content_like(qr!\d+ metrics defined.!i, 'Metrics are loaded in models.');
 
 # Import attributes definition
 $t->get_ok('/admin/models/import?file=alambic_attributes.json&type=attributes')

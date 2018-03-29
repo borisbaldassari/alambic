@@ -75,7 +75,7 @@ ok(grep(/Version is /, @{$log}), "Log has Version.") or diag explain $log;
 ok(grep(/^\[Tools::Git\] Pulling from origin/, @{$log}),
   "Log has Pull from origin.")
   or diag explain $log;
-ok(grep(/Already up-to-date/, @{$log}), "Pull is already up-to-date.")
+ok(grep(/Already up.to.date/, @{$log}), "Pull is already up-to-date.")
   or diag explain $log;
 
 note("Get commits.");
