@@ -108,6 +108,8 @@ The full list of bugs for this project can be reached at `r bz.urlfull`.
   <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
   <div class="list-group">
   <a href="#summary" class="list-group-item">Quick Summary</a>
+  <a href="#evolution_issues" class="list-group-item">Evolution of issues creation</a>
+  <a href="#old_issues" class="list-group-item">Open old issues</a>
   <a href="#milestones" class="list-group-item">Milestones</a>
   <a href="#unassigned_issues" class="list-group-item">Open unassigned issues</a>
   <a href="#components" class="list-group-item">Components</a>
@@ -126,9 +128,9 @@ The full list of bugs for this project can be reached at `r bz.urlfull`.
 <div class="row"><div class="col-sm-3">
 <span style="font-size:18pt"><span class="fa fa-users"></span> </span>
 </div><div class="col-sm-3">
-</div><div class="col-sm-3">
 <span style="font-size:24pt">``r metrics[['ITS_AUTHORS']]``</span> issue authors
-</div><div class="col-sm-3">
+</div><div class="col-sm-3">From <span style="font-size:24pt">``r first(issues.xts$creation_time)``</span>
+</div><div class="col-sm-3">To <span style="font-size:24pt">``r last(issues.xts$last_change_time)``</span>
 </div></div>
 
 <div class="row"><div class="col-sm-3">
@@ -156,14 +158,14 @@ cat(t)
 -----
 
 
-### Evolution of issues creation 
+### <a name="evolution_issues"></a>Evolution of issues creation 
 
 <br />
 <iframe src="/projects/`r project.id`/Bugzilla/bugzilla_evol_summary.html" frameborder="0" style="width: 100%; height: 270px"></iframe>
 
 -----
 
-### Old open issues
+### <a name="old_issues"></a>Old open issues
 
 ```{r open_old_issues, echo=F, message=F}
 date.1y <- Sys.Date() - 365
@@ -176,7 +178,7 @@ There are ``r nrow(old.open.issues)`` open issues (with a status NEW) that have 
 The following table lists the 10 oldest issues that are still open and have not been updated during the last year.
 
 <div class="panel panel-default">
-<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Milestones</div>
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Old issues</div>
 
 <table class="table table-striped">
   <tr><th>ID</th><th>Summary</th><th>Created on</th><th>Assigned to</th><th>Last update on</th></tr>
