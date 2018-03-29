@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Stack Overflow - Alambic</title>
+    <title>GitLab ITS - Alambic</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" type="text/css" href="../../styles.css">
 
@@ -67,7 +67,7 @@
         <li class="">
             <a href="GitLabCi.html">GitLabCi</a>
         </li>
-        <li class="">
+        <li class="active">
             <a href="GitLabIts.html">GitLabIts</a>
         </li>
         <li class="">
@@ -85,31 +85,31 @@
         <li class="">
             <a href="SonarQube45.html">SonarQube45</a>
         </li>
-        <li class="active">
+        <li class="">
             <a href="StackOverflow.html">StackOverflow</a>
         </li>
     </ul>
 
 <div id="content">
-<h1>Stack Overflow</h1>
+<h1>GitLab ITS</h1>
 
-<p>The Stack Overflow plugin retrieves <a href="https://stackoverflow.com">Stack Overflow</a> questions and answers related to the project tag, and provides a summary, a list of hot questions and recommendations to ensure a fine support to users on the web site.</p>
+<p>This plugin retrieves information from a <a href="https://about.gitlab.com/">GitLab</a> issue tracking system, displays a summary of its issues, and provides recommendations to better use the issue tracking system.</p>
 
-<p>Check the <a href="/perldoc/Alambic/Plugins/StackOverflow.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
+<p>Check the <a href="/perldoc/Alambic/Plugins/GitLabIts.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
 
 <hr />
 
 <h1>Basic information</h1>
 
 <ul>
-<li><strong>ID</strong>: StackOverflow</li>
-<li><strong>Abilities</strong>: metrics, figs, recs, viz</li>
+<li><strong>ID</strong>: GitLabIts</li>
+<li><strong>Abilities</strong>: info, data, metrics, figs, recs, viz</li>
 <li><strong>Description</strong>:
-Retrieves questions and answers related to a specific tag from the Stack Overflow question/answer web site.</li>
+Retrieves information from a GitLab Issue Tracking System, displays a summary of its status, and provides recommendations to better use it.</li>
 <li><strong>Parameters</strong>:
 <ul>
-<li><code>so_keyword</code> A Stack Overflow tag to retrieve questions from.</li>
-<li><code>proxy</code> If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.</li>
+<li><code>gitlab_url</code> The base URL for the GitLab instance, e.g. https://gitlab.com/</li>
+<li><code>gitlab_token</code> </li>
 </ul></li>
 </ul>
 
@@ -120,60 +120,58 @@ Retrieves questions and answers related to a specific tag from the Stack Overflo
 <h2>Metrics</h2>
 
 <ul>
-<li>SO_QUESTIONS_VOL_5Y</li>
-<li>SO_ANSWERS_VOL_5Y</li>
-<li>SO_ANSWER_RATE_5Y</li>
-<li>SO_VOTES_VOL_5Y</li>
-<li>SO_VIEWS_VOL_5Y</li>
-<li>SO_ASKERS_5Y</li>
+<li>ITS_AUTHORS   </li>
+<li>ITS_AUTHORS_1M    </li>
+<li>ITS_AUTHORS_1W    </li>
+<li>ITS_AUTHORS_1Y    </li>
+<li>ITS_CHANGED_1M    </li>
+<li>ITS_CHANGED_1W    </li>
+<li>ITS_CHANGED_1Y    </li>
+<li>ITS_CREATED_1M    </li>
+<li>ITS_CREATED_1W    </li>
+<li>ITS_CREATED_1Y    </li>
+<li>ITS_ISSUES_ALL    </li>
+<li>ITS_ISSUES_CLOSED     </li>
+<li>ITS_ISSUES_LATE   </li>
+<li>ITS_ISSUES_OPEN   </li>
+<li>ITS_ISSUES_UNASSIGNED     </li>
+<li>ITS_ISSUES_UNASSIGNED_OPEN    </li>
+<li>ITS_PEOPLE    </li>
+<li>ITS_TOTAL_DOWNVOTES   </li>
+<li>ITS_TOTAL_UPVOTES</li>
+</ul>
+
+<h2>Information</h2>
+
+<ul>
+<li>ITS_URL</li>
 </ul>
 
 <h2>Figures</h2>
 
 <ul>
-<li>hudson_pie.html A pie chart of the status of jobs.</li>
+<li><code>hudson_pie.html</code> A pie chart of the status of jobs.</li>
+<li><code>hudson_hist.html</code> A history of jobs statuses over past days/weeks. The history range is defined by the remaining jobs, i.e. if jobs are deleted after some time history is lost.</li>
 </ul>
 
 <h2>Recommendations</h2>
 
 <ul>
-<li>SO_IMPROVE_SUPPORT</li>
-<li>SO_WATCH_QUESTION</li>
+<li>ITS_LONG_STANDING_OPEN
+Issues that have not been updated during the last year and are still open. Long-standing bugs have a negative impact on people's perception. You should either close the bug or add some more information to revive it.</li>
 </ul>
 
 <h2>Visualisation</h2>
 
 <ul>
-<li>Stack Overflow</li>
-</ul>
-
-<hr />
-
-<p>Notes:</p>
-
-<ul>
-<li>The queried time range spans the last 5 years.</li>
-<li>The Stack Overflow API uses daily quotas. Default is 300. If the Alambic instance exceeds this volume a OAuth-based setup is required.</li>
-</ul>
-
-<p>Dependencies:</p>
-
-<p>This plugin requires for execution a working R environment, and the following packages:</p>
-
-<ul>
-<li>ggplot2</li>
-<li>snowballC</li>
-<li>wordcloud</li>
-<li>tm</li>
-<li>xtable</li>
-<li>xts</li>
+<li>GitLab ITS</li>
 </ul>
 
 <hr />
 
 <h1>Screenshot</h1>
 
-<p><img src="/images/Capture%20du%202016-09-26%2011-41-16.png" alt="Capture du 2016-09-26 11-41-16.png" /></p>
+<p><img src="/images/gitlab_its_ui.png" alt="gitlab_its_ui.png" /></p>
 
 
 </div><!-- content -->

@@ -1,0 +1,308 @@
+---
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+title: "GitLab Project visualisation"
+author:
+- name: "Boris Baldassari"
+  affiliation: Castalia Solutions
+output:
+  html_fragment:
+    toc: false
+    fig_caption: true
+    fig.width: 800
+    self_contained: false
+    lib_dir: libs
+    echo: false
+    dev: svg
+---
+
+```{r init, echo=FALSE, message=FALSE}
+library(knitr)
+library(xts)
+require('reshape2')
+require(ggplot2)
+require(xtable)
+
+knitr::opts_chunk$set(fig.path = "figures/")
+
+suppressPackageStartupMessages(library(googleVis))
+options(gvis.plot.tag='chart')
+
+# Enable font awesome
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+
+# Plugin needs the following parameters:
+#   * project.id
+#   * gitlab.id
+#   * gitlab.url
+
+# project.id <- 'inkscape'
+# gitlab.id <- 'inkscape/inkscape'
+# gitlab.url <- 'https://gitlab.com'
+
+# project.id <- 'gitlab-runner'
+# gitlab.id <- 'gitlab-org/gitlab-runner'
+# gitlab.url <- 'https://gitlab.com'
+
+#project.id <- 'alambic'
+#gitlab.id <- 'bbaldassari/Alambic'
+#gitlab.url <- 'https://gitlab.com'
+plugin.id <- 'GitLabProject'
+file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_gitlab_project.csv", sep="")
+file.info = paste("../../../../projects/", project.id, "/output/", project.id, "_info_gitlab_project.csv", sep="")
+file.commits.hist = paste("../../../../projects/", project.id, "/output/", project.id, "_gitlab_git_commits_hist.csv", sep="")
+file.commits = paste("../../../../projects/", project.id, "/output/", project.id, "_gitlab_git_commits.csv", sep="")
+file.branches = paste("../../../../projects/", project.id, "/output/", project.id, "_gitlab_project_branches.csv", sep="")
+file.mrs = paste("../../../../projects/", project.id, "/output/", project.id, "_gitlab_git_merge_requests.csv", sep="")
+file.milestones = paste("../../../../projects/", project.id, "/output/", project.id, "_gitlab_project_milestones.csv", sep="")
+
+metrics <- read.csv(file=file.metrics, header=T)
+info <- read.csv(file=file.info, header=T)
+commits <- read.csv(file=file.commits, header=T)
+commits.hist <- read.csv(file=file.commits.hist, header=T)
+branches <- read.csv(file=file.branches, header=T)
+mrs <- read.csv(file=file.mrs, header=T)
+milestones <- read.csv(file=file.milestones, header=T)
+milestones.active <- milestones[milestones$state == 'active',]
+
+geticon <- function(value) {
+  if (is.na(value)) { value <- FALSE }
+  if (value == 1) {
+    return('fa-check-square-o') 
+  } else {
+    return('fa-square-o') 
+  }
+}
+
+# Configuration of visuals
+list.mrs.count.opened <- 10
+list.mrs.count.merged <- 5
+```
+
+## GitLab Project `r gitlab.id`
+
+<br />
+
+<div class="row"><div class="col-sm-7">
+
+GitLab offers generic hosting services for software development. This plugin retrieves information about the project and its statistics, and computes metrics and recommendations. GitLab offers a [complete API](https://docs.gitlab.com/ee/api/README.html) to interact with a GitLab server, and Perl has a ready-to-use [module that cover the API&apos;s features](http://search.cpan.org/~bluefeet/GitLab-API-v3-0.08/lib/GitLab/API/v3.pm).
+
+Data for project is directly available from the project&apos;s dashboard:
+
+* Project Summary: `r gitlab.url`/`r gitlab.id`
+* Commits: `r info['PROJECT_COMMITS_URL']` 
+* Merge Requests: `r info['PROJECT_MRS_URL']` <i class="fa `r geticon(info['PROJECT_MRS_ENABLED'])`"></i>
+* CI: `r info['PROJECT_CI_URL']` <i class="fa `r geticon(info['PROJECT_CI_ENABLED'])`"></i>
+* Issues: `r info['PROJECT_ISSUES_URL']` <i class="fa `r geticon(info['PROJECT_ISSUES_ENABLED'])`"></i>
+* Wiki: `r info['PROJECT_WIKI_URL']` <i class="fa `r geticon(info['PROJECT_WIKI_ENABLED'])`"></i>
+
+The URLs to use to connect to the repository are:
+
+* SSH ``r info[['PROJECT_REPO_SSH']]``.
+* HTTP ``r info[['PROJECT_REPO_HTTP']]``.
+
+</div><div class="col-sm-4">
+  <div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+  <div class="list-group">
+  <a href="#summary" class="list-group-item">Quick Summary</a>
+  <a href="#mrs" class="list-group-item">Milestones</a>
+  <a href="#commits" class="list-group-item">Commits</a>
+  <a href="#branches" class="list-group-item">Branches</a>
+  <a href="#mrs" class="list-group-item">Merge Requests</a>
+  </div>
+  </div>
+</div></div>
+
+### <a name="quick-summary"></a>Quick Summary
+
+The project was created on ``r info[['PROJECT_CREATED_AT']]`` and was last updated on ``r metrics[['PROJECT_LAST_ACTIVITY_AT']]``.
+
+<div class="row"><div class="col-sm-3">
+<span style="font-size:18pt"><span class="fa fa-heartbeat"></span> </span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_FORKS']]``</span> Forks</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_STARS']]``</span> Stars</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_ISSUES_OPEN']]``</span> Issues open</span>
+</div></div>
+
+Git activity during last month:
+
+<div class="row"><div class="col-sm-3">
+<span style="font-size:18pt"><span class="fa fa-git"></span> </span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_COMMITS_1M']]``</span> Commits</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_COMMITTERS_1M']]``</span> Committers</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['PROJECT_AUTHORS_1M']]``</span> Authors</span>
+</div></div>
+
+Merge Requests activity during last month:
+
+<div class="row"><div class="col-sm-3">
+<span style="font-size:18pt"><span class="fa fa-random"></span> </span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['SCM_PRS_OPENED_1M']]``</span> MRs created last month</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['SCM_PRS_OPENED_STILL_1M']]``</span> MRs created within last month and still opened</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r metrics[['SCM_PRS_OPENED_STALED_1M']]``</span> MRs staled (no update) for one month</span>
+</div></div>
+
+There is a total of ``r ncol(metrics)`` metrics retrieved.
+
+```{r metrics_table, echo=FALSE, message=FALSE, results='asis'}
+t <- lapply(names(metrics), function(x) paste(x, ' <span class="badge">', metrics[[x]], '</span>, ', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+
+There is a total of ``r ncol(info)`` information retrieved:
+
+```{r info_table, echo=FALSE, message=FALSE, results='asis'}
+t <- lapply(names(info), function(x) paste('* ', x, ': ', info[[x]], "\n", sep=''))
+t <- paste(t, collapse="")
+cat(t)
+```
+
+-----
+
+### <a name="milestones"></a> Milestones
+
+The following plot show the number of issues (opened, closed) on all active milestones for the project.
+
+<div class="row">
+```{r milestones_donuts, eval=nrow(milestones.active)>0, echo=FALSE, message=FALSE, results='asis'}
+for (i in 1:nrow(milestones.active)) {
+  cat('<div class="col-md-3">')
+  ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(milestones.active[i,c('issues_opened', 'issues_closed')]))
+  
+  p <- gvisPieChart(ms,
+                  options = list(
+                    title=paste("Issues for milestone ", milestones.active[i,4], sep=""),
+                    colors="['red', 'green']",
+                    width=350, height=280,
+                    pieHole= 0.4))
+  print(p, 'chart')
+  cat('</div>')
+}
+```
+</div>
+
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Active Milestones</div>
+
+<table class="table table-striped">
+  <tr><th>IID</th><th>ID</th><th>Title</th><th>Issues (open/total)</th><th>Start date</th><th>Due date</th><th>Created</th><th>Updated</th></tr>
+```{r milestones_table, eval=nrow(milestones.active)>0, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(milestones.active, 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td><td>',
+		           x[[4]], '</td><td>', x[[11]], ' / ', x[[10]],
+							 '</td><td>', x[[7]],'</td><td>', x[[8]], '</td><td>', as.Date(x[[5]]), 
+							 '</td><td>', as.Date(x[[6]]), '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+-----
+
+### <a name="commits"></a> Commits
+
+There has been a total of ``r metrics[['PROJECT_COMMITS']]`` commits on the git repository (``r metrics[['PROJECT_COMMITS_1W']]`` during last week, ``r metrics[['PROJECT_COMMITS_1M']]`` during last month, ``r metrics[['PROJECT_COMMITS_1Y']]`` during last year).
+
+``r metrics[['PROJECT_AUTHORS']]`` authors have contributed during the lifetime of the project (``r metrics[['PROJECT_AUTHORS_1W']]`` during last week, ``r metrics[['PROJECT_AUTHORS_1M']]`` during last month, and ``r metrics[['PROJECT_AUTHORS_1Y']]`` during last year).
+
+-----
+
+### <a name="branches"></a> Branches
+
+The following branches are defined in the Git repository, sorted by last activity date.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Git Branches</div>
+
+<table class="table table-striped">
+  <tr><th>Name</th><th>Commit title</th><th>Last commit date</th><th>Last committer</th></tr>
+```{r branches_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(branches[order(branches$commit_date, decreasing = T),], 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td>',
+							    x[[4]], '</td><td>', x[[6]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+-----
+
+### <a name="mrs"></a> Merge Requests
+
+Summary:
+
+* Total number of merge requests: ``r metrics[['SCM_PRS']]``, total number of open merge requests: ``r metrics[['SCM_PRS_OPENED']]``.
+* Number of merge requests opened during last week: ``r metrics[['SCM_PRS_OPENED_1W']]``, last month: ``r metrics[['SCM_PRS_OPENED_1M']]``, last year: ``r metrics[['SCM_PRS_OPENED_1Y']]``.
+
+Activity: 
+
+* ``r metrics[['SCM_PRS_OPENED_STALED_1M']]`` merge requests are open and have had no update since more than one month.
+* ``r metrics[['SCM_PRS_OPENED_STILL_1W']]`` merge requests have been opened for more than one week, ``r metrics[['SCM_PRS_OPENED_STILL_1M']]`` for more than 1 month, and ``r metrics[['SCM_PRS_OPENED_STILL_1Y']]`` for more than one year.
+
+The following open merge requests are currently available. Only the last `r list.mrs.count.opened` merge requests are listed.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Open Merge Requests</div>
+
+<table class="table table-striped">
+  <tr><th>ID</th><th>State</th><th>Title</th><th>Assignee</th><th>Source branch</th><th>Target branch</th><th>Created</th><th>Updated</th></tr>
+```{r mrs_table_open, eval=T, echo=FALSE, message=FALSE, results='asis'}
+mrs_opened <- mrs[mrs$state == 'opened',]
+t <- apply(head(mrs_opened, n = list.mrs.count.opened), 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td><a href="',
+		           x[[6]], '">', x[[2]], '</a></td><td>', x[[5]], '</td><td>', x[[10]],
+							 '</td><td>', x[[12]],'</td><td>', as.POSIXct(as.integer(x[[18]]), origin="1970-01-01"), 
+							 '</td><td>', as.POSIXct(as.integer(x[[19]]), origin="1970-01-01"), 
+							 '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+The following merged merge requests are currently available. Only the last `r list.mrs.count.merged` merge requests are listed.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Merged Merge Requests</div>
+
+<table class="table table-striped">
+  <tr><th>ID</th><th>State</th><th>Title</th><th>Assignee</th><th>Source branch</th><th>Target branch</th><th>Created</th><th>Updated</th></tr>
+```{r mrs_table_merged, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(head(mrs[mrs$state == 'merged',], n=list.mrs.count.merged), 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[3]], '</td><td><a href="',
+		           x[[6]], '">', x[[2]], '</a></td><td>', x[[5]], '</td><td>', x[[10]],
+							 '</td><td>', x[[12]],'</td><td>', as.POSIXct(as.integer(x[[18]]), origin="1970-01-01"), 
+							 '</td><td>', as.POSIXct(as.integer(x[[19]]), origin="1970-01-01"), 
+							 '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+

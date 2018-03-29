@@ -65,7 +65,6 @@ sub _read_wizards() {
     my $conf = $wizard->get_conf();
     $wizards{$conf->{'id'}} = $wizard;
   }
-
 }
 
 

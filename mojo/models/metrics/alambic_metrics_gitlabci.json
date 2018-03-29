@@ -1,0 +1,71 @@
+  {
+    "name": "Alambic Metrics GitLab CI",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Total number of builds",
+        "mnemo": "CI_BUILDS_VOL",
+        "desc": [
+            "The total number of builds listed in the GitLab Builds section.",
+			"Builds are individual runs of jobs. See the <a href=\"https://docs.gitlab.com/ee/ci/pipelines.html\">GitLab documentation</a> for more details."
+        ]
+      },
+      {
+        "name": "Total number of pipelines",
+        "mnemo": "CI_PIPELINES_VOL",
+        "desc": [
+            "The total number of pipelines listed in the GitLab Pipelines section.",
+			"A pipeline is a group of builds that get executed in stages. See the <a href=\"https://docs.gitlab.com/ee/ci/pipelines.html\">GitLab documentation</a> for more details."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Total number of failed builds",
+        "mnemo": "CI_BUILDS_FAILED",
+        "desc": [
+            "The total number of builds with state failed for the project."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Failed builds 1 week",
+        "mnemo": "CI_BUILDS_FAILED_1W",
+        "desc": [
+            "The number of builds with state failed for the project during the last 7 days."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Failed builds 1 month",
+        "mnemo": "CI_BUILDS_FAILED_1M",
+        "desc": [
+            "The number of builds with state failed for the project during the last month."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Total number of successful builds",
+        "mnemo": "CI_BUILDS_SUCCESS",
+        "desc": [
+            "The total number of builds with state success for the project."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Successful builds 1 week",
+        "mnemo": "CI_BUILDS_SUCCESS_1W",
+        "desc": [
+            "The number of builds with state success for the project during the last 7 days."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Successful builds 1 month",
+        "mnemo": "CI_BUILDS_SUCCESS_1M",
+        "desc": [
+            "The number of builds with state success for the project during the last month."
+        ],
+        "scale": [1,2,3,4]
+      }
+    ]
+  }
