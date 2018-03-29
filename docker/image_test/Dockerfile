@@ -14,6 +14,8 @@ COPY . .
 USER root
 RUN chown -R alambic:alambic /home/alambic/alambic
 
+USER alambic
+
 CMD [ "su", "-", "alambic", "-c", "perl", "-v" ]
 
 
