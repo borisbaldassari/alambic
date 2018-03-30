@@ -63,23 +63,26 @@ my %conf = (
       "The list of open issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).",
     "jira_issues_open_unassigned.csv" =>
       "The list of open and unassigned issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).",
+    "jira_issues_open_old.csv" =>
+      "The list of open and old (i.e. not updated since more than one year) issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).",
   },
   "provides_metrics" => {
-    "JIRA_VOL"             => "JIRA_VOL",
-    "JIRA_AUTHORS"         => "JIRA_AUTHORS",
-    "JIRA_AUTHORS_1W"      => "JIRA_AUTHORS_1W",
-    "JIRA_AUTHORS_1M"      => "JIRA_AUTHORS_1M",
-    "JIRA_AUTHORS_1Y"      => "JIRA_AUTHORS_1Y",
-    "JIRA_CREATED_1W"      => "JIRA_CREATED_1W",
-    "JIRA_CREATED_1M"      => "JIRA_CREATED_1M",
-    "JIRA_CREATED_1Y"      => "JIRA_CREATED_1Y",
-    "JIRA_UPDATED_1W"      => "JIRA_UPDATED_1W",
-    "JIRA_UPDATED_1M"      => "JIRA_UPDATED_1M",
-    "JIRA_UPDATED_1Y"      => "JIRA_UPDATED_1Y",
-    "JIRA_OPEN"            => "JIRA_OPEN",
-    "JIRA_OPEN_PERCENT"    => "JIRA_OPEN_PERCENT",
-    "JIRA_LATE"            => "JIRA_LATE",
-    "JIRA_OPEN_UNASSIGNED" => "JIRA_OPEN_UNASSIGNED",
+    "ITS_VOL"             => "ITS_VOL",
+    "ITS_AUTHORS"         => "ITS_AUTHORS",
+    "ITS_AUTHORS_1W"      => "ITS_AUTHORS_1W",
+    "ITS_AUTHORS_1M"      => "ITS_AUTHORS_1M",
+    "ITS_AUTHORS_1Y"      => "ITS_AUTHORS_1Y",
+    "ITS_CREATED_1W"      => "ITS_CREATED_1W",
+    "ITS_CREATED_1M"      => "ITS_CREATED_1M",
+    "ITS_CREATED_1Y"      => "ITS_CREATED_1Y",
+    "ITS_UPDATED_1W"      => "ITS_UPDATED_1W",
+    "ITS_UPDATED_1M"      => "ITS_UPDATED_1M",
+    "ITS_UPDATED_1Y"      => "ITS_UPDATED_1Y",
+    "ITS_OPEN"            => "ITS_OPEN",
+    "ITS_OPEN_OLD"        => "ITS_OPEN_OLD",
+    "ITS_OPEN_PERCENT"    => "ITS_OPEN_PERCENT",
+    "ITS_LATE"            => "ITS_LATE",
+    "ITS_OPEN_UNASSIGNED" => "ITS_OPEN_UNASSIGNED",
   },
   "provides_figs" => {
     'jira_summary.html' => "HTML summary of Jira issues main metrics (HTML)",
@@ -188,12 +191,13 @@ sub run_plugin($$) {
   $repofs->write_input($project_id, "import_jira.json",
     encode_json($search->{'issues'}));
 
-  my (@late, @open, @unassigned_open, %people);
+  my (@late, @open, @open_unassigned, @open_old, %people);
   my $csv_out
     = "id,summary,type,status,priority,assignee,reporter,due_date,created_at,updated_at,votes,watches\n";
   my $csv_late_out            = $csv_out;
   my $csv_open_out            = $csv_out;
-  my $csv_unassigned_open_out = $csv_out;
+  my $csv_open_unassigned_out = $csv_out;
+  my $csv_open_old_out = $csv_out;
 
   my ($jira_created_1w, $jira_created_1m, $jira_created_1y) = (0, 0, 0);
   my ($jira_updated_1w, $jira_updated_1m, $jira_updated_1y) = (0, 0, 0);
@@ -204,7 +208,8 @@ sub run_plugin($$) {
   my $csv                 = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_late            = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_open            = Text::CSV->new({binary => 1, eol => "\n"});
-  my $csv_unassigned_open = Text::CSV->new({binary => 1, eol => "\n"});
+  my $csv_open_unassigned = Text::CSV->new({binary => 1, eol => "\n"});
+  my $csv_open_old = Text::CSV->new({binary => 1, eol => "\n"});
 
   foreach my $issue (@{$search->{'issues'}}) {
     my @attrs;
@@ -258,8 +263,16 @@ sub run_plugin($$) {
     if ((not defined($issue->{'fields'}{'assignee'}{'name'}))
       && grep(/$issue->{'fields'}{'status'}{'name'}/, @j_status_open) != 0)
     {
-      push(@unassigned_open, $issue->{'key'});
-      $csv_unassigned_open_out .= $csv->string();
+      push(@open_unassigned, $issue->{'key'});
+      $csv_open_unassigned_out .= $csv->string();
+    }
+
+    # Check if issue is old (not been updated for more than 1y) and open
+    if (($date_updated < $t_1y->epoch)
+      && grep(/$issue->{'fields'}{'status'}{'name'}/, @j_status_open) != 0)
+    {
+      push(@open_old, $issue->{'key'});
+      $csv_open_old_out .= $csv->string();
     }
 
     # Populate %users to show activity in the user's profile
@@ -324,25 +337,28 @@ sub run_plugin($$) {
   $repofs->write_output($project_id, "jira_issues_late.csv", $csv_late_out);
   $repofs->write_output($project_id, "jira_issues_open.csv", $csv_open_out);
   $repofs->write_output($project_id, "jira_issues_open_unassigned.csv",
-    $csv_unassigned_open_out);
+    $csv_open_unassigned_out);
+  $repofs->write_output($project_id, "jira_issues_open_old.csv",
+    $csv_open_old_out);
 
   # Compute and store metrics
-  $ret{'metrics'}{'JIRA_VOL'}     = scalar @{$search->{'issues'}};
-  $ret{'metrics'}{'JIRA_AUTHORS'} = scalar keys %authors;
-  $ret{'metrics'}{'JIRA_OPEN'}    = scalar @open;
-  $ret{'metrics'}{'JIRA_OPEN_PERCENT'}
+  $ret{'metrics'}{'ITS_VOL'}     = scalar @{$search->{'issues'}};
+  $ret{'metrics'}{'ITS_AUTHORS'} = scalar keys %authors;
+  $ret{'metrics'}{'ITS_OPEN'}    = scalar @open;
+  $ret{'metrics'}{'ITS_OPEN_PERCENT'}
     = sprintf("%.0f", 100 * (scalar @open) / (scalar @{$search->{'issues'}}));
-  $ret{'metrics'}{'JIRA_LATE'}            = scalar @late            || 0;
-  $ret{'metrics'}{'JIRA_OPEN_UNASSIGNED'} = scalar @unassigned_open || 0;
-  $ret{'metrics'}{'JIRA_AUTHORS_1W'}      = scalar keys %authors_1w || 0;
-  $ret{'metrics'}{'JIRA_AUTHORS_1M'}      = scalar keys %authors_1m || 0;
-  $ret{'metrics'}{'JIRA_AUTHORS_1Y'}      = scalar keys %authors_1y || 0;
-  $ret{'metrics'}{'JIRA_CREATED_1W'}      = $jira_created_1w;
-  $ret{'metrics'}{'JIRA_CREATED_1M'}      = $jira_created_1m;
-  $ret{'metrics'}{'JIRA_CREATED_1Y'}      = $jira_created_1y;
-  $ret{'metrics'}{'JIRA_UPDATED_1W'}      = $jira_updated_1w;
-  $ret{'metrics'}{'JIRA_UPDATED_1M'}      = $jira_updated_1m;
-  $ret{'metrics'}{'JIRA_UPDATED_1Y'}      = $jira_updated_1y;
+  $ret{'metrics'}{'ITS_LATE'}            = scalar @late            || 0;
+  $ret{'metrics'}{'ITS_OPEN_UNASSIGNED'} = scalar @open_unassigned || 0;
+  $ret{'metrics'}{'ITS_OPEN_OLD'}        = scalar @open_old || 0;
+  $ret{'metrics'}{'ITS_AUTHORS_1W'}      = scalar keys %authors_1w || 0;
+  $ret{'metrics'}{'ITS_AUTHORS_1M'}      = scalar keys %authors_1m || 0;
+  $ret{'metrics'}{'ITS_AUTHORS_1Y'}      = scalar keys %authors_1y || 0;
+  $ret{'metrics'}{'ITS_CREATED_1W'}      = $jira_created_1w;
+  $ret{'metrics'}{'ITS_CREATED_1M'}      = $jira_created_1m;
+  $ret{'metrics'}{'ITS_CREATED_1Y'}      = $jira_created_1y;
+  $ret{'metrics'}{'ITS_UPDATED_1W'}      = $jira_updated_1w;
+  $ret{'metrics'}{'ITS_UPDATED_1M'}      = $jira_updated_1m;
+  $ret{'metrics'}{'ITS_UPDATED_1Y'}      = $jira_updated_1y;
 
   # Set user information for profile
   push(@{$ret{'log'}}, "[Plugins::JiraIts] Writing user events file.");

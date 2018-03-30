@@ -48,6 +48,20 @@ ok(grep(m!users!,   @{$conf->{'ability'}}), "Conf has ability > users");
 ok(grep(m!JIRA_URL!, @{$conf->{'provides_info'}}),
   "Conf has provides_info > JIRA_URL");
 
+# Delete files before creating them, so we don't test a previous run.
+unlink (
+    "projects/tools.cdt/input/tools.cdt_import_jira.json",
+    "projects/tools.cdt/output/tools.cdt_jira_evol.inc",
+    "projects/tools.cdt/output/tools.cdt_jira_issues.csv",
+    "projects/tools.cdt/output/tools.cdt_jira_issues_late.csv",
+    "projects/tools.cdt/output/tools.cdt_jira_issues_open.csv",
+    "projects/tools.cdt/output/tools.cdt_jira_issues_open_old.csv",
+    "projects/tools.cdt/output/tools.cdt_jira_issues_open_unassigned.csv",
+    "projects/tools.cdt/output/tools.cdt_jira_evol_summary.csv",
+    "projects/tools.cdt/output/tools.cdt_jira_evol_created.csv",
+    "projects/tools.cdt/output/tools.cdt_jira_evol_authors.csv",
+    );
+
 ok(grep(m!import_jira.json!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > import_jira.json");
 ok(grep(m!jira_evol.csv!, keys %{$conf->{'provides_data'}}),
@@ -58,29 +72,53 @@ ok(grep(m!jira_issues_late.csv!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > jira_issues_late.csv");
 ok(grep(m!jira_issues_open.csv!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > jira_issues_open.csv");
+ok(grep(m!jira_issues_open_old.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > jira_issues_open_old.csv");
 ok(grep(m!jira_issues_open_unassigned.csv!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > jira_issues_open_unassigned.csv");
 
 
-ok(grep(m!JIRA_VOL!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > JIRA_VOL");
-ok(grep(m!JIRA_AUTHORS!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > JIRA_AUTHORS");
-ok(grep(m!JIRA_AUTHORS_1M!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > JIRA_AUTHORS_1M");
-ok(grep(m!JIRA_AUTHORS_1W!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > JIRA_AUTHORS_1W");
-ok(grep(m!JIRA_AUTHORS_1Y!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > JIRA_AUTHORS_1Y");
-ok(grep(m!JIRA_CREATED_1W!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > JIRA_CREATED_1W");
-ok(grep(m!JIRA_UPDATED_1W!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > JIRA_UPDATED_1W");
-ok(grep(m!JIRA_LATE!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > JIRA_LATE");
+ok(grep(m!ITS_VOL!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_VOL");
+ok(grep(m!ITS_AUTHORS!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_AUTHORS");
+ok(grep(m!ITS_AUTHORS_1M!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_AUTHORS_1M");
+ok(grep(m!ITS_AUTHORS_1W!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_AUTHORS_1W");
+ok(grep(m!ITS_AUTHORS_1Y!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_AUTHORS_1Y");
+ok(grep(m!ITS_CREATED_1M!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_CREATED_1M");
+ok(grep(m!ITS_CREATED_1W!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_CREATED_1W");
+ok(grep(m!ITS_CREATED_1Y!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_CREATED_1Y");
+ok(grep(m!ITS_UPDATED_1M!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_UPDATED_1M");
+ok(grep(m!ITS_UPDATED_1W!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_UPDATED_1W");
+ok(grep(m!ITS_UPDATED_1Y!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_UPDATED_1Y");
+ok(grep(m!ITS_OPEN!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_OPEN");
+ok(grep(m!ITS_OPEN_OLD!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_OPEN_OLD");
+ok(grep(m!ITS_OPEN_PERCENT!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_OPEN_PERCENT");
+ok(grep(m!ITS_LATE!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_LATE");
+ok(grep(m!ITS_OPEN_UNASSIGNED!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_OPEN_UNASSIGNED");
 
 ok(grep(m!jira_summary.html!, keys %{$conf->{'provides_figs'}}),
   "Conf has provides_figs > jira_summary.html");
+ok(grep(m!jira_evol_summary.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > jira_evol_summary.html");
+ok(grep(m!jira_evol_created.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > jira_evol_created.html");
+ok(grep(m!jira_evol_authors.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > jira_evol_authors.html");
 
 note("Executing the plugin with AL project. ");
 my $ret = $plugin->run_plugin(
@@ -118,46 +156,48 @@ ok(grep(/^\[Tools::R\] Exec \[Rsc.*jira_summary.rmd/, @{$ret->{'log'}}) == 1,
   "Checking if log contains jira_summary.rmd R code exec.")
   or diag explain $ret;
 
-ok($ret->{'metrics'}{'JIRA_VOL'} =~ /^\d+$/, "JIRA_VOL is a digit.")
+ok($ret->{'metrics'}{'ITS_VOL'} =~ /^\d+$/, "ITS_VOL is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_OPEN'} =~ /^\d+$/, "JIRA_OPEN is a digit.")
+ok($ret->{'metrics'}{'ITS_OPEN'} =~ /^\d+$/, "ITS_OPEN is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_OPEN_PERCENT'} =~ /^\d\d?$/,
-  "JIRA_OPEN_PERCENT is xx.")
+ok($ret->{'metrics'}{'ITS_OPEN_OLD'} =~ /^\d+$/, "ITS_OPEN_OLD is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_OPEN_UNASSIGNED'} =~ /^\d+$/,
-  "JIRA_OPEN_UNASSIGNED is a digit.")
+ok($ret->{'metrics'}{'ITS_OPEN_PERCENT'} =~ /^\d\d?$/,
+  "ITS_OPEN_PERCENT is xx.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_CREATED_1M'} =~ /^\d+$/,
-  "JIRA_CREATED_1M is a digit.")
+ok($ret->{'metrics'}{'ITS_OPEN_UNASSIGNED'} =~ /^\d+$/,
+  "ITS_OPEN_UNASSIGNED is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_CREATED_1Y'} =~ /^\d+$/,
-  "JIRA_CREATED_1Y is a digit.")
+ok($ret->{'metrics'}{'ITS_CREATED_1M'} =~ /^\d+$/,
+  "ITS_CREATED_1M is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_CREATED_1W'} =~ /^\d+$/,
-  "JIRA_CREATED_1W is a digit.")
+ok($ret->{'metrics'}{'ITS_CREATED_1Y'} =~ /^\d+$/,
+  "ITS_CREATED_1Y is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_UPDATED_1M'} =~ /^\d+$/,
-  "JIRA_UPDATED_1M is a digit.")
+ok($ret->{'metrics'}{'ITS_CREATED_1W'} =~ /^\d+$/,
+  "ITS_CREATED_1W is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_UPDATED_1W'} =~ /^\d+$/,
-  "JIRA_UPDATED_1W is a digit.")
+ok($ret->{'metrics'}{'ITS_UPDATED_1M'} =~ /^\d+$/,
+  "ITS_UPDATED_1M is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_UPDATED_1Y'} =~ /^\d+$/,
-  "JIRA_UPDATED_1Y is a digit.")
+ok($ret->{'metrics'}{'ITS_UPDATED_1W'} =~ /^\d+$/,
+  "ITS_UPDATED_1W is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_AUTHORS_1W'} =~ /^\d+$/,
-  "JIRA_AUTHORS_1W is a digit.")
+ok($ret->{'metrics'}{'ITS_UPDATED_1Y'} =~ /^\d+$/,
+  "ITS_UPDATED_1Y is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_AUTHORS_1M'} =~ /^\d+$/,
-  "JIRA_AUTHORS_1M is a digit.")
+ok($ret->{'metrics'}{'ITS_AUTHORS_1W'} =~ /^\d+$/,
+  "ITS_AUTHORS_1W is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_AUTHORS_1Y'} =~ /^\d+$/,
-  "JIRA_AUTHORS_1Y is a digit.")
+ok($ret->{'metrics'}{'ITS_AUTHORS_1M'} =~ /^\d+$/,
+  "ITS_AUTHORS_1M is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_AUTHORS'} =~ /^\d+$/, "JIRA_AUTHORS is a digit.")
+ok($ret->{'metrics'}{'ITS_AUTHORS_1Y'} =~ /^\d+$/,
+  "ITS_AUTHORS_1Y is a digit.")
   or diag explain $ret;
-ok($ret->{'metrics'}{'JIRA_LATE'} =~ /^\d+$/, "JIRA_LATE is a digit.")
+ok($ret->{'metrics'}{'ITS_AUTHORS'} =~ /^\d+$/, "ITS_AUTHORS is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_LATE'} =~ /^\d+$/, "ITS_LATE is a digit.")
   or diag explain $ret;
 
 
@@ -181,6 +221,8 @@ ok(-e "projects/tools.cdt/output/tools.cdt_jira_issues_late.csv",
   "Check that file jira_issues_late.csv exists.");
 ok(-e "projects/tools.cdt/output/tools.cdt_jira_issues_open.csv",
   "Check that file jira_issues_open.csv exists.");
+ok(-e "projects/tools.cdt/output/tools.cdt_jira_issues_open_old.csv",
+  "Check that file jira_issues_open_old.csv exists.");
 ok(-e "projects/tools.cdt/output/tools.cdt_jira_issues_open_unassigned.csv",
   "Check that file jira_issues_open_unassigned.csv exists.");
 
