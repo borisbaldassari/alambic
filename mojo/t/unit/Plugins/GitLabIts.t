@@ -32,12 +32,12 @@ my $conf = $plugin->get_conf();
 ok(grep(m!its_evol_summary.rmd!, keys %{$conf->{'provides_figs'}}),
   "Conf has provides_figs > its_evol_summary");
 
-ok(grep(m!ITS_CHANGED_1W!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > its_changed_1w");
-ok(grep(m!ITS_CHANGED_1M!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > its_changed_1m");
-ok(grep(m!ITS_CHANGED_1Y!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > its_changed_1y");
+ok(grep(m!ITS_UPDATED_1W!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > its_updated_1w");
+ok(grep(m!ITS_UPDATED_1M!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > its_updated_1m");
+ok(grep(m!ITS_UPDATED_1Y!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > its_updated_1y");
 
 ok(grep(m!ITS_CREATED_1W!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > its_created_1w");
@@ -46,18 +46,18 @@ ok(grep(m!ITS_CREATED_1M!, keys %{$conf->{'provides_metrics'}}),
 ok(grep(m!ITS_CREATED_1Y!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > its_created_1y");
 
-ok(grep(m!ITS_ISSUES_OPEN!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > its_issues_open");
-ok(grep(m!ITS_ISSUES_CLOSED!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > its_issues_closed");
+ok(grep(m!ITS_OPEN!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > its_open");
+ok(grep(m!ITS_CLOSED!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > its_closed");
 ok(grep(m!ITS_ISSUES_ALL!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > its_issues_all");
-ok(grep(m!ITS_ISSUES_LATE!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > its_issues_late");
-ok(grep(m!ITS_ISSUES_UNASSIGNED!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > its_issues_unassigned");
-ok(grep(m!ITS_ISSUES_UNASSIGNED_OPEN!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > its_issues_unassigned_open");
+ok(grep(m!ITS_LATE!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > its_late");
+ok(grep(m!ITS_UNASSIGNED!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > its_unassigned");
+ok(grep(m!ITS_OPEN_UNASSIGNED!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > its_open_unassigned");
 
 ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
 ok(grep(m!info!,    @{$conf->{'ability'}}), "Conf has ability > info");
@@ -120,41 +120,37 @@ ok($ret->{'metrics'}{'ITS_PEOPLE'} == 2,
   "Metric ITS_PEOPLE is " . $ret->{'metrics'}{'ITS_PEOPLE'} . " (ref 2).")
   or diag explain $ret;
 
-ok($ret->{'metrics'}{'ITS_CHANGED_1W'} =~ /\d+/,
-  "Metric ITS_CHANGED_1W is a digit " . $ret->{'metrics'}{'ITS_CHANGED_1W'} . ".")
+ok($ret->{'metrics'}{'ITS_UPDATED_1W'} =~ /\d+/,
+  "Metric ITS_UPDATED_1W is a digit " . $ret->{'metrics'}{'ITS_UPDATED_1W'} . ".")
   or diag explain $ret;
-ok($ret->{'metrics'}{'ITS_CHANGED_1M'} =~ /\d+/,
-  "Metric ITS_CHANGED_1M is a digit " . $ret->{'metrics'}{'ITS_CHANGED_1M'} . ".")
+ok($ret->{'metrics'}{'ITS_UPDATED_1M'} =~ /\d+/,
+  "Metric ITS_UPDATED_1M is a digit " . $ret->{'metrics'}{'ITS_UPDATED_1M'} . ".")
   or diag explain $ret;
-ok($ret->{'metrics'}{'ITS_CHANGED_1Y'} =~ /\d+/,
-  "Metric ITS_CHANGED_1Y is a digit " . $ret->{'metrics'}{'ITS_CHANGED_1Y'} . ".")
+ok($ret->{'metrics'}{'ITS_UPDATED_1Y'} =~ /\d+/,
+  "Metric ITS_UPDATED_1Y is a digit " . $ret->{'metrics'}{'ITS_UPDATED_1Y'} . ".")
   or diag explain $ret;
 
 ok($ret->{'metrics'}{'ITS_ISSUES_ALL'} == 80,
   "Metric ITS_ISSUES_ALL is a digit " . $ret->{'metrics'}{'ITS_ISSUES_ALL'} . ".")
   or diag explain $ret;
 
-ok($ret->{'metrics'}{'ITS_ISSUES_LATE'} == 1,
-  "Metric ITS_ISSUES_LATE is a digit " . $ret->{'metrics'}{'ITS_ISSUES_LATE'} . " (ref 1).")
+ok($ret->{'metrics'}{'ITS_LATE'} == 1,
+  "Metric ITS_LATE is a digit " . $ret->{'metrics'}{'ITS_LATE'} . " (ref 1).")
   or diag explain $ret;
 
-ok($ret->{'metrics'}{'ITS_ISSUES_OPEN'} == 10,
-  "Metric ITS_ISSUES_OPEN is a digit " . $ret->{'metrics'}{'ITS_ISSUES_OPEN'} . " (ref 80).")
+ok($ret->{'metrics'}{'ITS_OPEN'} == 10,
+  "Metric ITS_OPEN is a digit " . $ret->{'metrics'}{'ITS_OPEN'} . " (ref 80).")
   or diag explain $ret;
-ok($ret->{'metrics'}{'ITS_ISSUES_CLOSED'} == 70,
-  "Metric ITS_ISSUES_CLOSED is a digit " . $ret->{'metrics'}{'ITS_ISSUES_CLOSED'} . " (ref 70).")
+ok($ret->{'metrics'}{'ITS_CLOSED'} == 70,
+  "Metric ITS_CLOSED is a digit " . $ret->{'metrics'}{'ITS_CLOSED'} . " (ref 70).")
   or diag explain $ret;
-ok($ret->{'metrics'}{'ITS_ISSUES_UNASSIGNED_OPEN'} == 9,
-  "Metric ITS_ISSUES_UNASSIGNED_OPEN is a digit " . $ret->{'metrics'}{'ITS_ISSUES_UNASSIGNED_OPEN'} . " (ref 9).")
+ok($ret->{'metrics'}{'ITS_OPEN_UNASSIGNED'} == 9,
+  "Metric ITS_OPEN_UNASSIGNED is a digit " . $ret->{'metrics'}{'ITS_OPEN_UNASSIGNED'} . " (ref 9).")
   or diag explain $ret;
 
 ok($ret->{'metrics'}{'ITS_TOTAL_UPVOTES'} =~ /\d+/,
   "Metric ITS_TOTAL_UPVOTES is a digit " . $ret->{'metrics'}{'ITS_TOTAL_UPVOTES'} . ".")
   or diag explain $ret;
-
-
-done_testing();
-exit;
 
 # Checking input/* files
 
@@ -186,12 +182,16 @@ ok(
   "Check that file test.gitlabits_import_gitlab_its_issues_open.csv exists."
 );
 ok(
+  -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its_issues_open_old.csv",
+  "Check that file test.gitlabits_import_gitlab_its_issues_open_old.csv exists."
+);
+ok(
   -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its_issues_unassigned_open.csv",
   "Check that file test.gitlabits_import_gitlab_its_issues_unassigned_open.csv exists."
 );
 ok(
-  -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its_milestones.json",
-  "Check that file test.gitlabits_import_gitlab_its_milestones.json exists."
+  -e "projects/test.gitlabits/output/test.gitlabits_gitlab_its_milestones.csv",
+  "Check that file test.gitlabits_import_gitlab_its_milestones.csv exists."
 );
 
 done_testing();

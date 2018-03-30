@@ -37,30 +37,33 @@ my %conf = (
     "provides_data" => {
 	"import_gitlab_its.json" => "Original JSON file as retrieved from the GitLab server (JSON).",
 	"gitlab_its_issues.json" => "Restricted (attributes-wise) set of issues extracted from the "
-            . "server for metrics calculation (JSON).",
+            . "server (JSON).",
 	"gitlab_its_issues.csv" => 
-	    "Restricted (attributes-wise) set of issues extracted from the server " 
-	    . "for metrics calculation (CSV).",
+	    "Restricted (attributes-wise) set of issues extracted from the server (CSV).",
 	"gitlab_its_issues_late.csv" => 
 	    "Restricted (attributes-wise) set of late (at the time of analysis)) issues "
-            . "extracted from the server for metrics calculation (CSV).",
+            . "extracted from the server (CSV).",
 	"gitlab_its_issues_open.csv" => 
-	    "Restricted (attributes-wise) set of open issues extracted from the server " 
-	    . "for metrics calculation (CSV).",
+	    "Restricted (attributes-wise) set of open issues extracted from the server (CSV).",
+	"gitlab_its_issues_open_old.csv" => 
+	    "Restricted (attributes-wise) set of open, old (not updated for more than one year) issues extracted from the server (CSV).",
+	"gitlab_its_milestones.csv" => 
+	    "Restricted (attributes-wise) set of milestones for the project, with number of opened and closed issues (CSV).",
     },
     "provides_metrics" => {
-        "ITS_CHANGED_1W" => "ITS_CHANGED_1W", 
-        "ITS_CHANGED_1M" => "ITS_CHANGED_1M", 
-        "ITS_CHANGED_1Y" => "ITS_CHANGED_1Y", 
+        "ITS_UPDATED_1W" => "ITS_UPDATED_1W", 
+        "ITS_UPDATED_1M" => "ITS_UPDATED_1M", 
+        "ITS_UPDATED_1Y" => "ITS_UPDATED_1Y", 
         "ITS_CREATED_1W" => "ITS_CREATED_1W", 
         "ITS_CREATED_1M" => "ITS_CREATED_1M", 
         "ITS_CREATED_1Y" => "ITS_CREATED_1Y", 
-	"ITS_ISSUES_OPEN" => "ITS_ISSUES_OPEN",
-	"ITS_ISSUES_CLOSED" => "ITS_ISSUES_CLOSED",
+	"ITS_OPEN" => "ITS_OPEN",
+	"ITS_OPEN_OLD" => "ITS_OPEN_OLD",
+	"ITS_CLOSED" => "ITS_CLOSED",
 	"ITS_ISSUES_ALL" => "ITS_ISSUES_ALL",
-	"ITS_ISSUES_LATE" => "ITS_ISSUES_LATE",
-	"ITS_ISSUES_UNASSIGNED" => "ITS_ISSUES_UNASSIGNED",
-	"ITS_ISSUES_UNASSIGNED_OPEN" => "ITS_ISSUES_UNASSIGNED_OPEN",
+	"ITS_LATE" => "ITS_LATE",
+	"ITS_UNASSIGNED" => "ITS_UNASSIGNED",
+	"ITS_OPEN_UNASSIGNED" => "ITS_OPEN_UNASSIGNED",
 	"ITS_TOTAL_DOWNVOTES" => "ITS_TOTAL_DOWNVOTES",
 	"ITS_TOTAL_UPVOTES" => "ITS_TOTAL_UPVOTES",
 	"ITS_AUTHORS" => "ITS_AUTHORS",
@@ -140,7 +143,7 @@ sub run_plugin($$) {
 	$issues_created_1w, $issues_created_1m, $issues_created_1y,
 	$issues_changed_1w, $issues_changed_1m, $issues_changed_1y,
 	$total_upvotes, $total_downvotes) = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    my (@issues_unassigned, @issues_unassigned_open, @issues_late);
+    my (@issues_unassigned, @issues_unassigned_open, @issues_late, @issues_open_old);
     my (%milestones, %authors, %authors_1w, %authors_1m, %authors_1y, %people, %notes);
 
     # Time::Piece object. Will be used for the date calculations.
@@ -183,7 +186,7 @@ sub run_plugin($$) {
 	$total_downvotes += $issue->{'downvotes'};
 
 	# Check if issue's due date has past
-	if ( defined($date_due) and $date_due < $t_now->epoch ) { 
+	if ( defined($date_due) and $date_due < $t_now->epoch and $issue->{'state'} =~ m!^open! ) { 
 	    push( @issues_late, $issue ); 
 	}
 
@@ -239,6 +242,12 @@ sub run_plugin($$) {
 	}
 	push( @issues_f, \%issues_l );
 
+	# Check if issue is old (not been updated for more than 1y) and open
+	if ( ($date_changed < $t_1y->epoch)
+	    && ($issue->{'state'} =~ m!^open!) ) {
+	    push(@issues_open_old, $issue);
+	}
+	
         # Request information about notes for this specific issue.
 # This has been commented because it takes too long. It works, however.
 # Simple uncomment it to have it. You should also add some code to write it 
@@ -316,6 +325,18 @@ sub run_plugin($$) {
     }    
     $repofs->write_output($project_id, "gitlab_its_issues_open.csv", $csv_out);
         
+    # Write our own list of open old issues.
+    $csv = Text::CSV->new({binary => 1, eol => "\n"});
+    @cols = ('id', 'state', 'title', 'web_url', 'created_at', 'updated_at', 
+		'due_date', 'upvotes', 'downvotes', 'user_notes_count');
+    $csv_out = join(',', @cols) . "\n";
+    foreach my $i ( @issues_open_old) {
+	my @issues = map { $i->{$_} } @cols;
+	$csv->combine(@issues);
+	$csv_out .= $csv->string();
+    }
+    $repofs->write_output($project_id, "gitlab_its_issues_open_old.csv", $csv_out);
+        
     # Write our own list of milestones (CSV).
     $csv = Text::CSV->new({binary => 1, eol => "\n"});
     @cols = ('iid', 'id', 'state', 'title', 'created_at', 'updated_at', 'start_date', 
@@ -334,21 +355,22 @@ sub run_plugin($$) {
     $repofs->write_output($project_id, "gitlab_its_milestones.csv", $csv_out);
             
     # Analyse retrieved data, generate info, metrics, plots and visualisation.
-    $ret{'metrics'}{'ITS_ISSUES_OPEN'} = $issues_open;
-    $ret{'metrics'}{'ITS_ISSUES_CLOSED'} = $issues_closed;
+    $ret{'metrics'}{'ITS_OPEN'} = $issues_open;
+    $ret{'metrics'}{'ITS_CLOSED'} = $issues_closed;
     $ret{'metrics'}{'ITS_ISSUES_ALL'} = $issues_vol;
-    $ret{'metrics'}{'ITS_ISSUES_LATE'} = scalar @issues_late;
-    $ret{'metrics'}{'ITS_ISSUES_UNASSIGNED'} = scalar @issues_unassigned;
-    $ret{'metrics'}{'ITS_ISSUES_UNASSIGNED_OPEN'} = scalar @issues_unassigned_open;
+    $ret{'metrics'}{'ITS_LATE'} = scalar @issues_late;
+    $ret{'metrics'}{'ITS_UNASSIGNED'} = scalar @issues_unassigned;
+    $ret{'metrics'}{'ITS_OPEN_UNASSIGNED'} = scalar @issues_unassigned_open;
+    $ret{'metrics'}{'ITS_OPEN_OLD'} = scalar @issues_open_old;
     $ret{'metrics'}{'ITS_TOTAL_DOWNVOTES'} = $total_downvotes;
     $ret{'metrics'}{'ITS_TOTAL_UPVOTES'} = $total_upvotes;
     # time series
     $ret{'metrics'}{'ITS_CREATED_1W'} = $issues_created_1w;
     $ret{'metrics'}{'ITS_CREATED_1M'} = $issues_created_1m;
     $ret{'metrics'}{'ITS_CREATED_1Y'} = $issues_created_1y;
-    $ret{'metrics'}{'ITS_CHANGED_1W'} = $issues_changed_1w;
-    $ret{'metrics'}{'ITS_CHANGED_1M'} = $issues_changed_1m;
-    $ret{'metrics'}{'ITS_CHANGED_1Y'} = $issues_changed_1y;
+    $ret{'metrics'}{'ITS_UPDATED_1W'} = $issues_changed_1w;
+    $ret{'metrics'}{'ITS_UPDATED_1M'} = $issues_changed_1m;
+    $ret{'metrics'}{'ITS_UPDATED_1Y'} = $issues_changed_1y;
     $ret{'metrics'}{'ITS_AUTHORS'} = scalar keys %authors;
     $ret{'metrics'}{'ITS_AUTHORS_1W'} = scalar keys %authors_1w;
     $ret{'metrics'}{'ITS_AUTHORS_1M'} = scalar keys %authors_1m;
