@@ -71,21 +71,22 @@ my %conf = (
       "The list of software versions that have at least one bug registered against them (CSV).",
   },
   "provides_metrics" => {
-    "BZ_VOL"             => "ITS_ISSUES_ALL",
-    "BZ_AUTHORS"         => "ITS_AUTHORS",
-    "BZ_AUTHORS_1W"      => "ITS_AUTHORS_1W",
-    "BZ_AUTHORS_1M"      => "ITS_AUTHORS_1M",
-    "BZ_AUTHORS_1Y"      => "ITS_AUTHORS_1Y",
-    "BZ_CREATED_1W"      => "ITS_CREATED_1W",
-    "BZ_CREATED_1M"      => "ITS_CREATED_1M",
-    "BZ_CREATED_1Y"      => "ITS_CREATED_1Y",
-    "BZ_UPDATED_1W"      => "ITS_UPDATED_1W",
-    "BZ_UPDATED_1M"      => "ITS_UPDATED_1M",
-    "BZ_UPDATED_1Y"      => "ITS_UPDATED_1Y",
-    "BZ_OPEN"            => "ITS_OPEN",
-    "BZ_OPEN_PERCENT"    => "ITS_OPEN_PERCENT",
-#    "BZ_LATE"            => "ITS_LATE",
-    "BZ_OPEN_UNASSIGNED" => "ITS_OPEN_UNASSIGNED",
+    "ITS_ISSUES_ALL"      => "ITS_ISSUES_ALL",
+    "ITS_AUTHORS"         => "ITS_AUTHORS",
+    "ITS_AUTHORS_1W"      => "ITS_AUTHORS_1W",
+    "ITS_AUTHORS_1M"      => "ITS_AUTHORS_1M",
+    "ITS_AUTHORS_1Y"      => "ITS_AUTHORS_1Y",
+    "ITS_CREATED_1W"      => "ITS_CREATED_1W",
+    "ITS_CREATED_1M"      => "ITS_CREATED_1M",
+    "ITS_CREATED_1Y"      => "ITS_CREATED_1Y",
+    "ITS_UPDATED_1W"      => "ITS_UPDATED_1W",
+    "ITS_UPDATED_1M"      => "ITS_UPDATED_1M",
+    "ITS_UPDATED_1Y"      => "ITS_UPDATED_1Y",
+    "ITS_OPEN"            => "ITS_OPEN",
+    "ITS_OPEN_OLD"        => "ITS_OPEN_OLD",
+    "ITS_OPEN_PERCENT"    => "ITS_OPEN_PERCENT",
+#    "ITS_LATE"            => "ITS_LATE",
+    "ITS_OPEN_UNASSIGNED" => "ITS_OPEN_UNASSIGNED",
   },
   "provides_figs" => {
     'bugzilla_evol_summary.html' => "Evolution of Bugzilla issues submission",
@@ -210,17 +211,18 @@ sub run_plugin($$) {
   $repofs->write_input( $project_id, "import_bugzilla.json",
                         encode_json($bugs) );
 
-  # my (@late, @open, @unassigned_open, %people);
+  # Define vars to loop through issues.
   my $csv_out = join( ',', @attrs_def ) . "\n";
 
   my $csv_open_out            = $csv_out;
+  my $csv_open_old_out            = $csv_out;
   my $csv_unassigned_open_out = $csv_out;
   
   my ($bz_created_1w, $bz_created_1m, $bz_created_1y) = (0, 0, 0);
   my ($bz_updated_1w, $bz_updated_1m, $bz_updated_1y) = (0, 0, 0);
   my (%authors, %authors_1w, %authors_1m, %authors_1y, %people);
   my (%components, %milestones, %versions);
-  my (@open, @unassigned_open);
+  my (@open, @open_old, @unassigned_open);
   my %timeline_c;
   my %timeline_a;
   
@@ -228,6 +230,7 @@ sub run_plugin($$) {
 # It seems that the deadline field is never filled (i.e. always undef).
 #  my $csv_late            = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_open            = Text::CSV->new({binary => 1, eol => "\n"});
+  my $csv_old_open        = Text::CSV->new({binary => 1, eol => "\n"});
   my $csv_unassigned_open = Text::CSV->new({binary => 1, eol => "\n"});
   foreach my $issue (@$bugs) {
       # Convert string dates to epoch seconds      
@@ -274,6 +277,13 @@ sub run_plugin($$) {
       #     push(@late, $issue->{'key'});
       #     $csv_late_out .= $csv->string();
       #   }
+
+      # Check if issue is old (not been updated for more than 1y) and open
+      if (($date_updated < $t_1y->epoch)
+           && grep($issue->{'is_open'}) ) {
+          push(@open_old, $issue->{'id'});
+          $csv_open_old_out .= $csv->string();
+      }
 
       # Check if issue is assigned and open
       if ( (not defined($issue->{'assigned_to'}))
@@ -343,6 +353,7 @@ sub run_plugin($$) {
   $repofs->write_output($project_id, "bugzilla_issues.csv",      $csv_out);
   # $repofs->write_output($project_id, "bugzilla_issues_late.csv", $csv_late_out);
   $repofs->write_output($project_id, "bugzilla_issues_open.csv", $csv_open_out);
+  $repofs->write_output($project_id, "bugzilla_issues_open_old.csv", $csv_open_old_out);
   $repofs->write_output($project_id, "bugzilla_issues_open_unassigned.csv",
                         $csv_unassigned_open_out);
 
@@ -383,6 +394,7 @@ sub run_plugin($$) {
   = sprintf("%.0f", 100 * (scalar @open) / (scalar @{$bugs}));
   # $ret{'metrics'}{'ITS_LATE'}            = scalar @late            || 0;
   $ret{'metrics'}{'ITS_OPEN_UNASSIGNED'} = scalar @unassigned_open || 0;
+  $ret{'metrics'}{'ITS_OPEN_OLD'}        = scalar @open_old || 0;
   $ret{'metrics'}{'ITS_AUTHORS_1W'}      = scalar keys %authors_1w || 0;
   $ret{'metrics'}{'ITS_AUTHORS_1M'}      = scalar keys %authors_1m || 0;
   $ret{'metrics'}{'ITS_AUTHORS_1Y'}      = scalar keys %authors_1y || 0;
@@ -468,7 +480,7 @@ sub run_plugin($$) {
   #     {
   #       'rid'      => 'BZ_LATE_ISSUES',
   #       'severity' => 2,
-  #       'src'      => 'JiraIts',
+  #       'src'      => 'Bugzilla',
   #       'desc'     => 'There are '
   #         . scalar @late
   #         . ' issues with a past due date. Either re-plan them or mark them done.'
@@ -487,37 +499,36 @@ sub run_plugin($$) {
 
 =head1 NAME
 
-B<Alambic::Plugins::JiraIts> - Retrieves issue tracking data and metrics 
-from a Jira server.
+B<Alambic::Plugins::Bugzilla> - Retrieves issue tracking data and metrics 
+from a Bugzilla server.
 
 =head1 DESCRIPTION
 
-B<Alambic::Plugins::JiraIts> Retrieves issue tracking data and metrics 
-from a Jira Server.
+B<Alambic::Plugins::Bugzilla> Retrieves issue tracking data and metrics 
+from a Bugzilla Server.
 
 Parameters: 
 
 =over
+ 
+=item * bz_url The URL of the Bugzilla server (WITH a trailing slash), e.g. https://bugs.eclipse.org/bugs/.
 
-=item * jira_open_states A list of status names considered as open in the workflow, coma-separated.
+=item * bz_user The id of the user for the connection to the Bugzilla server.
 
-=item * jira_passwd The password of the user for the connection to the Jira server.
+=item * bz_passwd The password of the user for the connection to the Bugzilla server.
 
-=item * jira_project The Identifier of the project within the Jira instance, e.g. ALX.
-
-=item * jira_url The URL of the Jira server, e.g. https://tracker.openattic.org.
+=item * bz_project The Identifier of the project (i.e. product) within the Bugzilla instance, e.g. Sirius.
 
 =back
-=item * jira_user The id of the user for the connection to the Jira server.
 
 
-For the complete description of the plugin see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/Jira.html>.
+For the complete description of the plugin see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/Bugzilla.html>.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/Pre/Jira.html>,
+L<https://alambic.io/Plugins/Pre/Bugzilla.html>,
 
-L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<https://www.atlassian.com/software/jira>
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>, L<https://www.bugzilla.org>
 
 
 =cut

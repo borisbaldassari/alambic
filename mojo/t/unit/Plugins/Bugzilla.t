@@ -68,24 +68,32 @@ ok(grep(m!bugzilla_versions.csv!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > bugzilla_versions.csv");
 
 
-ok(grep(m!BZ_VOL!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > BZ_VOL");
-ok(grep(m!BZ_AUTHORS!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > BZ_AUTHORS");
-ok(grep(m!BZ_AUTHORS_1M!, keys %{$conf->{'provides_metrics'}}),
-   "Conf has provides_metrics > BZ_AUTHORS_1M");
-ok(grep(m!BZ_AUTHORS_1W!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > BZ_AUTHORS_1W");
-ok(grep(m!BZ_AUTHORS_1Y!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > BZ_AUTHORS_1Y");
-ok(grep(m!BZ_CREATED_1W!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > BZ_CREATED_1W");
-ok(grep(m!BZ_UPDATED_1W!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > BZ_UPDATED_1W");
-ok(grep(m!BZ_OPEN!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > BZ_OPEN");
-ok(grep(m!BZ_OPEN_UNASSIGNED!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > BZ_OPEN_UNASSIGNED");
+ok(grep(m!ITS_ISSUES_ALL!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_ISSUES_ALL");
+ok(grep(m!ITS_AUTHORS!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_AUTHORS");
+ok(grep(m!ITS_AUTHORS_1M!, keys %{$conf->{'provides_metrics'}}),
+   "Conf has provides_metrics > ITS_AUTHORS_1M");
+ok(grep(m!ITS_AUTHORS_1W!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_AUTHORS_1W");
+ok(grep(m!ITS_AUTHORS_1Y!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_AUTHORS_1Y");
+ok(grep(m!ITS_CREATED_1M!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_CREATED_1M");
+ok(grep(m!ITS_CREATED_1W!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_CREATED_1W");
+ok(grep(m!ITS_CREATED_1Y!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_CREATED_1Y");
+ok(grep(m!ITS_UPDATED_1M!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_UPDATED_1M");
+ok(grep(m!ITS_UPDATED_1W!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_UPDATED_1W");
+ok(grep(m!ITS_UPDATED_1Y!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_UPDATED_1Y");
+ok(grep(m!ITS_OPEN!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_OPEN");
+ok(grep(m!ITS_OPEN_UNASSIGNED!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_OPEN_UNASSIGNED");
 
 ok(grep(m!bugzilla_evol_summary.html!, keys %{$conf->{'provides_figs'}}),
   "Conf has provides_figs > bugzilla_evol_summary.html");
@@ -152,6 +160,8 @@ ok(
 ok($ret->{'metrics'}{'ITS_ISSUES_ALL'} =~ /^\d+$/, "ITS_ISSUES_ALL is a digit.")
   or print Dumper($ret);
 ok($ret->{'metrics'}{'ITS_OPEN'} =~ /^\d+$/, "ITS_OPEN is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_OPEN_OLD'} =~ /^\d+$/, "ITS_OPEN_OLD is a digit.")
   or diag explain $ret;
 ok($ret->{'metrics'}{'ITS_OPEN_PERCENT'} =~ /^\d\d?$/,
   "ITS_OPEN_PERCENT is a digit.")
