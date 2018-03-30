@@ -78,8 +78,8 @@ ok(grep(m!jira_issues_open_unassigned.csv!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > jira_issues_open_unassigned.csv");
 
 
-ok(grep(m!ITS_VOL!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > ITS_VOL");
+ok(grep(m!ITS_ISSUES_ALL!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > ITS_ISSUES_ALL");
 ok(grep(m!ITS_AUTHORS!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > ITS_AUTHORS");
 ok(grep(m!ITS_AUTHORS_1M!, keys %{$conf->{'provides_metrics'}}),
@@ -156,7 +156,7 @@ ok(grep(/^\[Tools::R\] Exec \[Rsc.*jira_summary.rmd/, @{$ret->{'log'}}) == 1,
   "Checking if log contains jira_summary.rmd R code exec.")
   or diag explain $ret;
 
-ok($ret->{'metrics'}{'ITS_VOL'} =~ /^\d+$/, "ITS_VOL is a digit.")
+ok($ret->{'metrics'}{'ITS_ISSUES_ALL'} =~ /^\d+$/, "ITS_ISSUES_ALL is a digit.")
   or diag explain $ret;
 ok($ret->{'metrics'}{'ITS_OPEN'} =~ /^\d+$/, "ITS_OPEN is a digit.")
   or diag explain $ret;

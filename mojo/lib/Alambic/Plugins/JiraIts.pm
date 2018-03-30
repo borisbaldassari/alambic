@@ -67,7 +67,7 @@ my %conf = (
       "The list of open and old (i.e. not updated since more than one year) issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).",
   },
   "provides_metrics" => {
-    "ITS_VOL"             => "ITS_VOL",
+    "ITS_ISSUES_ALL"             => "ITS_ISSUES_ALL",
     "ITS_AUTHORS"         => "ITS_AUTHORS",
     "ITS_AUTHORS_1W"      => "ITS_AUTHORS_1W",
     "ITS_AUTHORS_1M"      => "ITS_AUTHORS_1M",
@@ -342,14 +342,14 @@ sub run_plugin($$) {
     $csv_open_old_out);
 
   # Compute and store metrics
-  $ret{'metrics'}{'ITS_VOL'}     = scalar @{$search->{'issues'}};
-  $ret{'metrics'}{'ITS_AUTHORS'} = scalar keys %authors;
+  $ret{'metrics'}{'ITS_ISSUES_ALL'}     = scalar @{$search->{'issues'}};
   $ret{'metrics'}{'ITS_OPEN'}    = scalar @open;
   $ret{'metrics'}{'ITS_OPEN_PERCENT'}
     = sprintf("%.0f", 100 * (scalar @open) / (scalar @{$search->{'issues'}}));
   $ret{'metrics'}{'ITS_LATE'}            = scalar @late            || 0;
   $ret{'metrics'}{'ITS_OPEN_UNASSIGNED'} = scalar @open_unassigned || 0;
   $ret{'metrics'}{'ITS_OPEN_OLD'}        = scalar @open_old || 0;
+  $ret{'metrics'}{'ITS_AUTHORS'} = scalar keys %authors;
   $ret{'metrics'}{'ITS_AUTHORS_1W'}      = scalar keys %authors_1w || 0;
   $ret{'metrics'}{'ITS_AUTHORS_1M'}      = scalar keys %authors_1m || 0;
   $ret{'metrics'}{'ITS_AUTHORS_1Y'}      = scalar keys %authors_1y || 0;
