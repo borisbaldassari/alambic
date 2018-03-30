@@ -26,7 +26,7 @@
 % foreach my $item (sort keys %{$metrics}) {
 %     # if a repo is provided, just display metrics for this repo.
 %     if ( $repo =~ m!(\S+)! ) {
-%       if( !exists($metrics->{$item}{'ds'}) || lc($metrics->{$item}{'ds'}) ne $1 ) { 
+%       if( !exists($metrics->{$item}{'ds'}) || not grep( /$repo/i, @{$metrics->{$item}{'ds'}}) ) { 
 %         next; 
 %       }
 %     } 
@@ -36,8 +36,14 @@
 %       push(@used_by, "<a href=\"attributes.html#$parent\">" . $parent . "</a>\n");
 %     }
 %     my $used_by_str = join(', ', @used_by);
+%     # build the provided_by attribute.
+%     my @provided_by;
+%     foreach my $provider (sort @{$metrics->{$item}{"ds"}}) {
+%       push(@provided_by, "<a href=\"plugins.html#$provider\">" . $provider . "</a>\n");
+%     }
+%     my $provided_by_str = join(', ', @provided_by);
               <li class="list-group-item"><p id="<%= $metrics->{$item}{'mnemo'} %>"><strong><%= $metrics->{$item}{'name'} %></strong> ( <%= $metrics->{$item}{'mnemo'} %> )</p>
-                <p class="desc"><b>Provided by:</b> <%== $metrics->{$item}{'ds'} || "<span class=\"label label-danger\">No provider defined!</span>" %></p>
+                <p class="desc"><b>Provided by:</b> <%== $provided_by_str || "<span class=\"label label-danger\">No provider defined!</span>" %></p>
                 <p class="desc"><b>Used by:</b> <%== $used_by_str %></p>
                 <p class="desc"><b>Scale:</b> 
                   <span class="label label-scale" style="background-color: #FFFF66"> 1 </span> &lt; <%= $metrics->{$item}{'scale'}[0] %> &le; 

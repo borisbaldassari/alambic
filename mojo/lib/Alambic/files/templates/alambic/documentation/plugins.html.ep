@@ -79,7 +79,7 @@
 	    </ul>
 	    <hr />
 
-% if ( not defined($type) or $type =~ /^pre/ ) {
+% if ( defined($type) and $type =~ /^pre/ ) {
             <h3>Data source plugins</h3>
             <br />
 
@@ -113,7 +113,7 @@
 % }
 
 
-% if ( not defined($type) or $type =~ /^cdata/ ) {
+% if ( defined($type) and $type =~ /^cdata/ ) {
             <h3>Custom data plugins</h3>
             <br />
 
@@ -145,7 +145,7 @@
 % }
 
 
-% if ( not defined($type) or $type =~ /^post/ ) {
+% if ( defined($type) and $type =~ /^post/ ) {
             <h3>Post plugins</h3>
             <br />
 
@@ -177,7 +177,7 @@
 % }
 
 
-% if ( not defined($type) or $type =~ /^global/ ) {
+% if ( defined($type) and $type =~ /^global/ ) {
             <h3>Global plugins</h3>
             <br />
 
@@ -208,7 +208,7 @@
             <hr />
 % }
 
-% if ( not defined($type) or $type =~ /^wiz/ ) {
+% if ( defined($type) and $type =~ /^wiz/ ) {
             <h3>Wizards</h3>
             <br />
 
