@@ -28,11 +28,11 @@ my %conf = (
   "id"   => "EclipsePmi",
   "name" => "Eclipse PMI Wizard",
   "desc" => [
-    'The Eclipse PMI wizard creates a new project with all data source plugins needed to analyse a project from the Eclipse forge, including Eclipse ITS, Eclipse MLS, Eclipse PMI, Eclipse SCM and Hudson CI. It retrieves and uses values from the PMI repository to set the plugin parameters automatically.',
+    'The Eclipse PMI wizard creates a new project with all data source plugins needed to analyse a project from the Eclipse forge, including Eclipse ITS (Bugzilla), Eclipse PMI, Git SCM and Jenkins CI. It retrieves and uses values from the PMI repository to set the plugin parameters automatically.',
     "This wizard only creates the plugins that should always be available. Depending on the project's configuration and data sources availability, other plugins may be needed and can manually be added to the configuration.",
   ],
   "params"  => {},
-  "plugins" => ["EclipsePmi", "Hudson", "Git", "ProjectSummary"],
+  "plugins" => ["EclipsePmi", "Jenkins", "Git", "Bugzilla", "ProjectSummary"],
 );
 
 my $eclipse_url  = "https://projects.eclipse.org/json/project/";
@@ -87,14 +87,22 @@ sub run_wizard($) {
   }
   $project_pmi->{'pmi_url'} = $url;
 
-  my $name        = $project_pmi->{'title'};
-  my $desc        = $project_pmi->{'description'}->[0]->{'summary'};
-  my $project_ci  = $project_pmi->{'build_url'}->[0]->{'url'};
-  my $project_git = $project_pmi->{'source_repo'}->[0]->{'url'};
-
+  my $name         = $project_pmi->{'title'};
+  my $desc         = $project_pmi->{'description'}[0]{'summary'};
+  my $project_ci   = $project_pmi->{'build_url'}[0]{'url'};
+  my $project_git  = $project_pmi->{'source_repo'}[0]{'url'};
+  my $bz_product   = $project_pmi->{'bugzilla'}[0]{'product'};
+  my $bz_url_enter = $project_pmi->{'bugzilla'}[0]{'create_url'};
+  $bz_url_enter    =~ m!^(http.+/)enter_bug\.cgi.+!;
+  my $bz_url       = $1;
+  
   my $plugins_conf = {
     "EclipsePmi"     => {'project_pmi' => $project_id},
-    "Hudson"         => {'hudson_url'  => $project_ci},
+    "Jenkins"        => {'jenkins_url'  => $project_ci},
+    "Bugzilla"       => {
+      "bugzilla_project" => $bz_product, 
+      "bugzilla_url"     => $bz_url,
+    },
     "Git"            => {'git_url'     => $project_git},
     "ProjectSummary" => {},
   };
@@ -119,7 +127,7 @@ from the Eclipse forge.
 
 =head1 DESCRIPTION
 
-B<Alambic::Model::Plugins> provides a way to easily initialise a project
+B<Alambic::Wizards::EclipsePmi> provides a way to easily initialise a project
 from the Eclipse forge. 
 
 Parameters:
@@ -134,9 +142,15 @@ Plugins automatically initialised with this wizard:
 
 =over
 
-=item * EclipsePmi - Get project information from the 
+=item * EclipsePmi - Get project information from the Eclipse PMI.
 
-=item * Hudson - e.g. modeling.sirius or tools.cdt.
+=item * Bugzilla - For Issue tracking.
+
+=item * Jenkins - For Continuous Integration (works with Hudson too).
+
+=item * Git - For SCM.
+
+=item * ProjectSummary - For exportable figures and badges.
 
 =back
 
