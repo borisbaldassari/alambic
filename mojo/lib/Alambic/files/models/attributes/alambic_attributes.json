@@ -1,12 +1,12 @@
   {
-    "name": "Alambic Attributes",
+    "name": "Alambic Quality Attributes",
     "version": "0.1",
     "children": [
       {
-        "name": "Project Maturity",
+        "name": "Alambic Maturity",
         "mnemo": "QM_QUALITY",
         "desc": [
-            "The overall Maturity of the project.", 
+            "The overall Maturity of the project.",
             "In the context of embedded software, Maturity is usually associated with some kind of reliability (most bugs have been already found) and functionality of code, sustainability of the project (will it still deliver fixes and improvements in a few years), and process predictability. Maturity in the PolarSys context has been further described <a href=\"https://polarsys.org/wiki/MaturityDefinition\">on the wiki</a>, and is actually precisely defined by the decomposition of this quality model."
         ]
       },
@@ -32,7 +32,7 @@
         "name": "Product",
         "mnemo": "QM_PRODUCT",
         "desc" : [
-            "The quality of the product delivered by the project, i.e. the source code, binaries, tests.", 
+            "The quality of the product delivered by the project, i.e. the source code, binaries, tests.",
             "Product quality is mainly focused on maintainability for long-term support, through analysability, changeability, and reusability. Reliability is also considered for a bug may have a great impact when encountered by large teams.",
             "Product requirements have been discussed on the mailing list and during meetings, and have been further described on the <a href=\"https://polarsys.org/wiki/EclipseQualityRequirements#Identified_Requirements_for_Product\">Polarsys wiki</a>. Some may also recognise attributes borrowed from the [<a href=\"/documentation/references.html#ISO9126\">ISO 9126</a>] and [<a href=\"/documentation/references.html#ISO250xx\">ISO 250xx SQuaRE</a>] standards."
         ]
@@ -49,7 +49,7 @@
         "name": "Diversity",
         "mnemo": "QM_DIVERSITY",
         "desc" : [
-            "The diversity of the project's ecosystem, as measured on the mailing lists and configuration management system.", 
+            "The diversity of the project's ecosystem, as measured on the mailing lists and configuration management system.",
             "If many different actors from different companies are involved in the project, then it improves its sustainability (by eliminating a single point of failure) and adaptability to different situations. Having developers and users with different contexts and perspectives on the project helps widening its scope and provide a more generic support."
         ]
       },
