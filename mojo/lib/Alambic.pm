@@ -257,6 +257,7 @@ sub startup {
   $r_admin->get('/models')->to(action => 'models');
 #  $r_admin->get('/models')->to(action => 'models');
   $r_admin->get('/models/import')->to(action => 'models_import');
+  $r_admin->get('/models/download')->to(action => 'models_download');
   $r_admin->get('/models/metrics')->to(action => 'models_metrics_show');
   $r_admin->get('/models/metrics/del/#id')->to(action => 'models_metrics_del');
   $r_admin->get('/models/attributes')->to(action => 'models_attributes_show');

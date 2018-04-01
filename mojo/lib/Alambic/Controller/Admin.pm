@@ -290,31 +290,8 @@ sub models_import {
   if ($type =~ m!^metrics$!) {
     my $metrics = decode_json($repofs->read_models('metrics', $file));
 
-    foreach my $metric (@{$metrics->{'children'}}) {
-      $repodb->set_metric(
-        $metric->{'mnemo'}, $metric->{'name'},
-        $metric->{'desc'},  $metric->{'scale'}
-      );
-    }
   }
-  elsif ($type =~ m!^attributes$!) {
-    my $attributes = decode_json($repofs->read_models('attributes', $file));
-
-    foreach my $attribute (@{$attributes->{'children'}}) {
-      $repodb->set_attribute($attribute->{'mnemo'}, $attribute->{'name'},
-        $attribute->{'desc'});
-    }
-  }
-  elsif ($type =~ m!^qm$!) {
-    my $qm = decode_json($repofs->read_models('qm', $file));
-
-    $repodb->set_qm("ALB_BASIC", "Alambic Quality Model", $qm->{'children'});
-
-  }
-  else {
-    print "[ERROR] Something went wrong: bad type for model import.\n";
-  }
-
+  
   $self->app->al->get_models()->init_models(
     $repodb->get_metrics(),
     $repodb->get_attributes(),
@@ -324,6 +301,30 @@ sub models_import {
   my $msg = "File $file has been imported in the $type table.";
   $self->flash(msg => $msg);
   $self->redirect_to('/admin/models');
+}
+
+
+# Models download for Alambic admin.  
+sub models_download {
+  my $self = shift;
+    
+  my $file = $self->param('file');
+  my $type = $self->param('type');
+
+  if ($type =~ m!^metrics$!) {
+      $self->reply->static('../models/metrics/' . $file);
+  }
+  elsif ($type =~ m!^attributes$!) {
+      $self->reply->static('../models/attributes/' . $file);
+  }
+  elsif ($type =~ m!^qm$!) {
+      $self->reply->static('../models/qm/' . $file);
+  }
+  else {
+      print "[ERROR] Something went wrong: bad type for model download.\n";
+      $self->reply->not_found;
+  }
+
 }
 
 # Models display screen for Alambic admin.
