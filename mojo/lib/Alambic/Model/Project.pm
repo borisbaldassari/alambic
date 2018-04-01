@@ -343,7 +343,6 @@ sub run_posts() {
 
   my $conf = {'last_run' => $project_last_run, 'project' => $self,
     'models' => $models,};
-
   my @post_plugins
     = sort
     grep { $plugins_module->get_plugin($_)->get_conf()->{'type'} =~ /^post$/ }

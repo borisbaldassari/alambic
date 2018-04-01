@@ -15,6 +15,8 @@
 package Alambic::Controller::Admin;
 use Mojo::Base 'Mojolicious::Controller';
 
+use Alambic::Model::RepoDB;
+
 use Mojo::JSON qw( encode_json decode_json );
 use Data::Dumper;
 use File::stat;
@@ -113,7 +115,63 @@ sub models {
     models           => $models,
   );
 
-  $self->render(template => 'alambic/admin/models');
+  my $type = $self->param('type') || '';
+
+  if ($type =~ m!^m!i) {
+      $self->render(template => 'alambic/admin/models_metrics');
+  } elsif ($type =~ m!^a!i) {
+      $self->render(template => 'alambic/admin/models_attributes');
+  } else {      
+      $self->render(template => 'alambic/admin/models');
+  }
+}
+
+# Show list of metrics in admin.
+sub models_metrics_show {
+  my $self = shift;
+
+  $self->stash(
+      models           => $self->app->al->get_models(),
+      );
+  
+  $self->render(template => 'alambic/admin/models_metrics');
+
+}
+
+# Delete a metric from model.
+sub models_metrics_del {
+  my $self = shift;
+  my $metric_id = $self->param('id');
+
+  my $repodb = $self->app->al->get_repo_db();
+  $repodb->del_metric($metric_id);
+  
+  $self->redirect_to('/admin/models/metrics');
+
+}
+
+# Show list of attributes in admin.
+sub models_attributes_show {
+  my $self = shift;
+
+  $self->stash(
+      models           => $self->app->al->get_models(),
+      );
+  
+  $self->render(template => 'alambic/admin/models_attributes');
+
+}
+
+# Delete an attribute from model.
+sub models_attributes_del {
+  my $self = shift;
+  my $metric_id = $self->param('id');
+
+  my $repodb = $self->app->al->get_repo_db();
+  $repodb->del_metric($metric_id);
+  
+  $self->redirect_to('/admin/models/attributes');
+
 }
 
 # Display list of users for Alambic admin.

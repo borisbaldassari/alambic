@@ -39,6 +39,7 @@ our @EXPORT_OK = qw(
   get_metric
   get_metrics
   set_metric
+  del_metric
   get_attribute
   get_attributes
   set_attribute
@@ -335,6 +336,23 @@ sub set_metric($) {
 }
 
 
+# Delete a metric definition in the db.
+sub del_metric($) {
+  my $self  = shift;
+  my $mnemo = shift;
+
+  my $query = 'DELETE FROM models_metrics WHERE mnemo = ? ';
+  my $ret = $pg->db->query($query, ($mnemo));
+  print "DBG " .Dumper($ret->expand->hashes);
+
+  # Send signal to reload server.
+#  my $ppid = getpid(); print "Reloading $ppid.\n";
+  kill USR2  => $$; #$ppid;
+  
+  return $ret;
+}
+
+
 # Get a single attribute definition from db.
 sub get_attribute($) {
   my ($self, $mnemo) = @_;
@@ -384,6 +402,23 @@ sub set_attribute($) {
   my $ret
     = $pg->db->query($query, ($mnemo, $name, $desc, $mnemo, $name, $desc));
 
+  return $ret;
+}
+
+
+# Delete a attribute definition in the db.
+sub del_attribute($) {
+  my $self  = shift;
+  my $mnemo = shift;
+
+  my $query = 'DELETE FROM models_attributes WHERE mnemo = ? ';
+  my $ret = $pg->db->query($query, ($mnemo));
+  print "DBG ATTR " .Dumper($ret->expand->hashes);
+
+  # Send signal to reload server.
+#  my $ppid = getpid(); print "Reloading $ppid.\n";
+  kill USR2  => $$; #$ppid;
+  
   return $ret;
 }
 
