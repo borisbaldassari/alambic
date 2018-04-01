@@ -2,7 +2,7 @@
 % my $wizard = stash( 'wizard_id' );
 % my $conf = stash( 'conf_wizard' );
 
-            <h1 class="al-h1"><small>Administration</small> Data sources</h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Data sources</h1>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/projects'

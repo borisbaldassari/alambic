@@ -1,7 +1,7 @@
 % my $projects = app->al->get_projects_list();
 % my @projects = sort { $projects->{$a} cmp $projects->{$b} } keys %$projects;
 
-            <h1 class="al-h1"><small>Administration</small> Projects</h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Projects</h1>
             <br />
 
 % my $msg = flash( 'msg' );

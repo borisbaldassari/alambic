@@ -4,7 +4,7 @@
 % my $project_desc = stash( 'desc' );
 % my $project_active = stash( 'is_active' ) || "";
 
-            <h1 class="al-h1"><small>Administration</small> Add/Edit project information</h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Add/Edit project information</h1>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/projects'

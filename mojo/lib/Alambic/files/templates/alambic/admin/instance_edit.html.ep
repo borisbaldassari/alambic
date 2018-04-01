@@ -3,7 +3,7 @@
 % my $desc = stash( 'desc' );
 % my $tracking_code = stash( 'gt' );
 
-            <h1 class="al-h1"><small>Administration</small> Edit instance information</h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Edit instance information</h1>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/summary'

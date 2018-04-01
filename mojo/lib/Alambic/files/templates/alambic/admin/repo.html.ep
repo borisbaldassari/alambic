@@ -1,6 +1,6 @@
 % use File::Basename qw( fileparse );
 
-            <h1 class="al-h1"><small>Administration</small> Alambic Repository</h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Alambic Repository</h1>
             <br />
 
 % my $msg = flash( 'msg' );
