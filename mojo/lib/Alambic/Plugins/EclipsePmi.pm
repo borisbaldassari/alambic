@@ -45,15 +45,23 @@ my %conf = (
   },
   "provides_cdata" => [],
   "provides_info"  => [
-    "PMI_MLS_DEV_URL",         "PMI_MLS_USR_URL",
-    "PMI_MAIN_URL",            "PMI_WIKI_URL",
-    "PMI_BUGZILLA_CREATE_URL", "PMI_DOWNLOAD_URL",
-    "PMI_SCM_URL",             "PMI_BUGZILLA_COMPONENT",
-    "PMI_CI_URL",              "PMI_BUGZILLA_PRODUCT",
-    "PMI_BUGZILLA_QUERY_URL",  "PMI_DOCUMENTATION_URL",
-    "PMI_DESC",                "PMI_GETTINGSTARTED_URL",
-    "PMI_TITLE",               "PMI_ID",
-    "PMI_UPDATESITE_URL",
+      "PROJECT_MLS_DEV_URL",        
+      "PROJECT_MLS_USR_URL",
+      "PROJECT_URL",                 
+      "PROJECT_WIKI_URL",
+      "PROJECT_BUGZILLA_CREATE_URL", 
+      "PROJECT_DOWNLOAD_URL",
+      "PROJECT_SCM_URL",           
+      "PROJECT_BUGZILLA_COMPONENT",
+      "PROJECT_CI_URL",             
+      "PROJECT_BUGZILLA_PRODUCT",
+      "PROJECT_BUGZILLA_QUERY_URL", 
+      "PROJECT_DOCUMENTATION_URL",
+      "PROJECT_DESC",               
+      "PROJECT_GETTINGSTARTED_URL",
+      "PROJECT_TITLE",              
+      "PROJECT_ID",
+      "PROJECT_UPDATESITE_URL",
   ],
   "provides_data" => {
     "pmi.json" => "The PMI file as returned by the Eclipse repository (JSON).",
@@ -61,11 +69,13 @@ my %conf = (
     "pmi_checks.csv"  => "The list of PMI checks and their results (CSV).",
   },
   "provides_metrics" => {
-    "PMI_ITS_INFO"    => "PMI_ITS_INFO",
-    "PMI_SCM_INFO"    => "PMI_SCM_INFO",
-    "PMI_REL_VOL"     => "PMI_REL_VOL",
-    "PMI_DOC_INFO"    => "PMI_DOC_INFO",
-    "PMI_ACCESS_INFO" => "PMI_ACCESS_INFO"
+    "PROJECT_ITS_INFO"    => "PROJECT_ITS_INFO",
+    "PROJECT_SCM_INFO"    => "PROJECT_SCM_INFO",
+    "PROJECT_CI_INFO"    => "PROJECT_CI_INFO",
+    "PROJECT_DOC_INFO"    => "PROJECT_DOC_INFO",
+    "PROJECT_ACCESS_INFO" => "PROJECT_ACCESS_INFO",
+	
+    "PROJECT_REL_VOL"     => "PROJECT_REL_VOL",
   },
   "provides_figs" => {},
   "provides_recs" => [
@@ -351,7 +361,7 @@ sub _compute_data($) {
       );
     }
   }
-  $metrics{"PMI_ITS_INFO"} = $pub_its_info;
+  $metrics{"PROJECT_ITS_INFO"} = $pub_its_info;
 
   my $ret_check;
   $ret_check->{'pmi'}         = $raw_project;
@@ -907,7 +917,7 @@ sub _compute_data($) {
     }
 
   }
-  $metrics{"PMI_SCM_INFO"} = $pub_scm_info;
+  $metrics{"PROJECT_SCM_INFO"} = $pub_scm_info;
 
   # Check update_sites info
   if (exists($raw_project->{'update_sites'}[0])) {
@@ -1030,7 +1040,7 @@ sub _compute_data($) {
   $check->{'desc'}    = 'Checks if the releases have been correctly filled.';
   if (exists($raw_project->{'releases'})) {
     my @rels = @{$raw_project->{'releases'}};
-    $metrics{"PMI_REL_VOL"} = scalar @rels;
+    $metrics{"PROJECT_REL_VOL"} = scalar @rels;
 
     if (scalar @rels > 0) {
       foreach my $rel (@rels) {
@@ -1085,8 +1095,8 @@ sub _compute_data($) {
   $ret_check->{'checks'}->{'releases'} = $check;
 
   # Set metrics related to doc and access info
-  $metrics{"PMI_DOC_INFO"}    = $pub_doc_info;
-  $metrics{"PMI_ACCESS_INFO"} = $pub_access_info;
+  $metrics{"PROJECT_DOC_INFO"}    = $pub_doc_info;
+  $metrics{"PROJECT_ACCESS_INFO"} = $pub_access_info;
 
 
   # Write pmi checks json file to disk.
