@@ -31,7 +31,7 @@ my %conf = (
     'The Eclipse PMI wizard creates a new project with all data source plugins needed to analyse a project from the Eclipse forge, including Eclipse ITS (Bugzilla), Eclipse PMI, Git SCM and Jenkins CI. It retrieves and uses values from the PMI repository to set the plugin parameters automatically.',
     "This wizard only creates the plugins that should always be available. Depending on the project's configuration and data sources availability, other plugins may be needed and can manually be added to the configuration.",
   ],
-  "params"  => {},
+  "params"  => {"proxy_url" => "The proxy to be used to access remote data, if any."},
   "plugins" => ["EclipsePmi", "Jenkins", "Git", "Bugzilla", "ProjectSummary"],
 );
 
@@ -54,7 +54,9 @@ sub get_conf() {
 
 # Run plugin: retrieves data + compute_data
 sub run_wizard($) {
-  my ($self, $project_id) = @_;
+  my ($self, $project_id, $conf) = @_;
+
+  my $proxy_url = $conf->{'proxy'} || '';
 
   my @log;
 
@@ -97,14 +99,17 @@ sub run_wizard($) {
   my $bz_url       = $1;
   
   my $plugins_conf = {
-    "EclipsePmi"     => {'project_pmi' => $project_id},
-    "Jenkins"        => {'jenkins_url'  => $project_ci},
+    "EclipsePmi"     => {'proxy' => $proxy_url, 'project_pmi' => $project_id},
+    "Jenkins"        => {'proxy' => $proxy_url, 'jenkins_url'  => $project_ci},
     "Bugzilla"       => {
+      "proxy" => $proxy_url, 
       "bugzilla_project" => $bz_product, 
       "bugzilla_url"     => $bz_url,
     },
-    "Git"            => {'git_url'     => $project_git},
-    "ProjectSummary" => {},
+    "Git"            => {
+      'proxy' => $proxy_url, 
+      'git_url'     => $project_git},
+    "ProjectSummary" => { 'proxy' => $proxy_url },
   };
 
   my $project
