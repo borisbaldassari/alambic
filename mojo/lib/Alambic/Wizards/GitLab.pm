@@ -3,6 +3,7 @@ package Alambic::Wizards::GitLab;
 use strict; 
 use warnings;
 
+use GitLab::API::v4;
 use Mojo::JSON qw( decode_json encode_json );
 use Data::Dumper;
 
@@ -12,7 +13,7 @@ my %conf = (
     "id" => "GitLab",
     "name" => "GitLab Wizard",
     "desc" => [
-	'The GitLab wizard creates a new project with all data source plugins needed to analyse a project using all features from GitLab (ITS, CI, SCM, WIKI).',
+	'The GitLab wizard creates a new project with all data source plugins needed to analyse a project using all features from GitLab (ITS, SCM).',
     ],
     "params" => {
 	"gitlab_url" => "The URL of the GitLab server, e.g. https://gitlab.com",
@@ -20,8 +21,9 @@ my %conf = (
 	"gitlab_token" => "The Access token to use for the authentication. You can get it from <a href=\"https://gitlab.com/profile/personal_access_tokens\">https://gitlab.com/profile/personal_access_tokens</a>. tiPs2VdkhaDnfmteiToD",
     },
     "plugins" => [
-	"GitLabCi",
+	"GitLabProject",
 	"GitLabIts",
+	"Git",
     ],
 );
 
@@ -52,8 +54,8 @@ sub run_wizard($$$) {
     my %info;
     
     # Create GitLab API object for all rest operations.
-    my $api = GitLab::API::v3->new(
-        url   => $gitlab_url . "/api/v3",
+    my $api = GitLab::API::v4->new(
+        url   => $gitlab_url . "/api/v4",
         token => $gitlab_token,
 	);
     push( @log, "[Wizards::GitLab] Retrieving information from [$gitlab_url] with id [$gitlab_id]." );
@@ -67,10 +69,12 @@ sub run_wizard($$$) {
     my $desc = $gl_project->{'description'} || 'UNKNOWN';
     $info{'GL_PROJECT_WEB_URL'} = $gl_project->{'web_url'};
     $info{'GL_PROJECT_ID'} = $gl_project->{'id'};
+    my $git_url = $gl_project->{'http_url_to_repo'};
     
     my $plugins_conf = {
-	"GitLabCi" => { 'gitlab_url' => $gitlab_url, 'gitlab_id' => $gitlab_id, 'gitlab_token' => $gitlab_token },
+	"GitLabProject" => { 'gitlab_url' => $gitlab_url, 'gitlab_id' => $gitlab_id, 'gitlab_token' => $gitlab_token },
 	"GitLabIts" => { 'gitlab_url' => $gitlab_url, 'gitlab_id' => $gitlab_id, 'gitlab_token' => $gitlab_token },
+	"Git" => { 'git_url' => $git_url },
     };
 
     my $project = Alambic::Model::Project->new( $project_id, $name, 0, 0, $plugins_conf, { 'info' => \%info} );

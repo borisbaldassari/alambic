@@ -89,17 +89,27 @@ my %conf = (
 	"PROJECT_COMMITTERS_1W" => "PROJECT_COMMITTERS_1W",
 	"PROJECT_COMMITTERS_1M" => "PROJECT_COMMITTERS_1M",
 	"PROJECT_COMMITTERS_1Y" => "PROJECT_COMMITTERS_1Y",
-	"PROJECT_MRS"           => "SCM_PRS",
-	"PROJECT_MRS_OPENED"    => "SCM_PRS_OPENED",
-	"PROJECT_MRS_OPENED_1W"    => "SCM_PRS_OPENED_1W",
-	"PROJECT_MRS_OPENED_1M"    => "SCM_PRS_OPENED_1M",
-	"PROJECT_MRS_OPENED_1Y"    => "SCM_PRS_OPENED_1Y",
-	"PROJECT_MRS_OPENED_STILL_1W"    => "SCM_PRS_OPENED_STILL_1W",
-	"PROJECT_MRS_OPENED_STILL_1M"    => "SCM_PRS_OPENED_STILL_1M",
-	"PROJECT_MRS_OPENED_STILL_1Y"    => "SCM_PRS_OPENED_STILL_1Y",
-	"PROJECT_MRS_OPENED_STALED_1M" => "SCM_PRS_OPENED_STALED_1M",
-	"PROJECT_MRS_CLOSED"    => "SCM_PRS_CLOSED",
-	"PROJECT_MRS_MERGED"    => "SCM_PRS_MERGED",
+	"PROJECT_MRS"           => "PROJECT_MRS",
+	"PROJECT_MRS_OPENED"    => "PROJECT_MRS_OPENED",
+	"PROJECT_MRS_OPENED_1W"    => "PROJECT_MRS_OPENED_1W",
+	"PROJECT_MRS_OPENED_1M"    => "PROJECT_MRS_OPENED_1M",
+	"PROJECT_MRS_OPENED_1Y"    => "PROJECT_MRS_OPENED_1Y",
+	"PROJECT_MRS_OPENED_STILL_1W"    => "PROJECT_MRS_OPENED_STILL_1W",
+	"PROJECT_MRS_OPENED_STILL_1M"    => "PROJECT_MRS_OPENED_STILL_1M",
+	"PROJECT_MRS_OPENED_STILL_1Y"    => "PROJECT_MRS_OPENED_STILL_1Y",
+	"PROJECT_MRS_OPENED_STALED_1M" => "PROJECT_MRS_OPENED_STALED_1M",
+	"PROJECT_MRS_CLOSED"    => "PROJECT_MRS_CLOSED",
+        "PROJECT_MRS_MERGED"    => "PROJECT_MRS_MERGED",
+
+        "PROJECT_MILESTONES_TOTAL" => "PROJECT_MILESTONES_TOTAL",
+        "PROJECT_MILESTONES_ACTIVE" => "PROJECT_MILESTONES_ACTIVE",
+        "PROJECT_MILESTONES_ACTIVE" => "PROJECT_MILESTONES_ACTIVE",
+
+        "PROJECT_ITS_INFO"    => "PROJECT_ITS_INFO",
+        "PROJECT_SCM_INFO"    => "PROJECT_SCM_INFO",
+        "PROJECT_CI_INFO"    => "PROJECT_CI_INFO",
+        "PROJECT_DOC_INFO"    => "PROJECT_DOC_INFO",
+        "PROJECT_ACCESS_INFO" => "PROJECT_ACCESS_INFO"
     },
     "provides_figs" => {
     },
@@ -173,6 +183,9 @@ sub run_plugin($$) {
     $ret{'metrics'}{'PROJECT_ISSUES_OPEN'} = $project->{'open_issues_count'} || 0;
     $ret{'metrics'}{'PROJECT_LAST_ACTIVITY_AT'} = $project->{'last_activity_at'};
 
+    # Compute access metrics for ITS & SCM
+#    if (defined(
+
     # Get the info (data that should not evolve too much across builds)
     $ret{'info'}{'PROJECT_NAME_SPACE'} = $project->{'name_with_namespace'};
     $ret{'info'}{'PROJECT_AVATAR'} = $project->{'avatar_url'};
@@ -187,7 +200,7 @@ sub run_plugin($$) {
     $ret{'info'}{'PROJECT_CREATED_AT'} = $project->{'created_at'};
     $ret{'info'}{'PROJECT_REPO_SSH'} = $project->{'ssh_url_to_repo'};
     $ret{'info'}{'PROJECT_REPO_HTTP'} = $project->{'http_url_to_repo'};
-    $ret{'info'}{'PROJECT_VISIBILITY'} = $project->{'visibility'};    
+    $ret{'info'}{'PROJECT_VISIBILITY'} = $project->{'visibility'};
 
     $ret{'info'}{'PROJECT_URL'} = $gl_url . '/' . $gl_id;
     $ret{'info'}{'PROJECT_MRS_URL'} = $gl_url . '/' . $gl_id . '/merge_requests';
@@ -195,6 +208,34 @@ sub run_plugin($$) {
     $ret{'info'}{'PROJECT_ISSUES_URL'} = $gl_url . '/' . $gl_id . '/issues';
     $ret{'info'}{'PROJECT_CI_URL'} = $gl_url . '/' . $gl_id . '/pipelines';
     $ret{'info'}{'PROJECT_WIKI_URL'} = $gl_url . '/' . $gl_id . '/wikis/home';
+
+    # Compute information access metrics
+    $ret{'metrics'}{'PROJECT_SCM_INFO'} = 0;
+    if ( defined($ret{'info'}{'PROJECT_REPO_SSH'}) ) {
+	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
+	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
+    }
+    if ( defined($ret{'info'}{'PROJECT_REPO_HTTP'}) ) {
+	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
+    }
+    if ( defined($ret{'info'}{'PROJECT_MRS_ENABLED'}) ) {
+	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
+	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
+    }
+
+    $ret{'metrics'}{'PROJECT_ITS_INFO'} = 0;
+    print "DBG " . Dumper($ret{'info'}{'PROJECT_CI_ENABLED'});
+    if ( defined($ret{'info'}{'PROJECT_REPO_SSH'}) ) {
+	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
+	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
+    }
+    if ( defined($ret{'info'}{'PROJECT_REPO_HTTP'}) ) {
+	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
+    }
+    if ( defined($ret{'info'}{'PROJECT_MRS_ENABLED'}) ) {
+	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
+	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
+    }
 
     # Request information about events for this specific project.
     my $events = $api->project_events( $gl_id );
@@ -388,12 +429,8 @@ sub run_plugin($$) {
     # Retrieve information about all merge requests. Returns an array
     # of mrs, see GitLab::API::v4 doc:
     # https://metacpan.org/pod/GitLab::API::v4#MERGE-REQUEST-METHODS
-    my $mrs_p = $api->paginator( 'merge_requests', $gl_id );
-    my $mrs;
-    while (my $mr = $mrs_p->next()) {
-        push( @$mrs, $mr );
-    }
-    
+    my $mrs = $api->merge_requests( $gl_id );    
+
     my @mrs_ret;
     
     # The API returns an array of merge requests.
@@ -440,17 +477,17 @@ sub run_plugin($$) {
      	my @mrs_opened_staled_1m = grep $_->{'state'} =~ m'opened' && $_->{'updated_at'} < $t_1m, @$mrs;
 	
      	# Set metrics
-     	$ret{'metrics'}{'SCM_PRS'} = scalar(@$mrs);
-     	$ret{'metrics'}{'SCM_PRS_OPENED'} = scalar(@mrs_opened);
-     	$ret{'metrics'}{'SCM_PRS_OPENED_1W'} = scalar(@mrs_opened_1w);
-     	$ret{'metrics'}{'SCM_PRS_OPENED_1M'} = scalar(@mrs_opened_1m);
-     	$ret{'metrics'}{'SCM_PRS_OPENED_1Y'} = scalar(@mrs_opened_1y);
-     	$ret{'metrics'}{'SCM_PRS_OPENED_STILL_1W'} = scalar(@mrs_opened_still_1w);
-     	$ret{'metrics'}{'SCM_PRS_OPENED_STILL_1M'} = scalar(@mrs_opened_still_1m);
-     	$ret{'metrics'}{'SCM_PRS_OPENED_STILL_1Y'} = scalar(@mrs_opened_still_1y);
-     	$ret{'metrics'}{'SCM_PRS_OPENED_STALED_1M'} = scalar(@mrs_opened_staled_1m);
-     	$ret{'metrics'}{'SCM_PRS_MERGED'} = scalar(@mrs_merged);
-     	$ret{'metrics'}{'SCM_PRS_CLOSED'} = scalar(@mrs_closed);
+     	$ret{'metrics'}{'PROJECT_MRS'} = scalar(@$mrs);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED'} = scalar(@mrs_opened);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_1W'} = scalar(@mrs_opened_1w);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_1M'} = scalar(@mrs_opened_1m);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_1Y'} = scalar(@mrs_opened_1y);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STILL_1W'} = scalar(@mrs_opened_still_1w);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STILL_1M'} = scalar(@mrs_opened_still_1m);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STILL_1Y'} = scalar(@mrs_opened_still_1y);
+     	$ret{'metrics'}{'PROJECT_MRS_OPENED_STALED_1M'} = scalar(@mrs_opened_staled_1m);
+     	$ret{'metrics'}{'PROJECT_MRS_MERGED'} = scalar(@mrs_merged);
+     	$ret{'metrics'}{'PROJECT_MRS_CLOSED'} = scalar(@mrs_closed);
 
      } else {
      	# Happens when no git repo is defined on the project.
@@ -513,9 +550,9 @@ sub run_plugin($$) {
         $ms_issues{ $m->{'id'} }{'total'} = scalar(@$m_issues_all);
         $ms_issues{ $m->{'id'} }{'closed'} = scalar(@m_issues_closed);
     }
-    $ret{'metrics'}{'MILESTONES_TOTAL'} = $m_total;
-    $ret{'metrics'}{'MILESTONES_LATE'} = $m_late;
-    $ret{'metrics'}{'MILESTONES_ACTIVE'} = $m_active;
+    $ret{'metrics'}{'PROJECT_MILESTONES_TOTAL'} = $m_total;
+    $ret{'metrics'}{'PROJECT_MILESTONES_LATE'} = $m_late;
+    $ret{'metrics'}{'PROJECT_MILESTONES_ACTIVE'} = $m_active;
 
     # Write the original file to disk.
     my $milestones_json = encode_json($milestones);

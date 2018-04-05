@@ -18,34 +18,29 @@
                             "type": "attribute",
                             "children": [
                                 {
-                                    "mnemo": "MLS_SENT_30",
+                                    "mnemo": "CI_JOBS_FAILED_1W",
                                     "type": "metric",
                                     "active": "true"
                                 },
-				{
-				    "mnemo": "SCM_COMMITS_30",
-				    "type": "metric",
-				    "active": "true"
-				},
-				{
-				    "mnemo": "SCM_FILES",
-				    "type": "metric",
-				    "active": "true"
-				}
-			    ]
-			},
+                        				{
+                        				    "mnemo": "SCM_COMMITS_1M",
+                        				    "type": "metric",
+                        				    "active": "true"
+                        				},
+                        				{
+                        				    "mnemo": "SCM_MOD_LINES_1M",
+                        				    "type": "metric",
+                        				    "active": "true"
+                        				}
+                  			    ]
+                  			},
                         {
                             "mnemo": "QM_DIVERSITY",
                             "type": "attribute",
                             "active": "true",
                             "children": [
                                 {
-                                    "mnemo": "MLS_SENDERS_30",
-                                    "type": "metric",
-                                    "active": "true"
-                                },
-                                {
-                                    "mnemo": "SCM_AUTHORS_30",
+                                    "mnemo": "SCM_AUTHORS_1M",
                                     "type": "metric",
                                     "active": "true"
                                 }
@@ -57,12 +52,22 @@
                             "active": "true",
                             "children": [
                                 {
-                                    "mnemo": "MLS_SENT_RESPONSE",
+                                    "mnemo": "PMI_DOC_INFO",
                                     "type": "metric",
                                     "active": "true"
                                 },
                                 {
-                                    "mnemo": "MLS_THREADS",
+                                    "mnemo": "PMI_SCM_INFO",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "PMI_ITS_INFO",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "PMI_ACCESS_INFO",
                                     "type": "metric",
                                     "active": "true"
                                 }
@@ -86,34 +91,29 @@
                                     "active": "true"
                                 },
                                 {
-                                    "mnemo": "SCM_COMMITS_30",
+                                    "mnemo": "SCM_COMMITS_1M",
                                     "type": "metric",
                                     "active": "true"
                                 },
                                 {
-                                    "mnemo": "SCM_AUTHORS_30",
+                                    "mnemo": "SCM_AUTHORS_1M",
                                     "type": "metric",
                                     "active": "true"
                                 }
                             ]
                         },
                         {
-                            "mnemo": "QM_ITS",
+                            "mnemo": "QM_REL_ENG",
                             "type": "attribute",
                             "active": "true",
                             "children": [
                                 {
-                                    "mnemo": "PMI_ITS_INFO",
+                                    "mnemo": "PMI_REL_VOL",
                                     "type": "metric",
                                     "active": "true"
                                 },
                                 {
-                                    "mnemo": "ITS_CLOSED_30",
-                                    "type": "metric",
-                                    "active": "true"
-                                },
-                                {
-                                    "mnemo": "ITS_CLOSERS_30",
+                                    "mnemo": "CI_JOBS_GREEN_RATIO",
                                     "type": "metric",
                                     "active": "true"
                                 }
