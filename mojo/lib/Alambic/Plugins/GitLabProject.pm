@@ -592,7 +592,7 @@ sub run_plugin($$) {
     # Write static metrics csv file to disk.
     my @metrics_def = sort map { $conf{'provides_metrics'}{$_} } keys %{$conf{'provides_metrics'}};
     $csv_out = join(',', @metrics_def) . "\n"; 
-    my @values = map { $ret{'metrics'}{$_} } @metrics_def;
+    my @values = map { $ret{'metrics'}{$_} || '' } @metrics_def;
     $csv_out .= join(',', @values) . "\n";
     $repofs->write_output($project_id, "metrics_gitlab_project.csv", $csv_out);
     
