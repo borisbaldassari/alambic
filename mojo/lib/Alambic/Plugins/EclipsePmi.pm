@@ -49,19 +49,21 @@ my %conf = (
       "PROJECT_MLS_USR_URL",
       "PROJECT_URL",                 
       "PROJECT_WIKI_URL",
-      "PROJECT_BUGZILLA_CREATE_URL", 
       "PROJECT_DOWNLOAD_URL",
       "PROJECT_SCM_URL",           
-      "PROJECT_BUGZILLA_COMPONENT",
+      "PROJECT_ITS_URL",           
       "PROJECT_CI_URL",             
-      "PROJECT_BUGZILLA_PRODUCT",
-      "PROJECT_BUGZILLA_QUERY_URL", 
-      "PROJECT_DOCUMENTATION_URL",
+      "PROJECT_DOC_URL",
+      "PROJECT_NAME",         
       "PROJECT_DESC",               
-      "PROJECT_GETTINGSTARTED_URL",
-      "PROJECT_TITLE",              
       "PROJECT_ID",
-      "PROJECT_UPDATESITE_URL",
+
+      "PMI_BUGZILLA_CREATE_URL", 
+      "PMI_BUGZILLA_COMPONENT",
+      "PMI_BUGZILLA_PRODUCT",
+      "PMI_BUGZILLA_QUERY_URL", 
+      "PMI_GETTINGSTARTED_URL",
+      "PMI_UPDATESITE_URL",
   ],
   "provides_data" => {
     "pmi.json" => "The PMI file as returned by the Eclipse repository (JSON).",
@@ -267,9 +269,9 @@ sub _compute_data($) {
     or push(@log, "ERROR: Could not decode json: \n$json");
 
   # Retrieve basic information about the project
-  $info{"PMI_TITLE"} = $raw_project->{"title"};
-  $info{"PMI_DESC"}  = $raw_project->{"description"}->[0]->{"safe_value"};
-  $info{"PMI_ID"}    = $raw_project->{"id"}->[0]->{"value"};
+  $info{"PROJECT_NAME"} = $raw_project->{"title"};
+  $info{"PROJECT_DESC"}  = $raw_project->{"description"}->[0]->{"safe_value"};
+  $info{"PROJECT_ID"}    = $raw_project->{"id"}->[0]->{"value"};
 
   # Retrieve information about Bugzilla
   my $pub_its_info = 0;
@@ -406,9 +408,9 @@ sub _compute_data($) {
     = 'Checks if the URL can be fetched using a simple get query.';
   my $url;
   if (exists($raw_project->{'website_url'}->[0]->{'url'})) {
-    $info{"PMI_MAIN_URL"} = $raw_project->{'website_url'}->[0]->{'url'};
-    $check->{'value'} = $info{"PMI_MAIN_URL"};
-    my $results = &_check_url($ua, $info{"PMI_MAIN_URL"}, 'Website');
+    $info{"PROJECT_MAIN_URL"} = $raw_project->{'website_url'}->[0]->{'url'};
+    $check->{'value'} = $info{"PROJECT_MAIN_URL"};
+    my $results = &_check_url($ua, $info{"PROJECT_MAIN_URL"}, 'Website');
     push(@{$check->{'results'}}, $results);
     if ($results !~ /^OK/) {
       push(
@@ -447,8 +449,8 @@ sub _compute_data($) {
     = "Sends a get request to the project wiki URL and looks at the headers in the response (200, 404..).";
   if (exists($raw_project->{'wiki_url'}->[0]->{'url'})) {
     my $url = $raw_project->{'wiki_url'}->[0]->{'url'};
-    $info{"PMI_WIKI_URL"} = $url;
-    $check->{'value'} = $info{"PMI_WIKI_URL"};
+    $info{"PROJECT_WIKI_URL"} = $url;
+    $check->{'value'} = $info{"PROJECT_WIKI_URL"};
     my $results = &_check_url($ua, $url, 'Wiki');
     push(@{$check->{'results'}}, $results);
     if ($results !~ /^OK/) {
@@ -524,7 +526,7 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the URL can be fetched using a simple get query.';
   if (exists($raw_project->{'download_url'}->[0]->{'url'})) {
-    $info{"PMI_DOWNLOAD_URL"} = $raw_project->{'download_url'}->[0]->{'url'};
+    $info{"PROJECT_DOWNLOAD_URL"} = $raw_project->{'download_url'}->[0]->{'url'};
     $url                      = $raw_project->{'download_url'}->[0]->{'url'};
     $check->{'value'}         = $url;
     push(@{$check->{'results'}}, &_check_url($ua, $url, 'Download'));
@@ -565,7 +567,7 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the URL can be fetched using a simple get query.';
   if (exists($raw_project->{'gettingstarted_url'}->[0]->{'url'})) {
-    $info{"PMI_GETTINGSTARTED_URL"}
+    $info{"PROJECT_GETTINGSTARTED_URL"}
       = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
     $url = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
     $check->{'value'} = $url;
@@ -620,7 +622,7 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the URL can be fetched using a simple get query.';
   if (exists($raw_project->{'documentation_url'}->[0]->{'url'})) {
-    $info{"PMI_DOCUMENTATION_URL"}
+    $info{"PROJECT_DOC_URL"}
       = $raw_project->{'documentation_url'}->[0]->{'url'};
     $url = $raw_project->{'documentation_url'}->[0]->{'url'};
     $check->{'value'} = $url;
@@ -660,7 +662,7 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the URL can be fetched using a simple get query.';
   if (exists($raw_project->{'plan_url'}->[0]->{'url'})) {
-    $info{"PMI_PLAN_URL"} = $raw_project->{'plan_url'}->[0]->{'url'};
+    $info{"PROJECT_PLAN_URL"} = $raw_project->{'plan_url'}->[0]->{'url'};
     $url                  = $raw_project->{'plan_url'}->[0]->{'url'};
     $check->{'value'}     = $url;
     push(@{$check->{'results'}}, &_check_url($ua, $url, 'Plan'));
@@ -731,7 +733,7 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the Dev ML URL can be fetched using a simple get query.';
   if (ref($raw_project->{'dev_list'}) =~ m!HASH!) {
-    $info{"PMI_MLS_DEV_URL"} = $raw_project->{'dev_list'}->{'url'};
+    $info{"PROJECT_MLS_DEV_URL"} = $raw_project->{'dev_list'}->{'url'};
     $url                     = $raw_project->{'dev_list'}->{'url'};
     $check->{'value'}        = $url;
     my $results = &_check_url($ua, $url, 'Dev ML');
@@ -812,7 +814,7 @@ sub _compute_data($) {
     foreach my $ml (@mls) {
       $url = $ml->{'url'};
       my $name = $ml->{'name'};
-      $info{"PMI_MLS_USR_URL"} = $url;
+      $info{"PROJECT_MLS_USR_URL"} = $url;
       $check->{'value'} = $url;
       if ($name =~ m!\S+!) {
         push(@{$check->{'results'}}, "OK. Forum [$name] correctly defined.");
@@ -860,7 +862,7 @@ sub _compute_data($) {
       my $name = $ml->{'name'};
       my $path = $ml->{'path'};
       my $type = $ml->{'type'};
-      $info{"PMI_SCM_URL"} = $url;
+      $info{"PROJECT_SCM_URL"} = $url;
       $check->{'value'} = $url;
       if ($path =~ m!.+$!) {
         push(
@@ -989,7 +991,7 @@ sub _compute_data($) {
   if ($proj_ci =~ m!\S+! && $ua->get($proj_ci)) {
     push(@{$check->{'results'}}, "OK. Fetched CI URL.");
     my $url = $proj_ci . '/api/json?depth=1';
-    $info{"PMI_CI_URL"} = $proj_ci;
+    $info{"PROJECT_CI_URL"} = $proj_ci;
     my $json_str = $ua->get($url)->res->body;
     if ($json_str =~ m!^\s*{!) {
       my $content_tmp = decode_json($json_str);

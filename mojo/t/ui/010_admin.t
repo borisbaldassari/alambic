@@ -46,7 +46,7 @@ my $ret = $t->post_ok('/login' => form => $post_in);
 # Check that we have the right admin summary page.
 $t->get_ok('/admin/summary')->status_is(200)
   ->content_like(
-  qr!<h1 class="al-h1"><small>Administration</small> Summary</h1>!i,
+  qr!<h1 class="al-h1"><small>Administration &gt;</small> Summary</h1>!i,
   'Admin summary page contains title.')->content_like(
   qr!p><b>Instance name:</b> Default CLI init</p>!i,
   'Admin summary page contains instance name.'
@@ -67,7 +67,7 @@ $t->get_ok('/admin/summary')->status_is(200)
 
 # Check that we have the right admin Database page.
 $t->get_ok('/admin/repo')->status_is(200)->content_like(
-  qr!<h1 class="al-h1"><small>Administration</small> Alambic Repository</h1>!i,
+  qr!<h1 class="al-h1"><small>Administration &gt;</small> Alambic Repository</h1>!i,
   'Repo admin page contains title.'
   )->content_like(qr!Start a backup</a>!i,
   'Repo admin page contains start backup.')->content_like(
@@ -81,15 +81,15 @@ $t->get_ok('/admin/repo')->status_is(200)->content_like(
 # Check that we have the right admin Models page.
 $t->get_ok('/admin/models')->status_is(200)
   ->content_like(
-  qr!<h1 class="al-h1"><small>Administration</small> Alambic Models</h1>!i,
+  qr!<h1 class="al-h1"><small>Administration &gt;</small> Alambic Models</h1>!i,
   'Repo admin page contains title.')->content_like(
-  qr!<div class="panel-heading">Metrics!i,
+  qr!<div class="panel-heading">Import Metrics!i,
   'Repo admin page contains metrics panel.'
   )->content_like(
-  qr!<div class="panel-heading">Attributes!i,
+  qr!<div class="panel-heading">Import Attributes!i,
   'Repo admin page contains attributes panel.'
   )->content_like(
-  qr!<div class="panel-heading">Quality Model!i,
+  qr!<div class="panel-heading">Import Quality Model!i,
   'Repo admin page contains quality model panel.'
   );
 
@@ -102,10 +102,10 @@ $t->get_ok('/admin/models/import?file=alambic_quality_model.json&type=qm')
   'Quality model is loaded in models.');
 
 # Import metrics definition
-$t->get_ok('/admin/models/import?file=alambic_metrics_hudson.json&type=metrics')
-  ->status_is(200, 'Import metrics definition is 200.')
-  ->content_like(qr!File alambic_metrics_hudson.json has been imported!i,
-  'Import metrics definition is ok.')
+$t->get_ok('/admin/models/import?file=alambic_metrics_ci.json&type=metrics')
+  ->status_is(200, 'Import ci metrics definition is 200.')
+  ->content_like(qr!File alambic_metrics_ci.json has been imported!i,
+  'Import ci metrics definition is ok.')
   ->content_like(qr!\d+ metrics defined.!i, 'Metrics are loaded in models.');
 
 # Import attributes definition
@@ -116,7 +116,7 @@ $t->get_ok('/admin/models/import?file=alambic_attributes.json&type=attributes')
 
 # Check the Jobs page.
 $t->get_ok('/admin/jobs')->status_is(200)
-  ->content_like(qr!<h1 class="al-h1"><small>Administration</small> Jobs</h1>!i,
+  ->content_like(qr!<h1 class="al-h1"><small>Administration &gt;</small> Jobs</h1>!i,
   'Jobs admin page contains title.')
   ->content_like(qr!Purge jobs</a>!i, 'Jobs admin page contains purge jobs.')
   ->content_like(
@@ -126,7 +126,7 @@ $t->get_ok('/admin/jobs')->status_is(200)
 # Check that we have the right admin Projects page.
 $t->get_ok('/admin/projects')->status_is(200)
   ->content_like(
-  qr!<h1 class="al-h1"><small>Administration</small> Projects</h1>!i,
+  qr!<h1 class="al-h1"><small>Administration &gt;</small> Projects</h1>!i,
   'Projects admin page contains title.')
   ->content_like(qr!Create empty project</a>!i,
   'Projects admin page contains create empty project.')
@@ -140,7 +140,7 @@ $t->get_ok('/admin/projects')->status_is(200)
 # Check that we have the right admin Users page.
 $t->get_ok('/admin/users')->status_is(200)
   ->content_like(
-  qr!<h1 class="al-h1"><small>Administration</small> Users management</h1>!i,
+  qr!<h1 class="al-h1"><small>Administration &gt;</small> Users management</h1>!i,
   'Users admin page contains title.')->content_like(qr!Add user</a>!i,
   'Users admin page contains create add user.')
   ->content_like(
@@ -155,7 +155,7 @@ $t->get_ok('/admin/users')->status_is(200)
 # Check that we have the right admin Tools page.
 $t->get_ok('/admin/tools')->status_is(200)
   ->content_like(
-  qr!<h1 class="al-h1"><small>Administration</small> Tools</h1>!i,
+  qr!<h1 class="al-h1"><small>Administration &gt;</small> Tools</h1>!i,
   'Tools admin page contains title.')
   ->content_like(qr!<th>Id</th>\s*<th>Name</th>!i,
   'Tools admin page contains table header.')
