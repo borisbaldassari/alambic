@@ -56,6 +56,7 @@ sub new {
   my $in_qm         = shift || [];
   my $in_plugins    = shift || {};
 
+  # We need some processing to compute is_active and plugins.
   &_init_metrics($in_metrics, $in_qm, $in_plugins);
   %attributes = %$in_attributes;
   $model      = $in_qm;

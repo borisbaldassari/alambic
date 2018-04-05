@@ -3,7 +3,7 @@
 % my $metrics = $models->get_metrics();
 % my $attributes = $models->get_attributes();
 
-            <h1 class="al-h1"><small>Administration</small> Alambic Models</h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Alambic Models</h1>
             <br />
 
 % my $msg = flash( 'msg' );
@@ -21,51 +21,57 @@
 %= include 'alambic/admin/admin_menu', current => '/admin/models'
 
             <div class="row">
-              <div class="col-sm-12">
-		<p>Models include the definition of metrics, attributes, and the quality model itself. There are <%= scalar( keys %{$metrics || {}} ) %> metrics and <%= scalar( keys %$attributes ) %> attributes defined.</p>
-		<p>All data is stored in the database, and can be imported from a set of JSON files on the file system.</p>
+              <div class="col-sm-6">
+		<p>Models include the definition of metrics, attributes, and the quality model itself. There are <code><%= scalar( keys %{$metrics || {}} ) %></code> metrics and <code><%= scalar( keys %$attributes ) %></code> attributes currently defined.</p>
+		<p>All data is stored in the database, and can be imported from a set of JSON files on the file system (<code>$ALAMBIC_HOME/mojo/lib/Alambic/files/models/</code>).</p>
 		<br />
 	      </div>
-	      <div class="col-sm-12">
+	      <div class="col-sm-6">
                 <div class="list-group">
-                  <!-- a class="list-group-item" href="/admin/models/init" role="button"><i class="fa fa-fw fa-download"></i> &nbsp; Re-read models</a -->
+                  <a class="list-group-item" href="/admin/models?type=metrics" role="button"><i class="fa fa-bars"></i> &nbsp; Metrics <span class="pull-right"><span class="badge"><%= scalar( keys %$metrics ) %></span></a>
+                  <a class="list-group-item" href="/admin/models?type=attributes" role="button"><i class="fa fa-bars"></i> &nbsp; Attributes <span class="pull-right"><span class="badge"><%= scalar( keys %$attributes ) %></span></a>
                 </div>
               </div>
             </div>
 	      	    
             <div class="row">	      
-              <div class="col-md-12">
+              <div class="col-lg-4">
                 <div class="panel panel-default">
-                  <div class="panel-heading">Metrics</div>
+                  <div class="panel-heading">Import Metrics</div>
                   <div class="panel-body"><%= scalar( keys %$metrics ) %> metrics defined.</div>
                   <table class="table table-striped">
 % foreach my $file (@$files_metrics) {
 %   my $file_short = fileparse($file);
                     <tr>
                       <td><%= $file_short %></td>
+		      <td align="right"><a href="/admin/models/download?file=<%= $file_short %>&type=metrics"><i class="fa fa-download"></i></a></td>
 		      <td align="right"><a href="/admin/models/import?file=<%= $file_short %>&type=metrics"><i class="fa fa-upload"></i></a></td>
 		    </tr>
 % }
                   </table>	    
-		</div>
-		
+		</div>  
+		</div>		
+              <div class="col-lg-4">
                 <div class="panel panel-default">
-                  <div class="panel-heading">Attributes</div>
+                  <div class="panel-heading">Import Attributes</div>
                   <div class="panel-body"><%= scalar( keys %$attributes ) %> attributes defined.</div>
                   <table class="table table-striped">
 % foreach my $file (@$files_attributes) {
 %   my $file_short = fileparse($file);
                     <tr>
                       <td><%= $file_short %></td>
+		      <td align="right"><a href="/admin/models/download?file=<%= $file_short %>&type=attributes"><i class="fa fa-download"></i></a></td>
 		      <td align="right"><a href="/admin/models/import?file=<%= $file_short %>&type=attributes"><i class="fa fa-upload"></i></a></td>
 		    </tr>
 % }
                   </table>	    
 		</div>
+		</div>		
+              <div class="col-lg-4">
 		
 % my $qm = $models->get_qm();
                 <div class="panel panel-default">
-                  <div class="panel-heading">Quality Model</div>
+                  <div class="panel-heading">Import Quality Model</div>
                   <div class="panel-body">
 % if (defined($qm) && exists($qm->[0])) {
 		    Quality model defined, with [<%= $qm->[0]->{'mnemo'} %>] at its root.
@@ -78,6 +84,7 @@
 %   my $file_short = fileparse($file);
                     <tr>
                       <td><%= $file_short %></td>
+		      <td align="right"><a href="/admin/models/download?file=<%= $file_short %>&type=qm"><i class="fa fa-download"></i></a></td>
 		      <td align="right"><a href="/admin/models/import?file=<%= $file_short %>&type=qm"><i class="fa fa-upload"></i></a></td>
 		    </tr>
 % }

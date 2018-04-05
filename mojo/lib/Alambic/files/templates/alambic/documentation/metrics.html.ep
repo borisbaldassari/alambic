@@ -38,7 +38,7 @@
 %     my $used_by_str = join(', ', @used_by);
 %     # build the provided_by attribute.
 %     my @provided_by;
-%     foreach my $provider (sort @{$metrics->{$item}{"ds"}}) {
+%     foreach my $provider (sort @{$metrics->{$item}{"ds"} || []}) {
 %       push(@provided_by, "<a href=\"plugins.html#$provider\">" . $provider . "</a>\n");
 %     }
 %     my $provided_by_str = join(', ', @provided_by);

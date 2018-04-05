@@ -103,10 +103,10 @@ Data for project is directly available from the project&apos;s dashboard:
 
 * Project Summary: `r gitlab.url`/`r gitlab.id`
 * Commits: `r info['PROJECT_COMMITS_URL']` 
-* Merge Requests: `r info['PROJECT_MRS_URL']` <i class="fa `r geticon(info['PROJECT_MRS_ENABLED'])`"></i>
-* CI: `r info['PROJECT_CI_URL']` <i class="fa `r geticon(info['PROJECT_CI_ENABLED'])`"></i>
-* Issues: `r info['PROJECT_ISSUES_URL']` <i class="fa `r geticon(info['PROJECT_ISSUES_ENABLED'])`"></i>
-* Wiki: `r info['PROJECT_WIKI_URL']` <i class="fa `r geticon(info['PROJECT_WIKI_ENABLED'])`"></i>
+* Merge Requests: <i class="fa `r geticon(info['PROJECT_MRS_ENABLED'])`"></i> `r info['PROJECT_MRS_URL']`
+* CI: <i class="fa `r geticon(info['PROJECT_CI_ENABLED'])`"></i> `r info['PROJECT_CI_URL']`
+* Issues: <i class="fa `r geticon(info['PROJECT_ISSUES_ENABLED'])`"></i> `r info['PROJECT_ISSUES_URL']`
+* Wiki: <i class="fa `r geticon(info['PROJECT_WIKI_ENABLED'])`"></i> `r info['PROJECT_WIKI_URL']`
 
 The URLs to use to connect to the repository are:
 

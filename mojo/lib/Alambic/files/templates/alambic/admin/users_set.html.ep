@@ -7,7 +7,7 @@
 % my $user_notifs = stash( 'user_notifs' );
 % my $roles = app->al->users->get_roles();
 
-            <h1 class="al-h1"><small>Administration</small> Add/Edit User</h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Add/Edit User</h1>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/users'

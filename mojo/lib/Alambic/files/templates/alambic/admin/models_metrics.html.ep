@@ -1,0 +1,61 @@
+% use File::Basename qw( fileparse );
+% use Data::Dumper;
+% my $metrics = $models->get_metrics();
+% my $attributes = $models->get_attributes();
+
+            <h1 class="al-h1"><small>Administration &gt;</small> Models &gt; Metrics</h1>
+            <br />
+
+% my $msg = flash( 'msg' );
+% if ( defined($msg) ) {
+            <div class="row">
+              <div class="col-md-12">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <%= $msg %>
+                </div>
+              </div>
+            </div>
+% }
+
+%= include 'alambic/admin/admin_menu', current => '/admin/models'
+
+            <div class="row">
+              <div class="col-sm-6">
+		<p>Models include the definition of metrics, attributes, and the quality model itself. There are <code><%= scalar( keys %{$metrics || {}} ) %></code> metrics and <code><%= scalar( keys %$attributes ) %></code> attributes currently defined.</p>
+		<p>All data is stored in the database, and can be imported from a set of JSON files on the file system (<code>$ALAMBIC_HOME/mojo/lib/Alambic/files/models/metrics/</code>).</p>
+		<br />
+	      </div>
+	      <div class="col-sm-6">
+                <div class="list-group">
+                  <a class="list-group-item" href="/admin/models" role="button"><i class="fa fa-bars"></i> &nbsp; Models</a>
+                  <a class="list-group-item" href="/admin/models/attributes" role="button"><i class="fa fa-bars"></i> &nbsp; Attributes <span class="pull-right"><span class="badge"><%= scalar( keys %$attributes ) %></span></a>
+                </div>
+              </div>
+            </div>
+	      	
+            <div class="row">	      
+              <div class="col-md-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Metrics</div>
+                  <div class="panel-body"><%= scalar( keys %$metrics ) %> metrics defined.</div>
+                  <table class="table table-striped">
+                    <tr><th>ID</th><th>Name</th><th>Description</th><th>Plugins</th><th>Delete</th></tr>
+% foreach my $item (sort keys %{$metrics}) {
+                    <tr>
+                      <td><a href="/documentation/metrics.html#<%= $metrics->{$item}{"mnemo"} %>"><%= $metrics->{$item}{"mnemo"} %></a></td>
+                      <td><a href="/documentation/metrics.html#<%= $metrics->{$item}{"mnemo"} %>"><%= $metrics->{$item}{"name"} %></a></td>
+                      <td><%= $metrics->{$item}{"description"}[0] %></td>
+                      <td><%= join( ', ', @{$metrics->{$item}{"ds"} || []} ) %></td>
+                      <td><a href="/admin/models/metrics/del/<%= $metrics->{$item}{"mnemo"} %>"><i class="fa fa-ban fa-fw"></i></a></td>
+                    </tr>
+% }
+                  </table>	    
+		        </div>
+              </div>
+            </div>
+
+
+
+	    
+            

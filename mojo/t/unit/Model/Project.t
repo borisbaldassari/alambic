@@ -26,15 +26,15 @@ BEGIN { use_ok('Alambic::Model::Project'); }
 my $plugins_conf = {"EclipsePmi" => {"project_pmi" => "tools.cdt",}};
 
 my $metrics = {
-  'PMI_ITS_INFO' => {
-    'mnemo' => "PMI_ITS_INFO",
+  'PROJECT_ITS_INFO' => {
+    'mnemo' => "PROJECT_ITS_INFO",
     "name"  => "",
     "desc"  => ["Desc"],
     "scale" => [2, 3, 4, 5]
   },
-  'PMI_SCM_INFO' => {
+  'PROJECT_SCM_INFO' => {
     "name"  => "SCM information",
-    "mnemo" => "PMI_SCM_INFO",
+    "mnemo" => "PROJECT_SCM_INFO",
     "desc" => ["Is the source_repo info correctly filled in the PMI records? "],
     "scale" => [0, 1, 1, 2]
   },
@@ -51,8 +51,8 @@ my $qm = [
     'active'   => 'true',
     'type'     => 'attribute',
     'children' => [
-      {'mnemo' => 'PMI_ITS_INFO', 'active' => 'true', 'type' => 'metric'},
-      {'mnemo' => 'PMI_SCM_INFO', 'active' => 'true', 'type' => 'metric'}
+      {'mnemo' => 'PROJECT_ITS_INFO', 'active' => 'true', 'type' => 'metric'},
+      {'mnemo' => 'PROJECT_SCM_INFO', 'active' => 'true', 'type' => 'metric'}
     ]
   }
 ];
@@ -73,15 +73,23 @@ my $plugins = {
     },
     "provides_cdata" => [],
     "provides_info"  => [
-      "MLS_DEV_URL",             "MLS_USR_URL",
-      "PMI_MAIN_URL",            "PMI_WIKI_URL",
-      "PMI_BUGZILLA_CREATE_URL", "PMI_DOWNLOAD_URL",
-      "PMI_SCM_URL",             "PMI_BUGZILLA_COMPONENT",
-      "PMI_CI_URL",              "PMI_BUGZILLA_PRODUCT",
-      "PMI_BUGZILLA_QUERY_URL",  "PMI_DOCUMENTATION_URL",
-      "PMI_DESC",                "PMI_GETTINGSTARTED_URL",
-      "PMI_TITLE",               "PMI_ID",
+      "PROJECT_MLS_DEV_URL", 
+      "PROJECT_MLS_USR_URL",
+      "PROJECT_MAIN_URL",
+      "PROJECT_WIKI_URL",
+      "PROJECT_DOWNLOAD_URL",
+      "PROJECT_SCM_URL",
+      "PROJECT_CI_URL",
+      "PROJECT_DOCUMENTATION_URL",
+      "PROJECT_DESC",
+      "PROJECT_GETTINGSTARTED_URL",
+      "PROJECT_NAME",
+      "PROJECT_ID",
       "PMI_UPDATESITE_URL",
+      "PMI_BUGZILLA_PRODUCT",
+      "PMI_BUGZILLA_QUERY_URL",
+      "PMI_BUGZILLA_COMPONENT",
+      "PMI_BUGZILLA_CREATE_URL",
     ],
     "provides_data" => {
       "pmi.json" =>
@@ -90,10 +98,13 @@ my $plugins = {
       "pmi_checks.csv"  => "The list of PMI checks and their results (CSV).",
     },
     "provides_metrics" => {
-      "PMI_ITS_INFO" => "PMI_ITS_INFO",
-      "PMI_SCM_INFO" => "PMI_SCM_INFO",
+      "PROJECT_ITS_INFO" => "PROJECT_ITS_INFO",
+      "PROJECT_SCM_INFO" => "PROJECT_SCM_INFO",
+      "PROJECT_REL_VOL"  => "PROJECT_REL_VOL",
+      "PROJECT_CI_INFO" => "PROJECT_ITS_INFO",
+      "PROJECT_DOC_INFO" => "PROJECT_SCM_INFO",
       "PMI_REL_VOL"  => "PMI_REL_VOL"
-    },
+     },
     "provides_figs" => {},
     "provides_recs" => [
       "PMI_EMPTY_BUGZILLA_CREATE", "PMI_NOK_BUGZILLA_CREATE",
@@ -177,17 +188,17 @@ $ret = $project->metrics();
 #is( scalar grep( /ITS_CLOSERS/, keys %{$ret} ), 4, "There should be 4 ITS_CLOSERS_*." ) or diag explain $ret;
 #is( scalar grep( /ITS_DIFF_/, keys %{$ret} ), 6, "There should be 6 ITS_DIFF_*.") or diag explain $ret;
 #is( scalar grep( /ITS_PERCENTAGE/, keys %{$ret} ), 6, "There should be 6 ITS_PERCENTAGE_*." ) or diag explain $ret;
-ok(exists($ret->{'PMI_ITS_INFO'}),
-  "There should be a metric called PMI_ITS_INFO.")
+ok(exists($ret->{'PROJECT_ITS_INFO'}),
+  "There should be a metric called PROJECT_ITS_INFO.")
   or diag explain $ret;
-ok(exists($ret->{'PMI_SCM_INFO'}),
-  "There should be a metric called PMI_SCM_INFO.")
+ok(exists($ret->{'PROJECT_SCM_INFO'}),
+  "There should be a metric called PROJECT_SCM_INFO.")
   or diag explain $ret;
-ok(exists($ret->{'PMI_DOC_INFO'}),
-  "There should be a metric called PMI_DOC_INFO.")
+ok(exists($ret->{'PROJECT_DOC_INFO'}),
+  "There should be a metric called PROJECT_DOC_INFO.")
   or diag explain $ret;
-ok(exists($ret->{'PMI_ACCESS_INFO'}),
-  "There should be a metric called PMI_ACCESS_INFO.")
+ok(exists($ret->{'PROJECT_ACCESS_INFO'}),
+  "There should be a metric called PROJECT_ACCESS_INFO.")
   or diag explain $ret;
 
 #ok( exists($ret->{'ITS_OPENED'}), "There should be a metric called ITS_OPENED." ) or diag explain $ret;
@@ -198,20 +209,20 @@ note("Run plugins.");
 
 $ret = $project->run_plugins();
 ok(
-  exists($ret->{'metrics'}{'PMI_ITS_INFO'}),
-  "PMI_ITS_INFO metric exists in run after plugins."
+  exists($ret->{'metrics'}{'PROJECT_ITS_INFO'}),
+  "PROJECT_ITS_INFO metric exists in run after plugins."
 ) or diag explain $ret;
 ok(
-  exists($ret->{'metrics'}{'PMI_SCM_INFO'}),
-  "PMI_ITS_INFO metric exists in run after plugins."
+  exists($ret->{'metrics'}{'PROJECT_SCM_INFO'}),
+  "PROJECT_ITS_INFO metric exists in run after plugins."
 ) or diag explain $ret;
 ok(
-  exists($ret->{'metrics'}{'PMI_DOC_INFO'}),
-  "PMI_DOC_INFO metric exists in run after plugins."
+  exists($ret->{'metrics'}{'PROJECT_DOC_INFO'}),
+  "PROJECT_DOC_INFO metric exists in run after plugins."
 ) or diag explain $ret;
 ok(
-  exists($ret->{'metrics'}{'PMI_ACCESS_INFO'}),
-  "PMI_ACCESS_INFO metric exists in run after plugins."
+  exists($ret->{'metrics'}{'PROJECT_ACCESS_INFO'}),
+  "PROJECT_ACCESS_INFO metric exists in run after plugins."
 ) or diag explain $ret;
 ok($ret->{'recs'}[0]{'rid'} =~ m!PMI_EMPTY_TITLE!,
   "recs[0] is PMI_EMPTY_TITLE.")
@@ -233,16 +244,16 @@ ok(
   "PMI_BUGZILLA_CREATE_URL info has url."
 ) or diag explain $ret;
 ok(
-  $ret->{'info'}{'PMI_WIKI_URL'} =~ m!^http://wiki.eclipse.org/index.php/CDT$!,
-  "PMI_WIKI_URL info has url."
+  $ret->{'info'}{'PROJECT_WIKI_URL'} =~ m!^http://wiki.eclipse.org/index.php/CDT$!,
+  "PROJECT_WIKI_URL info has url."
 ) or diag explain $ret;
-ok($ret->{'info'}{'PMI_MAIN_URL'} =~ m!^http://www.eclipse.org/cdt$!,
-  "PMI_MAIN_URL info has url.")
+ok($ret->{'info'}{'PROJECT_MAIN_URL'} =~ m!^http://www.eclipse.org/cdt$!,
+  "PROJECT_MAIN_URL info has url.")
   or diag explain $ret;
 ok(
-  $ret->{'info'}{'PMI_DOWNLOAD_URL'}
+  $ret->{'info'}{'PROJECT_DOWNLOAD_URL'}
     =~ m!^http://www.eclipse.org/cdt/downloads.php$!,
-  "PMI_DOWNLOAD_URL info has url."
+  "PROJECT_DOWNLOAD_URL info has url."
 ) or diag explain $ret;
 
 
@@ -262,19 +273,19 @@ ok(
 ) or diag explain $ret;
 ok(exists($ret->{'attrs'}{'ATTR1'}), "After qm run attr1 is in ret.")
   or diag explain $ret;
-ok($ret->{'attrs'}{'ATTR1'} =~ m!^5.0$!, "ATTR1 attribute value is '5.0'.")
+ok($ret->{'attrs'}{'ATTR1'} =~ m!^4.5$!, "ATTR1 attribute value is '4.5'.")
   or diag explain $ret;
 ok(
-  exists($ret->{'inds'}{'PMI_ITS_INFO'}),
+  exists($ret->{'inds'}{'PROJECT_ITS_INFO'}),
   "After qm run inds its_closed is in ret."
 ) or diag explain $ret;
-ok($ret->{'inds'}{'PMI_ITS_INFO'} == 5, "PMI_ITS_INFO indicator value is 5.")
+ok($ret->{'inds'}{'PROJECT_ITS_INFO'} == 5, "PROJECT_ITS_INFO indicator value is 5.")
   or diag explain $ret;
 ok(
-  exists($ret->{'inds'}{'PMI_SCM_INFO'}),
-  "After qm run inds pm_its_info is in ret."
+  exists($ret->{'inds'}{'PROJECT_SCM_INFO'}),
+  "After qm run inds project_scm_info is in ret."
 ) or diag explain $ret;
-ok($ret->{'inds'}{'PMI_SCM_INFO'} == 5, "PMI_SCM_INFO indicator value is 5.")
+ok($ret->{'inds'}{'PROJECT_SCM_INFO'} == 4, "PROJECT_SCM_INFO indicator value is 4.")
   or diag explain $ret;
 
 $ret = $project->recs();

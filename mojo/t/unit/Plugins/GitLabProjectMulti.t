@@ -132,40 +132,40 @@ sub test_project {
         or diag explain $ret;
 
 
-    ok($ret->{'metrics'}{'SCM_PRS'} =~ /\d+/,
-       "Metric SCM_PRS is a digit " . $ret->{'metrics'}{'SCM_PRS'} . ".")
+    ok($ret->{'metrics'}{'PROJECT_MRS'} =~ /\d+/,
+       "Metric PROJECT_MRS is a digit " . $ret->{'metrics'}{'PROJECT_MRS'} . ".")
         or diag explain $ret;
-    ok($ret->{'metrics'}{'SCM_PRS_CLOSED'} =~ /\d+/,
-       "Metric SCM_PRS_CLOSED is a digit " . $ret->{'metrics'}{'SCM_PRS_CLOSED'} . ".")
+    ok($ret->{'metrics'}{'PROJECT_MRS_CLOSED'} =~ /\d+/,
+       "Metric PROJECT_MRS_CLOSED is a digit " . $ret->{'metrics'}{'PROJECT_MRS_CLOSED'} . ".")
         or diag explain $ret;
-    ok($ret->{'metrics'}{'SCM_PRS_MERGED'} =~ /\d+/,
-       "Metric SCM_PRS_MERGED is a digit " . $ret->{'metrics'}{'SCM_PRS_MERGED'} . ".")
+    ok($ret->{'metrics'}{'PROJECT_MRS_MERGED'} =~ /\d+/,
+       "Metric PROJECT_MRS_MERGED is a digit " . $ret->{'metrics'}{'PROJECT_MRS_MERGED'} . ".")
         or diag explain $ret;
-    ok($ret->{'metrics'}{'SCM_PRS_OPENED'} =~ /\d+/,
-       "Metric SCM_PRS_OPENED is a digit " . $ret->{'metrics'}{'SCM_PRS_OPENED'} . ".")
+    ok($ret->{'metrics'}{'PROJECT_MRS_OPENED'} =~ /\d+/,
+       "Metric PROJECT_MRS_OPENED is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED'} . ".")
         or diag explain $ret;
-    ok($ret->{'metrics'}{'SCM_PRS_OPENED_1W'} =~ /\d+/,
-       "Metric SCM_PRS_OPENED_1W is a digit " . $ret->{'metrics'}{'SCM_PRS_OPENED_1W'} . ".")
+    ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_1W'} =~ /\d+/,
+       "Metric PROJECT_MRS_OPENED_1W is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_1W'} . ".")
         or diag explain $ret;
-    ok($ret->{'metrics'}{'SCM_PRS_OPENED_1M'} =~ /\d+/,
-       "Metric SCM_PRS_OPENED_1M is a digit " . $ret->{'metrics'}{'SCM_PRS_OPENED_1M'} . ".")
+    ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_1M'} =~ /\d+/,
+       "Metric PROJECT_MRS_OPENED_1M is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_1M'} . ".")
         or diag explain $ret;
-    ok($ret->{'metrics'}{'SCM_PRS_OPENED_1Y'} =~ /\d+/,
-       "Metric SCM_PRS_OPENED_1Y is a digit " . $ret->{'metrics'}{'SCM_PRS_OPENED_1Y'} . ".")
-        or diag explain $ret;
-
-    ok($ret->{'metrics'}{'SCM_PRS_OPENED_STILL_1W'} =~ /\d+/,
-       "Metric SCM_PRS_OPENED_STILL_1W is a digit " . $ret->{'metrics'}{'SCM_PRS_OPENED_STILL_1W'} . ".")
-        or diag explain $ret;
-    ok($ret->{'metrics'}{'SCM_PRS_OPENED_STILL_1M'} =~ /\d+/,
-       "Metric SCM_PRS_OPENED_STILL_1M is a digit " . $ret->{'metrics'}{'SCM_PRS_OPENED_STILL_1M'} . ".")
-        or diag explain $ret;
-    ok($ret->{'metrics'}{'SCM_PRS_OPENED_STILL_1Y'} =~ /\d+/,
-       "Metric SCM_PRS_OPENED_STILL_1Y is a digit " . $ret->{'metrics'}{'SCM_PRS_OPENED_STILL_1Y'} . ".")
+    ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_1Y'} =~ /\d+/,
+       "Metric PROJECT_MRS_OPENED_1Y is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_1Y'} . ".")
         or diag explain $ret;
 
-    ok($ret->{'metrics'}{'SCM_PRS_OPENED_STALED_1M'} =~ /\d+/,
-       "Metric SCM_PRS_OPENED_STALED_1M is a digit " . $ret->{'metrics'}{'SCM_PRS_OPENED_STALED_1M'} . ".")
+    ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1W'} =~ /\d+/,
+       "Metric PROJECT_MRS_OPENED_STILL_1W is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1W'} . ".")
+        or diag explain $ret;
+    ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1M'} =~ /\d+/,
+       "Metric PROJECT_MRS_OPENED_STILL_1M is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1M'} . ".")
+        or diag explain $ret;
+    ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1Y'} =~ /\d+/,
+       "Metric PROJECT_MRS_OPENED_STILL_1Y is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1Y'} . ".")
+        or diag explain $ret;
+
+    ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_STALED_1M'} =~ /\d+/,
+       "Metric PROJECT_MRS_OPENED_STALED_1M is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_STALED_1M'} . ".")
         or diag explain $ret;
 
 # Test info results

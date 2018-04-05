@@ -13,7 +13,7 @@
       },
       {
         "name": "SCM information",
-        "mnemo": "PMI_SCM_INFO",
+        "mnemo": "PROJECT_SCM_INFO",
         "desc": [
             "Is the source_repo info correctly filled in the PMI records? ",
             "The project management infrastructure file holds information about one or more source repositories. This test checks that at least one source repository is defined, and accessible."
@@ -22,7 +22,7 @@
       },
       {
         "name": "ITS information",
-        "mnemo": "PMI_ITS_INFO",
+        "mnemo": "PROJECT_ITS_INFO",
         "desc": [
             "Is the bugzilla info correctly filled in the PMI records?",
             "The project management infrastructure file holds information about one or more bugzilla instances. This test checks that at least one bugzilla instance is defined, with a product identifier, a create_url to enter a new issue, and a query_url to fetch all the issues for the project."
@@ -31,7 +31,7 @@
       },
       {
         "name": "Doc information",
-        "mnemo": "PMI_DOC_INFO",
+        "mnemo": "PROJECT_DOC_INFO",
         "desc": [
             "Is the documentation info correctly filled in the PMI records?",
             "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."
@@ -39,8 +39,17 @@
           "scale": [0,2,4,6]
       },
       {
+        "name": "CI information",
+        "mnemo": "PROJECT_CI_INFO",
+        "desc": [
+            "Is the continuous integration info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about the location of CI services. This test checks the number of ci-related entries defined in the PMI."
+        ],
+          "scale": [0,2,4,6]
+      },
+      {
         "name": "Access information",
-        "mnemo": "PMI_ACCESS_INFO",
+        "mnemo": "PROJECT_ACCESS_INFO",
         "desc": [
             "Is the access info (downloads, update sites..) correctly filled in the PMI records?",
             "The project management infrastructure file holds information about how to access binaries of the project. This test checks the number of access-related entries defined in the PMI: download_url, downloads, update_sites."

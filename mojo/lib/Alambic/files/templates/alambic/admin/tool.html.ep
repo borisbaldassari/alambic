@@ -3,7 +3,7 @@
 % my $tool = $tools->get_tool($id);
 % my $tool_conf = $tool->get_conf();
 
-            <h1 class="al-h1"><small>Administration</small> Tool <%= $tool_conf->{'id'} %></h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Tool <%= $tool_conf->{'id'} %></h1>
 	    <br />
 
 % my $msg = flash( 'msg' );
