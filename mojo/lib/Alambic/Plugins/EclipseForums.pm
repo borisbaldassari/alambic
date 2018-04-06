@@ -18,6 +18,7 @@ use strict;
 use warnings;
 
 use Alambic::Model::RepoFS;
+use Alambic::Tools::R;
 
 use Mojo::JSON qw( decode_json encode_json );
 use Mojo::UserAgent;
@@ -385,6 +386,14 @@ sub _retrieve_data($$$) {
   $metrics{'MLS_USR_AUTHORS_1Y'} = scalar keys %authors_1y || 0;
 
   
+  # Now execute the main R script.
+  push(@{$ret{'log'}}, "[Plugins::EclipseForums] Executing R main file.");
+  my $r = Alambic::Tools::R->new();
+  @{$ret{'log'}} = (
+    @{$ret{'log'}},
+    @{$r->knit_rmarkdown_inc('EclipseForums', $project_id, 'eclipse_forums.Rmd')}
+      );
+  
   
   my %ret = (
       'metrics' => \%metrics, 
@@ -408,7 +417,7 @@ sub _decode_content() {
   };
   if ($is_ok) { 
     return $decoded;
-  } else { print "OUCH " . Dumper($@);
+  } else { 
     return undef;
   }
 }
@@ -422,27 +431,27 @@ sub _decode_content() {
 
 =head1 NAME
 
-B<Alambic::Plugins::EclipsePmi> - A plugin to fetch information from the
-Eclipse PMI repository.
+B<Alambic::Plugins::EclipseForums> - A plugin to fetch information about the
+Eclipse Forums.
 
 =head1 DESCRIPTION
 
-B<Alambic::Plugins::EclipsePmi> retrieves information from the 
-L<Eclipse PMI repository|https://wiki.eclipse.org/Project_Management_Infrastructure>.
+B<Alambic::Plugins::EclipseForums> retrieves information from the Eclipse forums hosted on 
+L<https://forums.eclipse.org>.
 
 Parameters:
 
 =over
 
-=item * Eclipse project ID - e.g. C<modeling.sirius> or C<tools.cdt>.
+=item * Project forum ID - e.g. C<232> for Sisu forums.
 
 =back
 
-For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/EclipsePmi.html>.
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/EclipseForums.html>.
 
 =head1 SEE ALSO
 
-L<https://alambic.io/Plugins/Pre/EclipsePmi.html>, L<https://wiki.eclipse.org/Project_Management_Infrastructure>,
+L<https://alambic.io/Plugins/Pre/EclipseForums.html>, L<https://forums.eclipse.org>,
 
 L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
 
