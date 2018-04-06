@@ -1,0 +1,451 @@
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+package Alambic::Plugins::EclipseForums;
+
+use strict;
+use warnings;
+
+use Alambic::Model::RepoFS;
+
+use Mojo::JSON qw( decode_json encode_json );
+use Mojo::UserAgent;
+use Date::Parse;
+use Time::Piece;
+use Time::Seconds;
+use Text::CSV;
+use Data::Dumper;
+
+
+# Main configuration hash for the plugin
+my %conf = (
+  "id"   => "EclipseForums",
+  "name" => "Eclipse Forums",
+  "desc" => [
+    "Eclipse Forums retrieves data about the forums used by the Eclipse infrastructure.",
+    'See <a href="https://alambic.io/Plugins/Pre/EclipseForums.html">the project\'s documentation</a> for more information.',
+  ],
+  "type"    => "pre",
+  "ability" => ["metrics", "info", 'data', "recs", "viz"],
+  "params"  => {
+    "forum_id" =>
+      "The ID of the forum to be used to identify the project on the Eclipse API server. Look for it in the URL of the project's forum on <a href=\"https://forums.eclipse.org\">https://forums.eclipse.org</a>.",
+    "proxy" =>
+      'If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
+  },
+  "provides_cdata" => [],
+  "provides_info"  => [
+      "MLS_USR_URL",
+      "MLS_USR_DESC",
+      "MLS_USR_NAME",
+      "MLS_USR_CAT",
+  ],
+  "provides_data" => {
+    "import_eclipse_forums_forum.json" => "The forum description file as returned by Eclipse servers (JSON).",
+    "import_eclipse_forums_threads.json" => "The list of threads for the forum as returned by Eclipse servers (JSON).",
+    "import_eclipse_forums_posts.json" => "The list of posts for the forum as returned by Eclipse servers (JSON).",
+    "eclipse_forums_forum.csv" => "The forum description file as returned by Eclipse servers (CSV).",
+    "eclipse_forums_threads.csv" => "The list of threads for the forum as returned by Eclipse servers (CSV).",
+    "eclipse_forums_posts.csv" => "The list of posts for the forum as returned by Eclipse servers (CSV).",
+  },
+  "provides_metrics" => {
+    "MLS_USR_VOL"    => "MLS_USR_VOL",
+    "MLS_USR_AUTHORS"    => "MLS_USR_AUTHORS",
+    "MLS_USR_AUTHORS_1W"    => "MLS_USR_AUTHORS_1W",
+    "MLS_USR_AUTHORS_1M"    => "MLS_USR_AUTHORS_1M",
+    "MLS_USR_AUTHORS_1Y"    => "MLS_USR_AUTHORS_1Y",
+    "MLS_USR_THREADS"    => "MLS_USR_THREADS",
+    "MLS_USR_THREADS_1W"    => "MLS_USR_THREADS_1W",
+    "MLS_USR_THREADS_1M"    => "MLS_USR_THREADS_1M",
+    "MLS_USR_THREADS_1Y"    => "MLS_USR_THREADS_1Y",
+    "MLS_USR_POSTS"    => "MLS_USR_POSTS",
+    "MLS_USR_POSTS_1W"    => "MLS_USR_POSTS_1W",
+    "MLS_USR_POSTS_1M"    => "MLS_USR_POSTS_1M",
+    "MLS_USR_POSTS_1Y"    => "MLS_USR_POSTS_1Y",
+  },
+  "provides_figs" => {},
+  "provides_recs" => [
+  ],
+  "provides_viz" => {"eclipse_forums" => "Eclipse Forums",},
+);
+
+my $eclipse_url  = "https://api.eclipse.org/";
+
+
+# Constructor to build a new EclipseForums object.
+sub new {
+  my ($class) = @_;
+
+  return bless {}, $class;
+}
+
+# Get Wizard plugin configuration.
+sub get_conf() {
+  return \%conf;
+}
+
+
+# Run wizard plugin: retrieves data + compute_data.
+sub run_plugin($$) {
+  my ($self, $project_id, $conf) = @_;
+
+  my $forum_id = $conf->{'forum_id'} || $project_id;
+  my $proxy_url   = $conf->{'proxy'}       || '';
+
+  # Create RepoFS object for writing and reading files on FS.
+  my $repofs = Alambic::Model::RepoFS->new();
+
+  # Retrieve and store data from the remote repository.
+  my $ret_tmp = &_retrieve_data($project_id, $forum_id, $proxy_url, $repofs);
+  if (not defined($ret_tmp)) {
+    return {'log' => ['Could not fetch anything useful from api.eclipse.org.']};
+  }
+
+  
+  my %ret = (
+      'metrics' => $ret_tmp->{'metrics'}, 
+      'info' => $ret_tmp->{'info'}, 
+      'recs' => $ret_tmp->{'recs'},
+      'log' => $ret_tmp->{'log'},
+      );
+  
+  return \%ret;
+}
+
+
+sub _retrieve_data($$$) {
+  my ($project_id, $forum_id, $proxy_url, $repofs) = @_;
+
+  my @log;
+  my @recs;
+  my %metrics;
+  my %info;
+
+  # Prepare userAgent spider
+  my $ua = Mojo::UserAgent->new;
+  $ua->max_redirects(10);
+  $ua->inactivity_timeout(60);
+
+  # Time::Piece object. Will be used for the date calculations.
+  my $t_now = localtime;
+  my $t_1w  = $t_now - ONE_WEEK;
+  my $t_1m  = $t_now - ONE_MONTH;
+  my $t_1y  = $t_now - ONE_YEAR;
+
+  # Configure Proxy
+  if ($proxy_url =~ m!^default!i) {
+
+    # If 'default', then use detect
+    $ua->proxy->detect;
+    my $proxy_http  = $ua->proxy->http;
+    my $proxy_https = $ua->proxy->https;
+    push(@log,
+      "[Plugins::EclipseForums] Using default proxy [$proxy_http] and [$proxy_https]."
+    );
+  }
+  elsif ($proxy_url =~ m!\S+!) {
+
+    # If something, then use it
+    $ua->proxy->http($proxy_url)->https($proxy_url);
+    push(@log, "[Plugins::EclipseForums] Using provided proxy [$proxy_url].");
+  }
+  else {
+    # If blank, then use no proxy
+    push(@log, "[Plugins::EclipseForums] No proxy defined [$proxy_url].");
+  }
+
+  #
+  # Fetch forum info json file from api.eclipse.org
+  # 
+ 
+  my $url = $eclipse_url . '/forums/forum/' . $forum_id;
+  push(@log, "[Plugins::EclipseForums] Fetch forum info using [$url].");
+
+  my $content = $ua->get($url)->res->body;
+
+  my $forum = &_decode_content($content);
+  return undef if (not defined($forum));
+  
+  push(@log, "[Plugins::EclipseForums] Writing Forum info json file to input.");
+  $repofs->write_input($project_id, "import_eclipes_forums_forum.json",
+    encode_json($forum));
+
+  # Start to populate info 
+  $info{'MLS_USR_URL'} = $forum->{'html_url'};
+  $info{'MLS_USR_NAME'} = $forum->{'name'};
+  $info{'MLS_USR_DESC'} = $forum->{'description'};
+  $info{'MLS_USR_CAT_URL'} = $forum->{'category_url'};
+
+  # Prepare CSV export for forum
+  my $csv_forum = Text::CSV->new({binary => 1, eol => "\n"});
+  my @csv_forum_attrs = sort keys %$forum;
+  my $csv_forum_out = join( ',', @csv_forum_attrs ) . "\n";
+  my @attrs_forum = map { $forum->{$_} || '' } @csv_forum_attrs;
+  $csv_forum->combine(@attrs_forum);
+  $csv_forum_out .= $csv_forum->string();
+  
+  # Write CSV file to output dir.
+  $repofs->write_output($project_id, "eclipse_forums_forum.csv", $csv_forum_out);
+  
+  
+  #
+  # Fetch topics info json file from api.eclipse.org
+  # 
+  my @topics;
+  $url = $eclipse_url . '/forums/topic?forum_id=' . $forum_id;
+  push(@log, "[Plugins::EclipseForums] Fetch topics for forum using [$url].");
+
+  $content = $ua->get($url)->res->body;
+
+  my $ret_topics = &_decode_content($content);
+  return undef if (not defined($ret_topics));
+
+  @topics = @{$ret_topics->{'result'}};
+  my $results_max = $ret_topics->{'pagination'}{'total_result_size'};
+
+  push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_topics->{'result'}} 
+     . "] id [" . $ret_topics->{'pagination'}{'result_end'} 
+     . "] out of [$results_max] total.");
+  
+  # Get remaining pages if any.
+  my $page = 2;
+  while($ret_topics->{'pagination'}{'result_end'} < $results_max) {
+    $url = $eclipse_url . '/forums/topic?forum_id=' . $forum_id . '&page=' . $page;
+    push(@log, "[Plugins::EclipseForums] Fetch topics for forum using [$url].");
+
+    $content = $ua->get($url)->res->body;
+    my $ret_topics = &_decode_content($content);
+    return undef if (not defined($ret_topics));
+  
+    push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_topics->{'result'}} 
+       . "] id [" . $ret_topics->{'pagination'}{'result_end'} 
+       . "] out of [$results_max] total.");
+  
+    # Add this page's set to the global array
+    push( @topics, @{$content->{'result'}} ); 
+    $page++;
+  }
+
+  push(@log, "[Plugins::EclipseForums] Writing Forum threads json file to input.");
+  $repofs->write_input($project_id, "import_eclipes_forums_threads.json",
+		       encode_json(\@topics));
+
+  $metrics{'MLS_USR_THREADS'} = scalar @topics;
+  my ($mls_usr_threads_1w, $mls_usr_threads_1m, $mls_usr_threads_1y) = (0,0,0);
+
+
+  # Prepare CSV export for topics
+  my $csv_topics = Text::CSV->new({binary => 1, eol => "\n"});
+  my @csv_topics_attrs = ('id', 'subject', 'last_post_date', 'last_post_id', 'root_post_id', 'replies', 'views', 'html_url');
+  my $csv_topics_out = join( ',', @csv_topics_attrs ) . "\n";
+  
+  foreach my $topic (@topics) {
+    my $date_last_post = Time::Piece->strptime(
+	int(str2time($topic->{'last_post_date'}) || 0), "%s");
+    
+    # Is the topic recent (<1W)?
+    if ($date_last_post > $t_1w->epoch) {
+      $mls_usr_threads_1w++;
+    }
+
+    # Is the topic recent (<1M)?
+    if ($date_last_post > $t_1m->epoch) {
+	$mls_usr_threads_1m++;
+    }
+
+    # Is the topic recent (<1Y)?
+    if ($date_last_post > $t_1y->epoch) {
+      $mls_usr_threads_1y++;
+    }
+    
+
+    my @attrs = map { $topic->{$_} || '' } @csv_topics_attrs;
+    $csv_topics->combine(@attrs);
+    $csv_topics_out .= $csv_topics->string();
+  }
+  
+  # Write CSV file to output dir.
+  $repofs->write_output($project_id, "eclipse_forums_threads.csv", $csv_topics_out);
+  
+  $metrics{'MLS_USR_THREADS_1W'} = $mls_usr_threads_1w;
+  $metrics{'MLS_USR_THREADS_1M'} = $mls_usr_threads_1m;
+  $metrics{'MLS_USR_THREADS_1Y'} = $mls_usr_threads_1y;
+
+  
+  #
+  # Fetch posts info json file from api.eclipse.org
+  # 
+  my @posts;
+  $url = $eclipse_url . '/forums/post?forum_id=' . $forum_id;
+  push(@log, "[Plugins::EclipseForums] Fetch posts for forum using [$url].");
+  $content = $ua->get($url)->res->body;
+  
+  my $ret_posts = &_decode_content($content);
+  return undef if (not defined($ret_posts));
+
+  @posts = @{$ret_posts->{'result'}};
+  my $results_max = $ret_posts->{'pagination'}{'total_result_size'};
+
+  push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_posts->{'result'}} 
+     . "] id [" . $ret_posts->{'pagination'}{'result_end'} 
+     . "] out of [$results_max] total.");
+  
+  # Get remaining pages if any.
+  $page = 2;
+  while($ret_posts->{'pagination'}{'result_end'} < $results_max) {
+    $url = $eclipse_url . '/forums/topic?forum_id=' . $forum_id . '&page=' . $page;
+    push(@log, "[Plugins::EclipseForums] Fetch posts for forum using [$url].");
+
+    $content = $ua->get($url)->res->body;
+    my $ret_posts = &_decode_content($content);
+    return undef if (not defined($ret_posts));
+  
+    push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_posts->{'result'}} 
+       . "] id [" . $ret_posts->{'pagination'}{'result_end'} 
+       . "] out of [$results_max] total.");
+    
+    # Add this page's set to the global array
+    push( @posts, @{$content->{'result'}} ); 
+    $page++;
+  }
+
+  push(@log, "[Plugins::EclipseForums] Writing forum posts json file to input.");
+  $repofs->write_input($project_id, "import_eclipes_forums_posts.json",
+    encode_json($ret_posts));
+
+  $metrics{'MLS_USR_POSTS'} = scalar @topics;
+  my ($mls_usr_posts_1w, $mls_usr_posts_1m, $mls_usr_posts_1y) = (0,0,0);
+  my (%authors, %authors_1w, %authors_1m, %authors_1y);
+  my %timeline_p;
+
+  # Prepare CSV export for posts
+  my $csv_posts = Text::CSV->new({binary => 1, eol => "\n"});
+  my @csv_attrs = ('id', 'subject', 'created_date', 'author_id', 'thread_id', 'html_url');
+  my $csv_posts_out = join( ',', @csv_attrs ) . "\n";
+  
+  foreach my $post (@posts) {
+    my $date_post = Time::Piece->strptime(
+	int(str2time($post->{'created_date'}) || 0), "%s");
+    $timeline_p{ $date_post->strftime("%Y-%m-%d") }++;
+    $authors{$post->{'poster_id'}}++;
+    
+    # Is the post recent (<1W)?
+    if ($date_post > $t_1w->epoch) {
+      $authors_1w{$post->{'poster_id'}}++;
+      $mls_usr_posts_1w++;
+    }
+
+    # Is the post recent (<1M)?
+    if ($date_post > $t_1m->epoch) {
+	$authors_1m{$post->{'poster_id'}}++;
+	$mls_usr_posts_1m++;
+    }
+
+    # Is the post recent (<1Y)?
+    if ($date_post > $t_1y->epoch) {
+      $authors_1y{$post->{'poster_id'}}++;
+      $mls_usr_posts_1y++;
+    }
+
+    
+    my @attrs = (
+	$post->{'id'},
+	$post->{'subject'}, 
+	$post->{'created_date'},
+	$post->{'poster_id'}, 
+	$post->{'topics_id'}, 
+	$post->{'html_url'}
+	);
+    $csv_posts->combine(@attrs);
+    $csv_posts_out .= $csv_posts->string();
+  }
+
+  # Write CSV file to output dir.
+  $repofs->write_output($project_id, "eclipse_forums_posts.csv", $csv_posts_out);
+
+  
+  $metrics{'MLS_USR_POSTS_1W'}   = $mls_usr_posts_1w;
+  $metrics{'MLS_USR_POSTS_1M'}   = $mls_usr_posts_1m;
+  $metrics{'MLS_USR_POSTS_1Y'}   = $mls_usr_posts_1y;
+  
+  $metrics{'MLS_USR_AUTHORS'}    = scalar keys %authors || 0;
+  $metrics{'MLS_USR_AUTHORS_1W'} = scalar keys %authors_1w || 0;
+  $metrics{'MLS_USR_AUTHORS_1M'} = scalar keys %authors_1m || 0;
+  $metrics{'MLS_USR_AUTHORS_1Y'} = scalar keys %authors_1y || 0;
+
+  
+  
+  my %ret = (
+      'metrics' => \%metrics, 
+      'info' => \%info, 
+      'recs' => \@recs,
+      'log' => \@log,
+      );
+
+  return \%ret;
+}
+
+
+sub _decode_content() {
+  my $content = shift;
+  # Check if we actually get some results.
+  my $decoded;
+  my $is_ok = 0;
+  eval {
+    $decoded = decode_json($content);
+    $is_ok = 1;
+  };
+  if ($is_ok) { 
+    return $decoded;
+  } else { print "OUCH " . Dumper($@);
+    return undef;
+  }
+}
+
+
+
+1;
+
+
+=encoding utf8
+
+=head1 NAME
+
+B<Alambic::Plugins::EclipsePmi> - A plugin to fetch information from the
+Eclipse PMI repository.
+
+=head1 DESCRIPTION
+
+B<Alambic::Plugins::EclipsePmi> retrieves information from the 
+L<Eclipse PMI repository|https://wiki.eclipse.org/Project_Management_Infrastructure>.
+
+Parameters:
+
+=over
+
+=item * Eclipse project ID - e.g. C<modeling.sirius> or C<tools.cdt>.
+
+=back
+
+For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/EclipsePmi.html>.
+
+=head1 SEE ALSO
+
+L<https://alambic.io/Plugins/Pre/EclipsePmi.html>, L<https://wiki.eclipse.org/Project_Management_Infrastructure>,
+
+L<Mojolicious>, L<http://alambic.io>, L<https://bitbucket.org/BorisBaldassari/alambic>
+
+
+=cut
+
