@@ -56,8 +56,8 @@ for c in `echo $CMDS | tr ' ' '\n'`; do
 done
 
 PERL_VERSION=`perl -e "print $^V"`
-echo "# Found Perl $PERL_VERSION"
-echo "# Found Perl $PERL_VERSION" >> $LOG
+echo "  * Checking perl version.. Found Perl $PERL_VERSION"
+echo "  * Checking perl version.. Found Perl $PERL_VERSION" >> $LOG
 
 # Download perlbrew and install it.
 printf "  * Checking if perlbrew is installed..."
