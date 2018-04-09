@@ -129,8 +129,8 @@ The full list of bugs for this project can be reached at `r bz.urlfull`.
 <span style="font-size:18pt"><span class="fa fa-users"></span> </span>
 </div><div class="col-sm-3">
 <span style="font-size:24pt">``r metrics[['ITS_AUTHORS']]``</span> issue authors
-</div><div class="col-sm-3">From <span style="font-size:24pt">``r first(issues.xts$creation_time)``</span>
-</div><div class="col-sm-3">To <span style="font-size:24pt">``r last(issues.xts$last_change_time)``</span>
+</div><div class="col-sm-3">From ``r first(issues.xts$creation_time)``
+</div><div class="col-sm-3">To ``r last(issues.xts$last_change_time)``
 </div></div>
 
 <div class="row"><div class="col-sm-3">
