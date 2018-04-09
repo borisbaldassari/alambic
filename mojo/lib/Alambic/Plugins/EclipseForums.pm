@@ -78,7 +78,7 @@ my %conf = (
   "provides_figs" => {},
   "provides_recs" => [
   ],
-  "provides_viz" => {"eclipse_forums" => "Eclipse Forums",},
+  "provides_viz" => {"eclipse_forums.html" => "Eclipse Forums",},
 );
 
 my $eclipse_url  = "https://api.eclipse.org/";
@@ -159,7 +159,7 @@ sub _retrieve_data($$$) {
 
     # If something, then use it
     $ua->proxy->http($proxy_url)->https($proxy_url);
-    push(@log, "[Plugins::EclipseForums] Using provided proxy [$proxy_url].");
+    push(@log, "[Plugins::EclipseForums] Using provided proxy [$proxy_url]."); print "DBG 1\n";
   }
   else {
     # If blank, then use no proxy
@@ -171,15 +171,15 @@ sub _retrieve_data($$$) {
   # 
  
   my $url = $eclipse_url . '/forums/forum/' . $forum_id;
-  push(@log, "[Plugins::EclipseForums] Fetch forum info using [$url].");
+  push(@log, "[Plugins::EclipseForums] Fetch forum info using [$url].");print "DBG 2\n";
 
-  my $content = $ua->get($url)->res->body;
+  my $content = $ua->get($url)->res->body; print "DBG " . Dumper($content);
 
   my $forum = &_decode_content($content);
   return undef if (not defined($forum));
   
   push(@log, "[Plugins::EclipseForums] Writing Forum info json file to input.");
-  $repofs->write_input($project_id, "import_eclipes_forums_forum.json",
+  $repofs->write_input($project_id, "import_eclipse_forums_forum.json",
     encode_json($forum));
 
   # Start to populate info 
@@ -228,13 +228,13 @@ sub _retrieve_data($$$) {
     $content = $ua->get($url)->res->body;
     my $ret_topics = &_decode_content($content);
     return undef if (not defined($ret_topics));
-  
+    print "DBG " . Dumper($ret_topics);
     push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_topics->{'result'}} 
        . "] id [" . $ret_topics->{'pagination'}{'result_end'} 
        . "] out of [$results_max] total.");
   
     # Add this page's set to the global array
-    push( @topics, @{$content->{'result'}} ); 
+    push( @topics, @{$ret_topics->{'result'}} ); 
     $page++;
   }
 
@@ -272,6 +272,9 @@ sub _retrieve_data($$$) {
     
 
     my @attrs = map { $topic->{$_} || '' } @csv_topics_attrs;
+    # if replies is empty, set to zero (more convenient for R post analysis).
+    if ($attrs[5] == '') { $attrs[5] = 0 }
+    
     $csv_topics->combine(@attrs);
     $csv_topics_out .= $csv_topics->string();
   }
@@ -295,8 +298,8 @@ sub _retrieve_data($$$) {
   my $ret_posts = &_decode_content($content);
   return undef if (not defined($ret_posts));
 
-  @posts = @{$ret_posts->{'result'}};
-  my $results_max = $ret_posts->{'pagination'}{'total_result_size'};
+  @posts = @{$ret_posts->{'result'}}; 
+  $results_max = $ret_posts->{'pagination'}{'total_result_size'};
 
   push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_posts->{'result'}} 
      . "] id [" . $ret_posts->{'pagination'}{'result_end'} 
@@ -365,7 +368,7 @@ sub _retrieve_data($$$) {
 	$post->{'subject'}, 
 	$post->{'created_date'},
 	$post->{'poster_id'}, 
-	$post->{'topics_id'}, 
+	$post->{'topic_id'}, 
 	$post->{'html_url'}
 	);
     $csv_posts->combine(@attrs);
@@ -387,12 +390,34 @@ sub _retrieve_data($$$) {
 
   
   # Now execute the main R script.
-  push(@{$ret{'log'}}, "[Plugins::EclipseForums] Executing R main file.");
+  push(@log, "[Plugins::EclipseForums] Executing R main file.");
   my $r = Alambic::Tools::R->new();
-  @{$ret{'log'}} = (
-    @{$ret{'log'}},
+  @log = (
+    @log,
     @{$r->knit_rmarkdown_inc('EclipseForums', $project_id, 'eclipse_forums.Rmd')}
       );
+  # And execute the figures R scripts.
+  # @{$ret{'log'}} = (
+  #   @{$ret{'log'}},
+  #   @{
+  #     $r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_evol_summary.rmd',
+  #       ['eclipse_forums_evol_summary.png', 'bugzilla_evol_summary.svg'], $opts )
+  #   }
+  # );
+  # @{$ret{'log'}} = (
+  #   @{$ret{'log'}},
+  #   @{
+  #     $r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_versions.rmd',
+  #       ['eclipse_forums_versions.png', 'bugzilla_versions.svg'], $opts )
+  #   }
+  # );
+  @log = ( @log,
+    @{ $r->knit_rmarkdown_html('EclipseForums', $project_id, 
+			       'eclipse_forums_wordcloud.r',
+			       ['eclipse_forums_wordcloud.png', 
+				'eclipse_forums_wordcloud.svg']) 
+    }
+  );
   
   
   my %ret = (
