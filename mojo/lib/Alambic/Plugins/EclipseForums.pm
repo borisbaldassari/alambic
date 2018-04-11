@@ -38,7 +38,7 @@ my %conf = (
     'See <a href="https://alambic.io/Plugins/Pre/EclipseForums.html">the project\'s documentation</a> for more information.',
   ],
   "type"    => "pre",
-  "ability" => ["metrics", "info", 'data', "recs", "viz"],
+  "ability" => ["metrics", "info", 'data', 'figs', 'recs', 'viz'],
   "params"  => {
     "forum_id" =>
       "The ID of the forum to be used to identify the project on the Eclipse API server. Look for it in the URL of the project's forum on <a href=\"https://forums.eclipse.org\">https://forums.eclipse.org</a>.",
@@ -75,7 +75,9 @@ my %conf = (
     "MLS_USR_POSTS_1M"    => "MLS_USR_POSTS_1M",
     "MLS_USR_POSTS_1Y"    => "MLS_USR_POSTS_1Y",
   },
-  "provides_figs" => {},
+  "provides_figs" => {
+      'eclipse_forums_wordcloud.html' => 'Wordcloud of threads subjects',
+  },
   "provides_recs" => [
   ],
   "provides_viz" => {"eclipse_forums.html" => "Eclipse Forums",},
@@ -159,7 +161,7 @@ sub _retrieve_data($$$) {
 
     # If something, then use it
     $ua->proxy->http($proxy_url)->https($proxy_url);
-    push(@log, "[Plugins::EclipseForums] Using provided proxy [$proxy_url]."); print "DBG 1\n";
+    push(@log, "[Plugins::EclipseForums] Using provided proxy [$proxy_url]."); 
   }
   else {
     # If blank, then use no proxy
@@ -170,10 +172,10 @@ sub _retrieve_data($$$) {
   # Fetch forum info json file from api.eclipse.org
   # 
  
-  my $url = $eclipse_url . '/forums/forum/' . $forum_id;
-  push(@log, "[Plugins::EclipseForums] Fetch forum info using [$url].");print "DBG 2\n";
+  my $url = $eclipse_url . '/forums/forum/' . $forum_id . '?pagesize=100';
+  push(@log, "[Plugins::EclipseForums] Fetch forum info using [$url].");
 
-  my $content = $ua->get($url)->res->body; print "DBG " . Dumper($content);
+  my $content = $ua->get($url)->res->body; 
 
   my $forum = &_decode_content($content);
   return undef if (not defined($forum));
@@ -204,7 +206,7 @@ sub _retrieve_data($$$) {
   # Fetch topics info json file from api.eclipse.org
   # 
   my @topics;
-  $url = $eclipse_url . '/forums/topic?forum_id=' . $forum_id;
+  $url = $eclipse_url . '/forums/topic?pagesize=100&forum_id=' . $forum_id;
   push(@log, "[Plugins::EclipseForums] Fetch topics for forum using [$url].");
 
   $content = $ua->get($url)->res->body;
@@ -213,7 +215,7 @@ sub _retrieve_data($$$) {
   return undef if (not defined($ret_topics));
 
   @topics = @{$ret_topics->{'result'}};
-  my $results_max = $ret_topics->{'pagination'}{'total_result_size'};
+  my $results_max = $ret_topics->{'pagination'}{'total_result_size'}; 
 
   push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_topics->{'result'}} 
      . "] id [" . $ret_topics->{'pagination'}{'result_end'} 
@@ -222,13 +224,13 @@ sub _retrieve_data($$$) {
   # Get remaining pages if any.
   my $page = 2;
   while($ret_topics->{'pagination'}{'result_end'} < $results_max) {
-    $url = $eclipse_url . '/forums/topic?forum_id=' . $forum_id . '&page=' . $page;
+    $url = $eclipse_url . '/forums/topic?pagesize=100&forum_id=' . $forum_id . '&page=' . $page;
     push(@log, "[Plugins::EclipseForums] Fetch topics for forum using [$url].");
 
     $content = $ua->get($url)->res->body;
-    my $ret_topics = &_decode_content($content);
+    $ret_topics = &_decode_content($content);
     return undef if (not defined($ret_topics));
-    print "DBG " . Dumper($ret_topics);
+
     push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_topics->{'result'}} 
        . "] id [" . $ret_topics->{'pagination'}{'result_end'} 
        . "] out of [$results_max] total.");
@@ -236,10 +238,13 @@ sub _retrieve_data($$$) {
     # Add this page's set to the global array
     push( @topics, @{$ret_topics->{'result'}} ); 
     $page++;
+
+    # Watchdog
+    if ($page > 100) { exit; }
   }
 
   push(@log, "[Plugins::EclipseForums] Writing Forum threads json file to input.");
-  $repofs->write_input($project_id, "import_eclipes_forums_threads.json",
+  $repofs->write_input($project_id, "import_eclipse_forums_threads.json",
 		       encode_json(\@topics));
 
   $metrics{'MLS_USR_THREADS'} = scalar @topics;
@@ -250,10 +255,9 @@ sub _retrieve_data($$$) {
   my $csv_topics = Text::CSV->new({binary => 1, eol => "\n"});
   my @csv_topics_attrs = ('id', 'subject', 'last_post_date', 'last_post_id', 'root_post_id', 'replies', 'views', 'html_url');
   my $csv_topics_out = join( ',', @csv_topics_attrs ) . "\n";
-  
+
   foreach my $topic (@topics) {
-    my $date_last_post = Time::Piece->strptime(
-	int(str2time($topic->{'last_post_date'}) || 0), "%s");
+    my $date_last_post = $topic->{'last_post_date'} || 0;
     
     # Is the topic recent (<1W)?
     if ($date_last_post > $t_1w->epoch) {
@@ -273,7 +277,7 @@ sub _retrieve_data($$$) {
 
     my @attrs = map { $topic->{$_} || '' } @csv_topics_attrs;
     # if replies is empty, set to zero (more convenient for R post analysis).
-    if ($attrs[5] == '') { $attrs[5] = 0 }
+    if ($attrs[5] =~ m!^$!) { $attrs[5] = 0 }
     
     $csv_topics->combine(@attrs);
     $csv_topics_out .= $csv_topics->string();
@@ -291,7 +295,7 @@ sub _retrieve_data($$$) {
   # Fetch posts info json file from api.eclipse.org
   # 
   my @posts;
-  $url = $eclipse_url . '/forums/post?forum_id=' . $forum_id;
+  $url = $eclipse_url . '/forums/post?pagesize=100&forum_id=' . $forum_id;
   push(@log, "[Plugins::EclipseForums] Fetch posts for forum using [$url].");
   $content = $ua->get($url)->res->body;
   
@@ -308,11 +312,11 @@ sub _retrieve_data($$$) {
   # Get remaining pages if any.
   $page = 2;
   while($ret_posts->{'pagination'}{'result_end'} < $results_max) {
-    $url = $eclipse_url . '/forums/topic?forum_id=' . $forum_id . '&page=' . $page;
+    $url = $eclipse_url . '/forums/post?pagesize=100&forum_id=' . $forum_id . '&page=' . $page;
     push(@log, "[Plugins::EclipseForums] Fetch posts for forum using [$url].");
 
     $content = $ua->get($url)->res->body;
-    my $ret_posts = &_decode_content($content);
+    $ret_posts = &_decode_content($content);
     return undef if (not defined($ret_posts));
   
     push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_posts->{'result'}} 
@@ -320,12 +324,12 @@ sub _retrieve_data($$$) {
        . "] out of [$results_max] total.");
     
     # Add this page's set to the global array
-    push( @posts, @{$content->{'result'}} ); 
+    push( @posts, @{$ret_posts->{'result'}} ); 
     $page++;
   }
 
   push(@log, "[Plugins::EclipseForums] Writing forum posts json file to input.");
-  $repofs->write_input($project_id, "import_eclipes_forums_posts.json",
+  $repofs->write_input($project_id, "import_eclipse_forums_posts.json",
     encode_json($ret_posts));
 
   $metrics{'MLS_USR_POSTS'} = scalar @topics;
@@ -339,9 +343,10 @@ sub _retrieve_data($$$) {
   my $csv_posts_out = join( ',', @csv_attrs ) . "\n";
   
   foreach my $post (@posts) {
-    my $date_post = Time::Piece->strptime(
-	int(str2time($post->{'created_date'}) || 0), "%s");
-    $timeline_p{ $date_post->strftime("%Y-%m-%d") }++;
+    my $date_post = $post->{'created_date'} || 0;
+
+    my ($S, $M, $H, $d, $m, $Y) = localtime($date_post);
+    $timeline_p{ "$Y-$m-$d" }++;
     $authors{$post->{'poster_id'}}++;
     
     # Is the post recent (<1W)?
