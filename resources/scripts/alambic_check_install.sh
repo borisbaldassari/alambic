@@ -18,8 +18,8 @@
 #  * 1 if dependencies not met
 
 
-PB_V=5.26.1
-VERSION=3.2-dev
+PB_V=5.26.2
+VERSION=3.3.4-dev
 LOG=alambic_install.log
 
 IS_MOJO=$(basename `pwd`)
@@ -50,7 +50,7 @@ _check_prerequisite() {
 echo "# Checking system prerequisites."
 echo "# Checking system prerequisites." >> $LOG
 # Not debian: libcurl-devel perl-CPAN libxml2-devel openssl-devel
-CMDS="wget passwd gcc make bzip2 git openssl pandoc"
+CMDS="wget passwd gcc make bzip2 git openssl pandoc libexpat1-dev"
 for c in `echo $CMDS | tr ' ' '\n'`; do
     _check_prerequisite $c;
 done
@@ -71,7 +71,7 @@ if [ $PB_IS_OK -ne 0 ]; then
     echo "  * Adding perlbrew init procedure to ~/.bashrc and sourcing it."
     echo "  * Adding perlbrew init procedure to ~/.bashrc and sourcing it." >> $LOG
     echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bashrc
-    source ~alambic/.bashrc
+    source ~/.bashrc
 else
     echo " OK."
     echo " OK." >> $LOG
