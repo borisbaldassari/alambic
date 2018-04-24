@@ -13,9 +13,7 @@
 #
 #########################################################
 
-output: 
-  html_document:
-    self_contained: no
+output: html_document
 ---
 
 ```{r init, echo=FALSE, message=FALSE, results='asis'}

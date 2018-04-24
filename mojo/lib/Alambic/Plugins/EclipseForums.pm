@@ -418,6 +418,13 @@ sub _retrieve_data($$$) {
     @log,
     @{$r->knit_rmarkdown_inc('EclipseForums', $project_id, 'eclipse_forums.Rmd')}
       );
+  @log = ( @log,
+    @{ $r->knit_rmarkdown_images('EclipseForums', $project_id, 
+			       'eclipse_forums_wordcloud.r',
+			       ['eclipse_forums_wordcloud.png', 
+				'eclipse_forums_wordcloud.svg']) 
+    }
+  );
   # And execute the figures R scripts.
   # @{$ret{'log'}} = (
   #   @{$ret{'log'}},
@@ -434,15 +441,9 @@ sub _retrieve_data($$$) {
   #   }
   # );
   @log = ( @log,
-    @{ $r->knit_rmarkdown_images('EclipseForums', $project_id, 
-			       'eclipse_forums_wordcloud.r',
-			       ['eclipse_forums_wordcloud.png', 
-				'eclipse_forums_wordcloud.svg']) 
-    }
-  );
-  @log = ( @log,
     @{ $r->knit_rmarkdown_html('EclipseForums', $project_id, 
-			       'eclipse_forums_plot.rmd') 
+			       'eclipse_forums_plot.rmd',
+			       []) 
     }
   );
   
