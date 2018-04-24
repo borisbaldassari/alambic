@@ -88,8 +88,12 @@ ok(grep(m!MLS_USR_POSTS_1W!, keys %{$conf->{'provides_metrics'}}),
 ok(grep(m!MLS_USR_POSTS_1Y!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > MLS_USR_POSTS_1Y");
 
-ok(grep(m!eclipse_forums_wordcloud.html!, keys %{$conf->{'provides_figs'}}),
-  "Conf has provides_figs > eclipse_forums_wordcloud.html");
+ok(grep(m!eclipse_forums_wordcloud.png!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > eclipse_forums_wordcloud.png");
+ok(grep(m!eclipse_forums_wordcloud.svg!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > eclipse_forums_wordcloud.svg");
+ok(grep(m!eclipse_forums_plot.html!, keys %{$conf->{'provides_figs'}}),
+  "Conf has provides_figs > eclipse_forums_plot.html");
 
 # Remove file before trying to create them.
 unlink (
@@ -99,6 +103,10 @@ unlink (
     "projects/test.mls/output/test.mls_eclipse_forums_forum.csv",
     "projects/test.mls/output/test.mls_eclipse_forums_threads.csv",
     "projects/test.mls/output/test.mls_eclipse_forums_posts.csv",
+    "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.svg",
+    "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.png",
+    "projects/test.mls/output/test.mls_eclipse_forums_plot.html",
+    "projects/test.mls/output/test.mls_eclipse_forums.inc",
     );
 
 note("Executing the plugin with sirius project. ");
@@ -181,6 +189,15 @@ ok(-e "projects/test.mls/output/test.mls_eclipse_forums_threads.csv",
    "Check that file eclipse_forums_threads.csv exists.");
 ok(-e "projects/test.mls/output/test.mls_eclipse_forums_posts.csv",
    "Check that file eclipse_forums_posts.csv exists.");
+
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.svg",
+   "Check that file eclipse_forums_wordcloud.svg exists.");
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.png",
+   "Check that file eclipse_forums_wordcloud.png exists.");
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums_plot.html",
+   "Check that file eclipse_forums_plot.html exists.");
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums.inc",
+   "Check that file eclipse_forums.inc exists.");
 
 done_testing();
 

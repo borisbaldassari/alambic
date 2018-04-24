@@ -76,7 +76,9 @@ my %conf = (
     "MLS_USR_POSTS_1Y"    => "MLS_USR_POSTS_1Y",
   },
   "provides_figs" => {
-      'eclipse_forums_wordcloud.html' => 'Wordcloud of threads subjects',
+      'eclipse_forums_wordcloud.svg' => 'Wordcloud of threads subjects (SVG)',
+      'eclipse_forums_wordcloud.png' => 'Wordcloud of threads subjects (PNG)',
+      'eclipse_forums_plot.html' => 'Timeline of posts',
   },
   "provides_recs" => [
   ],
@@ -436,6 +438,11 @@ sub _retrieve_data($$$) {
 			       'eclipse_forums_wordcloud.r',
 			       ['eclipse_forums_wordcloud.png', 
 				'eclipse_forums_wordcloud.svg']) 
+    }
+  );
+  @log = ( @log,
+    @{ $r->knit_rmarkdown_html('EclipseForums', $project_id, 
+			       'eclipse_forums_plot.rmd') 
     }
   );
   
