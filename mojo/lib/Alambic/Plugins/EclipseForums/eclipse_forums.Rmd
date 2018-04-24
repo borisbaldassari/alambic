@@ -34,7 +34,7 @@ require('ggplot2')
 require('xtable')
 require(xts)
 
-project.id <- 'technology.sisu'
+#project.id <- 'technology.sisu'
 # date.now <- '2016-03-17T15:38:55'
 #date.before <- '2011-03-17T15:38:55'
 
@@ -79,9 +79,9 @@ Description of the forum:
 Main facts:
 
 * Forum was created on ``r forum$created.date``.
-* It is composed of a total of ``r forum$topic_count`` threads and ``r forum$posts_count`` posts.
+* It is composed of a total of ``r forum$topic_count`` threads and ``r forum$post_count`` posts.
 * Last post was made on ``r index(last(posts.xts))`` by user ``r forum$last_post_id`` and was about\\ ``r last(posts.xts)$subject``.
-* Category of the forum is ``r forum$category_id`` ([`r forum$category_url`](see category)
+* Category of the forum is ``r forum$category_id`` ([`r forum$category_url`](see category)).
 
 The wordcloud on the right details frequent words used in the question titles. The size and colour of the words depend on their number of appearances in questions. It shows what are the concerns and issues of people when dealing with the project.</p>
 
@@ -98,19 +98,20 @@ The wordcloud on the right details frequent words used in the question titles. T
 
 ```{r emls-recent-threads-list, results='asis'}
 threads.table <- head(threads[,c('id', 'subject', 'last.post.date', 'last_post_id', 'replies', 'views')], 10)
-threads.table$subject <- paste('<a href="', threads$html_url, '">', threads$subject, '</a>', sep='')
+threads.table$subject <- paste('<a href="', threads.table$html_url, '">', threads.table$subject, '</a>', sep='')
 threads.table$last.post.date <- as.character(threads.table$last.post.date)
 names(threads.table) <- c('ID', 'Subject', 'Last post date', 'Last post author', 'Replies', 'Views')
 
 print(
     xtable(threads.table,
         caption = paste('10 last active threads on', project.id, 'forum.', sep=" "),
-        digits=0), type="html",
+        digits=0, align="lllllll"), type="html",
     html.table.attributes='class="table table-striped"',
     caption.placement='bottom',
     include.rownames=FALSE,
     sanitize.text.function=function(x) { x }
 )
+#, align="lrrrrr", auto = TRUE
 ```
 
 
@@ -122,7 +123,7 @@ print(
 
 ```{r emls-recent-posts-list, results='asis'}
 posts.table <- head(posts[,c('id', 'subject', 'created.date', 'author_id')], 10)
-posts.table$subject <- paste('<a href="', posts$html_url, '">', posts$subject, '</a>', sep='')
+posts.table$subject <- paste('<a href="', posts.table$html_url, '">', posts.table$subject, '</a>', sep='')
 posts.table$created.date <- as.character(posts.table$created.date)
 names(posts.table) <- c('ID', 'Subject', 'Post date', 'Post author')
 

@@ -20,12 +20,14 @@ require(tm)
 require(wordcloud)
 require(SnowballC)
 
-file.out <- paste( project.id, "_so_wc.svg", sep="")
+file.out <- paste( project.id, "_eclipse_forums_wordcloud.svg", sep="")
 
 file.csv = paste("../../../../projects/", project.id, "/output/", project.id, '_eclipse_forums_posts.csv', sep="")
 posts <- read.csv(file=file.csv, header=TRUE)
 
-mysrc <- DataframeSource(as.data.frame(posts$subject))
+test <- as.vector(posts$subject)
+Encoding(test)  <- "UTF-8"
+mysrc <- VectorSource(test)
 corpus <- VCorpus(mysrc)
 #mydict <- corpus
 
@@ -42,3 +44,4 @@ a <- tm_map(corpus, stemDocument)
 svg(file.out, width=10, height=6)
 wordcloud(a, scale=c(12,1), max.words=50, random.order=FALSE, rot.per=0.15, use.r.layout=FALSE, colors=brewer.pal(8, "Dark2"))
 dev.off()
+

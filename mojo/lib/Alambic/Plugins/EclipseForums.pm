@@ -83,7 +83,7 @@ my %conf = (
   "provides_viz" => {"eclipse_forums.html" => "Eclipse Forums",},
 );
 
-my $eclipse_url  = "https://api.eclipse.org/";
+my $eclipse_url  = "https://api.eclipse.org";
 
 
 # Constructor to build a new EclipseForums object.
@@ -161,7 +161,7 @@ sub _retrieve_data($$$) {
 
     # If something, then use it
     $ua->proxy->http($proxy_url)->https($proxy_url);
-    push(@log, "[Plugins::EclipseForums] Using provided proxy [$proxy_url]."); 
+    push(@log, "[Plugins::EclipseForums] Using provided proxy [$proxy_url].");
   }
   else {
     # If blank, then use no proxy
@@ -172,23 +172,23 @@ sub _retrieve_data($$$) {
   # Fetch forum info json file from api.eclipse.org
   # 
  
-  my $url = $eclipse_url . '/forums/forum/' . $forum_id . '?pagesize=100';
+  my $url = $eclipse_url . '/forums/forum/' . $forum_id . '';
   push(@log, "[Plugins::EclipseForums] Fetch forum info using [$url].");
 
-  my $content = $ua->get($url)->res->body; 
+  my $content = $ua->get($url)->res->body;
 
-  my $forum = &_decode_content($content);
-  return undef if (not defined($forum));
+  my $forum = &_decode_content($content); 
+#  return undef if (not defined($forum));
   
   push(@log, "[Plugins::EclipseForums] Writing Forum info json file to input.");
   $repofs->write_input($project_id, "import_eclipse_forums_forum.json",
     encode_json($forum));
 
   # Start to populate info 
-  $info{'MLS_USR_URL'} = $forum->{'html_url'};
-  $info{'MLS_USR_NAME'} = $forum->{'name'};
-  $info{'MLS_USR_DESC'} = $forum->{'description'};
-  $info{'MLS_USR_CAT_URL'} = $forum->{'category_url'};
+  $info{'MLS_USR_URL'} = $forum->{'html_url'} || '';
+  $info{'MLS_USR_NAME'} = $forum->{'name'} || '';
+  $info{'MLS_USR_DESC'} = $forum->{'description'} || '';
+  $info{'MLS_USR_CAT_URL'} = $forum->{'category_url'} || '';
 
   # Prepare CSV export for forum
   my $csv_forum = Text::CSV->new({binary => 1, eol => "\n"});
@@ -212,35 +212,41 @@ sub _retrieve_data($$$) {
   $content = $ua->get($url)->res->body;
 
   my $ret_topics = &_decode_content($content);
-  return undef if (not defined($ret_topics));
+#  return undef if (not defined($ret_topics));
 
-  @topics = @{$ret_topics->{'result'}};
-  my $results_max = $ret_topics->{'pagination'}{'total_result_size'}; 
+  @topics = @{$ret_topics->{'result'} || []};
+  my $results_max = $ret_topics->{'pagination'}{'total_result_size'} || 0; 
 
-  push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_topics->{'result'}} 
-     . "] id [" . $ret_topics->{'pagination'}{'result_end'} 
+  push(@log, "[Plugins::EclipseForums] Got [" . scalar( @topics )
+     . "] id [" . ( $ret_topics->{'pagination'}{'result_end'} || 0 ) 
      . "] out of [$results_max] total.");
+
   
   # Get remaining pages if any.
   my $page = 2;
-  while($ret_topics->{'pagination'}{'result_end'} < $results_max) {
+  my $result_end = $ret_topics->{'pagination'}{'result_end'} || 0;
+  while($result_end < $results_max) {
     $url = $eclipse_url . '/forums/topic?pagesize=100&forum_id=' . $forum_id . '&page=' . $page;
-    push(@log, "[Plugins::EclipseForums] Fetch topics for forum using [$url].");
+    #push(@log, "[Plugins::EclipseForums] Fetch topics for forum using [$url].");
 
     $content = $ua->get($url)->res->body;
-    $ret_topics = &_decode_content($content);
-    return undef if (not defined($ret_topics));
 
-    push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_topics->{'result'}} 
-       . "] id [" . $ret_topics->{'pagination'}{'result_end'} 
-       . "] out of [$results_max] total.");
+    $ret_topics = &_decode_content($content);
+    #return undef if (not defined($ret_topics));
+
+    my @topics_ = @{$ret_topics->{'result'} || []}; 
+    push(@log, "[Plugins::EclipseForums] Got [" . scalar( @topics_ ) 
+       . "] id [" . ( $ret_topics->{'pagination'}{'result_end'} || 0 ) 
+       . "] out of [$results_max] total."); 
   
     # Add this page's set to the global array
-    push( @topics, @{$ret_topics->{'result'}} ); 
+    push( @topics, @topics_ ); 
     $page++;
 
+    $result_end = $ret_topics->{'pagination'}{'result_end'} || 0;
+
     # Watchdog
-    if ($page > 100) { exit; }
+    if ($page > 1000) { exit; }
   }
 
   push(@log, "[Plugins::EclipseForums] Writing Forum threads json file to input.");
@@ -253,10 +259,11 @@ sub _retrieve_data($$$) {
 
   # Prepare CSV export for topics
   my $csv_topics = Text::CSV->new({binary => 1, eol => "\n"});
-  my @csv_topics_attrs = ('id', 'subject', 'last_post_date', 'last_post_id', 'root_post_id', 'replies', 'views', 'html_url');
+  my @csv_topics_attrs = ('id', 'subject', 'last_post_date', 'last_post_id', 
+			  'root_post_id', 'replies', 'views', 'html_url');
   my $csv_topics_out = join( ',', @csv_topics_attrs ) . "\n";
 
-  foreach my $topic (@topics) {
+  foreach my $topic (@topics) { 
     my $date_last_post = $topic->{'last_post_date'} || 0;
     
     # Is the topic recent (<1W)?
@@ -296,36 +303,44 @@ sub _retrieve_data($$$) {
   # 
   my @posts;
   $url = $eclipse_url . '/forums/post?pagesize=100&forum_id=' . $forum_id;
-  push(@log, "[Plugins::EclipseForums] Fetch posts for forum using [$url].");
+#  push(@log, "[Plugins::EclipseForums] Fetch posts for forum using [$url].");
   $content = $ua->get($url)->res->body;
-  
+
   my $ret_posts = &_decode_content($content);
-  return undef if (not defined($ret_posts));
+#  return undef if (not defined($ret_posts));
 
-  @posts = @{$ret_posts->{'result'}}; 
-  $results_max = $ret_posts->{'pagination'}{'total_result_size'};
+  @posts = @{$ret_posts->{'result'} || []}; 
+  $results_max = $ret_posts->{'pagination'}{'total_result_size'} || 0;
 
-  push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_posts->{'result'}} 
-     . "] id [" . $ret_posts->{'pagination'}{'result_end'} 
+  push(@log, "[Plugins::EclipseForums] Got [" . scalar( @posts )
+     . "] id [" . ( $ret_posts->{'pagination'}{'result_end'} || '' )
      . "] out of [$results_max] total.");
   
   # Get remaining pages if any.
   $page = 2;
-  while($ret_posts->{'pagination'}{'result_end'} < $results_max) {
+  $result_end = $ret_posts->{'pagination'}{'result_end'} || 0;
+  while($result_end < $results_max) {
     $url = $eclipse_url . '/forums/post?pagesize=100&forum_id=' . $forum_id . '&page=' . $page;
-    push(@log, "[Plugins::EclipseForums] Fetch posts for forum using [$url].");
+#    push(@log, "[Plugins::EclipseForums] Fetch posts for forum using [$url].");
 
     $content = $ua->get($url)->res->body;
+
     $ret_posts = &_decode_content($content);
-    return undef if (not defined($ret_posts));
-  
-    push(@log, "[Plugins::EclipseForums] Got [" . scalar @{$ret_posts->{'result'}} 
-       . "] id [" . $ret_posts->{'pagination'}{'result_end'} 
+#    return undef if (not defined($ret_posts));
+
+    my @posts_ = @{$ret_posts->{'result'}};
+    push(@log, "[Plugins::EclipseForums] Got [" . scalar( @posts_ )
+       . "] id [" . ( $ret_posts->{'pagination'}{'result_end'} || '' )
        . "] out of [$results_max] total.");
     
     # Add this page's set to the global array
-    push( @posts, @{$ret_posts->{'result'}} ); 
+    push( @posts, @posts_ ); 
     $page++;
+
+    $result_end = $ret_posts->{'pagination'}{'result_end'} || 0;
+
+    # Watchdog
+    if ($page > 1000) { exit; }
   }
 
   push(@log, "[Plugins::EclipseForums] Writing forum posts json file to input.");
@@ -417,7 +432,7 @@ sub _retrieve_data($$$) {
   #   }
   # );
   @log = ( @log,
-    @{ $r->knit_rmarkdown_html('EclipseForums', $project_id, 
+    @{ $r->knit_rmarkdown_images('EclipseForums', $project_id, 
 			       'eclipse_forums_wordcloud.r',
 			       ['eclipse_forums_wordcloud.png', 
 				'eclipse_forums_wordcloud.svg']) 
@@ -437,10 +452,16 @@ sub _retrieve_data($$$) {
 
 
 sub _decode_content() {
-  my $content = shift;
+    my $content = shift;
+    
   # Check if we actually get some results.
   my $decoded;
   my $is_ok = 0;
+
+  # Remove utf8 chars and weird chars from body.
+  $content =~ s!\\u[0-9a-fA-F]{4}!!g;
+  $content =~ s/"body":\s?".+?",\s?"/"body":"","/g;
+
   eval {
     $decoded = decode_json($content);
     $is_ok = 1;
