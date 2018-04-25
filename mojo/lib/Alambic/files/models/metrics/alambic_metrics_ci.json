@@ -10,7 +10,7 @@
         ]
       },
       {
-        "name": "Number of failed jobs on week",
+        "name": "Number of failed jobs one week",
         "mnemo": "CI_JOBS_FAILED_1W",
         "desc": [
             "The number of jobs that failed during last week on the Hudson engine."

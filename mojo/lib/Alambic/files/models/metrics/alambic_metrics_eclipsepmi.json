@@ -4,7 +4,7 @@
     "children": [
       {
         "name": "Number of releases",
-        "mnemo": "PMI_REL_VOL",
+        "mnemo": "PROJECT_REL_VOL",
         "desc": [
             "The number of releases recorded in the PMI.",
             "Milestones are retrieved from the PMI file and are counted whatever their target release is. Milestones are useful to assess the maturity of the release and improves predictability of the project's output, in terms of quality and time."
