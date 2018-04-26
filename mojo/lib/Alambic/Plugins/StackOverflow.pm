@@ -127,6 +127,31 @@ sub _retrieve_data() {
   my $continue = 50;
   my $page     = 1;
 
+  # Fetch JSON data from SO
+  my $ua = Mojo::UserAgent->new;
+  $ua->max_redirects(10);
+  $ua->inactivity_timeout(60);
+
+  # Configure Proxy
+  if ($proxy_url =~ m!^default!i) {
+   # If 'default', then use detect
+    $ua->proxy->detect;
+    my $proxy_http  = $ua->proxy->http;
+    my $proxy_https = $ua->proxy->https;
+    push(@log,
+      "[Plugins::StackOverflow] Using default proxy [$proxy_http] and [$proxy_https]."
+    );
+  }
+  elsif ($proxy_url =~ m!\S+!) {
+   # If something, then use it
+    $ua->proxy->http($proxy_url)->https($proxy_url);
+    push(@log, "[Plugins::StackOverflow] Using provided proxy [$proxy_url].");
+  }
+  else {
+    # If blank, then use no proxy
+    push(@log, "[Plugins::StackOverflow] No proxy defined [$proxy_url].");
+  }
+
   # Read pages (100 items per page) from the SO API.
   while ($continue) {
     my $url_question
@@ -139,33 +164,6 @@ sub _retrieve_data() {
       . $page;
 
     push(@log, "[Plugins::StackOverflow] Fetching $url_question.");
-
-    # Fetch JSON data from SO
-    my $ua = Mojo::UserAgent->new;
-    $ua->max_redirects(10);
-    $ua->inactivity_timeout(60);
-
-    # Configure Proxy
-    if ($proxy_url =~ m!^default!i) {
-
-      # If 'default', then use detect
-      $ua->proxy->detect;
-      my $proxy_http  = $ua->proxy->http;
-      my $proxy_https = $ua->proxy->https;
-      push(@log,
-        "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https]."
-      );
-    }
-    elsif ($proxy_url =~ m!\S+!) {
-
-      # If something, then use it
-      $ua->proxy->http($proxy_url)->https($proxy_url);
-      push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
-    }
-    else {
-      # If blank, then use no proxy
-      push(@log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
-    }
 
     # Get the resource
     $content_json = $ua->get($url_question)->res->body;

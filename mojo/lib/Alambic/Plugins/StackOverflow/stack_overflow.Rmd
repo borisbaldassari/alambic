@@ -109,6 +109,8 @@ questions.recent <- questions.recent[paste("/", as.character(time.2days.ago), se
 questions.recent$link <- paste('<a href="', questions.recent$url, '">', questions.recent$title, '</a>', sep="")
 questions.recent.table <- questions.recent[,c("link", "c.date", "score", "views")]
 names(questions.recent.table) <- c("Question", "Created on", "Score", "Views")
+questions.recent.table$Score <- as.integer(questions.recent.table$Score)
+questions.recent.table$Views <- as.integer(questions.recent.table$Views)
 
 print(
     xtable(as.table(questions.recent.table),
