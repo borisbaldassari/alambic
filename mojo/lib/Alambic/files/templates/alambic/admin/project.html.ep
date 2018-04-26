@@ -103,7 +103,7 @@
 		  <tr>
                     <td><%= $plugin_name %></td><td><%= $plugin %></td>
                     <td>
-%   my @args_full = map { "$_: <code>" . $project_plugins->{$plugin}->{$_} . "</code>"; } keys %{$project_plugins->{$plugin}};
+%   my @args_full = map { "$_: <code>" . ( $project_plugins->{$plugin}->{$_} || "Unknown" ) . "</code>"; } keys %{$project_plugins->{$plugin}};
 %   my $args_str = join( '<br />', sort @args_full );
                   <%== $args_str %>
                     </td>
