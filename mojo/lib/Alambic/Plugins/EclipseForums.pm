@@ -61,7 +61,6 @@ my %conf = (
     "eclipse_forums_posts.csv" => "The list of posts for the forum as returned by Eclipse servers (CSV).",
   },
   "provides_metrics" => {
-    "MLS_USR_VOL"    => "MLS_USR_VOL",
     "MLS_USR_AUTHORS"    => "MLS_USR_AUTHORS",
     "MLS_USR_AUTHORS_1W"    => "MLS_USR_AUTHORS_1W",
     "MLS_USR_AUTHORS_1M"    => "MLS_USR_AUTHORS_1M",
@@ -476,7 +475,8 @@ sub _decode_content() {
   };
   if ($is_ok) { 
     return $decoded;
-  } else { 
+  } else {
+    print "Could not decode data: \n" . Dumper($content);
     return undef;
   }
 }
