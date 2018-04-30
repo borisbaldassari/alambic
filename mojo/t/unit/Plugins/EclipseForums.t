@@ -65,8 +65,6 @@ ok(grep(m!eclipse_forums_posts.csv!, keys %{$conf->{'provides_data'}}),
 
 
 
-ok(grep(m!MLS_USR_VOL!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > MLS_USR_VOL");
 ok(grep(m!MLS_USR_AUTHORS!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > MLS_USR_AUTHORS");
 ok(grep(m!MLS_USR_AUTHORS_1M!, keys %{$conf->{'provides_metrics'}}),
@@ -75,12 +73,16 @@ ok(grep(m!MLS_USR_AUTHORS_1W!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > MLS_USR_AUTHORS_1W");
 ok(grep(m!MLS_USR_AUTHORS_1Y!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > MLS_USR_AUTHORS_1Y");
+ok(grep(m!MLS_USR_THREADS!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > MLS_USR_THREADS");
 ok(grep(m!MLS_USR_THREADS_1M!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > MLS_USR_THREADS_1M");
 ok(grep(m!MLS_USR_THREADS_1W!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > MLS_USR_THREADS_1W");
 ok(grep(m!MLS_USR_THREADS_1Y!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > MLS_USR_THREADS_1Y");
+ok(grep(m!MLS_USR_POSTS!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > MLS_USR_POSTS");
 ok(grep(m!MLS_USR_POSTS_1M!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > MLS_USR_POSTS_1M");
 ok(grep(m!MLS_USR_POSTS_1W!, keys %{$conf->{'provides_metrics'}}),
