@@ -29,6 +29,14 @@
         ]
       },
       {
+        "name": "Documentation",
+        "mnemo": "QM_DOC",
+        "desc" : [
+            "The maturity of code.",
+            "Good code is vital for maintenance and evolution. It will encourage people to contribute, lower the number of bugs, and make a better product for the end-user as well as for the maintainers."
+        ]
+      },
+      {
         "name": "Activity",
         "mnemo": "QM_ACTIVITY",
         "desc" : [
@@ -65,6 +73,20 @@
         "mnemo": "QM_REL_ENG",
         "desc" : [
             "Does the project apply best practices regarding Build and Release management?"
+        ]
+      },
+      {
+        "name": "Maintainability",
+        "mnemo": "QM_MAINTAINABILITY",
+        "desc" : [
+            "The Maintainability of the codebase, as defined in ISO-9126."
+        ]
+      },
+      {
+        "name": "Reliability",
+        "mnemo": "QM_RELIABILITY",
+        "desc" : [
+            "The Reliability of code, as defined in ISO-9126."
         ]
       }
     ]

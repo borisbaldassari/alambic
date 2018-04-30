@@ -1,0 +1,114 @@
+  {
+    "name": "Alambic Metrics for Mailing lists",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "User ML Authors",
+        "mnemo": "MLS_USR_AUTHORS",
+        "desc": [
+            "The total number of different identities found in the User mailing list.",
+            "Having many different authors is a sign of diversity and activity. It makes the support more reliable  (i.e. increased presence of people) and more complete (i.e. more eyes to solve a problem)."
+        ],
+        "scale": [2,5,20,40]
+      },
+      {
+        "name": "User ML Authors",
+        "mnemo": "MLS_USR_AUTHORS_1W",
+        "desc": [
+            "The total number of different identities found in the User mailing list during last week.",
+            "Having many different authors is a sign of diversity and activity. It makes the support more reliable  (i.e. increased presence of people) and more complete (i.e. more eyes to solve a problem)."
+        ],
+        "scale": [1,2,3,5]
+      },
+      {
+        "name": "User ML Authors",
+        "mnemo": "MLS_USR_AUTHORS_1M",
+        "desc": [
+            "The total number of different identities found in the User mailing list during last month.",
+            "Having many different authors is a sign of diversity and activity. It makes the support more reliable (i.e. increased presence of people) and more complete (i.e. more eyes to solve a problem)."
+        ],
+        "scale": [1,3,5,8]
+      },
+      {
+        "name": "User ML Authors",
+        "mnemo": "MLS_USR_AUTHORS_1Y",
+        "desc": [
+            "The total number of different identities found in the User mailing list during last year.",
+            "Having many different authors is a sign of diversity and activity. It makes the support more reliable (i.e. increased presence of people) and more complete (i.e. more eyes to solve a problem)."
+        ],
+        "scale": [2,5,20,40]
+      },
+      {
+        "name": "User ML Posts",
+        "mnemo": "MLS_USR_POSTS",
+        "desc": [
+            "The total number of posts found in the User mailing list.",
+            "Having many posts shows the mailing list is active. It encourages people to participate, ask and answer questions."
+        ],
+        "scale": [5,50,100,500]
+      },
+      {
+        "name": "User ML Posts",
+        "mnemo": "MLS_USR_POSTS_1W",
+        "desc": [
+            "The total number of posts found in the User mailing list during last week.",
+            "Having many posts shows the mailing list is active. It encourages people to participate, ask and answer questions."
+        ],
+        "scale": [2,5,10,20]
+      },
+      {
+        "name": "User ML Posts",
+        "mnemo": "MLS_USR_POSTS_1M",
+        "desc": [
+            "The total number of posts found in the User mailing list during last month.",
+            "Having many posts shows the mailing list is active. It encourages people to participate, ask and answer questions."
+        ],
+        "scale": [5,10,20,50]
+      },
+      {
+        "name": "User ML Posts",
+        "mnemo": "MLS_USR_POSTS_1Y",
+        "desc": [
+            "The total number of posts found in the User mailing list during last year.",
+            "Having many posts shows the mailing list is active. It encourages people to participate, ask and answer questions."
+        ],
+        "scale": [5,50,100,500]
+      },
+      {
+        "name": "User ML Threads",
+        "mnemo": "MLS_USR_THREADS",
+        "desc": [
+            "The total number of threads (one question followed by zero or more answers) found in the User mailing list.",
+            "Having many threads shows the mailing list is active. It encourages people to participate, ask and answer questions."
+        ],
+        "scale": [5,20,50,200]
+      },
+      {
+        "name": "User ML Threads",
+        "mnemo": "MLS_USR_THREADS_1W",
+        "desc": [
+          "The total number of threads (one question followed by zero or more answers) found in the User mailing list during last week.",
+          "Having many threads shows the mailing list is active. It encourages people to participate, ask and answer questions."
+        ],
+        "scale": [1,2,5,10]
+      },
+      {
+        "name": "User ML Threads",
+        "mnemo": "MLS_USR_THREADS_1M",
+        "desc": [
+          "The total number of threads (one question followed by zero or more answers) found in the User mailing list during last month.",
+          "Having many threads shows the mailing list is active. It encourages people to participate, ask and answer questions."
+        ],
+        "scale": [2,5,10,20]
+      },
+      {
+        "name": "User ML Threads",
+        "mnemo": "MLS_USR_THREADS_1Y",
+        "desc": [
+          "The total number of threads (one question followed by zero or more answers) found in the User mailing list during last year.",
+          "Having many threads shows the mailing list is active. It encourages people to participate, ask and answer questions."
+        ],
+        "scale": [5,20,50,200]
+      }
+    ]
+  }
