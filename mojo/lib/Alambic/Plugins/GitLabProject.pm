@@ -224,7 +224,7 @@ sub run_plugin($$) {
     }
 
     $ret{'metrics'}{'PROJECT_ITS_INFO'} = 0;
-    print "DBG " . Dumper($ret{'info'}{'PROJECT_CI_ENABLED'});
+
     if ( defined($ret{'info'}{'PROJECT_REPO_SSH'}) ) {
 	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
 	$ret{'metrics'}{'PROJECT_SCM_INFO'}++;
