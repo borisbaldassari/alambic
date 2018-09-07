@@ -20,9 +20,8 @@ navi_name: Alambic
     <p>Measures are aggregated in a tree-like <b>quality model</b> structure to better organise and understand the information. The <a href="/Documentation/Users/QualityModel.html">Quality Model</a> can be entirely customised, and almost any type of data source can be added through plugins. </p>
     <br />
     <p><a href="https://g.codefresh.io/repositories/BorisBaldassari/alambic/builds?filter=trigger:build;branch:master;service:589ee0d5a567350100749f20~alambic_test">
-  	  <img alt="Codefresh CI build status" src="https://g.codefresh.io/api/badges/build?repoOwner=BorisBaldassari&repoName=alambic&branch=master&pipelineName=alambic_test&accountName=borisbaldassari&type=cf-1">
+  	  <img alt="Codefresh CI build status" src="https://g.codefresh.io/api/badges/pipeline/borisbaldassari/BorisBaldassari%2Falambic%2Falambic_test?branch=master&key=eyJhbGciOiJIUzI1NiJ9.NTg5ZWRmYzg4ZjY5NjUwMTAwMTgzN2Jk.0xZ2k0N6CpFYjLx9YLyvp-pxw0o6SEp07e91x6fjOTs&type=cf-2">
     </a></p>
-    <p><a href="https://app.codeship.com/projects/189806"><img src="https://app.codeship.com/projects/8f5ae970-a10d-0134-6d00-664a346b6816/status?branch=master" alt="Codeship CI build status" /></a></p>
   </div>
   <div class="col-lg-6" style="font-size: 100%">
       <img src="/images/alambic.jpg" align="left" width="100%" style="margin:10px; max-width:600px" alt="alambic" />
