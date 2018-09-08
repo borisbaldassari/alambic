@@ -240,7 +240,7 @@ ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_versions.html",
   "Check that file bugzilla_versions.html exists.");
 
 note("Executing the plugin with mozilla project. ");
-my $ret = $plugin->run_plugin(
+$ret = $plugin->run_plugin(
   "test.bugzilla2",
   {
     'bugzilla_url'         => 'https://bugzilla.mozilla.org/',
