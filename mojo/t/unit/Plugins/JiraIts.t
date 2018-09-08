@@ -125,7 +125,7 @@ my $ret = $plugin->run_plugin(
   "tools.cdt",
   {
     'jira_url'         => 'https://castalia.atlassian.net',
-    'jira_user'        => 'alambic',
+    'jira_user'        => 'alambic@castalia.solutions',
     'jira_passwd'      => 'alambic123',
     'jira_project'     => 'AL',
     'jira_open_states' => 'To Do',

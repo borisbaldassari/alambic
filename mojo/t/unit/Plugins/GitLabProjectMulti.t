@@ -33,6 +33,7 @@ my $in_gitlab_url     = "https://www.gitlab.com";
 my $in_gitlab_token   = "tiPs2VdkhaDnfmteiToD";
 
 &test_project( "test.gitlab-runner", "gitlab-org/gitlab-runner" );
+#&test_project( "inkscape/inkscape", "inkscape/inkscape" );
 
 sub test_project {
     my $project_id = shift;
@@ -300,5 +301,5 @@ sub test_project {
 }
 
 done_testing();
-exit;
+
 
