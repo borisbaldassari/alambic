@@ -200,10 +200,6 @@ ok($ret->{'metrics'}{'ITS_AUTHORS'} =~ /^\d+$/, "ITS_AUTHORS is a digit.")
   or diag explain $ret;
 
 
-#ok(scalar(@{$ret->{'recs'}}) == 1, "Ret has 1 rec.");
-#ok($ret->{'recs'}[0]{'rid'} eq "JIRA_LATE_ISSUES",
-#  "Ret has rec > JIRA_LATE_ISSUE.");
-
 ok($ret->{'info'}{'BZ_URL'} eq 'https://bugs.eclipse.org/bugs//buglist.cgi?product=acceleo',
   "Ret has correct info ITS_URL.") or print Dumper($ret);
 
@@ -242,6 +238,126 @@ ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_components.html",
   "Check that file bugzilla_components.html exists.");
 ok(-e "projects/test.bugzilla/output/test.bugzilla_bugzilla_versions.html",
   "Check that file bugzilla_versions.html exists.");
+
+note("Executing the plugin with mozilla project. ");
+my $ret = $plugin->run_plugin(
+  "test.bugzilla2",
+  {
+    'bugzilla_url'         => 'https://bugzilla.mozilla.org/',
+    'bugzilla_project'     => 'Data Platform and Tools',
+  }
+);
+
+
+ok(
+  grep(m!\[Plugins::Bugzilla\] Using URL \[https://bugzilla.mozilla.org/rest/bug!,
+    @{$ret->{'log'}}),
+  "Ret has log > using url."
+) or print Dumper( $ret->{'log'} );
+ok(grep(m!\[Plugins::Bugzilla\] Found \d+ issues.!, @{$ret->{'log'}}),
+  "Ret has log > Found xxx issues.");
+ok(grep(m!\[Plugins::Bugzilla\] Writing user events file!, @{$ret->{'log'}}),
+  "Ret has log > Writing user events file.");
+
+ok(grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla.Rmd/, @{$ret->{'log'}}) == 1,
+ "Checking if log contains bugzilla.Rmd R code exec.")
+ or diag explain $ret;
+ok(
+ grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla_evol_summary.rmd/, @{$ret->{'log'}})
+   == 1,
+ "Checking if log contains bugzilla_evol_summary.rmd R code exec."
+) or diag explain $ret;
+ok(
+ grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla_components.rmd/, @{$ret->{'log'}})
+   == 1,
+ "Checking if log contains bugzilla_components.rmd R code exec."
+) or diag explain $ret;
+ok(
+ grep(/^\[Tools::R\] Exec \[Rsc.*bugzilla_versions.rmd/, @{$ret->{'log'}})
+   == 1,
+ "Checking if log contains bugzilla_versions.rmd R code exec."
+) or diag explain $ret;
+
+ok($ret->{'metrics'}{'ITS_ISSUES_ALL'} =~ /^\d+$/, "ITS_ISSUES_ALL is a digit.")
+  or print Dumper($ret);
+ok($ret->{'metrics'}{'ITS_OPEN'} =~ /^\d+$/, "ITS_OPEN is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_OPEN_OLD'} =~ /^\d+$/, "ITS_OPEN_OLD is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_OPEN_PERCENT'} =~ /^\d\d?$/,
+  "ITS_OPEN_PERCENT is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_OPEN_UNASSIGNED'} =~ /^\d+$/,
+  "ITS_OPEN_UNASSIGNED is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_CREATED_1M'} =~ /^\d+$/,
+  "ITS_CREATED_1M is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_CREATED_1Y'} =~ /^\d+$/,
+  "ITS_CREATED_1Y is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_CREATED_1W'} =~ /^\d+$/,
+  "ITS_CREATED_1W is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_UPDATED_1M'} =~ /^\d+$/,
+  "ITS_UPDATED_1M is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_UPDATED_1W'} =~ /^\d+$/,
+  "ITS_UPDATED_1W is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_UPDATED_1Y'} =~ /^\d+$/,
+  "ITS_UPDATED_1Y is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_AUTHORS_1W'} =~ /^\d+$/,
+  "ITS_AUTHORS_1W is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_AUTHORS_1M'} =~ /^\d+$/,
+  "ITS_AUTHORS_1M is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_AUTHORS_1Y'} =~ /^\d+$/,
+  "ITS_AUTHORS_1Y is a digit.")
+  or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_AUTHORS'} =~ /^\d+$/, "ITS_AUTHORS is a digit.")
+  or diag explain $ret;
+
+ok($ret->{'info'}{'BZ_URL'} eq 'https://bugzilla.mozilla.org//buglist.cgi?product=Data Platform and Tools',
+  "Ret has correct info ITS_URL.") or print Dumper($ret);
+
+note("Check that files have been created. ");
+ok(-e "projects/test.bugzilla2/input/test.bugzilla2_import_bugzilla.json",
+  "Check that file import_bugzilla.json exists.");
+
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_metrics_bugzilla.csv",
+  "Check that file metrics_bugzilla.csv exists.");
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_metrics_bugzilla.json",
+  "Check that file metrics_bugzilla.json exists.");
+
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla_evol.csv",
+  "Check that file bugzilla_evol.csv exists.");
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla_issues.csv",
+  "Check that file bugzilla_issues.csv exists.");
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla_issues_open.csv",
+  "Check that file bugzilla_issues_open.csv exists.");
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla_issues_open_unassigned.csv",
+  "Check that file bugzilla_issues_open_unassigned.csv exists.");
+
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla_components.csv",
+  "Check that file bugzilla_components.csv exists.");
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla_milestones.csv",
+  "Check that file bugzilla_milestones.csv exists.");
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla_versions.csv",
+  "Check that file bugzilla_versions.csv exists.");
+
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla.inc",
+  "Check that file bugzilla.inc exists.");
+
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla_evol_summary.html",
+  "Check that file bugzilla_evol_summary.html exists.");
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla_components.html",
+  "Check that file bugzilla_components.html exists.");
+ok(-e "projects/test.bugzilla2/output/test.bugzilla2_bugzilla_versions.html",
+  "Check that file bugzilla_versions.html exists.");
+
 
 done_testing();
 

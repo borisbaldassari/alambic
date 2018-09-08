@@ -186,7 +186,7 @@ sub run_plugin($$) {
   my $url = $url_base;
   while ( $res = $ua->get($url_base . $offset)->result ) {
   
-      push(@{$ret{'log'}}, "[Plugins::Bugzilla] Using URL [$url].");
+      push(@{$ret{'log'}}, "[Plugins::Bugzilla] Using URL [" . $url . $offset . "].");
       if ($res->is_success) {
 	  my $json = $res->body;
 	  my $data = decode_json($json);

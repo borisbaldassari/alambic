@@ -48,7 +48,7 @@ knitr::opts_chunk$set(fig.path = "figures/")
 # bz.project <- 'sisu'
 # bz.url <- 'https://bugs.eclipse.org/bugs'
 
-bz.urlfull <- paste(bz.url, '/describecomponents.cgi?product=', bz.project, sep="")
+#bz.urlfull <- paste(bz.url, '/describecomponents.cgi?product=', bz.project, sep="")
 
 plugin.id <- 'Bugzilla'
 file.metrics = paste(
@@ -101,7 +101,7 @@ versions <- read.csv(file=file.versions, header=T)
 
 This plugin retrieves data about Issues from a [Bugzilla v5+](https://www.bugzilla.org) instance using its [REST API](https://wiki.mozilla.org/Bugzilla:REST_API). Bugzilla provides a complete issues tracking system for software development, used by thousands of OSS and private projects around the world. 
 
-The full list of bugs for this project can be reached at `r bz.urlfull`.
+The full list of bugs for this project can be reached at `r bz.url`.
 
 </div><div class="col-sm-4">
   <div class="panel panel-default">
