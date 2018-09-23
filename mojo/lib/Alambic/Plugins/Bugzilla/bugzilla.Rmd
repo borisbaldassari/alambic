@@ -44,6 +44,9 @@ knitr::opts_chunk$set(fig.path = "figures/")
 #   * bz.project
 #   * bz.url
 
+project.id <- 'test'
+plugin.id <- 'bugzilla'
+
 # project.id <- 'modeling.sirius'
 # bz.project <- 'sisu'
 # bz.url <- 'https://bugs.eclipse.org/bugs'
@@ -238,9 +241,9 @@ The complete list of milestones is provided below:
   <tr><th>Name</th><th>Issues total</th><th>Issues opened</th><th>Issues closed</th></tr>
 ```{r milestones_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(milestones, 1,
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td><td>',
-		           x[[3]], '</td><td>', x[[4]], '</td></tr>', sep=''))
-t <- paste(t, collapse=" ")
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', trimws(x[[2]], which='both'), '</td><td>',
+		           trimws(x[[3]], which='both'), '</td><td>', trimws(x[[4]], which='both'), '</td></tr>', sep=''))
+t <- paste(t, collapse="")
 cat(t)
 ```
 </table>
@@ -259,10 +262,13 @@ cat(t)
   <tr><th>ID</th><th>State</th><th>Title</th><th>Due</th><th>Created</th><th>Updated</th><th>Votes (up/down)</th><th>Comments</th></tr>
 ```{r pipelines_table, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(head(issues.unassigned.open, 10), 1, 
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td><td><a href="', 
-							    x[[4]], '">', x[[3]], '</a></td><td>', x[[7]], '</td><td>', x[[5]], 
-							    '</td><td>', x[[6]], '</td><td>', x[[8]], ' / ', x[[9]], '</td><td>', 
-							    x[[10]], '</td></tr>', sep=''))
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', trimws(x[[2]], which='both'), 
+		      '</td><td><a href="', trimws(x[[4]], which='both'), '">', 
+		      trimws(x[[3]], which='both'), '</a></td><td>', trimws(x[[7]], which='both'), 
+		      '</td><td>', trimws(x[[5]], which='both'), '</td><td>', 
+		      trimws(x[[6]], which='both'), '</td><td>', trimws(x[[8]], which='both'), 
+		      ' / ', trimws(x[[9]], which='both'), '</td><td>', 
+			    trimws(x[[10]], which='both'), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
@@ -283,7 +289,7 @@ This Bugzilla instance defines a list of ``r nrow(components)`` components attac
 ```{r components_table, echo=FALSE, message=FALSE, results='asis'}
 components.sorted <- components[order(components$Bugs, decreasing = T),]
 t <- apply(components.sorted, 1, 
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+		   function(x) paste(' <tr><td>', trimws(x[[1]], which='both'), '</td><td>', trimws(x[[2]], which='both'), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
@@ -308,7 +314,7 @@ This Bugzilla instance defines a list of ``r nrow(versions)`` versions attached 
 ```{r versions_table, echo=FALSE, message=FALSE, results='asis'}
 versions.sorted <- versions[order(versions$Bugs, decreasing = T),]
 t <- apply(versions.sorted, 1, 
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', trimws(x[[2]], which='both'), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
