@@ -23,8 +23,7 @@
             "mnemo": "ITS_ISSUES_ALL",
             "desc": [
 		        "Number of issues registered in the database, whatever their state is."
-            ],
-            "scale": [1,2,3,4]
+            ]
 	},
 	{
             "name": "ITS Pending issues",
@@ -33,7 +32,16 @@
    		        "Number of issues in state open with no assignee (i.e. pending).",
                 "It is considered to be good practice to keep this number low. In an active project, people would either work on the bug (i.e. assign it) or triage it (pass it to some other state or assigning it)."
             ],
-            "scale": [1,2,3,4]
+            "scale": [500,100,50,10]
+	},
+	{
+            "name": "ITS Old open issues",
+            "mnemo": "ITS_OPEN_OLD",
+            "desc": [
+   		        "Number of dead issues, i.e. issues that are in state open and have not been updated for a long time (one year).",
+                "It is considered to be good practice to keep this number low because it impacts the confidence in the Issue Tracking System if there are too many open dead issues. Some projects close issues after some time of inactivity and re-open it if needed."
+            ],
+            "scale": [1000,500,200,100]
 	},
 	{
             "name": "ITS Late issues",
@@ -42,7 +50,7 @@
 		        "Number of issues with a past due date.",
                 "It is considered good practice to keep this number low. Either fix it or maintain its due date."
             ],
-            "scale": [2,4,9.75,80]
+            "scale": [500,100,50,10]
 	},
 	{
             "name": "ITS Authors",
