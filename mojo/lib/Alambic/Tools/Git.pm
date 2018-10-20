@@ -248,11 +248,19 @@ sub _parse_git_log {
       $commit{'time'} = $2;
       $commit{'msg'}  = $3;
     }
-    elsif ($line =~ /^\s+author\s\[([^]]+)\]/) {
-      $commit{'auth'} = $1;
+    elsif ($line =~ /^\s+author\s\[([^]]*)\]/) {
+	if ($1 !~ m!^$!) {
+	    $commit{'auth'} = $1;
+	} else {
+	    $commit{'auth'} = "Unknown";
+	}
     }
-    elsif ($line =~ /^\s+committer \[([^]]+)\]/) {
-      $commit{'cmtr'} = $1;
+    elsif ($line =~ /^\s+committer \[([^]]*)\]/) {
+	if ($1 !~ m!^$!) {
+	    $commit{'cmtr'} = $1;
+	} else {
+	    $commit{'cmtr'} = "Unknown";
+	}
     }
     elsif ($line
       =~ /^\s+(\d+) files? changed(, (\d+) insert[^,]+)?(, (\d+) del[^,]+)?.*$/)

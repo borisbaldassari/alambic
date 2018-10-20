@@ -133,11 +133,11 @@ The project was created on ``r info[['PROJECT_CREATED_AT']]`` and was last updat
 <div class="row"><div class="col-sm-3">
 <span style="font-size:18pt"><span class="fa fa-heartbeat"></span> </span>
 </div><div class="col-sm-3">
-<span><span style="font-size:24pt">``r metrics[['PROJECT_FORKS']]``</span> Forks</span>
+<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_FORKS']], which='both')``</span> Forks</span>
 </div><div class="col-sm-3">
-<span><span style="font-size:24pt">``r metrics[['PROJECT_STARS']]``</span> Stars</span>
+<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_STARS']], which='both')``</span> Stars</span>
 </div><div class="col-sm-3">
-<span><span style="font-size:24pt">``r metrics[['PROJECT_ISSUES_OPEN']]``</span> Issues open</span>
+<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_ISSUES_OPEN']], which='both')``</span> Issues open</span>
 </div></div>
 
 Git activity during last month:
@@ -145,11 +145,11 @@ Git activity during last month:
 <div class="row"><div class="col-sm-3">
 <span style="font-size:18pt"><span class="fa fa-git"></span> </span>
 </div><div class="col-sm-3">
-<span><span style="font-size:24pt">``r metrics[['PROJECT_COMMITS_1M']]``</span> Commits</span>
+<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_COMMITS_1M']], which='both')``</span> Commits</span>
 </div><div class="col-sm-3">
-<span><span style="font-size:24pt">``r metrics[['PROJECT_COMMITTERS_1M']]``</span> Committers</span>
+<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_COMMITTERS_1M']], which='both')``</span> Committers</span>
 </div><div class="col-sm-3">
-<span><span style="font-size:24pt">``r metrics[['PROJECT_AUTHORS_1M']]``</span> Authors</span>
+<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_AUTHORS_1M']], which='both')``</span> Authors</span>
 </div></div>
 
 Merge Requests activity during last month:
@@ -157,11 +157,11 @@ Merge Requests activity during last month:
 <div class="row"><div class="col-sm-3">
 <span style="font-size:18pt"><span class="fa fa-random"></span> </span>
 </div><div class="col-sm-3">
-<span><span style="font-size:24pt">``r metrics[['SCM_PRS_OPENED_1M']]``</span> MRs created last month</span>
+<span><span style="font-size:24pt">``r trimws(metrics[['SCM_PRS_OPENED_1M']], which='both')``</span> MRs created last month</span>
 </div><div class="col-sm-3">
-<span><span style="font-size:24pt">``r metrics[['SCM_PRS_OPENED_STILL_1M']]``</span> MRs created within last month and still opened</span>
+<span><span style="font-size:24pt">``r trimws(metrics[['SCM_PRS_OPENED_STILL_1M']], which='both')``</span> MRs created within last month and still opened</span>
 </div><div class="col-sm-3">
-<span><span style="font-size:24pt">``r metrics[['SCM_PRS_OPENED_STALED_1M']]``</span> MRs staled (no update) for one month</span>
+<span><span style="font-size:24pt">``r trimws(metrics[['SCM_PRS_OPENED_STALED_1M']], which='both')``</span> MRs staled (no update) for one month</span>
 </div></div>
 
 There is a total of ``r ncol(metrics)`` metrics retrieved.
