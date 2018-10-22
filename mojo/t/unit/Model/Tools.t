@@ -39,10 +39,10 @@ my $r      = $tools->get_tool('r_sessions');
 my $r_conf = $r->get_conf();
 
 #print Dumper($r_conf);
-ok(grep(/^methods/, @{$r_conf->{'ability'}})) or diag explain $r_conf;
-ok($r_conf->{'name'} =~ m!^R sessions!) or diag explain $r_conf;
-ok($r_conf->{'type'} =~ m!^tool!)       or diag explain $r_conf;
-ok(exists($r_conf->{'provides_methods'}{'knit_rmarkdown_pdf'}))
-  or diag explain $r_conf;
+ok(grep(/^methods/, @{$r_conf->{'ability'}}), "Conf has ability: methods.") or diag explain $r_conf;
+ok($r_conf->{'name'} =~ m!^R sessions!, "Conf has name.") or diag explain $r_conf;
+ok($r_conf->{'type'} =~ m!^tool!, "Conf has type.") or diag explain $r_conf;
+ok(exists($r_conf->{'provides_methods'}{'knit_rmarkdown_pdf'}), 
+	"Conf has provides_methods: rmarkdown_pdf.") or diag explain $r_conf;
 
 done_testing();

@@ -44,9 +44,7 @@ knitr::opts_chunk$set(fig.path = "figures/")
 #   * bz.project
 #   * bz.url
 
-project.id <- 'test'
-plugin.id <- 'bugzilla'
-
+#project.id <- 'test'
 # project.id <- 'modeling.sirius'
 # bz.project <- 'sisu'
 # bz.url <- 'https://bugs.eclipse.org/bugs'

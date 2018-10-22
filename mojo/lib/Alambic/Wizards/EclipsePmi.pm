@@ -72,14 +72,22 @@ sub run_wizard($) {
     $content = $ua->get($url)->res->body;
   }
   else {
-    $url = $eclipse_url . $project_id;
+    $url = $eclipse_url . $project_id; 
     push(@log, "[Plugins::EclipsePmi] Using Eclipse PMI infra at [$url].");
     $content = $ua->get($url)->res->body;
   }
 
+  # Just make sure we actually received something useful.
+  if ( length($content) < 5 ) {
+    push(@log, "ERROR: Could not get anything useful from [$url]! \n"
+	 . "Maybe the project.id is not right?");
+    return {'log' => \@log};
+  }
+  
+  
   # Check if we actually get some results.
   my $pmi = decode_json($content);
-  my $project_pmi;
+  my $project_pmi; 
   if (defined($pmi->{'projects'}{$project_id})) {
     $project_pmi = $pmi->{'projects'}{$project_id};
   }
