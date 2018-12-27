@@ -38,7 +38,7 @@ p <- dygraph(
   main = paste('Weekly forum posts for ', project.id, sep=''),
   width = 800, height = 250 ) %>%
   dyAxis("x", drawGrid = FALSE) %>%
-  dySeries("posts", label = "Successful builds") %>%
+  dySeries("posts", label = "Weekly posts") %>%
   dyOptions(stepPlot = TRUE) %>%
   #      dyOptions(colors = RColorBrewer::brewer.pal(3, "Set1")) %>%
   dyRangeSelector()
