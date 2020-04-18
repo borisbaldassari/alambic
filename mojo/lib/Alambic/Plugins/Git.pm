@@ -48,7 +48,7 @@ my %conf = (
       "The original git log file as retrieved from git (TXT).",
     "metrics_git.csv"  => "Current metrics for the SCM Git plugin (CSV).",
     "metrics_git.json" => "Current metrics for the SCM Git plugin (JSON).",
-    "git_commits.csv" =>
+    "git_commits_evol.csv" =>
       "Evolution of number of commits and authors by day (CSV)."
   },
   "provides_metrics" => {
@@ -309,8 +309,8 @@ sub _compute_data($$) {
     sort keys %timeline;
   $csv_out = "date,commits,authors\n";
   $csv_out .= join("\n", @timeline) . "\n";
-  $repofs->write_plugin('Git', $project_id . "_git_commits.csv", $csv_out);
-  $repofs->write_output($project_id, "git_commits.csv", $csv_out);
+  $repofs->write_plugin('Git', $project_id . "_git_commits_evol.csv", $csv_out);
+  $repofs->write_output($project_id, "git_commits_evol.csv", $csv_out);
 
   # Now execute the main R script.
   push(@log, "[Plugins::Git] Executing R main file.");

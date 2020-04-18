@@ -24,7 +24,7 @@ library(ggthemes)
 library(plotly)
 
 #project.id <- 'modeling.sirius'
-file.evol = paste("", project.id, "_git_commits.csv", sep="")
+file.evol = paste("", project.id, "_git_commits_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 evol$commits_sum <- cumsum(evol$commits)
 #evol$date_ext <- paste(evol$date, "-01", sep="")

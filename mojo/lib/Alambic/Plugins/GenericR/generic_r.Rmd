@@ -124,7 +124,7 @@ cat( paste( apply(attributes, 1, f_a), sep="" ) )
 
 ```{r git}
 file.evol = paste("../../../../projects/", project.id, "/output/",
-	  project.id, "_git_commits.csv", sep="")
+	  project.id, "_git_commits_evol.csv", sep="")
 
 evol <- read.csv(file=file.evol, header=T)
 
