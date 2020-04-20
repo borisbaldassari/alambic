@@ -45,8 +45,8 @@ ok(grep(m!import_git.txt!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > import_git.txt");
 ok(grep(m!metrics_git.json!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > metrics_git.json");
-ok(grep(m!git_commits.csv!, keys %{$conf->{'provides_data'}}),
-  "Conf has provides_data > git_commits.csv");
+ok(grep(m!git_commits_evol.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > git_commits_evol.csv");
 
 ok(grep(m!SCM_AUTHORS!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > SCM_AUTHORS");
