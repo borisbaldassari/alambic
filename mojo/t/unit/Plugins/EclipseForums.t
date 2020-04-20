@@ -107,6 +107,7 @@ unlink (
     "projects/test.mls/output/test.mls_eclipse_forums_posts.csv",
     "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.svg",
     "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.png",
+    "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.png",
     "projects/test.mls/output/test.mls_eclipse_forums_plot.html",
     "projects/test.mls/output/test.mls_eclipse_forums.inc",
     );
@@ -174,6 +175,111 @@ ok($ret->{'info'}{'MLS_USR_DESC'} eq 'Sirius communtiy discussions',
 ok($ret->{'info'}{'MLS_USR_URL'} eq 'https://www.eclipse.org/forums/index.php/f/262/',
   "Ret has correct info MLS_USR_URL.") or print Dumper($ret);
 ok($ret->{'info'}{'MLS_USR_CAT_URL'} =~ m!^https://api.eclipse.org/forums/category!,
+  "Ret has correct info MLS_USR_CAT_URL.") or print Dumper($ret);
+
+
+note("Check that files have been created. ");
+ok(-e "projects/test.mls/input/test.mls_import_eclipse_forums_forum.json",
+  "Check that file import_eclipse_forums_forum.json exists.");
+ok(-e "projects/test.mls/input/test.mls_import_eclipse_forums_threads.json",
+  "Check that file import_eclipse_forums_threads.json exists.");
+ok(-e "projects/test.mls/input/test.mls_import_eclipse_forums_posts.json",
+  "Check that file import_eclipse_forums_posts.json exists.");
+
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums_forum.csv",
+   "Check that file eclipse_forums_forum.csv exists.");
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums_threads.csv",
+   "Check that file eclipse_forums_threads.csv exists.");
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums_posts.csv",
+   "Check that file eclipse_forums_posts.csv exists.");
+
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.svg",
+   "Check that file eclipse_forums_wordcloud.svg exists.");
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.png",
+   "Check that file eclipse_forums_wordcloud.png exists.");
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums_plot.html",
+   "Check that file eclipse_forums_plot.html exists.");
+ok(-e "projects/test.mls/output/test.mls_eclipse_forums.inc",
+   "Check that file eclipse_forums.inc exists.");
+
+# Remove file before trying to create them.
+unlink (
+    "projects/test.mls/input/test.mls_import_eclipse_forums_forum.json",
+    "projects/test.mls/input/test.mls_import_eclipse_forums_threads.json",
+    "projects/test.mls/input/test.mls_import_eclipse_forums_posts.json",
+    "projects/test.mls/output/test.mls_eclipse_forums_forum.csv",
+    "projects/test.mls/output/test.mls_eclipse_forums_threads.csv",
+    "projects/test.mls/output/test.mls_eclipse_forums_posts.csv",
+    "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.svg",
+    "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.png",
+    "projects/test.mls/output/test.mls_eclipse_forums_wordcloud.png",
+    "projects/test.mls/output/test.mls_eclipse_forums_plot.html",
+    "projects/test.mls/output/test.mls_eclipse_forums.inc",
+    );
+
+note("Executing the plugin with sirius project. ");
+$ret = $plugin->run_plugin(
+  "test.mls",
+  {
+    'forum_id'         => '305',
+    'proxy'     => '',
+  }
+    );
+
+ok(
+  grep(m!\[Plugins::EclipseForums\] Fetch forum info using \[https://api.eclipse.org!,
+    @{$ret->{'log'}}),
+  "Ret has log > fetch info."
+) or print Dumper( $ret->{'log'} );
+ok(grep(m!\[Plugins::EclipseForums\] Writing Forum info json file to input.!, @{$ret->{'log'}}),
+  "Ret has log > writing forum info to json.");
+ok(grep(m!\[Plugins::EclipseForums\] Fetch topics for forum using \[https://api.!, @{$ret->{'log'}}),
+  "Ret has log > fetch topics.");
+
+ok(grep(/^\[Tools::R\] Exec \[Rsc.*eclipse_forums.Rmd/, @{$ret->{'log'}}) == 1,
+ "Checking if log contains eclipse_forums.Rmd R code exec.")
+ or diag explain $ret;
+ok(
+ grep(/^\[Tools::R\] Exec \[Rsc.*eclipse_forums_wordcloud.r/, @{$ret->{'log'}})
+   == 1,
+ "Checking if log contains eclipse_forums_wordcloud.r R code exec."
+) or diag explain $ret;
+
+ok($ret->{'metrics'}{'MLS_USR_POSTS'} =~ /^\d+$/, "MLS_USR_POSTS is a digit.")
+    or print Dumper($ret);
+ok($ret->{'metrics'}{'MLS_USR_POSTS_1W'} =~ /^\d+$/, "MLS_USR_POSTS_1W is a digit.")
+    or print Dumper($ret);
+ok($ret->{'metrics'}{'MLS_USR_POSTS_1M'} =~ /^\d+$/, "MLS_USR_POSTS_1M is a digit.")
+  or print Dumper($ret);
+ok($ret->{'metrics'}{'MLS_USR_POSTS_1Y'} =~ /^\d+$/, "MLS_USR_POSTS_1Y is a digit.")
+  or print Dumper($ret);
+
+ok($ret->{'metrics'}{'MLS_USR_AUTHORS'} =~ /^\d+$/, "MLS_USR_AUTHORS is a digit.")
+    or print Dumper($ret);
+ok($ret->{'metrics'}{'MLS_USR_AUTHORS_1W'} =~ /^\d+$/, "MLS_USR_AUTHORS_1W is a digit.")
+    or print Dumper($ret);
+ok($ret->{'metrics'}{'MLS_USR_AUTHORS_1M'} =~ /^\d+$/, "MLS_USR_AUTHORS_1M is a digit.")
+  or print Dumper($ret);
+ok($ret->{'metrics'}{'MLS_USR_AUTHORS_1Y'} =~ /^\d+$/, "MLS_USR_AUTHORS_1Y is a digit.")
+  or print Dumper($ret);
+
+ok($ret->{'metrics'}{'MLS_USR_THREADS'} =~ /^\d+$/, "MLS_USR_THREADS is a digit.")
+    or print Dumper($ret);
+ok($ret->{'metrics'}{'MLS_USR_THREADS_1W'} =~ /^\d+$/, "MLS_USR_THREADS_1W is a digit.")
+    or print Dumper($ret);
+ok($ret->{'metrics'}{'MLS_USR_THREADS_1M'} =~ /^\d+$/, "MLS_USR_THREADS_1M is a digit.")
+  or print Dumper($ret);
+ok($ret->{'metrics'}{'MLS_USR_THREADS_1Y'} =~ /^\d+$/, "MLS_USR_THREADS_1Y is a digit.")
+  or print Dumper($ret);
+
+
+ok($ret->{'info'}{'MLS_USR_NAME'} eq 'Andmore',
+  "Ret has correct info MLS_USR_NAME.") or print Dumper($ret);
+ok($ret->{'info'}{'MLS_USR_DESC'} eq 'andmore community discussions',
+  "Ret has correct info MLS_USR_DESC.") or print Dumper($ret);
+ok($ret->{'info'}{'MLS_USR_URL'} eq 'https://www.eclipse.org/forums/index.php/f/305/',
+  "Ret has correct info MLS_USR_URL.") or print Dumper($ret);
+ok($ret->{'info'}{'MLS_USR_CAT_URL'} =~ m!^https://api.eclipse.org/forums/category/6!,
   "Ret has correct info MLS_USR_CAT_URL.") or print Dumper($ret);
 
 

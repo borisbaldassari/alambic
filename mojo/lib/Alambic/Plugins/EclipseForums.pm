@@ -329,7 +329,7 @@ sub _retrieve_data($$$) {
     $ret_posts = &_decode_content($content);
 #    return undef if (not defined($ret_posts));
 
-    my @posts_ = @{$ret_posts->{'result'}};
+    my @posts_ = @{$ret_posts->{'result'} || []};
     push(@log, "[Plugins::EclipseForums] Got [" . scalar( @posts_ )
        . "] id [" . ( $ret_posts->{'pagination'}{'result_end'} || '' )
        . "] out of [$results_max] total.");
