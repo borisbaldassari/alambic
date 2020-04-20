@@ -34,7 +34,7 @@ my %conf = (
   "ability" => ['figs', 'viz'],
   "params"  => {
     "proxy" =>
-      'If a proxy is required to access the <a href="https://shileds.io">shields.io</a> web site, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
+      'If a proxy is required to access the <a href="https://shields.io">shields.io</a> web site, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
   },
   "provides_cdata"   => [],
   "provides_info"    => [],
