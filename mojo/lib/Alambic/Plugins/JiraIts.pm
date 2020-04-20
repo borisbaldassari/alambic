@@ -218,9 +218,10 @@ sub run_plugin($$) {
       = Time::Piece->strptime(int(str2time($issue->{'fields'}{'created'}) || 0),
       "%s");
     my $date_m = $date->strftime("%Y-%m-%d");
+    my $name = $issue->{'fields'}{'reporter'}{'name'} || '';
     $timeline_c{$date_m}++;
-    $timeline_a{$date_m}{$issue->{'fields'}{'reporter'}{'name'}}++;
-    $authors{$issue->{'fields'}{'reporter'}{'name'}}++;
+    $timeline_a{$date_m}{$name}++;
+    $authors{$name}++;
 
     @attrs = (
       $issue->{'key'},

@@ -126,7 +126,7 @@ my $ret = $plugin->run_plugin(
   {
     'jira_url'         => 'https://castalia.atlassian.net',
     'jira_user'        => 'alambic@castalia.solutions',
-    'jira_passwd'      => 'alambic123',
+    'jira_passwd'      => '0TQYZEB7BWwOlAAM1XEq8D9A',
     'jira_project'     => 'AL',
     'jira_open_states' => 'To Do',
   }
