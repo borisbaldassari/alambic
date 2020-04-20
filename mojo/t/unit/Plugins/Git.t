@@ -133,8 +133,8 @@ note("Check that files have been created. ");
 ok(-e "projects/alambic.test/input/alambic.test_import_git.txt",
   "Check that file import_git.txt exists.");
 ok(
-  -e "projects/alambic.test/output/alambic.test_git_commits.csv",
-  "Check that file alambic.test_git_commits.csv exists."
+  -e "projects/alambic.test/output/alambic.test_git_commits_evol.csv",
+  "Check that file alambic.test_git_commits_evol.csv exists."
 );
 ok(
   -e "projects/alambic.test/output/alambic.test_git_scm.inc",
