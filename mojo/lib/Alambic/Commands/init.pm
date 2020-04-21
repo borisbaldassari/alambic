@@ -68,6 +68,7 @@ Other Mojolicious commands:
   print "Initialising instance parameters.\n";
   $self->app->al->get_repo_db()->name('Default CLI init');
   $self->app->al->get_repo_db()->desc('Default CLI Init description');
+  $self->app->al->get_repo_db()->anonymise_data('1');
 
   # Set administrator parameters.
   print "Creating administrator account.\n";

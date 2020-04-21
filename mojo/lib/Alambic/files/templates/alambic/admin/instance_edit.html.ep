@@ -2,6 +2,7 @@
 % my $name = stash( 'name' );
 % my $desc = stash( 'desc' );
 % my $tracking_code = stash( 'gt' );
+% my $anon = stash( 'anon' );
 
             <h1 class="al-h1"><small>Administration &gt;</small> Edit instance information</h1>
             <br />
@@ -29,6 +30,13 @@
                 <label for="google-tracking" class="control-label col-xs-2">Google tracking code</label>
                 <div class="col-xs-10">
                   <input type="text" class="form-control" name="google-tracking" id="google-tracking" value="<%== $tracking_code || '' %>">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="anon" class="control-label col-xs-2">Anonymise data</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" name="anon" id="anon" value="<%== $anon || '' %>">
                 </div>
               </div>
 

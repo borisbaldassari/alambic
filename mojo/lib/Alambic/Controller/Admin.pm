@@ -38,6 +38,7 @@ sub edit {
     name => $self->app->al->instance_name(),
     desc => $self->app->al->instance_desc(),
     gt   => $self->app->al->get_repo_db()->conf()->{'google_tracking'},
+    anon => $self->app->al->anonymise_data(),
   );
   $self->render(template => 'alambic/admin/instance_edit');
 }
@@ -51,10 +52,12 @@ sub edit_post {
   my $name = $self->param('name');
   my $desc = $self->param('desc');
   my $gt   = $self->param('google-tracking');
+  my $anon   = $self->param('anon');
 
   $self->app->al->get_repo_db()->name($name);
   $self->app->al->get_repo_db()->desc($desc);
   $self->app->al->get_repo_db()->conf('google-tracking', $gt);
+  $self->app->al->get_repo_db()->anonymise_data($anon);
 
   $self->flash(msg => "Instance details have been saved.");
   $self->redirect_to('/admin/summary');

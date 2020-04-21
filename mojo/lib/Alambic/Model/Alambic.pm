@@ -157,6 +157,19 @@ sub instance_version($) {
   return $al_version;
 }
 
+
+# Get or set the anonymise_data flag.
+sub anonymise_data($) {
+  my ($self, $anon) = @_;
+
+  if (scalar @_ > 1) {
+    $repodb->anonymise_data($anon);
+  }
+
+  return $repodb->anonymise_data();
+}
+
+
 # Get the postgresql configuration for alambic.
 sub instance_pg_alambic() {
   return $config->{'conf_pg_alambic'};
