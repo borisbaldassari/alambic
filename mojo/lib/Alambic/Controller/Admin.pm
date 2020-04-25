@@ -54,6 +54,9 @@ sub edit_post {
   my $gt   = $self->param('google-tracking');
   my $anon   = $self->param('anon');
 
+  $anon = ( defined($anon) && 
+    ($anon eq 0 || $anon =~ m!^no$!i) ) ? 0 : 1;
+
   $self->app->al->get_repo_db()->name($name);
   $self->app->al->get_repo_db()->desc($desc);
   $self->app->al->get_repo_db()->conf('google-tracking', $gt);
