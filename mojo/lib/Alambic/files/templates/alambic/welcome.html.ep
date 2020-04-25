@@ -61,7 +61,7 @@
                 <div class="panel panel-default">
                   <div class="panel-heading"><a href="documentation/main.html"><i class="fa fa-life-ring fa-fw"></i> Documentation</a></div>
 		  <div class="panel-body">
-		    <p>The complete retrieval and analysis process is fully documented on this very web site. More detailed information on Alambic itself and the plugins can be found on the <a href="http://www.bitbucket.org/BorisBaldassari/alambic">project&apos;s wiki</a>.</p>
+		    <p>The complete retrieval and analysis process is fully documented on this very web site. More detailed information on Alambic itself and the plugins can be found on the <a href="https://alambic.io">project&apos;s website</a>.</p>
 		  </div>
                   <div class="list-group">
                     <a href="documentation/data.html" class="list-group-item">Data resources</a>
