@@ -11,7 +11,7 @@ navi_name: Alambic
 
     <br />
 
-    <p>It basically <b>retrieves data from various repositories</b> (code metrics, scm metadata, stack overflow questions, etc.) and <b>makes them available for custom plugins to produce analysis, numbers, graphics, and data sets</b>.</p>
+    <p>It basically <b>retrieves data from various repositories</b> (code metrics, scm metadata, stack overflow questions, etc.) and <b>makes them available for custom plugins to produce analysis, numbers, graphics, and data sets</b>. All generated files are by default anonymised using the <a href="https://github.com/borisbaldassari/data-anonymiser">Anonymise</a> utility, so as to keep a fair balance between research usability and privacy protection.</p>
 
     <p>A <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs). Examples of plugins ready to use include <a href="/Plugins/Pre/PmdAnalysis.html">PMD Results Analysis</a>, <a href="/Plugins/Pre/StackOverflow.html">StackOverflow questions</a> and <a href="/Plugins/Pre/EclipsePmi.html">PMI Checks for Eclipse projects</a>. <b></p>
 
