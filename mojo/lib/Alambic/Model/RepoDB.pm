@@ -361,7 +361,6 @@ sub del_metric($) {
 
   my $query = 'DELETE FROM models_metrics WHERE mnemo = ? ';
   my $ret = $pg->db->query($query, ($mnemo));
-  print "DBG " .Dumper($ret->expand->hashes);
 
   # Send signal to reload server.
 #  my $ppid = getpid(); print "Reloading $ppid.\n";
@@ -431,7 +430,6 @@ sub del_attribute($) {
 
   my $query = 'DELETE FROM models_attributes WHERE mnemo = ? ';
   my $ret = $pg->db->query($query, ($mnemo));
-  print "DBG ATTR " .Dumper($ret->expand->hashes);
 
   # Send signal to reload server.
 #  my $ppid = getpid(); print "Reloading $ppid.\n";
