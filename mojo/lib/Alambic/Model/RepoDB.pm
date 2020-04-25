@@ -214,7 +214,7 @@ sub name($) {
 }
 
 
-# Get or set the Alambic instance description.
+# Get or set the Alambic instance name.
 sub desc($) {
   my ($self, $desc) = @_;
 
@@ -225,6 +225,24 @@ sub desc($) {
   }
   else {
     my $test = $pg->db->query("SELECT val FROM conf WHERE param='desc';")->hash;
+    $ret = $test->{'val'};
+  }
+
+  return $ret;
+}
+
+
+# Get or set the Alambic instance anonymise_data flag.
+sub anonymise_data($) {
+  my ($self, $anon) = @_;
+
+  my $ret;
+  if (scalar @_ > 1) {
+    $pg->db->query("UPDATE conf SET val=? WHERE param='anon';", ($anon));
+    $ret = $anon;
+  }
+  else {
+    my $test = $pg->db->query("SELECT val FROM conf WHERE param='anon';")->hash;
     $ret = $test->{'val'};
   }
 
@@ -343,7 +361,6 @@ sub del_metric($) {
 
   my $query = 'DELETE FROM models_metrics WHERE mnemo = ? ';
   my $ret = $pg->db->query($query, ($mnemo));
-  print "DBG " .Dumper($ret->expand->hashes);
 
   # Send signal to reload server.
 #  my $ppid = getpid(); print "Reloading $ppid.\n";
@@ -413,7 +430,6 @@ sub del_attribute($) {
 
   my $query = 'DELETE FROM models_attributes WHERE mnemo = ? ';
   my $ret = $pg->db->query($query, ($mnemo));
-  print "DBG ATTR " .Dumper($ret->expand->hashes);
 
   # Send signal to reload server.
 #  my $ppid = getpid(); print "Reloading $ppid.\n";
@@ -915,6 +931,7 @@ sub _db_init() {
 " . &_db_query_create() . "
 INSERT INTO conf VALUES ('name', 'MyDBNameInit');
 INSERT INTO conf VALUES ('desc', 'MyDBDescInit');
+INSERT INTO conf VALUES ('anon', '1');
 -- 1 down
 TRUNCATE conf, users, projects_conf, projects_runs, 
   projects_info, projects_cdata, models_metrics, 

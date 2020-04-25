@@ -26,6 +26,8 @@ use Alambic::Model::Models;
 use Alambic::Model::Users;
 use Alambic::Model::Tools;
 
+use Anonymise::Utilities;
+
 use Data::Dumper;
 use DateTime;
 use POSIX;
@@ -156,6 +158,19 @@ sub instance_version($) {
 
   return $al_version;
 }
+
+
+# Get or set the anonymise_data flag.
+sub anonymise_data($) {
+  my ($self, $anon) = @_;
+
+  if (scalar @_ > 1) {
+    $repodb->anonymise_data($anon);
+  }
+
+  return $repodb->anonymise_data();
+}
+
 
 # Get the postgresql configuration for alambic.
 sub instance_pg_alambic() {
@@ -585,15 +600,67 @@ sub run_project($) {
 
   my $project       = &_get_project($project_id);
   my $values        = $project->run_project($models);
+
   my $time_finished = DateTime->now();
   my $delay         = $time_finished - $time_start;
   $run->{'delay'} = $delay->in_units('seconds');
 
+  # Anonymise data
+  my $anon = $repodb->anonymise_data();
+  unless (defined($anon) && $anon eq 0) {
+
+    my @files = <projects/${project_id}/input/*>;
+    push( @files, <projects/${project_id}/output/*> );
+
+    # Filter according to extension.
+    @files = grep { m!.*\.csv$! 
+                 || m!.*\.json$! 
+                 || m!.*\.txt$! 
+                 || m!.*\.inc$! 
+                 || m!.*\.html$! } @files;
+    
+    # Get all published files from all plugins for this project.
+#    my @project_plugins = keys %{$project->get_plugins()};
+#    my %plugins_all = %{$plugins->get_conf_all()};
+#    foreach my $p (@project_plugins) {
+#      push( @files, keys(%{$plugins_all{$p}{'provides_data'}}) );
+#    }
+
+    # Initialise session.
+    my $anon = Anonymise::Utilities->new();
+    $anon->create_keys();
+
+    foreach my $file (@files) {
+
+        # Slurp file, anonymise.
+        open( my $fh_in, "<", ${file} ) or print "Can't open file ${file}.\n";
+        my @text_in = <$fh_in>;
+        close($fh_in);
+
+        # Apply automatic detection of data to be scrambled.
+        my @text_out;
+        foreach my $l (@text_in) {
+            push( @text_out, $anon->auto_scramble($l) );
+        }
+
+        # Write to file
+        open( my $fh_out, ">", ${file} ) or die "Can't open file ${file}.\n";
+        for (@text_out) { print $fh_out $_; }
+        close($fh_out);
+
+    }
+  }
+
+  my $time_anon_finished = DateTime->now();
+  $delay = $time_anon_finished - $time_finished;
+  $run->{'delay_anon'} = $delay->in_units('seconds');
+
   my $ret
-    = $repodb->add_project_run($project_id, $run, $values->{'info'},
-    $values->{'metrics'}, $values->{'inds'}, $values->{'attrs'},
-    $values->{'attrs_conf'},
-    $values->{'recs'});
+    = $repodb->add_project_run(
+      $project_id, $run, $values->{'info'},
+      $values->{'metrics'}, $values->{'inds'}, $values->{'attrs'},
+      $values->{'attrs_conf'},
+      $values->{'recs'});
 
   # Now get user profiles
   my $users = &users($self);

@@ -1,4 +1,8 @@
 
+
+% my $v = app->al->anonymise_data();
+% my $anon = (defined($v) && $v eq 0) ? "No" : "Yes";
+
             <h1 class="al-h1"><small>Administration &gt;</small> Summary</h1>
             <br />
 
@@ -29,6 +33,7 @@
 		<p><b>Description:</b><br />
 		<%== app->al->instance_desc() %></p>
 		<p><b>Google tracking code:</b> <%== app->al->get_repo_db()->conf()->{'google-tracking'} || "none defined" %></p>
+		<p><b>Anonymise data:</b> <%= $anon %></p>
 
 		<br />
               </div>
