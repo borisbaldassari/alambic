@@ -21,9 +21,9 @@ The complete and up-to-date list of R packages required to install Alambic, and 
 
 [r]: https://www.r-project.org
 [knit]: https://rmarkdown.rstudio.com/
-[dygraph]: http://dygraphs.com/
 [ggplot2]: http://ggplot2.org/
 [plotly]: https://plot.ly
+[dygraph]: http://dygraphs.com/
 [plotlyr]: https://plot.ly/r/
 
 
