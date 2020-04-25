@@ -41,3 +41,5 @@ The following information is automatically retrieved from the PMI and used in th
 * Project name and description
 * Git repository URL
 * Hudson repository URL
+
+
