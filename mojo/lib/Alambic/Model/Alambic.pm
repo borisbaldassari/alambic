@@ -601,16 +601,14 @@ sub run_project($) {
   my $project       = &_get_project($project_id);
   my $values        = $project->run_project($models);
 
-#print "VALUES " . Dumper($values);
-
   my $time_finished = DateTime->now();
   my $delay         = $time_finished - $time_start;
   $run->{'delay'} = $delay->in_units('seconds');
 
   # Anonymise data
-  unless (defined($repodb->{'anon'}) && $repodb->{'anon'} ne 0) {
+  my $anon = $repodb->anonymise_data();
+  unless (defined($anon) && $anon eq 0) {
 
-    print "Computing list of files.\n";
     my @files = <projects/${project_id}/input/*>;
     push( @files, <projects/${project_id}/output/*> );
 
@@ -634,8 +632,6 @@ sub run_project($) {
 
     foreach my $file (@files) {
 
-        print "Anonymising file $file.\n";  
-
         # Slurp file, anonymise.
         open( my $fh_in, "<", ${file} ) or print "Can't open file ${file}.\n";
         my @text_in = <$fh_in>;
@@ -658,8 +654,6 @@ sub run_project($) {
   my $time_anon_finished = DateTime->now();
   $delay = $time_anon_finished - $time_finished;
   $run->{'delay_anon'} = $delay->in_units('seconds');
-
-#print "RUN " . Dumper($run);
 
   my $ret
     = $repodb->add_project_run(
