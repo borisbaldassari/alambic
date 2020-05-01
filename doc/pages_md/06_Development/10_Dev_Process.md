@@ -18,12 +18,6 @@ The **[Codefresh](https://codefresh.io)** service builds the official building c
 
 * `image_ci` is run on every `git push`. It installs Alambic and initialises the application, and then waits for connections on port `3000`. [![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=BorisBaldassari&repoName=alambic&branch=master&pipelineName=alambic_run&accountName=borisbaldassari&type=cf-1)]( https://g.codefresh.io/repositories/BorisBaldassari/alambic/builds?filter=trigger:build;branch:master;service:589f19636f0280010035a5f2~alambic_run)
 
-### Codeship
-
-**[Codeship](https://codeship.io)** executes only the Alambic test image to ensure that testing is done thoroughly and independently of the CI setup (even docker sometimes has caveats).
-
-<p><a href="https://app.codeship.com/projects/189806"><img src="https://app.codeship.com/projects/8f5ae970-a10d-0134-6d00-664a346b6816/status?branch=master" alt="CI status" /></a></p>
-
 ### Results on BitBucket
 
 Both services push their results back to the BitBucket repository and set build flags, as shown on the right of the image below.
@@ -44,7 +38,7 @@ Before any release (and hopefully before any commit) the release script located 
 
 Example run:
 
-    boris@midkemia bb_alambic $ sh resources/scripts/releng/alambic_release.sh 
+    boris@midkemia bb_alambic $ sh resources/scripts/releng/alambic_release.sh
 
     Hi. working on version [3.3.1-dev] of Alambic.
 

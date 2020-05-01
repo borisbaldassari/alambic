@@ -75,12 +75,6 @@
 <li><p><code>image_ci</code> is run on every <code>git push</code>. It installs Alambic and initialises the application, and then waits for connections on port <code>3000</code>. <a href="https://g.codefresh.io/repositories/BorisBaldassari/alambic/builds?filter=trigger:build;branch:master;service:589f19636f0280010035a5f2~alambic_run"><img src="https://g.codefresh.io/api/badges/build?repoOwner=BorisBaldassari&amp;repoName=alambic&amp;branch=master&amp;pipelineName=alambic_run&amp;accountName=borisbaldassari&amp;type=cf-1" alt="Codefresh build status" /></a></p></li>
 </ul>
 
-<h3>Codeship</h3>
-
-<p><strong><a href="https://codeship.io">Codeship</a></strong> executes only the Alambic test image to ensure that testing is done thoroughly and independently of the CI setup (even docker sometimes has caveats).</p>
-
-<p><a href="https://app.codeship.com/projects/189806"><img src="https://app.codeship.com/projects/8f5ae970-a10d-0134-6d00-664a346b6816/status?branch=master" alt="CI status" /></a></p>
-
 <h3>Results on BitBucket</h3>
 
 <p>Both services push their results back to the BitBucket repository and set build flags, as shown on the right of the image below.</p>
@@ -103,7 +97,7 @@
 
 <p>Example run:</p>
 
-<pre><code>boris@midkemia bb_alambic $ sh resources/scripts/releng/alambic_release.sh 
+<pre><code>boris@midkemia bb_alambic $ sh resources/scripts/releng/alambic_release.sh
 
 Hi. working on version [3.3.1-dev] of Alambic.
 
