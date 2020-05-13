@@ -1,0 +1,20 @@
+pipeline {  
+
+  environment {
+    registry = "bbaldassari/alambic_base_centos"
+    registryCredential = 'bbaldassari-dockerhub'
+  }
+
+  agent any
+
+  stages {
+    stage('Building image') {
+      steps {
+        script {
+          docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+    }
+  }
+
+}
