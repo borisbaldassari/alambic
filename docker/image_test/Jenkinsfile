@@ -18,20 +18,19 @@ pipeline {
       }
     }
 
-    stage('Run tests') {
-      steps {
-        sh 'docker-compose -f docker-compose.test.yml run alambic_test'
-      }
-    }
-
     stage('Deploy Image') {
       steps{
         script {
           docker.withRegistry( '', registryCredential ) {
-            dockerImage.push()
             dockerImage.push("latest")
           }
         }
+      }
+    }
+
+    stage('Run tests') {
+      steps {
+        sh 'docker-compose -f docker-compose.test.yml run alambic_test'
       }
     }
 
