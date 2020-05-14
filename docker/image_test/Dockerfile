@@ -8,6 +8,8 @@ EXPOSE 3000
 USER alambic
 
 # Clone Alambic repository
+RUN rm -rf /home/alambic/alambic/
+RUN mkdir /home/alambic/alambic/
 WORKDIR /home/alambic/alambic/
 COPY . .
 
