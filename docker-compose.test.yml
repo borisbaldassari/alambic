@@ -9,6 +9,9 @@ services:
     volumes:
     - alambic_db:/var/lib/postgresql/data
   alambic_test:
+    build:
+      dockerfile: docker/image_test/Dockerfile
+      context: ./
     image: bbaldassari/alambic_test:latest
     command: [ "sh", "/home/alambic/alambic/docker/image_test/alambic_test.sh" ]
     ports:
