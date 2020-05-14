@@ -20,7 +20,6 @@ pipeline {
 
     stage('Run tests') {
       steps {
-        sh 'docker system prune --all --volumes -f'
         sh 'docker-compose -f docker-compose.test.yml run alambic_test'
       }
     }
