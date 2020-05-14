@@ -1,0 +1,34 @@
+pipeline {  
+
+  agent any
+
+  environment {
+    registry = "bbaldassari/alambic_ci"
+    registryCredential = 'bbaldassari-dockerhub'
+    def dockerTag = sh( script: "echo \$(date +%Y%m%d).${BUILD_NUMBER}", returnStdout: true).trim()
+  }
+
+  stages {
+
+    stage('Build image') {
+      steps {
+        script {
+          dockerImage = docker.build( "$registry:$dockerTag", "-f docker/image_ci/Dockerfile ." )
+        }
+      }
+    }
+
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+            dockerImage.push("latest")
+          }
+        }
+      }
+    }
+
+  }
+
+}
