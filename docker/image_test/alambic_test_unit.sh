@@ -16,7 +16,7 @@ source ~/.bashrc
 perl -v
 
 # Initialise the app: create tables, init instance.
-bin/alambic test t/unit/*/*.t
+prove -lv t/unit/*/*.t
 
 exit $?
 
