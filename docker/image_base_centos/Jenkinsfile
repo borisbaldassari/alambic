@@ -3,16 +3,17 @@ pipeline {
   environment {
     registry = "bbaldassari/alambic_base_centos"
     registryCredential = 'bbaldassari-dockerhub'
+    dockerTag: $(date +%Y%m%d).$BUILD_NUMBER 
   }
 
   agent any
 
   stages {
 
-    stage('Building image') {
+    stage('Build image') {
       steps {
         script {
-          dockerImage = docker.build( "$registry:$BUILD_NUMBER", "-f docker/image_base_centos/Dockerfile ." )
+          dockerImage = docker.build( "$registry:$dockerTag", "-f docker/image_base_centos/Dockerfile ." )
         }
       }
     }
@@ -22,6 +23,7 @@ pipeline {
         script {
           docker.withRegistry( '', registryCredential ) {
             dockerImage.push()
+            dockerImage.push("latest")
           }
         }
       }
