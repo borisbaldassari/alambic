@@ -11,7 +11,7 @@ pipeline {
     stage('Building image') {
       steps {
         script {
-          docker.build registry + ":$BUILD_NUMBER"
+          docker.build( "registry:$BUILD_NUMBER", "-f docker/image_base_centos/Dockerfile ." )
         }
       }
     }
