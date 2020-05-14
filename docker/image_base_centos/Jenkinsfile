@@ -1,12 +1,12 @@
 pipeline {  
 
+  agent any
+
   environment {
     registry = "bbaldassari/alambic_base_centos"
     registryCredential = 'bbaldassari-dockerhub'
-    dockerTag: $(date +%Y%m%d).$BUILD_NUMBER 
+    dockerTag = $(date +%Y%m%d).$BUILD_NUMBER 
   }
-
-  agent any
 
   stages {
 
