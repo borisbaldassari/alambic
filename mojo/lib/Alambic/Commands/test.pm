@@ -24,7 +24,7 @@ sub run() {
 
   my ($self, @args) = @_;
 
-  if (scalar(@args) != 0) {
+  if (scalar(@args) > 1) {
     my $usage = "
 Welcome to the Alambic application. 
 
@@ -49,6 +49,8 @@ Other Mojolicious commands:
     exit;
   }
 
+  my $force   = shift @args || 'no';
+
   # Initialise the instance before running the tests.
   say "# Initialising the instance for the tests.";
 
@@ -59,7 +61,7 @@ Other Mojolicious commands:
   my $repodb     = Alambic::Model::RepoDB->new($pg_alambic);
 
   # We don't want to empty the database if it already contains data
-  if ($repodb->is_db_ok() and not $repodb->is_db_empty()) {
+  if ($force ne '--force' and $repodb->is_db_ok() and not $repodb->is_db_empty()) {
     print
       "Database is initialised and is not empty. Cowardly refusing to test and clear it.\n\n";
     exit;
