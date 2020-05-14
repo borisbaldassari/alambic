@@ -31,6 +31,7 @@ pipeline {
     stage('Run tests') {
       steps {
         sh 'docker-compose -f docker-compose.test.yml run alambic_test'
+        sh 'docker-compose -f docker-compose.test.yml stop'
       }
     }
 
