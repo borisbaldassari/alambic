@@ -5,7 +5,7 @@ pipeline {
   environment {
     registry = "bbaldassari/alambic_base_centos"
     registryCredential = 'bbaldassari-dockerhub'
-    def dockerTag = sh( script: "echo $(date +%Y%m%d).$BUILD_NUMBER", returnStdout: true).trim()
+    def dockerTag = sh( script: "echo \$(date +%Y%m%d).${BUILD_NUMBER}", returnStdout: true).trim()
   }
 
   stages {
