@@ -235,7 +235,7 @@ sub knit_rmarkdown_pdf($$$$) {
     foreach my $key (keys %{$params}) {
       $r_cmd .= $key . " <- '" . ($params->{$key} || '') . "'; ";
     }
-    $r_cmd .= "rmarkdown::render('${r_md}', output_file='$r_md_out')\"";
+    $r_cmd .= "rmarkdown::render('${r_md}', output_file='$r_md_out', output_format='pdf_document')\"";
 
     push(@log, "[Tools::R] Exec [$r_cmd].");
     my @out = `$r_cmd 2>&1`;
