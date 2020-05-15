@@ -13,6 +13,8 @@ pipeline {
     stage('Build image') {
       steps {
         script {
+          sh 'docker rmi $registry'
+          sh 'docker rmi $registry:latest'
           dockerImage = docker.build( "$registry:latest", "-f docker/image_test/Dockerfile ." )
         }
       }
