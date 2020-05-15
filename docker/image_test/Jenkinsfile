@@ -13,8 +13,8 @@ pipeline {
     stage('Build image') {
       steps {
         script {
-          sh 'docker rmi $registry'
-          sh 'docker rmi $registry:latest'
+          sh 'docker rmi $registry || echo "No $registry found."'
+          sh 'docker rmi $registry:latest || echo "No $registry:latest found."'
           dockerImage = docker.build( "$registry:latest", "-f docker/image_test/Dockerfile ." )
         }
       }
