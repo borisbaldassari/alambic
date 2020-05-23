@@ -1,0 +1,53 @@
+  {
+    "name": "Alambic Metrics for Good Governance",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Dependency check",
+        "mnemo": "OSS_DEP_CHECK",
+        "desc": [
+            "Analysis of dependencies to identify old, vulnerable dependencies, as provided by tools like dependency-check or JFrog/Nexus."
+        ]
+      },
+      {
+        "name": "Licences check",
+        "mnemo": "OSS_LIC_CHECK",
+        "desc": [
+            "Licences check on the code, as provided by tools like ScanCode or Black Duck."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Escalation procedure",
+        "mnemo": "OSS_ESCALATE",
+        "desc": [
+            "Is there a way for anybody to report a toxic behaviour?"
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Inclusion initiative",
+        "mnemo": "OSS_INCLUSION",
+        "desc": [
+            "Is there a formal procedure to help people join and benefit from the community, whoever they are?"
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Code of Conduct",
+        "mnemo": "OSS_CODE_OF_CONDUCT",
+        "desc": [
+            "Is there an initiative to regulate the behaviour of individuals? (e.g. code of conduct)"
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Board transparency",
+        "mnemo": "GOV_BOARD_PUBLIC",
+        "desc": [
+            "Are the minutes of the board publicly available?"
+        ],
+        "scale": [1,2,3,4]
+      }
+    ]
+  }

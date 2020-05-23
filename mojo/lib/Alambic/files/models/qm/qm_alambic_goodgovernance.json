@@ -1,0 +1,284 @@
+{
+  "name": "Alambic Good Governance Quality Model",
+  "version": "0.1",
+  "children": [
+    {
+      "mnemo": "QM_AGG_QUALITY",
+      "type": "attribute",
+      "active": "true",
+      "children": [
+        {
+          "mnemo": "QM_AGG_ECOSYSTEM",
+          "active": "true",
+          "type": "attribute",
+          "children": [
+            {
+              "mnemo": "QM_AGG_ACTIVITY",
+              "active": "true",
+              "type": "attribute",
+              "children": [
+                {
+                  "mnemo": "SCM_COMMITS_1M",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "SCM_MOD_LINES_1M",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "ITS_UPDATED_1M",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "MLS_USR_POSTS_1M",
+                  "type": "metric",
+                  "active": "true"
+                }
+              ]
+            },
+            {
+              "mnemo": "QM_AGG_DIVERSITY",
+              "type": "attribute",
+              "active": "true",
+              "children": [
+                {
+                  "mnemo": "SCM_AUTHORS_1M",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "ITS_AUTHORS_1M",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "MLS_USR_AUTHORS_1M",
+                  "type": "metric",
+                  "active": "true"
+                }
+              ]
+            },
+            {
+              "mnemo": "QM_AGG_SUPPORT",
+              "type": "attribute",
+              "active": "true",
+              "children": [
+                {
+                  "mnemo": "MLS_USR_THREADS_1M",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "ITS_UPDATED_1M",
+                  "type": "metric",
+                  "active": "true"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "mnemo": "QM_AGG_PROCESS",
+          "type": "attribute",
+          "active": "true",
+          "children": [
+            {
+              "mnemo": "QM_AGG_IP",
+              "type": "attribute",
+              "active": "true",
+              "children": [
+                {
+                  "mnemo": "OSS_LIC_CHECK",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "OSS_DEP_CHECK",
+                  "type": "metric",
+                  "active": "true"
+                }
+              ]
+            },
+            {
+              "mnemo": "QM_AGG_DECISIONS",
+              "type": "attribute",
+              "active": "true",
+              "children": [
+                {
+                  "mnemo": "DOC_GOV",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "GOV_BOARD_PUBLIC",
+                  "type": "metric",
+                  "active": "true"
+                }
+              ]
+            },
+            {
+              "mnemo": "QM_AGG_ENGAGEMENT",
+              "type": "attribute",
+              "active": "true",
+              "children": [
+                {
+                  "mnemo": "SO_ANSWER_RATE_1Y",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "SCM_DIVERSITY_RATIO",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "ITS_DIVERSITY_RATIO",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "MLS_DIVERSITY_RATIO",
+                  "type": "metric",
+                  "active": "true"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "mnemo": "QM_AGG_OSS_CORE",
+          "type": "attribute",
+          "active": "true",
+          "children": [
+            {
+              "mnemo": "QM_AGG_DOC",
+              "type": "attribute",
+              "active": "true",
+              "children": [
+                {
+                  "mnemo": "PROJECT_DOC_INFO",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "PROJECT_SCM_INFO",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "PROJECT_ITS_INFO",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "PROJECT_MLS_INFO",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "PROJECT_DL_INFO",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "PROJECT_CI_INFO",
+                  "type": "metric",
+                  "active": "true"
+                }
+              ]
+            },
+            {
+              "mnemo": "QM_AGG_OPENNESS",
+              "type": "attribute",
+              "active": "true",
+              "children": [
+                {
+                  "mnemo": "PROJECT_DOC_ACCESS",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "PROJECT_SCM_ACCESS",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "PROJECT_ITS_ACCESS",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "PROJECT_MLS_ACCESS",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "PROJECT_DL_ACCESS",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "PROJECT_CI_ACCESS",
+                  "type": "metric",
+                  "active": "true"
+                }
+              ]
+            },
+            {
+              "mnemo": "QM_AGG_ETHICS",
+              "type": "attribute",
+              "active": "true",
+              "children": [
+                {
+                  "mnemo": "OSS_CODE_OF_CONDUCT",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "OSS_INCLUSION",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "OSS_ESCALATE",
+                  "type": "metric",
+                  "active": "true"
+                }
+              ]
+            },
+            {
+              "mnemo": "QM_AGG_COLLAB",
+              "type": "attribute",
+              "active": "true",
+              "children": [
+                {
+                  "mnemo": "DOC_README",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "DOC_LICENCE",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "DOC_CONTRIBUTING",
+                  "type": "metric",
+                  "active": "true"
+                },
+                {
+                  "mnemo": "DOC_GETTING_STARTED",
+                  "type": "metric",
+                  "active": "true"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
