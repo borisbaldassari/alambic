@@ -1,137 +1,225 @@
 {
-    "name": "Alambic Metrics for Issue Tracking",
-    "version": "0.1",
-    "children": [
-	{
-            "name": "ITS Open issues",
-            "mnemo": "ITS_OPEN",
-            "desc": [
-    	    	"Number of issues with a state 'open' at the time of analysis."
-            ],
-            "scale": [1,2,3,4]
-	},
-	{
-            "name": "ITS Open issues (%)",
-            "mnemo": "ITS_OPEN_PERCENT",
-            "desc": [
-    	    	"Percentage of open issues compared to the overall number of issues registered in the system."
-            ],
-            "scale": [1,2,3,4]
-	},
-	{
-            "name": "ITS Total issues",
-            "mnemo": "ITS_ISSUES_ALL",
-            "desc": [
-		        "Number of issues registered in the database, whatever their state is."
-            ]
-	},
-	{
-            "name": "ITS Pending issues",
-            "mnemo": "ITS_OPEN_UNASSIGNED",
-            "desc": [
-   		        "Number of issues in state open with no assignee (i.e. pending).",
-                "It is considered to be good practice to keep this number low. In an active project, people would either work on the bug (i.e. assign it) or triage it (pass it to some other state or assigning it)."
-            ],
-            "scale": [500,100,50,10]
-	},
-	{
-            "name": "ITS Old open issues",
-            "mnemo": "ITS_OPEN_OLD",
-            "desc": [
-   		        "Number of dead issues, i.e. issues that are in state open and have not been updated for a long time (one year).",
-                "It is considered to be good practice to keep this number low because it impacts the confidence in the Issue Tracking System if there are too many open dead issues. Some projects close issues after some time of inactivity and re-open it if needed."
-            ],
-            "scale": [1000,500,200,100]
-	},
-	{
-            "name": "ITS Late issues",
-            "mnemo": "ITS_LATE",
-            "desc": [
-		        "Number of issues with a past due date.",
-                "It is considered good practice to keep this number low. Either fix it or maintain its due date."
-            ],
-            "scale": [500,100,50,10]
-	},
-	{
-            "name": "ITS Authors",
-            "mnemo": "ITS_AUTHORS",
-            "desc": [
-		        "Number of different authors who created issues during the lifetime of the project.",
-                "A high number of authors shows diversity and improves the bus factor of the project."
-            ],
-            "scale": [2,4,9.75,80]
-	},
-	{
-            "name": "ITS authors last week",
-            "mnemo": "ITS_AUTHORS_1W",
-            "desc": [
-		        "Number of authors who created issues during last week. If today is Wed. 2017-02-01 then the range is from Wed. 2017-01-25 to Wed. 2017-02-01."
-            ],
-            "scale": [2,4,9.75,80]
-	},
-	{
-            "name": "ITS authors last month",
-            "mnemo": "ITS_AUTHORS_1M",
-            "desc": [
-		        "Number of authors who created issues during last month. If today is 2017-02-01 then the range is from 2017-01-01 to 2017-02-01."
-            ],
-            "scale": [2,4,9.75,80]
-	},
-	{
-            "name": "ITS authors last year",
-            "mnemo": "ITS_AUTHORS_1Y",
-            "desc": [
-		        "Number of authors who created issues during last year. If today is 2017-02-01 then the range is from 2016-02-01 to 2017-02-01."
-            ],
-            "scale": [2,4,9.75,80]
-	},
-	{
-            "name": "ITS issues created last week",
-            "mnemo": "ITS_CREATED_1W",
-            "desc": [
-		        "Number of issues created during last week. If today is Wed. 2017-02-01 then the range is from Wed. 2017-01-25 to Wed. 2017-02-01."
-            ],
-            "scale": [2,4,9.75,80]
-	},
-	{
-            "name": "ITS issues created last month",
-            "mnemo": "ITS_CREATED_1M",
-            "desc": [
-		        "Number of issues created during last month. If today is 2017-02-01 then the range is from 2017-01-01 to 2017-02-01."
-            ],
-            "scale": [2,4,9.75,80]
-	},
-	{
-            "name": "ITS issues created last year",
-            "mnemo": "ITS_CREATED_1Y",
-            "desc": [
-		        "Number of issues created during last year. If today is 2017-02-01 then the range is from 2016-02-01 to 2017-02-01."
-            ],
-            "scale": [2,4,9.75,80]
-	},
-	{
-            "name": "ITS issues updated last week",
-            "mnemo": "ITS_UPDATED_1W",
-            "desc": [
-		        "Number of issues updated during last week. If today is Wed. 2017-02-01 then the range is from Wed. 2017-01-25 to Wed. 2017-02-01."
-            ],
-            "scale": [2,4,9.75,80]
-	},
-	{
-            "name": "ITS issues updated last month",
-            "mnemo": "ITS_UPDATED_1M",
-            "desc": [
-		        "Number of issues updated during last month. If today is 2017-02-01 then the range is from 2017-01-01 to 2017-02-01."
-            ],
-            "scale": [2,4,9.75,80]
-	},
-	{
-            "name": "ITS issues updated last year",
-            "mnemo": "ITS_UPDATED_1Y",
-            "desc": [
-		        "Number of issues updated during last year. If today is 2017-02-01 then the range is from 2016-02-01 to 2017-02-01."
-            ],
-            "scale": [2,4,9.75,80]
-	}
-    ]
+  "name": "Alambic Metrics for Issue Tracking",
+  "version": "0.1",
+  "children": [
+    {
+      "name": "ITS Open issues",
+      "mnemo": "ITS_OPEN",
+      "desc": [
+        "Number of issues with a state 'open' at the time of analysis."
+      ],
+      "scale": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "name": "ITS Open issues (%)",
+      "mnemo": "ITS_OPEN_PERCENT",
+      "desc": [
+        "Percentage of open issues compared to the overall number of issues registered in the system."
+      ],
+      "scale": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "name": "ITS Total issues",
+      "mnemo": "ITS_ISSUES_ALL",
+      "desc": [
+        "Number of issues registered in the database, whatever their state is."
+      ]
+    },
+    {
+      "name": "ITS Pending issues",
+      "mnemo": "ITS_OPEN_UNASSIGNED",
+      "desc": [
+        "Number of issues in state open with no assignee (i.e. pending).",
+        "It is considered to be good practice to keep this number low. In an active project, people would either work on the bug (i.e. assign it) or triage it (pass it to some other state or assigning it)."
+      ],
+      "scale": [
+        500,
+        100,
+        50,
+        10
+      ]
+    },
+    {
+      "name": "ITS Old open issues",
+      "mnemo": "ITS_OPEN_OLD",
+      "desc": [
+        "Number of dead issues, i.e. issues that are in state open and have not been updated for a long time (one year).",
+        "It is considered to be good practice to keep this number low because it impacts the confidence in the Issue Tracking System if there are too many open dead issues. Some projects close issues after some time of inactivity and re-open it if needed."
+      ],
+      "scale": [
+        1000,
+        500,
+        200,
+        100
+      ]
+    },
+    {
+      "name": "ITS Late issues",
+      "mnemo": "ITS_LATE",
+      "desc": [
+        "Number of issues with a past due date.",
+        "It is considered good practice to keep this number low. Either fix it or maintain its due date."
+      ],
+      "scale": [
+        500,
+        100,
+        50,
+        10
+      ]
+    },
+    {
+      "name": "ITS Authors",
+      "mnemo": "ITS_AUTHORS",
+      "desc": [
+        "Number of different authors who created issues during the lifetime of the project.",
+        "A high number of authors shows diversity and improves the bus factor of the project."
+      ],
+      "scale": [
+        2,
+        4,
+        9.75,
+        80
+      ]
+    },
+    {
+      "name": "ITS authors last week",
+      "mnemo": "ITS_AUTHORS_1W",
+      "desc": [
+        "Number of authors who created issues during last week. If today is Wed. 2017-02-01 then the range is from Wed. 2017-01-25 to Wed. 2017-02-01."
+      ],
+      "scale": [
+        2,
+        4,
+        9.75,
+        80
+      ]
+    },
+    {
+      "name": "ITS authors last month",
+      "mnemo": "ITS_AUTHORS_1M",
+      "desc": [
+        "Number of authors who created issues during last month. If today is 2017-02-01 then the range is from 2017-01-01 to 2017-02-01."
+      ],
+      "scale": [
+        2,
+        4,
+        9.75,
+        80
+      ]
+    },
+    {
+      "name": "ITS authors last year",
+      "mnemo": "ITS_AUTHORS_1Y",
+      "desc": [
+        "Number of authors who created issues during last year. If today is 2017-02-01 then the range is from 2016-02-01 to 2017-02-01."
+      ],
+      "scale": [
+        2,
+        4,
+        9.75,
+        80
+      ]
+    },
+    {
+      "name": "ITS issues created last week",
+      "mnemo": "ITS_CREATED_1W",
+      "desc": [
+        "Number of issues created during last week. If today is Wed. 2017-02-01 then the range is from Wed. 2017-01-25 to Wed. 2017-02-01."
+      ],
+      "scale": [
+        2,
+        4,
+        9.75,
+        80
+      ]
+    },
+    {
+      "name": "ITS issues created last month",
+      "mnemo": "ITS_CREATED_1M",
+      "desc": [
+        "Number of issues created during last month. If today is 2017-02-01 then the range is from 2017-01-01 to 2017-02-01."
+      ],
+      "scale": [
+        2,
+        4,
+        9.75,
+        80
+      ]
+    },
+    {
+      "name": "ITS issues created last year",
+      "mnemo": "ITS_CREATED_1Y",
+      "desc": [
+        "Number of issues created during last year. If today is 2017-02-01 then the range is from 2016-02-01 to 2017-02-01."
+      ],
+      "scale": [
+        2,
+        4,
+        9.75,
+        80
+      ]
+    },
+    {
+      "name": "ITS issues updated last week",
+      "mnemo": "ITS_UPDATED_1W",
+      "desc": [
+        "Number of issues updated during last week. If today is Wed. 2017-02-01 then the range is from Wed. 2017-01-25 to Wed. 2017-02-01."
+      ],
+      "scale": [
+        2,
+        4,
+        9.75,
+        80
+      ]
+    },
+    {
+      "name": "ITS issues updated last month",
+      "mnemo": "ITS_UPDATED_1M",
+      "desc": [
+        "Number of issues updated during last month. If today is 2017-02-01 then the range is from 2017-01-01 to 2017-02-01."
+      ],
+      "scale": [
+        2,
+        4,
+        9.75,
+        80
+      ]
+    },
+    {
+      "name": "ITS issues updated last year",
+      "mnemo": "ITS_UPDATED_1Y",
+      "desc": [
+        "Number of issues updated during last year. If today is 2017-02-01 then the range is from 2016-02-01 to 2017-02-01."
+      ],
+      "scale": [
+        2,
+        4,
+        9.75,
+        80
+      ]
+    },
+    {
+      "name": "ITS diversity ratio",
+      "mnemo": "ITS_DIVERSITY_RATIO",
+      "desc": [
+        "The ration of bugs divided by the number of submitters."
+      ],
+      "scale": [
+        1,
+        2,
+        3,
+        18
+      ]
+    }
+  ]
 }

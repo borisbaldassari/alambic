@@ -10,30 +10,6 @@
         ]
       },
       {
-        "name": "Changed issues 1 week",
-        "mnemo": "ITS_CHANGED_1W",
-        "desc": [
-            "The number of issues on the project updated during last week."
-        ],
-        "scale": [1,2,3,4]
-      },
-      {
-        "name": "Changed issues 1 month",
-        "mnemo": "ITS_CHANGED_1M",
-        "desc": [
-            "The number of issues on the project updated during last month."
-        ],
-        "scale": [1,2,3,4]
-      },
-      {
-        "name": "Changed issues 1 year",
-        "mnemo": "ITS_CHANGED_1Y",
-        "desc": [
-            "The number of issues on the project updated during last year."
-        ],
-        "scale": [1,2,3,4]
-      },
-      {
         "name": "Created issues 1 week",
         "mnemo": "ITS_CREATED_1W",
         "desc": [
@@ -66,39 +42,7 @@
         "scale": [1,2,3,4]
       },
       {
-        "name": "Total number of closed issues",
-        "mnemo": "ITS_ISSUES_CLOSED",
-        "desc": [
-            "The number of closed issues on the project at the time of analysis."
-        ],
-        "scale": [1,2,3,4]
-      },
-      {
-        "name": "Total number of open issues",
-        "mnemo": "ITS_ISSUES_OPEN",
-        "desc": [
-            "The number of closed issues on the project at the time of analysis."
-        ],
-        "scale": [1,2,3,4]
-      },
-      {
-        "name": "Total number of late issues",
-        "mnemo": "ITS_ISSUES_LATE",
-        "desc": [
-            "The number of issues on the project which due date has already past at the time of analysis."
-        ],
-        "scale": [1,2,3,4]
-      },
-      {
-        "name": "Total number of non-assigned open issues",
-        "mnemo": "ITS_ISSUES_UNASSIGNED_OPEN",
-        "desc": [
-            "The number of issues on the project which are open and not assigned to anybody."
-        ],
-        "scale": [1,2,3,4]
-      },
-      {
-        "name": "ACTORS",
+        "name": "Total number of Actors",
         "mnemo": "ITS_PEOPLE",
         "desc": [
             "The total number of people involved in issues tracking, includes authors (submitters), closers and updaters XXX."

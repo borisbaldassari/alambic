@@ -132,7 +132,7 @@
         "name": "SCM committers one month",
         "mnemo": "SCM_COMMITTERS_1M",
         "desc": [
-            "Total number of identities found as committers of commits in source code management repositories dated during the last month.",
+          "Total number of identities found as committers of commits in source code management repositories dated during the last month.",
 	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'committer date' (when there is a difference between author date and committer date). Time range is measured as a one month period starting the day before the data retrieval (example: if retrieval is on Feb 3rd, period is from Jan 3rd to Feb 2nd, both included)."
         ],
         "scale": [1,2,3,18]
@@ -141,8 +141,16 @@
         "name": "SCM committers one year",
         "mnemo": "SCM_COMMITTERS_1Y",
         "desc": [
-            "Total number of identities found as committers of commits in source code management repositories dated during the last year.",
+          "Total number of identities found as committers of commits in source code management repositories dated during the last year.",
 	        "Source code management repositories are those considered as such in the project documentation. Date used for each commit is 'committer date' (when there is a difference between author date and committer date). Time range is measured as a one year period starting the day before the data retrieval (example: if retrieval is on Feb 3rd 2016, period is from Feb 3rd 2015 to Feb 3rd 2016, both included)."
+        ],
+        "scale": [1,2,3,18]
+      },
+      {
+        "name": "SCM diversity ratio",
+        "mnemo": "SCM_DIVERSITY_RATIO",
+        "desc": [
+          "The ration of commits divided by the number of authors."
         ],
         "scale": [1,2,3,18]
       }
