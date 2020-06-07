@@ -175,13 +175,13 @@ sub run_plugin($$) {
   # Write list of files.
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
   my @files_csv;
-  my $key_files = 0;
+  my @keyfiles;
   my $generated = 0;
   $csv_out = "path,size,date,programming_language,sha1,is_binary,is_text,is_archive,";
   $csv_out .= "is_source,is_script,is_legal,is_manifest,is_readme,is_top_level,";
   $csv_out .= "is_key_file,is_generated\n";
   foreach my $f (@files) {
-    next unless ( $f->{'type'} == 'file' );
+    next unless ( $f->{'type'} eq 'file' );
     $csv->combine((
       $_->{'path'}, $_->{'size'}, $_->{'date'}, $_->{'programming_language'},
       $_->{'sha1'}, $_->{'is_binary'}, $_->{'is_text'}, $_->{'is_archive'}, 
@@ -189,7 +189,12 @@ sub run_plugin($$) {
       $_->{'is_readme'}, $_->{'is_top_level'}, $_->{'is_key_file'}, $_->{'is_generated'}
     ));
     $csv_out .= $csv->string();
-    $key_files++ if ( $f->{'is_readme'} );
+
+    # Identify key, readmes, manifests, legal files.
+    push( @keyfiles, { 'path' => $f->{'path'}, 'type' => 'key' } ) if ( $f->{'is_keyfile'} );
+    push( @keyfiles, { 'path' => $f->{'path'}, 'type' => 'readme' } ) if ( $f->{'is_readme'} );
+    push( @keyfiles, { 'path' => $f->{'path'}, 'type' => 'manifest' } ) if ( $f->{'is_manifest'} );
+    push( @keyfiles, { 'path' => $f->{'path'}, 'type' => 'legal' } ) if ( $f->{'is_legal'} );
     $generated++ if ( $f->{'is_generated'} );
   }
   $repofs->write_output($project_id, "scancode_files.csv", $csv_out);
@@ -201,10 +206,20 @@ sub run_plugin($$) {
       "SC_AUTHORS_VOL" => scalar(@authors),
       "SC_PROGS_VOL" => scalar(@programming_languages),
       "SC_FILES_VOL" => scalar(@files),
-      "SC_KEY_FILES" => $key_files,
+      "SC_KEY_FILES" => scalar(@keyfiles),
       "SC_GENERATED_VOL" => $generated,
       "SC_FILES_COUNT" => $data->{'headers'}[0]{'extra_data'}{'files_count'} || -1,
     };
+
+  # Write list of meta files.
+  $csv = Text::CSV->new({binary => 1, eol => "\n"});
+  $csv_out = "path,type\n";
+  my @metrics_csv    = map { 
+      $csv->combine(( $_->{'path'}, $_->{'type'} ));
+      $csv_out .= $csv->string();
+    }
+    @keyfiles;
+  $repofs->write_output($project_id, "scancode_key_files.csv", $csv_out);
 
   # Write list of metrics.
   $csv = Text::CSV->new({binary => 1, eol => "\n"});

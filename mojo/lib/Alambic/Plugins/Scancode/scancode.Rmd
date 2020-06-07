@@ -25,6 +25,7 @@ opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
 project.id <- "modeling.gendoc"
 plugin.id <- "Scancode"
 file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_metrics.csv", sep="")
+file.keys <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_key_files.csv", sep="")
 file.authors <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_authors.csv", sep="")
 file.copyrights <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_copyrights.csv", sep="")
 file.files <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_files.csv", sep="")
@@ -35,6 +36,7 @@ file.programming_languages <- paste("../../../../projects/", project.id, "/outpu
 abc <- c('A', 'B', 'C', 'D', 'E', 'F', 'G')
 
 metrics <- read.csv(file=file.metrics, header=T)
+keys <- read.csv(file=file.keys, header=T)
 authors <- read.csv(file=file.authors, header=T)
 copyrights <- read.csv(file=file.copyrights, header=T)
 files <- read.csv(file=file.files, header=T)
@@ -46,7 +48,7 @@ dir_vol <- metrics[metrics$metric == 'SC_FILES_VOL',2] - metrics[metrics$metric 
 
 ```
 
-## Scancode results analysis for `r I(project.id)`
+## Scancode analysis results  for `r I(project.id)`
 
 <br />
 
@@ -56,26 +58,7 @@ dir_vol <- metrics[metrics$metric == 'SC_FILES_VOL',2] - metrics[metrics$metric 
 
 You can learn more about this module on its [documentation page](http://alambic.io/Plugins/Pre/Scancode.html) on the project wiki.
 
-</div><div class="col-sm-4">
-  <div class="panel panel-default">
-  <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
-  <div class="list-group">
-  <a href="#metrics" class="list-group-item">Metrics</a>
-  <a href="#licences" class="list-group-item">Liences</a>
-  <a href="#copyrights" class="list-group-item">Copyrights</a>
-  <a href="#authors" class="list-group-item">Authors</a>
-  <a href="#holders" class="list-group-item">Holders</a>
-  <a href="#langs" class="list-group-item">Programming languages</a>
-  <a href="#downloads" class="list-group-item">Downloads</a>
-  </div>
-  </div>
-</div></div>
-
------
-
 ### <a name="metrics"></a>Metrics
-
-<div class="row"><div class="col-sm-6">
 
 Scancode identified ``r nrow(metrics)`` metrics:
 
@@ -89,11 +72,43 @@ Scancode identified ``r nrow(metrics)`` metrics:
 * Total number of programming languages identified is ``r metrics[metrics$metric == 'SC_PROGS_VOL',2]``.
 
 
-</div><div class="col-sm-6">
-
+</div><div class="col-sm-4">
+  <div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+  <div class="list-group">
+  <a href="#metrics" class="list-group-item">Metrics</a>
+  <a href="#keyfiles" class="list-group-item">Key files</a>
+  <a href="#licences" class="list-group-item">Liences</a>
+  <a href="#copyrights" class="list-group-item">Copyrights</a>
+  <a href="#authors" class="list-group-item">Authors</a>
+  <a href="#holders" class="list-group-item">Holders</a>
+  <a href="#langs" class="list-group-item">Programming languages</a>
+  <a href="#downloads" class="list-group-item">Downloads</a>
+  </div>
+  </div>
 </div></div>
 
 -----
+
+### <a name="keyfiles"></a>Key files
+
+*Key files* are top-level codebase files such as COPYING, README and package manifests. Current codebase includes ``r  metrics[metrics$metric == 'SC_KEY_FILES',2]`` key files, and ``r metrics[metrics$metric == 'SC_GENERATED_VOL',2]`` files considered as generated.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Key files</div>
+
+<table class="table table-striped">
+  <tr><th>File path</th><th>Type</th></tr>
+```{r keyfiles_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(keys, 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div> 
+
+----
 
 ### <a name="licences"></a>Licences
 
