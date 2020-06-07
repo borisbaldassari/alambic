@@ -24,7 +24,7 @@ use Data::Dumper;
 my %conf = (
   "id"      => "scancode",
   "name"    => "Scancode Tool",
-  "desc"    => "Scancode scans files and fetch information about licences.",
+  "desc"    => "Scancode scans files and fetch information about licences and copyrights.",
   "ability" => [
     "methods",
   ],
@@ -193,13 +193,15 @@ sub scancode_scan_json() {
 
 =head1 NAME
 
-B<Alambic::Tools::Scancode> - A plugin to manage a git repository.
+B<Alambic::Tools::Scancode> - A plugin to execute scancode on sources.
 
 =head1 DESCRIPTION
 
-B<Alambic::Tools::Scancode> provides an interface to the Git software 
-configuration management tool within Alambic. It specifically provides 
-methods to clone and pull a repository, and to get the log of commits.
+B<Alambic::Tools::Scancode> provides an interface to the Scancode tool within Alambic. 
+It specifically provides methods to scan a codebase and outputs results in CSV or JSON format.
+
+This plugin needs to access the sources of the project. It is therefore mandatory to configure a Git Plugin 
+on the project alongside this one, in order to fetch its repository and sources.
 
 For the complete configuration see the user documentation on the web site: L<https://alambic.io/Plugins/Tools/Scancode.html>.
 
@@ -207,14 +209,9 @@ For the complete configuration see the user documentation on the web site: L<htt
 
     my $tool = Alambic::Tools::Scancode->new(
     'test.project', 
-    'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
     my $version = $tool->version();
 
-Build a new Git object. 
-
-
-If the git directory exists, the plugin will use it. Otherwise a clone will be 
-automatically executed at object startup.
+Build a new Scancode object. 
 
 =head2 C<get_conf()>
 
@@ -224,29 +221,29 @@ Get configuration for this Git plugin instance. Returns a hash
 reference.
 
     (
-      "id" => "git",
-      "name" => "Git Tool",
-      "desc" => "Provides Git commands and features.",
+      "id"      => "scancode",
+      "name"    => "Scancode Tool",
+      "desc"    => "Scancode scans files and fetch information about licences and copyrights.",
       "ability" => [
-        "methods", "project"
+        "methods",
       ],
-      "type" => "tool",
-      "params" => {"path_git" => "The absolute path to the git binary.",},
-      "provides_methods" => {
-        "git_clone" => "Clone a project git repository locally.",
-        "git_pull" => "Execute a pull from a git repository.",
-        "git_clone_or_pull" => "Execute a pull from a git repository, 
-          clone if it doesn't exist.",
-        "git_log" => "Retrieves log from a local git repository.",
-        "git_commits" => "Retrieves commits for a git repository.",
+      "type"   => "tool",
+      "params" => {
+        "path_scancode" => "The absolute path to the scancode binary.",
+        "path_src" => "The path of the source tree to parse, relative to the root of the repository. Defaults to its root.",
+        "proxy"    => "The URL of a proxy, if any.",
       },
+      "provides_methods" => {
+        "scancode_scan_csv" => "Starts a scan on a directory -- CSV output.",
+        "scancode_scan_json" => "Starts a scan on a directory -- JSON output.",
+      }
     )
 
 =head2 C<version()>
 
     my $version = $tool->version();
 
-Returns Git version as a string.
+Returns the version as a string.
 
 =head2 C<test()>
 
@@ -255,46 +252,30 @@ Returns Git version as a string.
 Self-test method for the tool. Returns a log as an array reference.
 
     [
-      'OK: Git exec found in PATH at [/usr/bin/git].'
+      'OK: Scancode exec found in PATH at [/usr/bin/scancode].'
     ]
 
-=head2 C<git_clone_or_pull()>
+=head2 C<scancode_scan_csv()>
 
-    $log = $tool->git_clone_or_pull();
+    $log = $tool->scancode_scan_csv();
 
-Function to get a git repository locally, not even knowing if 
-it's already there or not. If it exists, it will be pulld.
-If it doesn't, it will be cloned
+Function to execute scancode and output CSV.
 
-=head2 C<git_clone()>
+Execution parameters for the scancode command are:
+  -n2 --copyright --package --license --info
+  --summary --classify --generated 
+  --csv
 
-    $log = $tool->git_clone('test.project',
-      'https://BorisBaldassari@bitbucket.org/BorisBaldassari/alambic.git');
+=head2 C<scancode_scan_json()>
 
-Function to clone a git repository locally. It assumes the repository
-doesn't already exists (fails otherwise).
+    $log = $tool->scancode_scan_json();
 
-=head2 C<git_log()>
+Function to execute scancode and output JSON.
 
-    $git->git-log('modeling.sirius');
-
-Function to get the log from a git repository. It assumes the repository
-already exists (fails otherwise).
-
-Log file is written in the input directory of the project data space.
-
-=head2 C<git_commits()>
-
-    my $commits = $git->git_commits();
-
-Returns an array of commits
-
-=head2 C<git_pull()>
-
-    $git->git_pull();
-
-Function to pull from a git repository. It is assumed that the clone
-directory already exists.
+Execution parameters for the scancode command are:
+  -n2 --copyright --package --license --info
+  --summary --classify --generated 
+  --json  
 
 =head1 SEE ALSO
 
