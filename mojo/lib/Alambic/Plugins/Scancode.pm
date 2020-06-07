@@ -182,7 +182,6 @@ sub run_plugin($$) {
   $csv_out .= "is_key_file,is_generated\n";
   foreach my $f (@files) {
     next unless ( $f->{'type'} == 'file' );
-print "DBG $_->{'path'}, $_->{'size'}\n";
     $csv->combine((
       $_->{'path'}, $_->{'size'}, $_->{'date'}, $_->{'programming_language'},
       $_->{'sha1'}, $_->{'is_binary'}, $_->{'is_text'}, $_->{'is_archive'}, 
@@ -266,8 +265,6 @@ in a codebase with Scancode.
 
 B<Alambic::Plugins::Scancode> A plugin to scan licences and copyrights 
 in a codebase with Scancode.
-
-
 
 Parameters: None
 

@@ -43,12 +43,7 @@ licences <- read.csv(file=file.licences, header=T)
 programming_languages <- read.csv(file=file.programming_languages, header=T)
 
 dir_vol <- metrics[metrics$metric == 'SC_FILES_VOL',2] - metrics[metrics$metric == 'SC_FILES_COUNT',2]
-#issues <- merge(issues.blocker, issues.critical, all=TRUE)
-#issues <- merge(issues, issues.major, all=TRUE)
 
-#violations <- as.data.frame(t(sq.metrics[,c('SQ_VIOLATIONS_BLOCKER', 'SQ_VIOLATIONS_CRITICAL', 'SQ_VIOLATIONS_MAJOR', 'SQ_VIOLATIONS_MINOR', 'SQ_VIOLATIONS_INFO')]))
-#violations$names <- rownames(violations)
-#names(violations) <- c('Values', 'Severity')
 ```
 
 ## Scancode results analysis for `r I(project.id)`
@@ -66,7 +61,11 @@ You can learn more about this module on its [documentation page](http://alambic.
   <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
   <div class="list-group">
   <a href="#metrics" class="list-group-item">Metrics</a>
-  <a href="#issues" class="list-group-item">Violations</a>
+  <a href="#licences" class="list-group-item">Liences</a>
+  <a href="#copyrights" class="list-group-item">Copyrights</a>
+  <a href="#authors" class="list-group-item">Authors</a>
+  <a href="#holders" class="list-group-item">Holders</a>
+  <a href="#langs" class="list-group-item">Programming languages</a>
   <a href="#downloads" class="list-group-item">Downloads</a>
   </div>
   </div>
@@ -183,7 +182,7 @@ cat(t)
 
 <table class="table table-striped">
   <tr><th>Holder</th><th>Count</th></tr>
-```{r authors_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+```{r holders_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(holders, 1,
 		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
@@ -209,7 +208,7 @@ cat(t)
 
 <table class="table table-striped">
   <tr><th>Programming Language</th><th>Count</th></tr>
-```{r authors_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+```{r lang_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(programming_languages, 1,
 		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
