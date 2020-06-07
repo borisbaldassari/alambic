@@ -168,18 +168,18 @@ sub _create_badge($$$) {
     my $proxy_http  = $ua->proxy->http;
     my $proxy_https = $ua->proxy->https;
     push(@$log,
-      "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https]."
+      "[Plugins::ProjectSummary] Using default proxy [$proxy_http] and [$proxy_https]."
     );
   }
   elsif ($proxy_url =~ m!\S+!) {
 
     # If something, then use it
     $ua->proxy->http($proxy_url)->https($proxy_url);
-    push(@$log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
+    push(@$log, "[Plugins::ProjectSummary] Using provided proxy [$proxy_url].");
   }
   else {
     # If blank, then use no proxy
-    push(@$log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
+    push(@$log, "[Plugins::ProjectSummary] No proxy defined [$proxy_url].");
   }
 
   # GET the resource
@@ -221,6 +221,7 @@ sub _create_psum_attrs() {
   my @ids = grep { $_ =~ /^QM_/ } sort keys %$params;
 
   foreach my $id (@ids) {
+#    print "DBG QM $id.";
     $html_t
       .= '<tr><td><a href="/documentation/attributes.html#'
       . $id . '">'
