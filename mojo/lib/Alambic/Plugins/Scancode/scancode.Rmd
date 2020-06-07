@@ -1,0 +1,252 @@
+---
+title: "SonarQube 4.5.x"
+author:
+- name: "Boris Baldassari"
+  affiliation: Castalia Solutions
+output:
+  html_fragment:
+    toc: false
+    fig_caption: true
+    fig.width: 800
+    self_contained: false
+    lib_dir: libs
+    echo: false
+    dev: svg
+---
+
+```{r init, echo=FALSE, message=FALSE}
+
+library(knitr)
+require(ggplot2)
+require(xtable)
+
+opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
+
+project.id <- "modeling.gendoc"
+plugin.id <- "Scancode"
+file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_metrics.csv", sep="")
+file.authors <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_authors.csv", sep="")
+file.copyrights <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_copyrights.csv", sep="")
+file.files <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_files.csv", sep="")
+file.holders <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_holders.csv", sep="")
+file.licences<- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_licences.csv", sep="")
+file.programming_languages <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_programming_languages.csv", sep="")
+
+abc <- c('A', 'B', 'C', 'D', 'E', 'F', 'G')
+
+metrics <- read.csv(file=file.metrics, header=T)
+authors <- read.csv(file=file.authors, header=T)
+copyrights <- read.csv(file=file.copyrights, header=T)
+files <- read.csv(file=file.files, header=T)
+holders <- read.csv(file=file.holders, header=T)
+licences <- read.csv(file=file.licences, header=T)
+programming_languages <- read.csv(file=file.programming_languages, header=T)
+
+dir_vol <- metrics[metrics$metric == 'SC_FILES_VOL',2] - metrics[metrics$metric == 'SC_FILES_COUNT',2]
+#issues <- merge(issues.blocker, issues.critical, all=TRUE)
+#issues <- merge(issues, issues.major, all=TRUE)
+
+#violations <- as.data.frame(t(sq.metrics[,c('SQ_VIOLATIONS_BLOCKER', 'SQ_VIOLATIONS_CRITICAL', 'SQ_VIOLATIONS_MAJOR', 'SQ_VIOLATIONS_MINOR', 'SQ_VIOLATIONS_INFO')]))
+#violations$names <- rownames(violations)
+#names(violations) <- c('Values', 'Severity')
+```
+
+## Scancode results analysis for `r I(project.id)`
+
+<br />
+
+<div class="row"><div class="col-sm-7">
+
+[Scancode toolkit](https://github.com/nexB/scancode-toolkit) is an open-source tool that detects licenses, copyrights, package manifests and dependencies by scanning a codebase. 
+
+You can learn more about this module on its [documentation page](http://alambic.io/Plugins/Pre/Scancode.html) on the project wiki.
+
+</div><div class="col-sm-4">
+  <div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+  <div class="list-group">
+  <a href="#metrics" class="list-group-item">Metrics</a>
+  <a href="#issues" class="list-group-item">Violations</a>
+  <a href="#downloads" class="list-group-item">Downloads</a>
+  </div>
+  </div>
+</div></div>
+
+-----
+
+### <a name="metrics"></a>Metrics
+
+<div class="row"><div class="col-sm-6">
+
+Scancode identified ``r nrow(metrics)`` metrics:
+
+* A total of ``r metrics[metrics$metric == 'SC_FILES_VOL',2]`` entries in the codebase, including ``r metrics[metrics$metric == 'SC_FILES_COUNT',2]`` files and ``r dir_vol`` directories,
+* *Key files* are top-level codebase files such as COPYING, README and package manifests. Current codebase includes ``r  metrics[metrics$metric == 'SC_KEY_FILES',2]`` key files, and ``r metrics[metrics$metric == 'SC_GENERATED_VOL',2]`` files considered as generated.
+
+* Total number of licences identified is ``r metrics[metrics$metric == 'SC_LICENSES_VOL',2]``.
+* Total number of copyrights identified is ``r metrics[metrics$metric == 'SC_COPYRIGHTS_VOL',2]``.
+* Total number of holders identified is ``r metrics[metrics$metric == 'SC_HOLDERS_VOL',2]``.
+* Total number of authors identified is ``r metrics[metrics$metric == 'SC_AUTHORS_VOL',2]``.
+* Total number of programming languages identified is ``r metrics[metrics$metric == 'SC_PROGS_VOL',2]``.
+
+
+</div><div class="col-sm-6">
+
+</div></div>
+
+-----
+
+### <a name="licences"></a>Licences
+
+<div class="row"><div class="col-sm-6">
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Licences</div>
+
+<table class="table table-striped">
+  <tr><th>Licence</th><th>Count</th></tr>
+```{r licences_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(licences, 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+</div><div class="col-sm-6">
+
+<iframe src="/projects/`r project.id`/Scancode/scancode_licences.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
+
+</div></div>
+
+----
+
+### <a name="copyrights"></a>Copyrights
+
+<div class="row"><div class="col-sm-6">
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Copyrights</div>
+
+<table class="table table-striped">
+  <tr><th>Copyright</th><th>Count</th></tr>
+```{r copyrights_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(copyrights, 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+</div><div class="col-sm-6">
+
+<iframe src="/projects/`r project.id`/Scancode/scancode_copyrights.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
+
+</div></div>
+
+----
+
+### <a name="authors"></a>Authors
+
+<div class="row"><div class="col-sm-6">
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Authors</div>
+
+<table class="table table-striped">
+  <tr><th>Author</th><th>Count</th></tr>
+```{r authors_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(authors, 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+</div><div class="col-sm-6">
+
+<iframe src="/projects/`r project.id`/Scancode/scancode_authors.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
+
+</div></div>
+
+----
+
+### <a name="holders"></a>Holders
+
+<div class="row"><div class="col-sm-6">
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Holders</div>
+
+<table class="table table-striped">
+  <tr><th>Holder</th><th>Count</th></tr>
+```{r authors_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(holders, 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+</div><div class="col-sm-6">
+
+<iframe src="/projects/`r project.id`/Scancode/scancode_holders.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
+
+</div></div>
+
+----
+
+### <a name="langs"></a>Programming Languages
+
+<div class="row"><div class="col-sm-6">
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Programming Languages</div>
+
+<table class="table table-striped">
+  <tr><th>Programming Language</th><th>Count</th></tr>
+```{r authors_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(programming_languages, 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+</div><div class="col-sm-6">
+
+<iframe src="/projects/`r project.id`/Scancode/scancode_programming_languages.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
+
+</div></div>
+
+-----
+
+### <a name="downloads"></a>Downloads
+
+The visualisations on this page can be exported and easily reused on an external web site. You can find more information on iframes and pictures reuse in [the project&apos;s wiki](https://alambic.io/Documentation/Basics/Exports.html). Remember to change the server name in the code samples provided.
+
+Pie chart of licences (HTML)
+
+    <iframe src="http://server/projects/`r project.id`/Scancode/scancode_licences.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+
+Pie chart of copyrights (HTML)
+
+    <iframe src="http://server/projects/`r project.id`/Scancode/scancode_copyrights.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+
+Pie chart of authors (HTML)
+
+    <iframe src="http://server/projects/`r project.id`/Scancode/scancode_authors.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+
+Pie chart of holders (HTML)
+
+    <iframe src="http://server/projects/`r project.id`/Scancode/scancode_holders.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+
+Pie chart of programming languages (HTML)
+
+    <iframe src="http://server/projects/`r project.id`/Scancode/scancode_programming_languages.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+
