@@ -1,0 +1,24 @@
+---
+output: 
+  html_document:
+    self_contained: no
+---
+
+```{r summary-pie-gvis, echo=FALSE, message=FALSE, results='asis'}
+#project.id <- "modeling.gendoc"
+
+file.licences <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_licences.csv", sep="")
+sc.licences <- read.csv(file=file.licences, header=T)
+licences <- data.frame(sc.licences)
+
+suppressPackageStartupMessages(library(googleVis))
+options(gvis.plot.tag='chart')
+
+p <- gvisPieChart(licences, options = list(
+      title="Licences",
+#      colors="[ '#CC0000', '#DD5500', '#EEAA00', '#FFCC66', '#ADBECF' ]",
+      width=550, height=340,
+      pieHole= 0.4))
+
+print(p, 'chart')
+```
