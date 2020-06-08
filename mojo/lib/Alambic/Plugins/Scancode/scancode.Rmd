@@ -22,6 +22,7 @@ require(xtable)
 
 opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
 
+project.id <- "modeling.sirius"
 #   project.id <- "modeling.gendoc"
 plugin.id <- "Scancode"
 file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_metrics.csv", sep="")
@@ -92,13 +93,14 @@ Scancode identified ``r nrow(metrics)`` metrics:
 
 ### <a name="specialfiles"></a>Special files
 
-* *Special files* are defined as:
-  - key files: top-level codebase files such as COPYING, README and package manifests. 
-  - readme's 
-  - legal stuff files, e.g. licences
-  - manifests
+*Special files* are defined as:
+
+* key files: top-level codebase files such as COPYING, README and package manifests. 
+* readmes 
+* legal stuff files, eg licences
+* manifests
   
-Only 10 first items are displayed. You can download the full list of files at 
+The following table shows the list of special files identified in the codebase (only the 10 first items are displayed). You can download the full list of special files from [here](/projects/`r project.id`/Scancode/scancode_special_files.csv).
 
 <div class="panel panel-default">
 <div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Key files</div>
@@ -107,7 +109,7 @@ Only 10 first items are displayed. You can download the full list of files at
   <tr><th>File path</th><th>Type</th></tr>
 ```{r keyfiles_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(specials[seq(1,10),], 1,
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+		   function(x) paste(' <tr><td>', trimws(x[[1]]), '</td><td>', trimws(x[[2]]), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
@@ -118,6 +120,8 @@ cat(t)
 
 ### <a name="licences"></a>Licences
 
+The full list of licences can be downloaded from [here](/projects/`r project.id`/Scancode/scancode_licences.csv).
+
 <div class="row"><div class="col-sm-6">
 
 <div class="panel panel-default">
@@ -127,7 +131,7 @@ cat(t)
   <tr><th>Licence</th><th>Count</th></tr>
 ```{r licences_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(licences, 1,
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+		   function(x) paste(' <tr><td>', trimws(x[[1]]), '</td><td>', trimws(x[[2]]), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
@@ -144,6 +148,8 @@ cat(t)
 
 ### <a name="copyrights"></a>Copyrights
 
+The full list of copyrights can be downloaded from [here](/projects/`r project.id`/Scancode/scancode_copyrights.csv).
+
 <div class="row"><div class="col-sm-6">
 
 <div class="panel panel-default">
@@ -153,7 +159,7 @@ cat(t)
   <tr><th>Copyright</th><th>Count</th></tr>
 ```{r copyrights_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(copyrights, 1,
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+		   function(x) paste(' <tr><td>', trimws(x[[1]]), '</td><td>', trimws(x[[2]]), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
@@ -170,6 +176,8 @@ cat(t)
 
 ### <a name="authors"></a>Authors
 
+The full list of authors can be downloaded from [here](/projects/`r project.id`/Scancode/scancode_authors.csv).
+
 <div class="row"><div class="col-sm-6">
 
 <div class="panel panel-default">
@@ -179,7 +187,7 @@ cat(t)
   <tr><th>Author</th><th>Count</th></tr>
 ```{r authors_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(authors, 1,
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+		   function(x) paste(' <tr><td>', trimws(x[[1]]), '</td><td>', trimws(x[[2]]), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
@@ -196,6 +204,8 @@ cat(t)
 
 ### <a name="holders"></a>Holders
 
+The full list of holders can be downloaded from [here](/projects/`r project.id`/Scancode/scancode_holders.csv).
+
 <div class="row"><div class="col-sm-6">
 
 <div class="panel panel-default">
@@ -205,7 +215,7 @@ cat(t)
   <tr><th>Holder</th><th>Count</th></tr>
 ```{r holders_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(holders, 1,
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+		   function(x) paste(' <tr><td>', trimws(x[[1]]), '</td><td>', trimws(x[[2]]), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
@@ -222,6 +232,8 @@ cat(t)
 
 ### <a name="langs"></a>Programming Languages
 
+The full list of programming languages can be downloaded from [here](/projects/`r project.id`/Scancode/scancode_programming_languages.csv).
+
 <div class="row"><div class="col-sm-6">
 
 <div class="panel panel-default">
@@ -231,7 +243,7 @@ cat(t)
   <tr><th>Programming Language</th><th>Count</th></tr>
 ```{r lang_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
 t <- apply(programming_languages, 1,
-		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+		   function(x) paste(' <tr><td>', trimws(x[[1]]), '</td><td>', trimws(x[[2]]), '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)
 ```
