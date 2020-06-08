@@ -22,10 +22,10 @@ require(xtable)
 
 opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
 
-project.id <- "modeling.gendoc"
+#   project.id <- "modeling.gendoc"
 plugin.id <- "Scancode"
 file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_metrics.csv", sep="")
-file.keys <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_key_files.csv", sep="")
+file.specials <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_special_files.csv", sep="")
 file.authors <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_authors.csv", sep="")
 file.copyrights <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_copyrights.csv", sep="")
 file.files <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_files.csv", sep="")
@@ -36,7 +36,7 @@ file.programming_languages <- paste("../../../../projects/", project.id, "/outpu
 abc <- c('A', 'B', 'C', 'D', 'E', 'F', 'G')
 
 metrics <- read.csv(file=file.metrics, header=T)
-keys <- read.csv(file=file.keys, header=T)
+specials <- read.csv(file=file.specials, header=T)
 authors <- read.csv(file=file.authors, header=T)
 copyrights <- read.csv(file=file.copyrights, header=T)
 files <- read.csv(file=file.files, header=T)
@@ -63,7 +63,7 @@ You can learn more about this module on its [documentation page](http://alambic.
 Scancode identified ``r nrow(metrics)`` metrics:
 
 * A total of ``r metrics[metrics$metric == 'SC_FILES_VOL',2]`` entries in the codebase, including ``r metrics[metrics$metric == 'SC_FILES_COUNT',2]`` files and ``r dir_vol`` directories,
-* *Key files* are top-level codebase files such as COPYING, README and package manifests. Current codebase includes ``r  metrics[metrics$metric == 'SC_KEY_FILES',2]`` key files, and ``r metrics[metrics$metric == 'SC_GENERATED_VOL',2]`` files considered as generated.
+* Current codebase includes ``r  metrics[metrics$metric == 'SC_SPECIAL_FILES',2]`` special files, and ``r metrics[metrics$metric == 'SC_GENERATED_VOL',2]`` files considered as generated.
 
 * Total number of licences identified is ``r metrics[metrics$metric == 'SC_LICENSES_VOL',2]``.
 * Total number of copyrights identified is ``r metrics[metrics$metric == 'SC_COPYRIGHTS_VOL',2]``.
@@ -77,7 +77,7 @@ Scancode identified ``r nrow(metrics)`` metrics:
   <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
   <div class="list-group">
   <a href="#metrics" class="list-group-item">Metrics</a>
-  <a href="#keyfiles" class="list-group-item">Key files</a>
+  <a href="#specialfiles" class="list-group-item">Special files</a>
   <a href="#licences" class="list-group-item">Liences</a>
   <a href="#copyrights" class="list-group-item">Copyrights</a>
   <a href="#authors" class="list-group-item">Authors</a>
@@ -90,9 +90,15 @@ Scancode identified ``r nrow(metrics)`` metrics:
 
 -----
 
-### <a name="keyfiles"></a>Key files
+### <a name="specialfiles"></a>Special files
 
-*Key files* are top-level codebase files such as COPYING, README and package manifests. Current codebase includes ``r  metrics[metrics$metric == 'SC_KEY_FILES',2]`` key files, and ``r metrics[metrics$metric == 'SC_GENERATED_VOL',2]`` files considered as generated.
+* *Special files* are defined as:
+  - key files: top-level codebase files such as COPYING, README and package manifests. 
+  - readme's 
+  - legal stuff files, e.g. licences
+  - manifests
+  
+Only 10 first items are displayed. You can download the full list of files at 
 
 <div class="panel panel-default">
 <div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Key files</div>
@@ -100,7 +106,7 @@ Scancode identified ``r nrow(metrics)`` metrics:
 <table class="table table-striped">
   <tr><th>File path</th><th>Type</th></tr>
 ```{r keyfiles_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(keys, 1,
+t <- apply(specials[seq(1,10),], 1,
 		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
 cat(t)

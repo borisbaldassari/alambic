@@ -45,6 +45,7 @@ my %conf = (
   "provides_info"  => [],
   "provides_data"  => {
     "scancode.json" => "The JSON output of the scancode execution.",
+    "scancode_special_files.csv" => "The CSV list of all special files. See documentation to know what a special file is.",
     "scancode_licences.csv" => "The CSV extract of all license expressions found in files.",
     "scancode_copyrights.csv" => "The CSV extract of all copyrights found in files.",
     "scancode_holders.csv" => "The CSV extract of all holders found in files.",
@@ -60,7 +61,7 @@ my %conf = (
     "SC_FILES_VOL"      => "SC_FILES_VOL",
     "SC_FILES_COUNT"      => "SC_FILES_COUNT",
     "SC_GENERATED_VOL"      => "SC_GENERATED_VOL",
-    "SC_KEY_FILES"      => "SC_KEY_FILES",
+    "SC_SPECIAL_FILES"      => "SC_SPECIAL_FILES",
   },
   "provides_figs"    => {
     'scancode_licences.html' => "Pie chart of licences detected in the codebase.",
@@ -206,12 +207,12 @@ sub run_plugin($$) {
       "SC_AUTHORS_VOL" => scalar(@authors),
       "SC_PROGS_VOL" => scalar(@programming_languages),
       "SC_FILES_VOL" => scalar(@files),
-      "SC_KEY_FILES" => scalar(@keyfiles),
+      "SC_SPECIAL_FILES" => scalar(@keyfiles),
       "SC_GENERATED_VOL" => $generated,
       "SC_FILES_COUNT" => $data->{'headers'}[0]{'extra_data'}{'files_count'} || -1,
     };
 
-  # Write list of meta files.
+  # Write list of special files.
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
   $csv_out = "path,type\n";
   my @metrics_csv    = map { 
@@ -219,12 +220,12 @@ sub run_plugin($$) {
       $csv_out .= $csv->string();
     }
     @keyfiles;
-  $repofs->write_output($project_id, "scancode_key_files.csv", $csv_out);
+  $repofs->write_output($project_id, "scancode_special_files.csv", $csv_out);
 
   # Write list of metrics.
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
   $csv_out = "metric,value\n";
-  my @metrics_csv    = map { 
+  @metrics_csv    = map { 
       $csv->combine(( $_, $metrics->{$_} || 'unknown' ));
       $csv_out .= $csv->string();
     }
