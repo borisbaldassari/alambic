@@ -73,9 +73,18 @@ my %conf = (
   "provides_metrics" => {
     "PROJECT_ITS_INFO"    => "PROJECT_ITS_INFO",
     "PROJECT_SCM_INFO"    => "PROJECT_SCM_INFO",
+    "PROJECT_MLS_INFO"    => "PROJECT_MLS_INFO",
     "PROJECT_CI_INFO"    => "PROJECT_CI_INFO",
     "PROJECT_DOC_INFO"    => "PROJECT_DOC_INFO",
-    "PROJECT_ACCESS_INFO" => "PROJECT_ACCESS_INFO",
+    "PROJECT_DL_INFO" => "PROJECT_DL_INFO",
+    "PROJECT_GETTINGSTARTED_INFO" => "PROJECT_GETTINGSTARTED_INFO",
+
+    "PROJECT_ITS_ACCESS"    => "PROJECT_ITS_ACCESS",
+    "PROJECT_SCM_ACCESS"    => "PROJECT_SCM_ACCESS",
+    "PROJECT_MLS_ACCESS"    => "PROJECT_MLS_ACCESS",
+    "PROJECT_CI_ACCESS"    => "PROJECT_CI_ACCESS",
+    "PROJECT_DOC_ACCESS"    => "PROJECT_DOC_ACCESS",
+    "PROJECT_DL_ACCESS" => "PROJECT_DL_ACCESS",
 	
     "PROJECT_REL_VOL"     => "PROJECT_REL_VOL",
   },
@@ -232,6 +241,16 @@ sub _compute_data($) {
   my $checks_nok;
   my $pub_doc_info    = 0;
   my $pub_access_info = 0;
+
+  # Initialise boolean metrics with zeros..
+  $metrics{"PROJECT_DL_ACCESS"} = 0;
+  $metrics{"PROJECT_DOC_ACCESS"} = 0;
+  $metrics{"PROJECT_CI_ACCESS"} = 0;
+  $metrics{"PROJECT_ITS_ACCESS"} = 0;
+  $metrics{"PROJECT_SCM_ACCESS"} = 0;
+  $metrics{"PROJECT_MLS_ACCESS"} = 0;
+  $metrics{"PROJECT_GETTINGSTARTED_INFO"} = 0;
+  $metrics{"PROJECT_MLS_INFO"} = 0;
 
   push(@log, "[Plugins::EclipsePmi] Starting compute data for [$project_id].");
 
@@ -526,6 +545,7 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the URL can be fetched using a simple get query.';
   if (exists($raw_project->{'download_url'}->[0]->{'url'})) {
+    $metrics{"PROJECT_DL_INFO"} ++;
     $info{"PROJECT_DOWNLOAD_URL"} = $raw_project->{'download_url'}->[0]->{'url'};
     $url                      = $raw_project->{'download_url'}->[0]->{'url'};
     $check->{'value'}         = $url;
@@ -540,6 +560,8 @@ sub _compute_data($) {
             "The download URL [$url] cannot be retrieved in the PMI. People need it to download, use, and contribute to the project and should be correctly filled."
         }
       );
+    } else {
+      $metrics{"PROJECT_DL_ACCESS"}++;
     }
   }
   else {
@@ -583,6 +605,7 @@ sub _compute_data($) {
         }
       );
     }
+    $metrics{"PROJECT_GETTINGSTARTED_INFO"} = 1;
   }
   else {
     push(
@@ -637,6 +660,8 @@ sub _compute_data($) {
             "The documentation URL [$url] cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled."
         }
       );
+    } else {
+      $metrics{"PROJECT_DOC_ACCESS"} = 1;
     }
   }
   else {
@@ -815,6 +840,7 @@ sub _compute_data($) {
       $url = $ml->{'url'};
       my $name = $ml->{'name'};
       $info{"PROJECT_MLS_USR_URL"} = $url;
+      $metrics{"PROJECT_MLS_INFO"} = 1;
       $check->{'value'} = $url;
       if ($name =~ m!\S+!) {
         push(@{$check->{'results'}}, "OK. Forum [$name] correctly defined.");
@@ -833,6 +859,8 @@ sub _compute_data($) {
               "The user mailing list / forum URL [$url] in the PMI cannot be retrieved. It helps people know where to ask questions if they want to use the product and should be fixed."
           }
         );
+      } else {
+        $metrics{"PROJECT_MLS_ACCESS"} = 1;
       }
     }
   }
@@ -890,6 +918,8 @@ sub _compute_data($) {
               'The source repository URL [$url] in the PMI cannot be retrieved. People need it if they want to contribute to the product, and it should be fixed.'
           }
         );
+      } else {
+        $metrics{"PROJECT_SCM_ACCESS"} = 1;
       }
     }
   }
@@ -992,6 +1022,7 @@ sub _compute_data($) {
     push(@{$check->{'results'}}, "OK. Fetched CI URL.");
     my $url = $proj_ci . '/api/json?depth=1';
     $info{"PROJECT_CI_URL"} = $proj_ci;
+    $metrics{"PROJECT_CI_INFO"}++;
     my $json_str = $ua->get($url)->res->body;
     if ($json_str =~ m!^\s*{!) {
       my $content_tmp = decode_json($json_str);
@@ -1002,6 +1033,7 @@ sub _compute_data($) {
           @{$check->{'results'}},
           "OK. CI URL is a Hudson instance. Title is [$name]"
         );
+        $metrics{"PROJECT_CI_ACCESS"}++;
       }
       else {
         push(
