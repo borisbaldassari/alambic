@@ -114,22 +114,22 @@
               "active": "true",
               "children": [
                 {
-                  "mnemo": "DOC_README",
+                  "mnemo": "SC_HAS_README",
                   "type": "metric",
                   "active": "true"
                 },
                 {
-                  "mnemo": "DOC_LICENCE",
+                  "mnemo": "SC_HAS_LICENCE",
                   "type": "metric",
                   "active": "true"
                 },
                 {
-                  "mnemo": "DOC_CONTRIBUTING",
+                  "mnemo": "SC_HAS_CONTRIBUTING",
                   "type": "metric",
                   "active": "true"
                 },
                 {
-                  "mnemo": "DOC_GETTING_STARTED",
+                  "mnemo": "PMI_GETTINGSTARTED_INFO",
                   "type": "metric",
                   "active": "true"
                 }
