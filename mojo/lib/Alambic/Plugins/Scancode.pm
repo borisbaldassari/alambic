@@ -63,6 +63,8 @@ my %conf = (
     "SC_FILES_COUNT"      => "SC_FILES_COUNT",
     "SC_GENERATED_VOL"      => "SC_GENERATED_VOL",
     "SC_SPECIAL_FILES"      => "SC_SPECIAL_FILES",
+    "SC_HAS_LICENCE"      => "SC_HAS_LICENCE",
+    "SC_README_VOL"      => "SC_README_VOL",
   },
   "provides_figs"    => {
     'scancode_licences.html' => "Pie chart of licences detected in the codebase.",
@@ -178,14 +180,16 @@ sub run_plugin($$) {
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
   my @files_csv;
   my @keyfiles;
-  my $generated = 0;
+  my $generated = 0; my $readmes = 0; my $has_licence = 0; my $contributing;
   $csv_out = "path,size,date,programming_language,sha1,is_binary,is_text,is_archive,";
   $csv_out .= "is_source,is_script,is_legal,is_manifest,is_readme,is_top_level,";
   $csv_out .= "is_key_file,is_generated\n";
   foreach my $f (@files) {
     next unless ( $f->{'type'} eq 'file' );
+    my $path = $f->{'path'};
+    $path =~ s!^src/!!;
     $csv->combine((
-      $_->{'path'}, $_->{'size'}, $_->{'date'}, $_->{'programming_language'},
+      $path, $_->{'size'}, $_->{'date'}, $_->{'programming_language'},
       $_->{'sha1'}, $_->{'is_binary'}, $_->{'is_text'}, $_->{'is_archive'}, 
       $_->{'is_source'}, $_->{'is_script'}, $_->{'is_legal'}, $_->{'is_manifest'}, 
       $_->{'is_readme'}, $_->{'is_top_level'}, $_->{'is_key_file'}, $_->{'is_generated'}
@@ -193,11 +197,19 @@ sub run_plugin($$) {
     $csv_out .= $csv->string();
 
     # Identify key, readmes, manifests, legal files.
-    push( @keyfiles, { 'path' => $f->{'path'}, 'type' => 'key' } ) if ( $f->{'is_keyfile'} );
-    push( @keyfiles, { 'path' => $f->{'path'}, 'type' => 'readme' } ) if ( $f->{'is_readme'} );
-    push( @keyfiles, { 'path' => $f->{'path'}, 'type' => 'manifest' } ) if ( $f->{'is_manifest'} );
-    push( @keyfiles, { 'path' => $f->{'path'}, 'type' => 'legal' } ) if ( $f->{'is_legal'} );
+    push( @keyfiles, { 'path' => $path, 'type' => 'key' } ) if ( $f->{'is_keyfile'} );
+    push( @keyfiles, { 'path' => $path, 'type' => 'readme' } ) if ( $f->{'is_readme'} );
+    push( @keyfiles, { 'path' => $path, 'type' => 'manifest' } ) if ( $f->{'is_manifest'} );
+    push( @keyfiles, { 'path' => $path, 'type' => 'legal' } ) if ( $f->{'is_legal'} );
+    # Increment only if legal at root of directory
+    $has_licence++ if ( $f->{'is_legal'} and $path !~ m!/! );
+    # Increment only if readme and root of directory
+    $readmes++ if ( $f->{'is_readme'} and $path !~ m!/! );
     $generated++ if ( $f->{'is_generated'} );
+    # Increment only if readme and root of directory
+    $contributing++ if ( $f->{'is_text'} and $path !~ m!/! and (
+      $f->{'name'} =~ m!contrib.*!i or $f->{'name'} =~ m!devel.*!i
+    ) );
   }
   $repofs->write_output($project_id, "scancode_files.csv", $csv_out);
 
@@ -211,6 +223,9 @@ sub run_plugin($$) {
       "SC_SPECIAL_FILES" => scalar(@keyfiles),
       "SC_GENERATED_VOL" => $generated,
       "SC_FILES_COUNT" => $data->{'headers'}[0]{'extra_data'}{'files_count'} || -1,
+      "SC_HAS_LICENCE" => $has_licence,
+      "SC_HAS_README" => $readmes,
+      "SC_HAS_CONTRIBUTING" => $contributing,
     };
 
   # Write list of special files.

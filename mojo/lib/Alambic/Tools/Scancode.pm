@@ -155,7 +155,7 @@ sub scancode_scan_csv() {
 # Function to execute scancode and output JSON .
 # Execution parameters are:
 #   -n2 --copyright --package --license --info
-#   --summary --classify --generated 
+#   --summary --summary-key-files --classify --generated 
 #   --json  
 sub scancode_scan_json() {
   my ($self) = @_;
@@ -170,7 +170,7 @@ sub scancode_scan_json() {
     my $file_out_json = $dir_out . '/' . $project_id . '_scancode.json';
 
     my $cmd = "$bin_path -n2 --copyright --package --license --info ";
-    $cmd .= "--summary --classify --generated ";
+    $cmd .= "--summary --summary-key-files --classify --generated ";
     $cmd .= "--json $file_out_json $dir_src";
 
     push(@log,
