@@ -148,7 +148,7 @@
       },
       {
         "name": "SCM diversity ratio",
-        "mnemo": "SCM_DIVERSITY_RATIO",
+        "mnemo": "SCM_DIVERSITY_RATIO_1Y",
         "desc": [
           "The ration of commits divided by the number of authors."
         ],

@@ -68,6 +68,7 @@ my %conf = (
     "SCM_MOD_LINES_1W"  => "SCM_MOD_LINES_1W",
     "SCM_MOD_LINES_1M"  => "SCM_MOD_LINES_1M",
     "SCM_MOD_LINES_1Y"  => "SCM_MOD_LINES_1Y",
+    "SCM_DIVERSITY_RATIO"  => "SCM_DIVERSITY_RATIO",
   },
   "provides_figs" => {
     'git_summary.html'      => "HTML export of Git main metrics.",
@@ -281,6 +282,7 @@ sub _compute_data($$) {
   $metrics{'SCM_COMMITTERS_1W'} = scalar(keys %committers_1w) || 0;
   $metrics{'SCM_COMMITTERS_1M'} = scalar(keys %committers_1m) || 0;
   $metrics{'SCM_COMMITTERS_1Y'} = scalar(keys %committers_1y) || 0;
+  $metrics{'SCM_DIVERSITY_RATIO_1Y'} = int( $metrics{'SCM_COMMITS_1Y'} / $metrics{'SCM_COMMITTERS_1Y'} );
 
   # Set user information for profile
   push(@log, "[Plugins::Git] Writing user events file.");
