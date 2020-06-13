@@ -87,6 +87,7 @@ my %conf = (
     "ITS_OPEN_PERCENT"    => "ITS_OPEN_PERCENT",
 #    "ITS_LATE"            => "ITS_LATE",
     "ITS_OPEN_UNASSIGNED" => "ITS_OPEN_UNASSIGNED",
+    "ITS_DIVERSITY_RATIO_1Y" => "ITS_DIVERSITY_RATIO_1Y",
   },
   "provides_figs" => {
     'bugzilla_evol_summary.html' => "Evolution of Bugzilla issues submission",
@@ -404,6 +405,7 @@ sub run_plugin($$) {
   $ret{'metrics'}{'ITS_UPDATED_1W'}      = $bz_updated_1w;
   $ret{'metrics'}{'ITS_UPDATED_1M'}      = $bz_updated_1m;
   $ret{'metrics'}{'ITS_UPDATED_1Y'}      = $bz_updated_1y;
+  $ret{'metrics'}{'ITS_DIVERSITY_RATIO_1Y'} = int( $bz_created_1y / $ret{'metrics'}{'ITS_AUTHORS_1Y'} );
   
   # Set user information for profile
   push(@{$ret{'log'}}, "[Plugins::Bugzilla] Writing user events file.");

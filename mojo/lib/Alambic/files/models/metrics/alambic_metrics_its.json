@@ -210,7 +210,7 @@
     },
     {
       "name": "ITS diversity ratio",
-      "mnemo": "ITS_DIVERSITY_RATIO",
+      "mnemo": "ITS_DIVERSITY_RATIO_1Y",
       "desc": [
         "The ration of bugs divided by the number of submitters."
       ],
