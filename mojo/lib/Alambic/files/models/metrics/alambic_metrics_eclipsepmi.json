@@ -138,7 +138,7 @@
       },
       {
         "name": "Getting started",
-        "mnemo": "DOC_GETTING_STARTED",
+        "mnemo": "PROJECT_GETTINGSTARTED_INFO",
         "desc": [
             "Is the documentation info correctly filled in the PMI records?",
             "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."

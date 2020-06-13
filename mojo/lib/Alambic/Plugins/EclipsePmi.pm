@@ -78,15 +78,18 @@ my %conf = (
     "PROJECT_DOC_INFO"    => "PROJECT_DOC_INFO",
     "PROJECT_DL_INFO" => "PROJECT_DL_INFO",
     "PROJECT_GETTINGSTARTED_INFO" => "PROJECT_GETTINGSTARTED_INFO",
-
     "PROJECT_ITS_ACCESS"    => "PROJECT_ITS_ACCESS",
     "PROJECT_SCM_ACCESS"    => "PROJECT_SCM_ACCESS",
     "PROJECT_MLS_ACCESS"    => "PROJECT_MLS_ACCESS",
     "PROJECT_CI_ACCESS"    => "PROJECT_CI_ACCESS",
     "PROJECT_DOC_ACCESS"    => "PROJECT_DOC_ACCESS",
     "PROJECT_DL_ACCESS" => "PROJECT_DL_ACCESS",
-	
     "PROJECT_REL_VOL"     => "PROJECT_REL_VOL",
+
+    "OSS_INCLUSION"     => "OSS_INCLUSION",
+    "OSS_ESCALATE"     => "OSS_ESCALATE",
+    "DOC_GOV"     => "DOC_GOV",
+    "GOV_BOARD_PUBLIC"     => "GOV_BOARD_PUBLIC",
   },
   "provides_figs" => {},
   "provides_recs" => [
@@ -251,6 +254,13 @@ sub _compute_data($) {
   $metrics{"PROJECT_MLS_ACCESS"} = 0;
   $metrics{"PROJECT_GETTINGSTARTED_INFO"} = 0;
   $metrics{"PROJECT_MLS_INFO"} = 0;
+
+  # At Eclipse, all projects benefit from the forge's
+  # community guidelines and processes. 
+  $metrics{"OSS_INCLUSION"} = 1;
+  $metrics{"OSS_ESCALATE"} = 1;
+  $metrics{"DOC_GOV"} = 1;
+  $metrics{"GOV_BOARD_PUBLIC"} = 1;
 
   push(@log, "[Plugins::EclipsePmi] Starting compute data for [$project_id].");
 
