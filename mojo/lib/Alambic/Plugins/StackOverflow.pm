@@ -251,7 +251,6 @@ print "1Y" . Dumper($date_1y);
     $answers += $answer_count;
 
     # Manage *_1Y metrics
-print "CREATED" . Dumper($creation_date);
     if ( DateTime->from_epoch( epoch => $creation_date) > $date_1y ) {
       $answers_1y += $answer_count;
       $questions_1y++;
