@@ -40,6 +40,8 @@ my %conf = (
   "params"         => {
     "dir_bin" =>
       'The full path to the binary, e.g. /opt/scancode/scancode.',
+    "licence_regexp" =>
+      'A regular expression that describes the correct licence. Every licence that does not match this regexp will be considered wrong.',
   },
   "provides_cdata" => [],
   "provides_info"  => [],
@@ -52,6 +54,7 @@ my %conf = (
     "scancode_holders.csv" => "The CSV extract of all holders found in files.",
     "scancode_authors.csv" => "The CSV extract of all holders authors in files.",
     "scancode_programming_languages.csv" => "The CSV extract of all programming languages found in files.",
+    "scancode_packages.csv" => "The CSV extract of all packages identified in sources.",
   },
   "provides_metrics" => {
     "SC_LICENSES_VOL"      => "SC_LICENSES_VOL",
@@ -65,6 +68,7 @@ my %conf = (
     "SC_SPECIAL_FILES"      => "SC_SPECIAL_FILES",
     "SC_HAS_LICENCE"      => "SC_HAS_LICENCE",
     "SC_README_VOL"      => "SC_README_VOL",
+    "SC_HAS_CODEOFCONDUCT"      => "SC_HAS_CODEOFCONDUCT",
   },
   "provides_figs"    => {
     'scancode_licences.html' => "Pie chart of licences detected in the codebase.",
@@ -96,6 +100,8 @@ sub get_conf() {
 sub run_plugin($$) {
   my ($self, $project_id, $conf) = @_;
 
+  my $licence_regexp = $conf->{'licence_regexp'};
+
   my @log;
   push(@log, "[Plugins::Scancode] Start Scancode plugin execution for project $project_id.");
 
@@ -121,7 +127,8 @@ sub run_plugin($$) {
   my @holders = @{$data->{'summary'}{'holders'}};
   my @authors = @{$data->{'summary'}{'authors'}};
   my @programming_languages = @{$data->{'summary'}{'programming_language'}};
-  my @files = @{$data->{'files'}};      
+  my @files = @{$data->{'files'}};     
+  my @packages = @{$data->{'summary'}{'packages'}}; 
 
   # Write list of licences.
   my $csv = Text::CSV->new({binary => 1, eol => "\n"});
@@ -180,7 +187,8 @@ sub run_plugin($$) {
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
   my @files_csv;
   my @keyfiles;
-  my $generated = 0; my $readmes = 0; my $has_licence = 0; my $contributing;
+  my $generated = 0; my $readmes = 0; my $has_licence = 0; 
+  my $contributing = 0; my $codeofconducts = 0;
   $csv_out = "path,size,date,programming_language,sha1,is_binary,is_text,is_archive,";
   $csv_out .= "is_source,is_script,is_legal,is_manifest,is_readme,is_top_level,";
   $csv_out .= "is_key_file,is_generated\n";
@@ -210,11 +218,35 @@ sub run_plugin($$) {
     $contributing++ if ( $f->{'is_text'} and $path !~ m!/! and (
       $f->{'name'} =~ m!contrib.*!i or $f->{'name'} =~ m!devel.*!i
     ) );
+    # Increment only if codeofconfduct and root of directory
+    $codeofconducts++ if ( $f->{'is_text'} and $path !~ m!/! and (
+      $f->{'name'} =~ m!.*code.*conduct.*!i 
+    ) );
   }
   $repofs->write_output($project_id, "scancode_files.csv", $csv_out);
 
+  # Write list of packages.
+  $csv = Text::CSV->new({binary => 1, eol => "\n"});
+  $csv_out = "name,version,type,language,url\n";
+  my @packages_csv
+    = map {
+      $csv->combine(( $_->{'name'}, $_->{'version'} || 'unknown', 
+        $_->{'type'} || 'unknown', $_->{'primary_language'} || 'unknown', 
+        $_->{'repository_homepage_url'} || 'unknown' ));
+      $csv_out .= $csv->string();
+    }
+    @packages;
+  $repofs->write_output($project_id, "scancode_packages.csv", $csv_out);
+
+  # Compute SC_LIC_CHECK value: number of non-expected licences.
+  my @expected_licences = grep { 
+    $_->{'value'} !~ m!null! &&
+    $_->{'value'} !~ m!$licence_regexp! 
+  } @licences;
+
   my $metrics = {
       "SC_LICENSES_VOL" => scalar(@licences),
+      "SC_LIC_CHECK" => scalar(@expected_licences),
       "SC_COPYRIGHTS_VOL" => scalar(@copyrights),
       "SC_HOLDERS_VOL" => scalar(@holders),
       "SC_AUTHORS_VOL" => scalar(@authors),
@@ -224,6 +256,7 @@ sub run_plugin($$) {
       "SC_GENERATED_VOL" => $generated,
       "SC_FILES_COUNT" => $data->{'headers'}[0]{'extra_data'}{'files_count'} || -1,
       "SC_HAS_LICENCE" => $has_licence,
+      "SC_HAS_CODEOFCONDUCT" => $codeofconducts,
       "SC_HAS_README" => $readmes,
       "SC_HAS_CONTRIBUTING" => $contributing,
     };
