@@ -92,7 +92,7 @@
               "active": "true",
               "children": [
                 {
-                  "mnemo": "OSS_CODE_OF_CONDUCT",
+                  "mnemo": "SC_HAS_CODEOFCONDUCT",
                   "type": "metric",
                   "active": "true"
                 },
@@ -129,7 +129,7 @@
                   "active": "true"
                 },
                 {
-                  "mnemo": "PMI_GETTINGSTARTED_INFO",
+                  "mnemo": "PROJECT_GETTINGSTARTED_INFO",
                   "type": "metric",
                   "active": "true"
                 }
@@ -221,7 +221,7 @@
               "active": "true",
               "children": [
                 {
-                  "mnemo": "OSS_LIC_CHECK",
+                  "mnemo": "SC_LIC_CHECK",
                   "type": "metric",
                   "active": "true"
                 },
@@ -260,17 +260,17 @@
                   "active": "true"
                 },
                 {
-                  "mnemo": "SCM_DIVERSITY_RATIO",
+                  "mnemo": "SCM_DIVERSITY_RATIO_1Y",
                   "type": "metric",
                   "active": "true"
                 },
                 {
-                  "mnemo": "ITS_DIVERSITY_RATIO",
+                  "mnemo": "ITS_DIVERSITY_RATIO_1Y",
                   "type": "metric",
                   "active": "true"
                 },
                 {
-                  "mnemo": "MLS_DIVERSITY_RATIO",
+                  "mnemo": "MLS_USR_DIVERSITY_RATIO_1Y",
                   "type": "metric",
                   "active": "true"
                 }

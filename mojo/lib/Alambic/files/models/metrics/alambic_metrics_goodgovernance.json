@@ -10,18 +10,11 @@
         ]
       },
       {
-        "name": "Licences check",
-        "mnemo": "OSS_LIC_CHECK",
-        "desc": [
-            "Licences check on the code, as provided by tools like ScanCode or Black Duck."
-        ],
-        "scale": [1,2,3,4]
-      },
-      {
         "name": "Escalation procedure",
         "mnemo": "OSS_ESCALATE",
         "desc": [
-            "Is there a way for anybody to report a toxic behaviour?"
+            "Is there an easy and visible way for anybody to report toxic behaviour or unfair practices?",
+            "As an example, people willing to report unfair practices or bad behaviour within an Eclipse project can send an email at codeofconduct@eclipse.org."
         ],
         "scale": [1,2,3,4]
       },
@@ -29,15 +22,8 @@
         "name": "Inclusion initiative",
         "mnemo": "OSS_INCLUSION",
         "desc": [
-            "Is there a formal procedure to help people join and benefit from the community, whoever they are?"
-        ],
-        "scale": [1,2,3,4]
-      },
-      {
-        "name": "Code of Conduct",
-        "mnemo": "OSS_CODE_OF_CONDUCT",
-        "desc": [
-            "Is there an initiative to regulate the behaviour of individuals? (e.g. code of conduct)"
+            "Is there a formal procedure to help people join and benefit from the community, whoever they are?",
+            "As an example"
         ],
         "scale": [1,2,3,4]
       },
