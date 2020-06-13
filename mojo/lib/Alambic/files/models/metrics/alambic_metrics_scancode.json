@@ -1,0 +1,48 @@
+  {
+    "name": "Alambic Metris for Scancode",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Has licence",
+        "mnemo": "SC_HAS_LICENCE",
+        "desc": [
+            "Is there a licence file at the root of the directory?"
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Has contributing",
+        "mnemo": "SC_HAS_CONTRIBUTING",
+        "desc": [
+            "Is there a contributing or development guide file at the root of the directory?"
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Has Readme",
+        "mnemo": "SC_HAS_README",
+        "desc": [
+            "Is there a readme file at the root of the directory?"
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Code of Conduct",
+        "mnemo": "SC_HAS_CODEOFCONDUCT",
+        "desc": [
+            "Is there an initiative and written document to regulate the behaviour of individuals? (e.g. code of conduct)",
+            "As an example, the Eclipse Foundation enforces the following code of conduct: https://www.eclipse.org/org/documents/Community_Code_of_Conduct.php ."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Licences check",
+        "mnemo": "SC_LIC_CHECK",
+        "desc": [
+            "Licences check on the code, as provided by tools like ScanCode (or Black Duck or..).",
+            "All licences found in the codebase that do not conform to a custom regexp are considered wrong. One should have as few as possible of them."
+        ],
+        "scale": [10,5,3,0]
+      }
+    ]
+  }
