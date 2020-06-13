@@ -53,6 +53,7 @@ my %conf = (
   "provides_metrics" => {
     "SO_QUESTIONS_VOL_5Y" => "SO_QUESTIONS_VOL_5Y",
     "SO_ANSWERS_VOL_5Y"   => "SO_ANSWERS_VOL_5Y",
+    "SO_ANSWER_RATE_1Y"   => "SO_ANSWER_RATE_1Y",
     "SO_ANSWER_RATE_5Y"   => "SO_ANSWER_RATE_5Y",
     "SO_VOTES_VOL_5Y"     => "SO_VOTES_VOL_5Y",
     "SO_VIEWS_VOL_5Y"     => "SO_VIEWS_VOL_5Y",
@@ -223,14 +224,16 @@ sub _compute_data() {
 
   # Compute dates to limit time range.
   my $date_now = DateTime->now(time_zone => 'local');
-  my $date_before = DateTime->now(time_zone => 'local')->subtract(years => 5);
-  my $date_before_ok = $date_before->strftime("%Y-%m-%d");
+  my $date_1y = DateTime->now(time_zone => 'local')->subtract(years => 1); 
+print "1Y" . Dumper($date_1y);
+  my $date_5y = DateTime->now(time_zone => 'local')->subtract(years => 5);
+  my $date_5y_ok = $date_5y->strftime("%Y-%m-%d");
 
   # Read file retrieved from repo and decode json.
   my $content_json = $repofs->read_input($project_id, "import_so.json");
   my $content = decode_json($content_json);
 
-  my ($questions, $answers, $views, $votes) = (0, 0, 0, 0);
+  my ($questions, $questions_1y, $answers, $answers_1y, $views, $votes) = (0, 0, 0, 0, 0, 0);
   my %people;
 
   # Produce a CSV file with all information. Easier to read in R.
@@ -246,6 +249,14 @@ sub _compute_data() {
     my $last_activity_date = $content->{'items'}->{$id}->{'last_activity_date'};
     my $answer_count       = $content->{'items'}->{$id}->{'answer_count'};
     $answers += $answer_count;
+
+    # Manage *_1Y metrics
+print "CREATED" . Dumper($creation_date);
+    if ( DateTime->from_epoch( epoch => $creation_date) > $date_1y ) {
+      $answers_1y += $answer_count;
+      $questions_1y++;
+    }
+
     my $is_answered = $content->{'items'}->{$id}->{'is_answered'};
     my $title       = $content->{'items'}->{$id}->{'title'};
     $title =~ s!,!!g;
@@ -258,13 +269,14 @@ sub _compute_data() {
       .= "$id,$views_count,$score,$creation_date,$last_activity_date,$answer_count,$is_answered,$title\n";
   }
 
-# Write that to csv in plugins folder (for R treatment) and output (for download).
+  # Write that to csv in plugins folder (for R treatment) and output (for download).
   $repofs->write_plugin('StackOverflow', $project_id . "_so.csv", $csv_out);
   $repofs->write_output($project_id, "so.csv", $csv_out);
 
   # Compute metrics
   $metrics{'SO_QUESTIONS_VOL_5Y'} = $questions;
   $metrics{'SO_ANSWERS_VOL_5Y'}   = $answers;
+  $metrics{'SO_ANSWER_RATE_1Y'}   = sprintf("%.2f", ($answers_1y / $questions_1y));
   $metrics{'SO_ANSWER_RATE_5Y'}   = sprintf("%.2f", ($answers / $questions));
   $metrics{'SO_VOTES_VOL_5Y'}     = $votes;
   $metrics{'SO_VIEWS_VOL_5Y'}     = $views;
@@ -290,7 +302,7 @@ sub _compute_data() {
   my %params = (
     "project.tag" => $so_keyword,
     "date.now"    => $date_now,
-    "date.before" => $date_before_ok,
+    "date.before" => $date_5y_ok,
   );
 
   # Now execute the main R script.
