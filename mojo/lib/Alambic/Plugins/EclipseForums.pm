@@ -73,6 +73,7 @@ my %conf = (
     "MLS_USR_POSTS_1W"    => "MLS_USR_POSTS_1W",
     "MLS_USR_POSTS_1M"    => "MLS_USR_POSTS_1M",
     "MLS_USR_POSTS_1Y"    => "MLS_USR_POSTS_1Y",
+    "MLS_USR_DIVERSITY_RATIO_1Y"    => "MLS_USR_DIVERSITY_RATIO_1Y",
   },
   "provides_figs" => {
       'eclipse_forums_wordcloud.svg' => 'Wordcloud of threads subjects (SVG)',
@@ -409,6 +410,10 @@ sub _retrieve_data($$$) {
   $metrics{'MLS_USR_AUTHORS_1M'} = scalar keys %authors_1m || 0;
   $metrics{'MLS_USR_AUTHORS_1Y'} = scalar keys %authors_1y || 0;
 
+  $metrics{'MLS_USR_DIVERSITY_RATIO_1Y'}   = int( 
+    $metrics{'MLS_USR_POSTS_1Y'} / $metrics{'MLS_USR_AUTHORS_1Y'} 
+  );
+
   
   # Now execute the main R script.
   push(@log, "[Plugins::EclipseForums] Executing R main file.");
@@ -424,21 +429,6 @@ sub _retrieve_data($$$) {
 				'eclipse_forums_wordcloud.svg']) 
     }
   );
-  # And execute the figures R scripts.
-  # @{$ret{'log'}} = (
-  #   @{$ret{'log'}},
-  #   @{
-  #     $r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_evol_summary.rmd',
-  #       ['eclipse_forums_evol_summary.png', 'bugzilla_evol_summary.svg'], $opts )
-  #   }
-  # );
-  # @{$ret{'log'}} = (
-  #   @{$ret{'log'}},
-  #   @{
-  #     $r->knit_rmarkdown_html('Bugzilla', $project_id, 'bugzilla_versions.rmd',
-  #       ['eclipse_forums_versions.png', 'bugzilla_versions.svg'], $opts )
-  #   }
-  # );
   @log = ( @log,
     @{ $r->knit_rmarkdown_html('EclipseForums', $project_id, 
 			       'eclipse_forums_plot.rmd',

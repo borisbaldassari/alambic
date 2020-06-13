@@ -111,8 +111,8 @@
         "scale": [5,20,50,200]
       },
       {
-        "name": "MLS diversity ratio",
-        "mnemo": "MLS_DIVERSITY_RATIO",
+        "name": "User ML diversity ratio",
+        "mnemo": "MLS_USR_DIVERSITY_RATIO_1Y",
         "desc": [
           "The ration of posts divided by the number of authors."
         ],
