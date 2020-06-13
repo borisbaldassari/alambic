@@ -27,9 +27,19 @@ sub display_summary {
   my $page_id = $self->param('page') || '';
 
   my $run = $self->app->al->get_project_last_run($project_id);
+  my $qm = $self->app->al->get_models->get_qm(); print "DBG QM " . Dumper($qm);
+  my @attrs = (
+    $qm->[0]{'mnemo'},
+    map {$_->{'mnemo'}} @{$qm->[0]{'children'}},
+  ); 
 
-  $self->stash(project_id => $project_id, run => $run,);
+print "DBG dash ". Dumper(@attrs);
 
+  $self->stash(
+    project_id => $project_id, 
+    run => $run,
+    attrs => \@attrs,
+  );
 
   $self->render(template => 'alambic/dashboard/dashboard');
 }
