@@ -18,7 +18,7 @@
 #  * 1 if dependencies not met
 
 
-PB_V=5.26.2
+PB_V=5.30.3
 VERSION=3.3.4-dev
 LOG=alambic_install.log
 
