@@ -88,6 +88,7 @@ my %conf = (
 
     "OSS_INCLUSION"     => "OSS_INCLUSION",
     "OSS_ESCALATE"     => "OSS_ESCALATE",
+    "OSS_DEP_CHECK" => "OSS_DEP_CHECK",
     "DOC_GOV"     => "DOC_GOV",
     "GOV_BOARD_PUBLIC"     => "GOV_BOARD_PUBLIC",
   },
@@ -261,6 +262,7 @@ sub _compute_data($) {
   $metrics{"OSS_ESCALATE"} = 1;
   $metrics{"DOC_GOV"} = 1;
   $metrics{"GOV_BOARD_PUBLIC"} = 1;
+  $metrics{"OSS_DEP_CHECK"} = 1;
 
   push(@log, "[Plugins::EclipsePmi] Starting compute data for [$project_id].");
 
@@ -850,7 +852,7 @@ sub _compute_data($) {
       $url = $ml->{'url'};
       my $name = $ml->{'name'};
       $info{"PROJECT_MLS_USR_URL"} = $url;
-      $metrics{"PROJECT_MLS_INFO"} = 1;
+      $metrics{"PROJECT_MLS_INFO"}++;
       $check->{'value'} = $url;
       if ($name =~ m!\S+!) {
         push(@{$check->{'results'}}, "OK. Forum [$name] correctly defined.");
