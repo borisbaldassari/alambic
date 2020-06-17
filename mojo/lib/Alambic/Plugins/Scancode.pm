@@ -100,7 +100,7 @@ sub get_conf() {
 sub run_plugin($$) {
   my ($self, $project_id, $conf) = @_;
 
-  my $licence_regexp = $conf->{'licence_regexp'};
+  my $licence_regexp = $conf->{'licence_regexp'} || '';
 
   my @log;
   push(@log, "[Plugins::Scancode] Start Scancode plugin execution for project $project_id.");
