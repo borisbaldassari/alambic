@@ -116,7 +116,7 @@
         "desc": [
           "The ration of posts divided by the number of authors."
         ],
-        "scale": [1,2,3,18]
+        "scale": [2,5,10,20]
       }
     ]
   }

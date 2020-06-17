@@ -33,7 +33,7 @@
             "Is there an initiative and written document to regulate the behaviour of individuals? (e.g. code of conduct)",
             "As an example, the Eclipse Foundation enforces the following code of conduct: https://www.eclipse.org/org/documents/Community_Code_of_Conduct.php ."
         ],
-        "scale": [1,2,3,4]
+        "scale": [0,0,0,1]
       },
       {
         "name": "Licences check",

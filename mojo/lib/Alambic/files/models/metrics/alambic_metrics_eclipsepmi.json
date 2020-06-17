@@ -36,7 +36,7 @@
             "Is the communication channel for the team info correctly filled in the PMI records?",
             "The project management infrastructure file holds information about the various communication means used by the project. This test checks the number of MLS-related entries defined in the PMI: mailing lists, forums, etc."
         ],
-          "scale": [0,2,4,6]
+          "scale": [1,1,1,2]
       },
       {
         "name": "Docs information",
@@ -125,7 +125,7 @@
         "desc": [
             "Is there a documentation explaining how decisions are made?"
         ],
-        "scale": [1,2,3,4]
+        "scale": [0,0,0,1]
       },
       {
         "name": "Contributing",
@@ -134,7 +134,7 @@
             "Is the documentation info correctly filled in the PMI records?",
             "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."
         ],
-          "scale": [0,2,4,6]
+          "scale": [0,0,0,1]
       },
       {
         "name": "Getting started",
@@ -143,7 +143,7 @@
             "Is the documentation info correctly filled in the PMI records?",
             "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."
         ],
-          "scale": [0,2,4,6]
+          "scale": [0,0,0,1]
       },
       {
         "name": "Readme",
@@ -152,16 +152,7 @@
             "Is the documentation info correctly filled in the PMI records?",
             "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."
         ],
-          "scale": [0,2,4,6]
-      },
-      {
-        "name": "Licence",
-        "mnemo": "DOC_LICENCE",
-        "desc": [
-            "Is the documentation info correctly filled in the PMI records?",
-            "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."
-        ],
-          "scale": [0,2,4,6]
+          "scale": [0,0,0,1]
       }
     ]
   }

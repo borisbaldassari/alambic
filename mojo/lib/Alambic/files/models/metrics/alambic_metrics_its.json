@@ -9,10 +9,10 @@
         "Number of issues with a state 'open' at the time of analysis."
       ],
       "scale": [
-        1,
-        2,
-        3,
-        4
+        100,
+        200,
+        5000,
+        1000
       ]
     },
     {
@@ -22,10 +22,10 @@
         "Percentage of open issues compared to the overall number of issues registered in the system."
       ],
       "scale": [
-        1,
-        2,
-        3,
-        4
+        20,
+        30,
+        60,
+        80
       ]
     },
     {
@@ -215,10 +215,10 @@
         "The ration of bugs divided by the number of submitters."
       ],
       "scale": [
-        1,
         2,
-        3,
-        18
+        5,
+        10,
+        20
       ]
     }
   ]

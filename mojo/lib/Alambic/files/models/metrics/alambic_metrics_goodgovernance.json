@@ -6,8 +6,10 @@
         "name": "Dependency check",
         "mnemo": "OSS_DEP_CHECK",
         "desc": [
-            "Analysis of dependencies to identify old, vulnerable dependencies, as provided by tools like dependency-check or JFrog/Nexus."
-        ]
+            "Analysis of dependencies to identify old, vulnerable dependencies, as provided by tools like dependency-check or JFrog/Nexus.",
+            "As an example, projects hosted at the Eclipse Foundation have a rigorous IP cleanliness procedure that makes sure that all dependencies meet defined requirements."
+        ],
+        "scale": [0,0,0,1]
       },
       {
         "name": "Escalation procedure",
@@ -16,7 +18,7 @@
             "Is there an easy and visible way for anybody to report toxic behaviour or unfair practices?",
             "As an example, people willing to report unfair practices or bad behaviour within an Eclipse project can send an email at codeofconduct@eclipse.org."
         ],
-        "scale": [1,2,3,4]
+        "scale": [0,0,0,1]
       },
       {
         "name": "Inclusion initiative",
@@ -25,7 +27,7 @@
             "Is there a formal procedure to help people join and benefit from the community, whoever they are?",
             "As an example"
         ],
-        "scale": [1,2,3,4]
+        "scale": [0,0,0,1]
       },
       {
         "name": "Board transparency",
@@ -33,7 +35,7 @@
         "desc": [
             "Are the minutes of the board publicly available?"
         ],
-        "scale": [1,2,3,4]
+        "scale": [0,0,0,1]
       }
     ]
   }
