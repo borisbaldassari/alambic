@@ -114,7 +114,7 @@
         "name": "User ML diversity ratio",
         "mnemo": "MLS_USR_DIVERSITY_RATIO_1Y",
         "desc": [
-          "The ration of posts divided by the number of authors."
+          "The ration of posts divided by the number of authors, over a period of one year."
         ],
         "scale": [2,5,10,20]
       }
