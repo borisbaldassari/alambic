@@ -275,7 +275,9 @@ print "1Y" . Dumper($date_1y);
   # Compute metrics
   $metrics{'SO_QUESTIONS_VOL_5Y'} = $questions;
   $metrics{'SO_ANSWERS_VOL_5Y'}   = $answers;
+  my $questions_1y = $questions_1y == 0 ? 1 : $questions_1y;
   $metrics{'SO_ANSWER_RATE_1Y'}   = sprintf("%.2f", ($answers_1y / $questions_1y));
+  my $questions = $questions == 0 ? 1 : $questions;
   $metrics{'SO_ANSWER_RATE_5Y'}   = sprintf("%.2f", ($answers / $questions));
   $metrics{'SO_VOTES_VOL_5Y'}     = $votes;
   $metrics{'SO_VIEWS_VOL_5Y'}     = $views;
