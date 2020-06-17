@@ -239,14 +239,14 @@ sub run_plugin($$) {
   $repofs->write_output($project_id, "scancode_packages.csv", $csv_out);
 
   # Compute SC_LIC_CHECK value: number of non-expected licences.
-  my @nonexpected_licences; print "DBG " . Dumper(@licences);
+  my @nonexpected_licences; 
   foreach my $l (@licences) {
     next if ( ! defined($l->{'value'}) );
     if ( $l->{'value'} !~ m!$licence_regexp! ) {
-      push @nonexpected_licences, $l->{'value'} ;
+      push( @nonexpected_licences, $l->{'value'} );
     }
   }
-
+print "DBG " . Dumper(@nonexpected_licences);
   my $metrics = {
       "SC_LICENSES_VOL" => scalar(@licences),
       "SC_LIC_CHECK" => scalar(@nonexpected_licences),
