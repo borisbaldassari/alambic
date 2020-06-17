@@ -225,7 +225,6 @@ sub _compute_data() {
   # Compute dates to limit time range.
   my $date_now = DateTime->now(time_zone => 'local');
   my $date_1y = DateTime->now(time_zone => 'local')->subtract(years => 1); 
-print "1Y" . Dumper($date_1y);
   my $date_5y = DateTime->now(time_zone => 'local')->subtract(years => 5);
   my $date_5y_ok = $date_5y->strftime("%Y-%m-%d");
 

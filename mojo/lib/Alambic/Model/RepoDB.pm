@@ -320,7 +320,7 @@ sub get_metric($) {
       = $pg->db->query("SELECT * FROM models_metrics WHERE mnemo=?;", ($mnemo));
   };
 
-  if ($@) {    #print "# In RepoDB::get_metric Exception.\n" . Dumper($@);
+  if ($@) {
   }
 
   # Process one row at a time
@@ -721,8 +721,6 @@ sub add_project_run($$$$$$$) {
 
   if ($@) {
 
-    #print "# In RepoDB::add_project_run projects_info Exception "
-    #. Dumper($@) . "\n";
   }
 
   # Execute insert in db.
@@ -745,8 +743,6 @@ sub add_project_run($$$$$$$) {
 
   if ($@) {
 
-    #print "# In RepoDB::add_project_run projects_runs Exception "
-    #  . Dumper($@) . "\n";
   }
 
   return $id;

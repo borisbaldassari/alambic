@@ -27,13 +27,11 @@ sub display_summary {
   my $page_id = $self->param('page') || '';
 
   my $run = $self->app->al->get_project_last_run($project_id);
-  my $qm = $self->app->al->get_models->get_qm(); print "DBG QM " . Dumper($qm);
+  my $qm = $self->app->al->get_models->get_qm(); 
   my @attrs = (
     $qm->[0]{'mnemo'},
     map {$_->{'mnemo'}} @{$qm->[0]{'children'}},
   ); 
-
-print "DBG dash ". Dumper(@attrs);
 
   $self->stash(
     project_id => $project_id, 
