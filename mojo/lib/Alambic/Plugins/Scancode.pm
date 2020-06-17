@@ -246,7 +246,7 @@ sub run_plugin($$) {
       push( @nonexpected_licences, $l->{'value'} );
     }
   }
-print "DBG " . Dumper(@nonexpected_licences);
+
   my $metrics = {
       "SC_LICENSES_VOL" => scalar(@licences),
       "SC_LIC_CHECK" => scalar(@nonexpected_licences),
