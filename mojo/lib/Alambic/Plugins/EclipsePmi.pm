@@ -254,6 +254,10 @@ sub _compute_data($) {
   $metrics{"PROJECT_SCM_ACCESS"} = 0;
   $metrics{"PROJECT_MLS_ACCESS"} = 0;
   $metrics{"PROJECT_GETTINGSTARTED_INFO"} = 0;
+  $metrics{"PROJECT_DL_INFO"} = 0;
+  $metrics{"PROJECT_CI_INFO"} = 0;
+  $metrics{"PROJECT_SCM_INFO"} = 0;
+  $metrics{"PROJECT_ITS_INFO"} = 0;
   $metrics{"PROJECT_MLS_INFO"} = 0;
 
   # At Eclipse, all projects benefit from the forge's
