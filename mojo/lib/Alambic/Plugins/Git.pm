@@ -282,7 +282,8 @@ sub _compute_data($$) {
   $metrics{'SCM_COMMITTERS_1W'} = scalar(keys %committers_1w) || 0;
   $metrics{'SCM_COMMITTERS_1M'} = scalar(keys %committers_1m) || 0;
   $metrics{'SCM_COMMITTERS_1Y'} = scalar(keys %committers_1y) || 0;
-  $metrics{'SCM_DIVERSITY_RATIO_1Y'} = int( $metrics{'SCM_COMMITS_1Y'} / $metrics{'SCM_COMMITTERS_1Y'} );
+  my $committers_1y = $metrics{'SCM_COMMITTERS_1Y'} == 0 ? 1 : $metrics{'SCM_COMMITTERS_1Y'};
+  $metrics{'SCM_DIVERSITY_RATIO_1Y'} = int( $metrics{'SCM_COMMITS_1Y'} / $committers_1y );
 
   # Set user information for profile
   push(@log, "[Plugins::Git] Writing user events file.");

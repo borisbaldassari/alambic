@@ -410,8 +410,10 @@ sub _retrieve_data($$$) {
   $metrics{'MLS_USR_AUTHORS_1M'} = scalar keys %authors_1m || 0;
   $metrics{'MLS_USR_AUTHORS_1Y'} = scalar keys %authors_1y || 0;
 
+
+  my $authors_1y = $metrics{'MLS_USR_AUTHORS_1Y'} == 0 ? 1 : $metrics{'MLS_USR_AUTHORS_1Y'};
   $metrics{'MLS_USR_DIVERSITY_RATIO_1Y'}   = int( 
-    $metrics{'MLS_USR_POSTS_1Y'} / $metrics{'MLS_USR_AUTHORS_1Y'} 
+    $metrics{'MLS_USR_POSTS_1Y'} / $authors_1y 
   );
 
   
