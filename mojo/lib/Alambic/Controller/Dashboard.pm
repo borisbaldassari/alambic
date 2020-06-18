@@ -169,9 +169,18 @@ sub display_plugins {
       # We can also build figures from html.ep templates.
       # If the static page doesn't exist, then try to render something in
       # plugins/*.html.ep.
+      my $qm = $self->app->al->get_models->get_qm(); 
+      my @attrs = (
+        $qm->[0]{'mnemo'},
+        map {$_->{'mnemo'}} @{$qm->[0]{'children'}},
+      ); 
       if (not -e $ret) {
         my $run = $self->app->al->get_project_last_run($project_id);
-        $self->stash(project_id => $project_id, run => $run,);
+        $self->stash(
+          project_id => $project_id, 
+          run => $run,
+          attrs => \@attrs,
+        );
         $self->render(
           template => "alambic/plugins/$page_id",
           layout   => 'default_empty'

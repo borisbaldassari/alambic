@@ -84,7 +84,7 @@
 	    <div class="row">
               <div class="col-lg-4">
                 <div class="panel panel-default">
-		  <div class="panel-heading">Quality Model</div>
+		          <div class="panel-heading">Quality Model</div>
                   <div class="panel-body">
 % foreach my $attr (@$attrs) {
 %   my $myattr = defined($models->get_attribute($attr)) ? $models->get_attribute($attr)->{'name'} : $attr;
@@ -92,10 +92,10 @@
                     <dt style="margin-bottom: 5px"><a href="/documentation/attributes.html#<%= $attr %>"><%= $myattr %></a> &nbsp; <span class="pull-right">( <%= $attributes_conf->{$attr} %> metrics )</span></dt>
                     <dd>
                       <div class="progress">
-			<div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} || 0%> / 5</div>
+			            <div class="progress-bar" role="progressbar" aria-valuenow="<%= $attributes->{$attr} %>" aria-valuemin="0" aria-valuemax="5"  style="background-color: <%= $comp_c->( $attributes->{$attr} ) %>; width: <%= $comp_p->($attributes->{$attr} ) %>%;"><%= $attributes->{$attr} || 0%> / 5</div>
                       </div>
                     </dd>
-		    <hr />
+		            <hr />
 % }
 
                   </div>
