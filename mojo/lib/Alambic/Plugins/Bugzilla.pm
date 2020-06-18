@@ -405,7 +405,8 @@ sub run_plugin($$) {
   $ret{'metrics'}{'ITS_UPDATED_1W'}      = $bz_updated_1w;
   $ret{'metrics'}{'ITS_UPDATED_1M'}      = $bz_updated_1m;
   $ret{'metrics'}{'ITS_UPDATED_1Y'}      = $bz_updated_1y;
-  $ret{'metrics'}{'ITS_DIVERSITY_RATIO_1Y'} = int( $bz_created_1y / $ret{'metrics'}{'ITS_AUTHORS_1Y'} );
+  my $authors_1y = $metrics{'ITS_AUTHORS_1Y'} == 0 ? 1 : $metrics{'ITS_AUTHORS_1Y'};
+  $ret{'metrics'}{'ITS_DIVERSITY_RATIO_1Y'} = int( $bz_created_1y / $authors_1y );
   
   # Set user information for profile
   push(@{$ret{'log'}}, "[Plugins::Bugzilla] Writing user events file.");
