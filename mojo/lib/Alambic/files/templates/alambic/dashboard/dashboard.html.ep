@@ -19,7 +19,7 @@
  % my $value = shift || 0;
  % return $value * 20;
 <% end %>
-% print Dumper($project->get_qm());
+
 <% my $comp_c = begin %>
  % my $value = shift || 0;
  % return $colours->[int($value)];
