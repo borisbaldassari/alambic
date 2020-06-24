@@ -14,7 +14,7 @@ output:
     dev: svg
 ---
 
-```{r init, echo=FALSE, message=FALSE}
+```{r init, echo=FALSE, message=FALSE, warning=FALSE}
 
 library(knitr)
 require(ggplot2)
@@ -46,7 +46,7 @@ licences <- read.csv(file=file.licences, header=T)
 programming_languages <- read.csv(file=file.programming_languages, header=T)
 
 dir_vol <- metrics[metrics$metric == 'SC_FILES_VOL',2] - metrics[metrics$metric == 'SC_FILES_COUNT',2]
-
+sc_files_vol <- metrics[metrics$metric == 'SC_FILES_VOL',2]
 ```
 
 ## Scancode analysis results  for `r I(project.id)`
@@ -63,7 +63,7 @@ You can learn more about this module on its [documentation page](http://alambic.
 
 Scancode identified ``r nrow(metrics)`` metrics:
 
-* A total of ``r metrics[metrics$metric == 'SC_FILES_VOL',2]`` entries in the codebase, including ``r metrics[metrics$metric == 'SC_FILES_COUNT',2]`` files and ``r dir_vol`` directories,
+* A total of ``r sc_files_vol`` entries in the codebase, including ``r metrics[metrics$metric == 'SC_FILES_COUNT',2]`` files and ``r dir_vol`` directories,
 * Current codebase includes ``r  metrics[metrics$metric == 'SC_SPECIAL_FILES',2]`` special files, and ``r metrics[metrics$metric == 'SC_GENERATED_VOL',2]`` files considered as generated.
 
 * Total number of licences identified is ``r metrics[metrics$metric == 'SC_LICENSES_VOL',2]``.
