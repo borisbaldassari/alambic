@@ -21,10 +21,10 @@ use Test::More;
 use Mojo::JSON qw( decode_json);
 use Data::Dumper;
 
-BEGIN { use_ok('Alambic::Plugins::SonarQube45'); }
+BEGIN { use_ok('Alambic::Plugins::SonarQubeIo'); }
 
-my $plugin = Alambic::Plugins::SonarQube45->new();
-isa_ok($plugin, 'Alambic::Plugins::SonarQube45');
+my $plugin = Alambic::Plugins::SonarQubeIo->new();
+isa_ok($plugin, 'Alambic::Plugins::SonarQubeIo');
 
 note("Checking the plugin parameters. ");
 my $conf = $plugin->get_conf();
@@ -42,8 +42,6 @@ ok(grep(m!public_api!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > public_api");
 ok(grep(m!files!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > files");
-ok(grep(m!function_complexity!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > function_complexity");
 ok(grep(m!comment_lines!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > comment_lines");
 ok(grep(m!ncloc!, keys %{$conf->{'provides_metrics'}}),
@@ -67,14 +65,14 @@ ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
 
 ok(grep(m!sonar_project!, keys %{$conf->{'params'}}),
   "Conf has params > sonar_project");
-ok(grep(m!sonar_project!, keys %{$conf->{'params'}}),
-  "Conf has params > sonar_url");
+#ok(grep(m!sonar_project!, keys %{$conf->{'params'}}),
+#  "Conf has params > sonar_url");
 
-ok(grep(m!sonarqube45.html!, keys %{$conf->{'provides_viz'}}),
-  "Conf has provides_viz > sonarqube45");
+ok(grep(m!SonarQubeIo.html!, keys %{$conf->{'provides_viz'}}),
+  "Conf has provides_viz > sonarqubeIo");
 
-my $in_sonar_url     = "https://sonar.eclipse.org";
-my $in_sonar_project = "org.eclipse.sirius:sirius-parent";
+#my $in_sonar_url     = "https://sonar.eclipse.org";
+my $in_sonar_project = "org.sonarsource.dotnet:sonar-dotnet";
 
 # Delete files before creating them, so we don't test a previous run.
 unlink (
@@ -87,32 +85,29 @@ unlink (
     "projects/test.project/output/test.project_sq_metrics.csv",
     );
 
-note("Executing the plugin with Sirius project. ");
+note("Executing the plugin with SQ .NET test project. ");
 my $ret = $plugin->run_plugin("test.project",
-  {'sonar_url' => $in_sonar_url, 'sonar_project' => $in_sonar_project});
+  {'sonar_project' => $in_sonar_project});
 
 # Test log
 my @log = @{$ret->{'log'}};
 ok(grep(!/^ERROR/, @log), "Log returns no ERROR") or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Get issues from \[http!, @log),
+ok(grep(m!^\[Plugins::SonarQubeIo\] Get issues from \[http!, @log),
   "Log returns get issues.")
   or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] blocker issues.!, @log),
+ok(grep(m!^\[Plugins::SonarQubeIo\] Got \[\d+\] blocker issues.!, @log),
   "Log returns got blocker issues.")
   or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] critical issues.!, @log),
+ok(grep(m!^\[Plugins::SonarQubeIo\] Got \[\d+\] critical issues.!, @log),
   "Log returns got critical issues.")
   or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] major issues.!, @log),
+ok(grep(m!^\[Plugins::SonarQubeIo\] Got \[\d+\] major issues.!, @log),
   "Log returns got major issues.")
   or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Got \[35\] rules.!, @log),
-  "Log returns 35 rules.")
-  or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Get resources from \[http!, @log),
+ok(grep(m!^\[Plugins::SonarQubeIo\] Get resources from \[http!, @log),
   "Log returns get resources.")
   or diag explain @log;
-ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] metrics.!, @log),
+ok(grep(m!^\[Plugins::SonarQubeIo\] Got \[\d+\] metrics.!, @log),
   "Log returns got metrics.")
   or diag explain @log;
 
@@ -120,18 +115,11 @@ ok(grep(m!^\[Plugins::SonarQube45\] Got \[\d+\] metrics.!, @log),
 ok($ret->{'metrics'}{'SQ_COMR'},
   "Metric COMR is " . $ret->{'metrics'}{'SQ_COMR'} . ".")
   or diag explain $ret;
-ok($ret->{'metrics'}{'SQ_PUBLIC_API'},
-  "Metric PUBLIC_API is " . $ret->{'metrics'}{'SQ_PUBLIC_API'} . ".")
+ok($ret->{'metrics'}{'SQ_TEST_SUCCESSFUL_DENSITY'},
+  "Metric SQ_TEST_SUCCESSFUL_DENSITY is " . $ret->{'metrics'}{'SQ_TEST_SUCCESSFUL_DENSITY'} . ".")
   or diag explain $ret;
 ok($ret->{'metrics'}{'SQ_FILES'},
   "Metric FILES is " . $ret->{'metrics'}{'SQ_FILES'} . ".")
-  or diag explain $ret;
-ok($ret->{'metrics'}{'SQ_PUBLIC_API_DOC_DENSITY'},
-  "Metric PUBLIC_API_DOC_DENSITY is "
-    . $ret->{'metrics'}{'SQ_PUBLIC_API_DOC_DENSITY'} . ".")
-  or diag explain $ret;
-ok($ret->{'metrics'}{'SQ_CPX_FUNC_IDX'},
-  "Metric CPX_FUNC_IDX is " . $ret->{'metrics'}{'SQ_CPX_FUNC_IDX'} . ".")
   or diag explain $ret;
 ok($ret->{'metrics'}{'SQ_COMMENT_LINES'},
   "Metric COMMENT_LINES is " . $ret->{'metrics'}{'SQ_COMMENT_LINES'} . ".")
