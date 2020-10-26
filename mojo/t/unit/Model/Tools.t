@@ -26,13 +26,13 @@ my $tools = Alambic::Model::Tools->new();
 isa_ok($tools, 'Alambic::Model::Tools');
 
 my $list = $tools->get_list_all();
-print Dumper($list);
-my $pv = 2;
+my $pv = 3;
 ok(scalar @{$list} == $pv, "Tools list has $pv entries.") or diag explain $list;
 
 ok(grep(/^r_sessions/, @{$list}), "List of tools contains r_sessions.")
   or diag explain $list;
 ok(grep(/^git/, @{$list}), "List of tools contains git.") or diag explain $list;
+ok(grep(/^scancode/, @{$list}), "List of tools contains scancode.") or diag explain $list;
 
 # Test one tool (say, R)
 my $r      = $tools->get_tool('r_sessions');
