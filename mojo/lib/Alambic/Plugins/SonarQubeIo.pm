@@ -38,7 +38,7 @@ my %conf = (
   "type"    => "pre",
   "ability" => ['metrics', 'info', 'data', 'viz', 'figs'],
   "params"  => {
-    "sonar_project" => "The Project ID in the SonarQube instance, e.g. .",
+    "sonar_project" => "The Project ID in the SonarQube instance, e.g. org.sonarsource.dotnet:sonar-dotnet.",
     "proxy" =>
       'If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.',
   },
@@ -458,7 +458,9 @@ sub run_plugin($$) {
     map { $conf{'provides_metrics'}{$_} } keys %{$conf{'provides_metrics'}})
     . "\n";
   $csv_out .= join(',',
-    map { $ret{'metrics'}{$conf{'provides_metrics'}{$_}} || '' }
+    map { 
+      exists( $ret{'metrics'}{$conf{'provides_metrics'}{$_}} ) ?
+      $ret{'metrics'}{$conf{'provides_metrics'}{$_}} : 'Unknown' }
       keys %{$conf{'provides_metrics'}})
     . "\n";
   $repofs->write_output($project_id, "sq_metrics.csv", $csv_out);

@@ -8,8 +8,8 @@ library(xts)
 library(reshape2)
 require(ggplot2)
 
-#project.id <- 'alambic'
-plugin.id <- 'SonarQube45'
+#project.id <- 'test'
+plugin.id <- 'SonarQubeIo'
 
 abc <- c('A', 'B', 'C', 'D', 'E', 'F', 'G')
 
@@ -25,4 +25,4 @@ metrics <- read.csv(file=file.metrics, header=T)
 * Number of Major violations ([SQ_VIOLATIONS_MAJOR](/documentation/metrics#SQ_VIOLATIONS_MAJOR)): ``r metrics[['SQ_VIOLATIONS_MAJOR']]``
 * Number of Minor violations ([SQ_VIOLATIONS_MINOR](/documentation/metrics#SQ_VIOLATIONS_MINOR)): ``r metrics[['SQ_VIOLATIONS_MINOR']]``
 
-The SonarQube plugin analysis for project ``r project.id`` is available on the [Alambic dashboard](/projects/`r project.id`/SonarQube45/sonarqube45.html).
+The SonarQube plugin analysis for project ``r project.id`` is available on the [Alambic dashboard](/projects/`r project.id`/SonarQubeIo/SonarQubeIo.html).

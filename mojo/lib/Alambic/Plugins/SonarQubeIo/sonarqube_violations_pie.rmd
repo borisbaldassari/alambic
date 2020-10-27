@@ -24,7 +24,7 @@ options(gvis.plot.tag='chart')
 p <- gvisPieChart(violations, options = list(
       title="Violations",
       colors="[ '#CC0000', '#DD5500', '#EEAA00', '#FFCC66', '#ADBECF' ]",
-      width=550, height=340,
+      width=550, height=320,
       pieHole= 0.4))
 
 print(p, 'chart')

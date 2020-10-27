@@ -30,4 +30,4 @@ metrics <- read.csv(file=file.metrics, header=T)
 * Branch coverage ([SQ_COVERAGE_BRANCH](/documentation/metrics#SQ_COVERAGE_BRANCH)): ``r metrics[['SQ_COVERAGE_BRANCH']]``
 * Line coverage ([SQ_COVERAGE_LINE](/documentation/metrics#SQ_COVERAGE_LINE)): ``r metrics[['SQ_COVERAGE_LINE']]``
 
-The SonarQube plugin analysis for project ``r project.id`` is available on the [Alambic dashboard](/projects/`r project.id`/SonarQube45/sonarqube45.html).
+The SonarQube plugin analysis for project ``r project.id`` is available on the [Alambic dashboard](/projects/`r project.id`/SonarQubeIo/SonarQubeIo.html).
