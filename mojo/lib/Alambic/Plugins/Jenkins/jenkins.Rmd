@@ -88,10 +88,6 @@ The following metrics are available:
 </div>
 </div>
 
-## History
-
-<iframe src="/projects/`r project.id`/Jenkins/jenkins_hist.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
-
 ## Failing Jobs
 
 There are ``r metrics[['CI_JOBS_RED']]`` failing jobs on the instance.

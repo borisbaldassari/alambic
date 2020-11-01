@@ -59,7 +59,6 @@ my %conf = (
     "jenkins_jobs.csv" => "The list of CI jobs, in CSV format.",
   },
   "provides_figs" => {
-    'jenkins_hist.html' => "History of Jenkins builds (HTML)",
     'jenkins_pie.html'  => "Pie chart of jobs statuses (HTML)",
   },
   "provides_recs" => ["CI_FAILING_JOBS",],
