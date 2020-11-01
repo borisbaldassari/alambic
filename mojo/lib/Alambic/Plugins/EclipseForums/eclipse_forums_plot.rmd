@@ -30,7 +30,18 @@ binary.colours <- c("#325d88", "#d9534f") # "#325d88" green = #3e9c1a)
 
 posts$created.date <- as.POSIXct(posts$created_date, origin="1970-01-01")
 posts.xts <- xts(posts, order.by = posts$created.date)
-posts.weekly <- apply.weekly(x=posts.xts, FUN = nrow)
+
+posts.daily <- apply.daily(x=posts.xts, FUN = nrow)
+
+time.min <- index(posts.xts[1,])
+time.max <- index(posts.xts[nrow(posts.xts)])
+all.dates <- seq(time.min, time.max, by="days")
+empty <- xts(order.by = all.dates)
+
+merged.data <- merge(empty, posts.weekly, all=T)
+merged.data[is.na(merged.data) == T,] <- 0
+
+posts.weekly <- apply.weekly(x=merged.data, FUN = sum)
 names(posts.weekly) <- c("posts")
 
 p <- dygraph(
