@@ -25,8 +25,17 @@ require(magrittr)
 file.evol = paste("../../../../projects/", project.id, "/output/", project.id, "_bugzilla_evol.csv", sep="")
 
 evol <- read.csv(file=file.evol, header=T)
-evol.xts <- xts(x = evol, order.by = as.POSIXct(evol$date))
-evol.monthly <- apply.monthly(x=evol.xts, FUN = nrow)
+evol.xts <- xts(x = evol$issues_created, order.by = as.POSIXct(evol$date))
+
+time.min <- index(evol.xts[1,])
+time.max <- index(evol.xts[nrow(evol.xts)])
+all.dates <- seq(time.min, time.max, by="days")
+empty <- xts(order.by = all.dates)
+
+merged.data <- merge(empty, evol.xts, all=T)
+merged.data[is.na(merged.data) == T,] <- 0
+
+evol.monthly <- apply.monthly(x=merged.data, FUN = sum)
 
 p <-dygraph(evol.monthly[,1],
         main = paste('Monthly issues submissions for ', project.id, sep=''),
