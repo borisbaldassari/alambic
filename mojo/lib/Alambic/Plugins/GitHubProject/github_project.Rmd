@@ -1,0 +1,226 @@
+---
+#########################################################
+#
+# Copyright (c) 2015-2020 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+title: "GitHub Project visualisation"
+author:
+- name: "Boris Baldassari"
+  affiliation: Castalia Solutions
+output:
+  html_fragment:
+    toc: false
+    fig_caption: true
+    fig.width: 800
+    self_contained: false
+    lib_dir: libs
+    echo: false
+    dev: svg
+---
+
+```{r init, echo=FALSE, message=FALSE}
+library(knitr)
+library(xts)
+require('reshape2')
+require(ggplot2)
+require(xtable)
+
+knitr::opts_chunk$set(fig.path = "figures/")
+
+suppressPackageStartupMessages(library(googleVis))
+options(gvis.plot.tag='chart')
+
+# Enable font awesome
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+
+# Plugin needs the following parameters:
+#   * project.id
+#   * github.user
+#   * github.repo
+#   * github.url
+
+# project.id <- 'test.github.project'
+# github.url <- 'https://api.github.com'
+# github.user <- 'crossminer'
+# github.repo <- 'crossflow'
+
+plugin.id <- 'GitHubProject'
+file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_github_project.csv", sep="")
+file.info = paste("../../../../projects/", project.id, "/output/", project.id, "_info_github_project.csv", sep="")
+file.contribs = paste("../../../../projects/", project.id, "/output/", project.id, "_github_project_contributors.csv", sep="")
+file.langs = paste("../../../../projects/", project.id, "/output/", project.id, "_github_project_languages.csv", sep="")
+file.events = paste("../../../../projects/", project.id, "/output/", project.id, "_github_project_events.csv", sep="")
+
+metrics <- read.csv(file=file.metrics, header=T)
+info <- read.csv(file=file.info, header=T)
+contribs <- read.csv(file=file.contribs, header=T)
+langs <- read.csv(file=file.langs, header=T)
+events <- read.csv(file=file.events, header=T)
+
+geticon <- function(value) {
+  if (is.na(value)) { value <- FALSE }
+  if (value == 1) {
+    return('fa-check-square-o') 
+  } else {
+    return('fa-square-o') 
+  }
+}
+
+```
+
+## GitHub Project `r github.user`/`r github.repo` 
+
+<br />
+
+<div class="row"><div class="col-sm-7">
+
+github offers generic hosting services for software development. This plugin retrieves information about the project and its statistics, and computes metrics and recommendations. github offers a [complete API](https://docs.github.com/ee/api/README.html) to interact with a github server, and Perl has a ready-to-use [module that cover the API&apos;s features](http://search.cpan.org/~bluefeet/github-API-v3-0.08/lib/github/API/v3.pm).
+
+Data for project is directly available from the project&apos;s dashboard:
+
+* Project ID: `r github.user`/`r github.repo`
+* Project URL: `r info['PROJECT_URL']` 
+* Commits: `r info['PROJECT_COMMITS_URL']` 
+* DL: <i class="fa `r geticon(info['PROJECT_DL_ENABLED'])`"></i> `r info['PROJECT_DL_URL']`
+* Issues: <i class="fa `r geticon(info['PROJECT_ISSUES_ENABLED'])`"></i> `r info['PROJECT_ISSUES_URL']`
+* Wiki: <i class="fa `r geticon(info['PROJECT_WIKI_ENABLED'])`"></i> `r info['PROJECT_WIKI_URL']`
+
+The URLs to use to connect to the repository are:
+
+* SSH ``r info[['PROJECT_REPO_SSH']]``.
+* GIT ``r info[['PROJECT_REPO_GIT']]``.
+* HTTP ``r info[['PROJECT_REPO_HTTP']]``.
+
+</div><div class="col-sm-4">
+  <div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+  <div class="list-group">
+  <a href="#summary" class="list-group-item">Quick Summary</a>
+  <a href="#mrs" class="list-group-item">Milestones</a>
+  <a href="#commits" class="list-group-item">Commits</a>
+  <a href="#branches" class="list-group-item">Branches</a>
+  <a href="#mrs" class="list-group-item">Merge Requests</a>
+  </div>
+  </div>
+</div></div>
+
+### <a name="quick-summary"></a>Quick Summary
+
+The project was created on ``r info[['PROJECT_CREATED_AT']]`` and was last updated on ``r info[['PROJECT_LAST_ACTIVITY_AT']]``.
+
+<div class="row"><div class="col-sm-3">
+<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_FORKS']], which='both')``</span> Forks</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_STARS']], which='both')``</span> Stars</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_STARGAZERS']], which='both')``</span> Stargazers</span>
+</div><div class="col-sm-3">
+<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_WATCHERS']], which='both')``</span> Watchers</span>
+</div></div>
+
+There is a total of ``r ncol(metrics)`` metrics retrieved.
+
+```{r metrics_table, echo=FALSE, message=FALSE, results='asis'}
+t <- lapply(names(metrics), function(x) paste(x, ' <span class="badge">', metrics[[x]], '</span>, ', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+
+There is a total of ``r ncol(info)`` information retrieved:
+
+```{r info_table, echo=FALSE, message=FALSE, results='asis'}
+t <- lapply(names(info), function(x) paste('* ', x, ': ', info[[x]], "\n", sep=''))
+t <- paste(t, collapse="")
+cat(t)
+```
+
+-----
+
+<div class="row">
+<div class="col-md-6">
+
+### <a name="langs"></a> Languages
+
+The following languages have been found in the Git repository, sorted by lines count:
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Languages</div>
+
+<table class="table table-striped">
+  <tr><th>Languages</th><th>Lines Count</th></tr>
+```{r langs_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(langs[order(langs$count, decreasing = T),], 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+</div>
+<div class="col-md-6">
+  <iframe src="/projects/`r project.id`/GitHubProject/github_languages_pie.html" frameborder="0" style="width: 500px; height: 340px"></iframe>
+</div>
+</div>
+
+-----
+
+<div class="row">
+<div class="col-md-6">
+
+### <a name="contribs"></a> Contributors
+
+The following contributors have been found in the Git repository, sorted by lines count:
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Contributors</div>
+
+<table class="table table-striped">
+  <tr><th>ID</th><th>Login</th><th>Contributions</th><th>URL</th></tr>
+```{r contribs_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(contribs[order(contribs$contributions, decreasing = T),], 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td><td>',
+							    x[[3]], '</td><td><a href="', x[[4]], '">', x[[4]], '</a></td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+</div>
+<div class="col-md-6">
+  <iframe src="/projects/`r project.id`/GitHubProject/github_contributors_pie.html" frameborder="0" style="width: 500px; height: 340px"></iframe>
+</div>
+</div>
+
+-----
+
+### <a name="events"></a> Events
+
+The following contributors have been found in the Git repository, sorted by lines count:
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Repository Languages</div>
+
+<table class="table table-striped">
+  <tr><th>Type</th><th>Actor ID</th><th>Actor Name</th><th>Created at</th></tr>
+```{r events_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(events, 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td><td>',
+							    x[[3]], '</td><td>', x[[4]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
