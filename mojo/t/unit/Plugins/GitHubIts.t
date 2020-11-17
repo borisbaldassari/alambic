@@ -94,7 +94,7 @@ my $in_github_token   = "f2a70262b45afff6abf513f2633b4b326cc23b8f";
 # Delete files before creating them, so we don't test a previous run.
 my @files = (
     "projects/test.github.its/input/test.github.its_import_github_issues.json",
-    "projects/test.github.its/output/test.github.its_info_github_issues.inc",
+    "projects/test.github.its/output/test.github.its_github_issues.inc",
     "projects/test.github.its/output/test.github.its_github_issues_authors_pie.html",
     "projects/test.github.its/output/test.github.its_github_issues_open.csv",
     "projects/test.github.its/output/test.github.its_info_github_issues.csv",
@@ -127,6 +127,9 @@ ok(grep(m!^\[Tools::R\] Exec \[Rscript -e .library\(rmarkdown\).!, @log),
 ok(grep(m!^\[Tools::R\] Moved main file!, @log),
   "Log returns R moved main file.")
   or diag explain @log;
+ok(grep(m!^\[Plugins::GitHubIts\] Executing R fig file \[github_issues_authors_pie.rmd\].!, @log),
+  "Log returns Executing R fig file.")
+  or diag explain @log;
 
 # Test metrics
 ok($ret->{'metrics'}{'ITS_ISSUES_ALL'} == 4,
@@ -135,6 +138,12 @@ ok($ret->{'metrics'}{'ITS_ISSUES_ALL'} == 4,
 ok($ret->{'metrics'}{'ITS_ISSUES_OPEN'} == 3,
   "Metric ITS_ISSUES_OPEN is 3 == " . $ret->{'metrics'}{'ITS_ISSUES_OPEN'} . ".")
   or diag explain $ret;
+ok($ret->{'metrics'}{'ITS_ISSUES_OPEN_OLD'} =~ /\d+/,
+  "Metric ITS_ISSUES_OPEN_OLD is a digit " . $ret->{'metrics'}{'ITS_ISSUES_OPEN_OLD'} . ".")
+  or diag explain $ret; 
+ok($ret->{'metrics'}{'ITS_ISSUES_OPEN_UNASSIGNED'} =~ /\d+/,
+  "Metric ITS_ISSUES_OPEN_UNASSIGNED is a digit " . $ret->{'metrics'}{'ITS_ISSUES_OPEN_UNASSIGNED'} . ".")
+  or diag explain $ret; 
 ok($ret->{'metrics'}{'ITS_AUTHORS'} =~ /2/,
   "Metric ITS_AUTHORS is 2 == " . $ret->{'metrics'}{'ITS_AUTHORS'} . ".")
   or diag explain $ret; 
