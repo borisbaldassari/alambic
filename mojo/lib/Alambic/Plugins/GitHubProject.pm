@@ -8,10 +8,6 @@ use Alambic::Tools::R;
 
 use Net::GitHub;
 use Mojo::JSON qw( decode_json encode_json );
-use Mojo::Util qw( url_escape );
-#use Date::Parse;
-#use Time::Piece;
-#use Time::Seconds;
 use Text::CSV;
 use Data::Dumper;
 
@@ -43,8 +39,7 @@ my %conf = (
       "PROJECT_WEB_URL",
       "PROJECT_DL_ENABLED",
       "PROJECT_DL_URL",
-      "PROJECT_LICENCE_KEY",
-      "PROJECT_LICENCE_URL",
+      "PROJECT_LICENCE",
       "PROJECT_REPO_SSH",
       "PROJECT_REPO_GIT",
       "PROJECT_REPO_HTTP",
@@ -89,10 +84,6 @@ my %conf = (
       'github_contributors_pie.html' => 'Pie chart of all contributors to the repository.',
     },
     "provides_recs" => [
-#        "SCM_MRS_STALED_1W",
-#        "SCM_LOW_ACTIVITY",
-#        "SCM_ZERO_ACTIVITY",
-#        "SCM_LOW_DIVERSITY",
     ],
     "provides_viz" => {
         "github_project.html" => "GitHub Project",
@@ -137,17 +128,10 @@ sub run_plugin($$) {
     # Create Github API object for all rest operations.
     my $gh = Net::GitHub->new(
       version => 3,
-      #login => 'fayland', pass => 'mypass', or
       access_token => $gh_token,
       api_url => "$gh_url",
     );
     $gh->set_default_user_repo("$gh_user", "$gh_repo");
-    
-    # Time::Piece object. Will be used for the date calculations.
-#    my $t_now = localtime;
-#    my $t_1w = $t_now - ONE_WEEK;
-#    my $t_1m = $t_now - ONE_MONTH;
-#    my $t_1y = $t_now - ONE_YEAR;
 
 
     # Project ###############################################
@@ -183,8 +167,7 @@ sub run_plugin($$) {
     $ret{'info'}{'PROJECT_DL_URL'} = $ret{'info'}{'PROJECT_URL'} . "/releases";
     $ret{'info'}{'PROJECT_WIKI_URL'} = $ret{'info'}{'PROJECT_URL'} . "/wiki";
 
-    $ret{'info'}{'PROJECT_LICENSE_KEY'} = $project->{'license'}{'key'} || '';
-    $ret{'info'}{'PROJECT_LICENSE_URL'} = $project->{'license'}{'url'} || '';
+    $ret{'info'}{'PROJECT_LICENSE'} = $project->{'license'}{'spdx_id'} || '';
 
     $ret{'info'}{'PROJECT_REPO_SSH'} = $project->{'ssh_url'} || '';
     $ret{'info'}{'PROJECT_REPO_GIT'} = $project->{'git_url'} || '';
@@ -352,7 +335,7 @@ sub run_plugin($$) {
 					     )} );
 
     # And execute the figures R scripts.
-    my @figs = ('github_languages_pie.rmd', 'github_contributors_pie.rmd');
+    my @figs = ('github_project_languages_pie.rmd', 'github_project_contributors_pie.rmd');
     foreach my $fig (sort @figs) { 
 	push( @{$ret{'log'}}, "[Plugins::GitHubProject] Executing R fig file [$fig]." );
 	@{$ret{'log'}} = ( @{$ret{'log'}}, @{$r->knit_rmarkdown_html( 'GitHubProject', $project_id, $fig )} );

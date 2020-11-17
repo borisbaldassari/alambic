@@ -169,7 +169,7 @@ cat(t)
 
 </div>
 <div class="col-md-6">
-  <iframe src="/projects/`r project.id`/GitHubProject/github_languages_pie.html" frameborder="0" style="width: 500px; height: 340px"></iframe>
+  <iframe src="/projects/`r project.id`/GitHubProject/github_project_languages_pie.html" frameborder="0" style="width: 500px; height: 340px"></iframe>
 </div>
 </div>
 
@@ -199,7 +199,7 @@ cat(t)
 
 </div>
 <div class="col-md-6">
-  <iframe src="/projects/`r project.id`/GitHubProject/github_contributors_pie.html" frameborder="0" style="width: 500px; height: 340px"></iframe>
+  <iframe src="/projects/`r project.id`/GitHubProject/github_project_contributors_pie.html" frameborder="0" style="width: 500px; height: 340px"></iframe>
 </div>
 </div>
 
