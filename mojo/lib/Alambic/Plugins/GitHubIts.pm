@@ -47,6 +47,8 @@ my %conf = (
     "provides_metrics" => {
         "ITS_ISSUES_ALL"      => "ITS_ISSUES_ALL",
         "ITS_ISSUES_OPEN"            => "ITS_ISSUES_OPEN",
+        "ITS_ISSUES_OPEN_UNASSIGNED" => "ITS_ISSUES_OPEN_UNASSIGNED",
+        "ITS_ISSUES_OPEN_OLD"        => "ITS_ISSUES_OPEN_OLD",
         "ITS_AUTHORS"         => "ITS_AUTHORS",
         "ITS_AUTHORS_1W"      => "ITS_AUTHORS_1W",
         "ITS_AUTHORS_1M"      => "ITS_AUTHORS_1M",
@@ -57,10 +59,8 @@ my %conf = (
         "ITS_UPDATED_1W"      => "ITS_UPDATED_1W",
         "ITS_UPDATED_1M"      => "ITS_UPDATED_1M",
         "ITS_UPDATED_1Y"      => "ITS_UPDATED_1Y",
-        "ITS_OPEN_OLD"        => "ITS_OPEN_OLD",
-        "ITS_OPEN_PERCENT"    => "ITS_OPEN_PERCENT",
+        "ITS_ISSUES_OPEN_PERCENT"    => "ITS_ISSUES_OPEN_PERCENT",
     #    "ITS_LATE"            => "ITS_LATE",
-        "ITS_OPEN_UNASSIGNED" => "ITS_OPEN_UNASSIGNED",
         "ITS_DIVERSITY_RATIO_1Y" => "ITS_DIVERSITY_RATIO_1Y",
     },
     "provides_figs" => {
@@ -69,7 +69,7 @@ my %conf = (
     "provides_recs" => [
     ],
     "provides_viz" => {
-        "github_issues.html" => "GitHub Project",
+        "github_issues.html" => "GitHub Issues",
     },
 );
 
@@ -147,6 +147,9 @@ sub run_plugin($$) {
     
     # Get the metrics (mainly numbers, that usually evolve)
     $ret{'metrics'}{'ITS_ISSUES_ALL'} = scalar(@issues) || 0;
+    $ret{'metrics'}{'ITS_ISSUES_OPEN'} = 0;
+    $ret{'metrics'}{'ITS_ISSUES_OPEN_OLD'} = 0;
+    $ret{'metrics'}{'ITS_ISSUES_OPEN_UNASSIGNED'} = 0;
 
     push( @{$ret{'log'}}, "[Plugins::GitHubIts] Parsing issues." );
     foreach my $issue (@issues) {
@@ -193,7 +196,14 @@ sub run_plugin($$) {
         if ($date_updated > $t_1m->epoch) { $updated_1m++; }
       
         # Has the issue been updated recently (<1Y)?
-        if ($date_updated > $t_1y->epoch) { $updated_1y++; }
+        if ($date_updated > $t_1y->epoch) { 
+            $updated_1y++; 
+        } else {
+            # Not updated for more than 1 year and still open?
+            if ($issue->{'state'} =~ m!open!) {
+                $ret{'metrics'}{'ITS_ISSUES_OPEN_OLD'}++;
+            }
+        }
 
 
         # Fill the full csv out in.
@@ -208,6 +218,9 @@ sub run_plugin($$) {
         if ($issue->{'state'} =~ m!open!) {
             $ret{'metrics'}{'ITS_ISSUES_OPEN'}++;
             $csv_open_out .= $csv->string();
+            if (not defined($issue->{'assignee'})) {
+                $ret{'metrics'}{'ITS_ISSUES_OPEN_UNASSIGNED'}++;
+            }
         }
     }
 
@@ -216,6 +229,9 @@ sub run_plugin($$) {
 
     push( @{$ret{'log'}}, "[Plugins::GitHubIts] Computing metrics." );
 
+    my $all = $ret{'metrics'}{'ITS_ISSUES_ALL'} == 0 ? 1 : $ret{'metrics'}{'ITS_ISSUES_ALL'};
+    $ret{'metrics'}{'ITS_ISSUES_OPEN_PERCENT'}
+        = sprintf("%.0f", 100 * ($ret{'metrics'}{'ITS_ISSUES_OPEN'} / ($all)));
     $ret{'metrics'}{'ITS_AUTHORS'}         = scalar keys %authors;
     $ret{'metrics'}{'ITS_AUTHORS_1W'}      = scalar keys %authors_1w;
     $ret{'metrics'}{'ITS_AUTHORS_1M'}      = scalar keys %authors_1m;
@@ -240,9 +256,9 @@ sub run_plugin($$) {
 
     # Write static metrics csv file to disk.
     my @metrics_def = sort map { $conf{'provides_metrics'}{$_} } keys %{$conf{'provides_metrics'}};
-    my $csv_out = join(',', @metrics_def) . "\n"; 
+    $csv_out = join(',', @metrics_def) . "\n"; 
     my @values = map { $ret{'metrics'}{$_} } @metrics_def;
-    $csv_out .= join(',', map { $_ || '' } @values) . "\n";
+    $csv_out .= join(',', map { $_ || '0' } @values) . "\n";
     $repofs->write_output($project_id, "metrics_github_issues.csv", $csv_out);
     
     # Write info csv file to disk.
