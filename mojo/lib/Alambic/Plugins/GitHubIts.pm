@@ -115,20 +115,38 @@ sub run_plugin($$) {
     push( @{$ret{'log'}}, "[Plugins::GitHubIts] Targeting data from [$gh_url] for project [$gh_user/$gh_repo]." ); 
 
     # Create Github API object for all rest operations.
-    my $gh = Net::GitHub->new(
-      version => 3,
-      access_token => $gh_token,
-      api_url => "$gh_url",
-    );
+    my $gh;
+    if ($gh_token !~ m!^$!) { 
+        push( @{$ret{'log'}}, "[Plugins::GitHubProject] Using access token." );
+        $gh = Net::GitHub::V3->new(
+          access_token => $gh_token,
+          api_url => "$gh_url",
+        );
+    } else {
+        push( @{$ret{'log'}}, "[Plugins::GitHubProject] Using anonymous access." );
+        $gh = Net::GitHub::V3->new(
+          api_url => "$gh_url",
+        );
+    }
     $gh->set_default_user_repo("$gh_user", "$gh_repo");
 
 
-    # Project ###############################################
+    # Issues ###############################################
 
     # Request general information about this project
     push( @{$ret{'log'}}, "[Plugins::GitHubIts] Retrieving Issues data." );
-    my @issues = $gh->issue->repos_issues( { state => 'all' } );
+    my @issues;
+    eval { @issues = $gh->issue->repos_issues( { state => 'all' } ); };
+    if ($@) {
+        push( @{$ret{'log'}}, "[Plugins::GitHubIts] ERROR: Failed to get data from server." );
+        return \%ret;    
+    }
 
+    # Write project info to json file.
+    $repofs->write_input($project_id, "import_github_issues.json",
+			  encode_json(\@issues));
+
+    # Get/Compute the metrics (mainly numbers, that usually evolve)
     my ($created_1w, $created_1m, $created_1y) = (0, 0, 0);
     my ($updated_1w, $updated_1m, $updated_1y) = (0, 0, 0);
     my (%authors, %authors_1w, %authors_1m, %authors_1y, %people);
@@ -140,12 +158,8 @@ sub run_plugin($$) {
         'created_at', 'updated_at', 'labels', 'milestone', 'comments', 'url');
     my $csv_out = join( ',', @csv_header ) . "\n";
     my $csv_open_out = join( ',', @csv_header ) . "\n";
-
-    # Write project info to json file.
-    $repofs->write_input($project_id, "import_github_issues.json",
-			  encode_json(\@issues));
     
-    # Get the metrics (mainly numbers, that usually evolve)
+    # Initialise some metrics so they don't get undef when unset.
     $ret{'metrics'}{'ITS_ISSUES_ALL'} = scalar(@issues) || 0;
     $ret{'metrics'}{'ITS_ISSUES_OPEN'} = 0;
     $ret{'metrics'}{'ITS_ISSUES_OPEN_OLD'} = 0;
@@ -286,8 +300,6 @@ sub run_plugin($$) {
 	push( @{$ret{'log'}}, "[Plugins::GitHubIts] Executing R fig file [$fig]." );
 	@{$ret{'log'}} = ( @{$ret{'log'}}, @{$r->knit_rmarkdown_html( 'GitHubIts', $project_id, $fig )} );
     }
-    
-print "RET " . Dumper(%ret);
 
     return \%ret;    
 }

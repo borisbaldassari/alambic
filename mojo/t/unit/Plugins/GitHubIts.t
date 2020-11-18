@@ -84,13 +84,6 @@ ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
 ok(grep(m!recs!,    @{$conf->{'ability'}}) == 0, "Conf has NO ability > recs");
 ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
 
-# Exec plugin
-
-my $in_github_user      = "borisbaldassari";
-my $in_github_repo      = "test";
-my $in_github_token   = "f2a70262b45afff6abf513f2633b4b326cc23b8f";
-
-
 # Delete files before creating them, so we don't test a previous run.
 my @files = (
     "projects/test.github.its/input/test.github.its_import_github_issues.json",
@@ -104,13 +97,27 @@ my @files = (
 
 unlink( @files );
 
-note("Executing the plugin with borisbaldassari/test project. ");
+# Exec plugin
+
+note("Executing the plugin with Crossminer/Crossflow PRIVATE project. ");
 my $ret = $plugin->run_plugin(
     "test.github.its",
-    { 'github_url' => '', 
-      'github_user' => $in_github_user,
-      'github_repo' => $in_github_repo,
-      'github_token' => $in_github_token });
+    { 'github_url' => '',  
+      'github_user' => 'crossminer',
+      'github_repo' => 'crossflow',
+      'github_token' => '' });
+
+my @log = @{$ret->{'log'}}; 
+ok(scalar grep(/ERROR/, @log) == 1, "Log returns ERROR for no auth.") or diag explain @log;
+sleep(2);
+
+note("Executing the plugin with borisbaldassari/test public project. ");
+$ret = $plugin->run_plugin(
+    "test.github.its",
+    { 'github_url' => '',  
+      'github_user' => 'borisbaldassari',
+      'github_repo' => 'test',
+      'github_token' => '' });
 
 # Test log
 my @log = @{$ret->{'log'}}; 
