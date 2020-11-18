@@ -60,14 +60,14 @@ ok(grep(m!info_github_project.csv!, keys %{$conf->{'provides_data'}}),
 
 ok(grep(m!PROJECT_COMMITS_URL!, @{$conf->{'provides_info'}}),
    "Conf has provides_info > project_commits_url");
+ok(grep(m!PROJECT_ID!, @{$conf->{'provides_info'}}),
+   "Conf has provides_info > project_id");
 ok(grep(m!PROJECT_URL!, @{$conf->{'provides_info'}}),
    "Conf has provides_info > project_url");
-ok(grep(m!PROJECT_NAME_SPACE!, @{$conf->{'provides_info'}}),
-   "Conf has provides_info > project_name_space");
-ok(grep(m!PROJECT_AVATAR!, @{$conf->{'provides_info'}}),
-   "Conf has provides_info > project_avatar");
-ok(grep(m!PROJECT_WEB!, @{$conf->{'provides_info'}}),
-   "Conf has provides_info > project_web");
+ok(grep(m!PROJECT_WEB_ENABLED!, @{$conf->{'provides_info'}}),
+   "Conf has provides_info > project_web_enabled");
+#ok(grep(m!PROJECT_WEB_URL!, @{$conf->{'provides_info'}}),
+#   "Conf has provides_info > project_web_url");
 ok(grep(m!PROJECT_OWNER_ID!, @{$conf->{'provides_info'}}),
    "Conf has provides_info > project_owner_id");
 ok(grep(m!PROJECT_OWNER_NAME!, @{$conf->{'provides_info'}}),
@@ -88,16 +88,14 @@ ok(grep(m!PROJECT_WIKI_URL!, @{$conf->{'provides_info'}}),
 #   "Conf has provides_info > project_mrs_enabled");
 #ok(grep(m!PROJECT_MRS_URL!, @{$conf->{'provides_info'}}),
 #   "Conf has provides_info > project_mrs_url");
-ok(grep(m!PROJECT_SNIPPETS_ENABLED!, @{$conf->{'provides_info'}}),
-   "Conf has provides_info > project_snippets_enabled");
 ok(grep(m!PROJECT_CREATED_AT!, @{$conf->{'provides_info'}}),
    "Conf has provides_info > project_created_at");
-ok(grep(m!PROJECT_VISIBILITY!, @{$conf->{'provides_info'}}),
-   "Conf has provides_info > project_visibility");
 ok(grep(m!PROJECT_REPO_SSH!, @{$conf->{'provides_info'}}),
    "Conf has provides_info > project_repo_ssh");
 ok(grep(m!PROJECT_REPO_HTTP!, @{$conf->{'provides_info'}}),
    "Conf has provides_info > project_repo_http");
+ok(grep(m!PROJECT_REPO_GIT!, @{$conf->{'provides_info'}}),
+   "Conf has provides_info > project_repo_git");
 
 # Check provides_metrics
    
@@ -105,8 +103,6 @@ ok(grep(m!PROJECT_ISSUES_OPEN!, map { $conf->{'provides_metrics'}{$_} } keys %{$
    "Conf has provides_metrics > project_issues_open");
 ok(grep(m!PROJECT_FORKS!, map { $conf->{'provides_metrics'}{$_} } keys %{$conf->{'provides_metrics'}}),
    "Conf has provides_metrics > project_forks");
-ok(grep(m!PROJECT_STARS!, map { $conf->{'provides_metrics'}{$_} } keys %{$conf->{'provides_metrics'}}),
-   "Conf has provides_metrics > project_stars");
 ok(grep(m!PROJECT_STARGAZERS!, map { $conf->{'provides_metrics'}{$_} } keys %{$conf->{'provides_metrics'}}),
    "Conf has provides_metrics > project_stargazers");
 ok(grep(m!PROJECT_WATCHERS!, map { $conf->{'provides_metrics'}{$_} } keys %{$conf->{'provides_metrics'}}),
@@ -174,14 +170,6 @@ ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
 ok(grep(m!recs!,    @{$conf->{'ability'}}) == 0, "Conf has NO ability > recs");
 ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
 
-# Exec plugin
-
-my $in_github_url     = "https://www.github.com";
-my $in_github_user      = "crossminer";
-my $in_github_repo      = "crossflow";
-my $in_github_token   = "f2a70262b45afff6abf513f2633b4b326cc23b8f";
-
-
 
 # Delete files before creating them, so we don't test a previous run.
 my @files = (
@@ -205,18 +193,32 @@ my @files = (
 
 unlink( @files );
 
-note("Executing the plugin with Crossminer/Crossflow project. ");
+# Exec plugin
+
+note("Executing the plugin with Crossminer/Crossflow PRIVATE project. ");
 my $ret = $plugin->run_plugin(
     "test.github.project",
-    { 'github_url' => '', #$in_github_url, 
-      'github_user' => $in_github_user,
-      'github_repo' => $in_github_repo,
-      'github_token' => $in_github_token });
+    { 'github_url' => '',  
+      'github_user' => 'crossminer',
+      'github_repo' => 'crossflow',
+      'github_token' => '' });
+
+my @log = @{$ret->{'log'}}; 
+ok(scalar grep(/ERROR/, @log) == 1, "Log returns ERROR for no auth.") or diag explain @log;
+sleep(2);
+
+note("Executing the plugin with borisbaldassari/test public project. ");
+$ret = $plugin->run_plugin(
+    "test.github.project",
+    { 'github_url' => '',  
+      'github_user' => 'borisbaldassari',
+      'github_repo' => 'test',
+      'github_token' => '' });
 
 # Test log
-my @log = @{$ret->{'log'}}; 
-ok(grep(!/^ERROR/, @log), "Log returns no ERROR") or diag explain @log;
-ok(grep(m!^\[Plugins::GitHubProject\] Targeting data from .* for project \[crossminer/crossflow\]!, @log),
+@log = @{$ret->{'log'}}; 
+ok(scalar(grep(/ERROR/, @log)) == 0, "Log returns no ERROR") or diag explain @log;
+ok(grep(m!^\[Plugins::GitHubProject\] Targeting data from .* for project \[borisbaldassari/test\]!, @log),
   "Log returns Retrieving data from project.")
   or diag explain @log;
 ok(grep(m!^\[Plugins::GitHubProject\] Retrieving Repository data.!, @log),
@@ -331,29 +333,35 @@ ok(grep(m!^\[Tools::R\] Moved main file!, @log),
 #ok($ret->{'info'}{'PROJECT_CI_URL'} =~ m!https://www.github.com/bbaldassari/Alambic/pipelines!,
 #  "Info PROJECT_CI_URL is correct.")
 #  or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_ID'} =~ m!120641506!,
+ok($ret->{'info'}{'PROJECT_ID'} =~ m!313579412!,
   "Info PROJECT_ID is correct.")
   or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_URL'} =~ m!https://github.com/crossminer/crossflow!,
+ok($ret->{'info'}{'PROJECT_URL'} =~ m!https://github.com/borisbaldassari/test!,
   "Info PROJECT_URL is correct.")
+  or diag explain $ret;
+ok($ret->{'info'}{'PROJECT_WEB_ENABLED'},
+  "Info PROJECT_WEB_ENABLED is enabled.")
   or diag explain $ret;
 ok($ret->{'info'}{'PROJECT_ISSUES_ENABLED'},
   "Info PROJECT_ISSUES_ENABLED is 1.")
   or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_ISSUES_URL'} =~ m!https://github.com/crossminer/crossflow/issues!,
+ok($ret->{'info'}{'PROJECT_ISSUES_URL'} =~ m!https://github.com/borisbaldassari/test/issues!,
   "Info PROJECT_ISSUES_URL is correct.")
   or diag explain $ret;
 ok($ret->{'info'}{'PROJECT_WIKI_ENABLED'},
   "Info PROJECT_WIKI_ENABLED is 1.")
   or diag explain $ret; 
-ok($ret->{'info'}{'PROJECT_WIKI_URL'} =~ m!https://github.com/crossminer/crossflow/wiki!,
+ok($ret->{'info'}{'PROJECT_WIKI_URL'} =~ m!https://github.com/borisbaldassari/test/wiki!,
   "Info PROJECT_WIKI_URL is correct.")
   or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_COMMITS_URL'} =~ m!https://github.com/crossminer/crossflow/commits!,
+ok($ret->{'info'}{'PROJECT_COMMITS_URL'} =~ m!https://github.com/borisbaldassari/test/commits!,
   "Info PROJECT_COMMITS_URL is correct.")
   or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_CREATED_AT'} =~ m!2018-02-07T16:34:43Z!,
+ok($ret->{'info'}{'PROJECT_CREATED_AT'} =~ m!2020-11-17T10:10:40Z!,
   "Info PROJECT_CREATED_AT is correct.")
+  or diag explain $ret;
+ok($ret->{'info'}{'PROJECT_LAST_ACTIVITY_AT'} =~ m!2020-11-17T11:50:11Z!,
+  "Info PROJECT_LAST_ACTIVITY_AT is correct.")
   or diag explain $ret;
 #ok($ret->{'info'}{'PROJECT_MRS_ENABLED'} == 1,
 #  "Info PROJECT_MRS_ENABLED is 1.")
@@ -361,19 +369,19 @@ ok($ret->{'info'}{'PROJECT_CREATED_AT'} =~ m!2018-02-07T16:34:43Z!,
 #ok($ret->{'info'}{'PROJECT_MRS_URL'} =~ m!https://www.github.com/bbaldassari/Alambic/merge_requests!,
 #  "Info PROJECT_MRS_URL is correct.")
 #  or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_OWNER_ID'} =~ m!25099099!,
+ok($ret->{'info'}{'PROJECT_OWNER_ID'} =~ m!5849071!,
   "Info PROJECT_OWNER_ID is correct.")
   or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_OWNER_NAME'} =~ m!crossminer!,
+ok($ret->{'info'}{'PROJECT_OWNER_NAME'} =~ m!borisbaldassari!,
   "Info PROJECT_OWNER_NAME is correct.")
   or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_REPO_HTTP'} =~ m!https://github.com/crossminer/crossflow.git!,
+ok($ret->{'info'}{'PROJECT_REPO_HTTP'} =~ m!https://github.com/borisbaldassari/test.git!,
   "Info PROJECT_REPO_HTTP is correct.")
   or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_REPO_SSH'} =~ m!git\@github.com:crossminer/crossflow.git!,
+ok($ret->{'info'}{'PROJECT_REPO_SSH'} =~ m!git\@github.com:borisbaldassari/test.git!,
   "Info PROJECT_REPO_SSH is correct.")
   or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_REPO_GIT'} =~ m!git://github.com/crossminer/crossflow.git!,
+ok($ret->{'info'}{'PROJECT_REPO_GIT'} =~ m!git://github.com/borisbaldassari/test.git!,
   "Info PROJECT_REPO_GIT is correct.")
   or diag explain $ret;
 #ok($ret->{'info'}{'PROJECT_VISIBILITY'} =~ m!public!,

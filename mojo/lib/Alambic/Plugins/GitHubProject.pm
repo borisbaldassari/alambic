@@ -36,7 +36,7 @@ my %conf = (
       "PROJECT_WIKI_ENABLED",
       "PROJECT_WIKI_URL",
       "PROJECT_WEB_ENABLED",
-      "PROJECT_WEB_URL",
+#      "PROJECT_WEB_URL",
       "PROJECT_DL_ENABLED",
       "PROJECT_DL_URL",
       "PROJECT_LICENCE",
@@ -126,19 +126,31 @@ sub run_plugin($$) {
     push( @{$ret{'log'}}, "[Plugins::GitHubProject] Targeting data from [$gh_url] for project [$gh_user/$gh_repo]." ); 
 
     # Create Github API object for all rest operations.
-    my $gh = Net::GitHub->new(
-      version => 3,
-      access_token => $gh_token,
-      api_url => "$gh_url",
-    );
+    my $gh;
+    if ($gh_token !~ m!^$!) { 
+        push( @{$ret{'log'}}, "[Plugins::GitHubProject] Using access token." );
+        $gh = Net::GitHub::V3->new(
+          access_token => $gh_token,
+          api_url => "$gh_url",
+        );
+    } else {
+        push( @{$ret{'log'}}, "[Plugins::GitHubProject] Using anonymous access." );
+        $gh = Net::GitHub::V3->new(
+          api_url => "$gh_url",
+        );
+    }
     $gh->set_default_user_repo("$gh_user", "$gh_repo");
-
 
     # Project ###############################################
 
     # Request general information about this project
-    push( @{$ret{'log'}}, "[Plugins::GitHubProject] Retrieving Repository data." );
-    my $project = $gh->repos->get;
+    push( @{$ret{'log'}}, "[Plugins::GitHubProject] Retrieving Repository data." ); 
+    my $project;
+    eval { $project = $gh->repos->get; };
+    if ($@) {
+        push( @{$ret{'log'}}, "[Plugins::GitHubProject] ERROR: Failed to get data from server." );
+        return \%ret;    
+    }
 
     # Write project info to json file.
     $repofs->write_input($project_id, "github_project.json",
@@ -228,8 +240,8 @@ sub run_plugin($$) {
     $csv_out = join(',', @cols) . "\n";
     
     foreach my $i (@$tags) {
-        $csv->combine( ($tags->{'name'}, $tags->{'commit'}{'sha'}, 
-                        $tags->{'zipball_url'}, $tags->{'tarball_url'}) );
+        $csv->combine( ($i->{'name'}, $i->{'commit'}{'sha'}, 
+                        $i->{'zipball_url'}, $i->{'tarball_url'}) );
         $csv_out .= $csv->string();
     }
     
@@ -251,11 +263,6 @@ sub run_plugin($$) {
     for( my $i = 0 ; $i++ ; $i<scalar(@{$commits_weekly->{'all'}}) ) {
         $csv->combine( ($i, $commits_weekly->{'all'}[$i], $commits_weekly->{'owner'}[$i]) );
         $csv_out .= $csv->string();
-
-
-
-
-
     }
     
     $repofs->write_output($project_id, "github_project_commits_weekly.csv", $csv_out);
@@ -342,7 +349,7 @@ sub run_plugin($$) {
     }
     
     
-    return \%ret;    
+    return \%ret;
 }
 
 
