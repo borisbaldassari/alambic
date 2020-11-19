@@ -117,13 +117,13 @@ sub run_plugin($$) {
     # Create Github API object for all rest operations.
     my $gh;
     if ($gh_token !~ m!^$!) { 
-        push( @{$ret{'log'}}, "[Plugins::GitHubProject] Using access token." );
+        push( @{$ret{'log'}}, "[Plugins::GitHubIts] Using access token." );
         $gh = Net::GitHub::V3->new(
           access_token => $gh_token,
           api_url => "$gh_url",
         );
     } else {
-        push( @{$ret{'log'}}, "[Plugins::GitHubProject] Using anonymous access." );
+        push( @{$ret{'log'}}, "[Plugins::GitHubIts] Using anonymous access." );
         $gh = Net::GitHub::V3->new(
           api_url => "$gh_url",
         );

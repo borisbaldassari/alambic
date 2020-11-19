@@ -25,7 +25,7 @@ suppressPackageStartupMessages(library(googleVis))
 options(gvis.plot.tag='chart')
 require('reshape2')
 
-project.id <- 'test.github.its'
+#project.id <- 'test.github.its'
 file.issues = paste("../../../../projects/", project.id, "/output/", project.id, "_github_issues.csv", sep="")
 issues.all <- read.csv(file=file.issues, header=T)
 

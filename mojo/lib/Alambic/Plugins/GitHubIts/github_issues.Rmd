@@ -49,12 +49,12 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 #   * github.repo
 #   * github.url
 
-project.id <- 'test.github.its'
-github.url <- 'https://api.github.com'
-github.user <- 'borisbaldassari'
-github.repo <- 'test'
+# project.id <- 'test.github.its'
+# github.url <- 'https://api.github.com'
+# github.user <- 'borisbaldassari'
+# github.repo <- 'test'
 
-plugin.id <- 'GitHubProject'
+plugin.id <- 'GitHubIts'
 file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_github_issues.csv", sep="")
 file.info = paste("../../../../projects/", project.id, "/output/", project.id, "_info_github_issues.csv", sep="")
 file.issues.all = paste("../../../../projects/", project.id, "/output/", project.id, "_github_issues.csv", sep="")
