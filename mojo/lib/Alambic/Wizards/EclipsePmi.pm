@@ -28,11 +28,11 @@ my %conf = (
   "id"   => "EclipsePmi",
   "name" => "Eclipse PMI Wizard",
   "desc" => [
-    'The Eclipse PMI wizard creates a new project with all data source plugins needed to analyse a project from the Eclipse forge, including Eclipse ITS (Bugzilla), Eclipse PMI, Git SCM and Jenkins CI. It retrieves and uses values from the PMI repository to set the plugin parameters automatically.',
+    'The Eclipse PMI wizard creates a new project with all data source plugins needed to analyse a project from the Eclipse forge, including Eclipse ITS (Bugzilla), Eclipse PMI, Scancode execution, Git SCM and Jenkins CI. It retrieves and uses values from the PMI repository to set the plugin parameters automatically.',
     "This wizard only creates the plugins that should always be available. Depending on the project's configuration and data sources availability, other plugins may be needed and can manually be added to the configuration.",
   ],
   "params"  => {"proxy_url" => "The proxy to be used to access remote data, if any."},
-  "plugins" => ["EclipsePmi", "Jenkins", "Git", "Bugzilla", "ProjectSummary"],
+  "plugins" => ["EclipsePmi", "Jenkins", "Git", "Bugzilla", "ProjectSummary", "Scancode"],
 );
 
 my $eclipse_url  = "https://projects.eclipse.org/json/project/";
@@ -87,6 +87,7 @@ sub run_wizard($) {
   
   # Check if we actually get some results.
   my $pmi = decode_json($content);
+
   my $project_pmi; 
   if (defined($pmi->{'projects'}{$project_id})) {
     $project_pmi = $pmi->{'projects'}{$project_id};
@@ -118,6 +119,7 @@ sub run_wizard($) {
       'proxy' => $proxy_url, 
       'git_url'     => $project_git},
     "ProjectSummary" => { 'proxy' => $proxy_url },
+    "Scancode" => { 'dir_bin' => 'scancode', 'licence_regexp' => "*epl*" },
   };
 
   my $project
