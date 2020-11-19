@@ -119,7 +119,7 @@ sub run_plugin($$) {
 
   # Create RepoFS object for writing and reading files on FS.
   my $repofs = Alambic::Model::RepoFS->new();
-  my $json = $repofs->read_input($project_id, "scancode.json");
+  my $json = $repofs->read_input($project_id, "import_scancode.json");
 
   my $data = decode_json($json);
   my @licences = @{$data->{'summary'}{'license_expressions'}};

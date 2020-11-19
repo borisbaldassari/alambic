@@ -109,7 +109,7 @@ sub test() {
     push(@log, "ERROR: scancode exec NOT found in PATH.");
   }
 
-  my $cmd = "scancode -clpeui t/resources/arch --json-pp t/resources/sample.json";
+  my $cmd = "scancode -clpeui t/resources/arch --json-pp t/resources/scancode_test_results.json";
   my @out = `$cmd 2>&1`;
   push( @log, @out );
 
