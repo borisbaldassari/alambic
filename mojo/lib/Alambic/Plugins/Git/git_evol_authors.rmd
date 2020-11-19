@@ -23,7 +23,7 @@ library(ggplot2)
 library(ggthemes)
 library(plotly)
 
-#project.id <- 'inkscape'
+# project.id <- 'inkscape'
 file.evol = paste("../../../../projects/", project.id, "/output/", project.id, "_git_commits_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 evol.xts <- xts(x = evol[,c('authors')], order.by=as.POSIXct(as.character(evol[,c('date')]), format="%Y-%m-%d"))
