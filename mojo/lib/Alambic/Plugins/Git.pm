@@ -302,7 +302,6 @@ sub _compute_data($$) {
     keys %{$conf{'provides_metrics'}};
   my $csv_out = join(',', sort @metrics) . "\n";
   $csv_out .= join(',', map { $metrics{$_} || '' } sort @metrics) . "\n";
-  $repofs->write_plugin('Git', $project_id . "_git.csv", $csv_out);
   $repofs->write_output($project_id, "metrics_git.csv", $csv_out);
 
   # Write commits history json file to disk.
@@ -312,7 +311,6 @@ sub _compute_data($$) {
     sort keys %timeline;
   $csv_out = "date,commits,authors\n";
   $csv_out .= join("\n", @timeline) . "\n";
-  $repofs->write_plugin('Git', $project_id . "_git_commits_evol.csv", $csv_out);
   $repofs->write_output($project_id, "git_commits_evol.csv", $csv_out);
 
   # Now execute the main R script.
