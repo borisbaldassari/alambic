@@ -39,10 +39,10 @@ require(xtable)
 
 knitr::opts_chunk$set(fig.path = 'figures/')
 
-#project.id <- 'modeling.sirius'
+#project.id <- 'modeling.epsilon'
 plugin.id <- 'Git'
-file.evol = paste("", project.id, "_git_commits_evol.csv", sep="")
-file.metrics = paste("", project.id, "_git.csv", sep="")
+file.evol = paste("../../../../projects/", project.id, "/output/", project.id, "_git_commits_evol.csv", sep="")
+file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_git.csv", sep="")
 
 evol <- read.csv(file=file.evol, header=T)
 metrics <- read.csv(file=file.metrics, header=T)
@@ -87,7 +87,7 @@ The evolution of ``r ncol(evol)`` metrics has been retrieved: ``r paste(names(ev
 
 The following plot uses the [plotly library](http://plot.ly) to enable users to play with data itself, and its associated plot. Hover on the graph for more options.
 
-<iframe src="/projects/`r project.id`/Git/git_evol_summary.html" frameborder="0" style="width: 100%; height: 360px"></iframe>
+<iframe src="/projects/`r project.id`/Git/git_evol_summary.html" frameborder="0" style="width: 100%; height: 370px"></iframe>
 
 -----
 
