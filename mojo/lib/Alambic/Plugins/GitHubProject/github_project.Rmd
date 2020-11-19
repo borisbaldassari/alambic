@@ -119,9 +119,11 @@ The URLs to use to connect to the repository are:
 The project was created on ``r info[['PROJECT_CREATED_AT']]`` and was last updated on ``r info[['PROJECT_LAST_ACTIVITY_AT']]``.
 
 <div class="row"><div class="col-sm-3">
-<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_FORKS']], which='both')``</span> Forks</span>
+<span><span style="font-size:24pt">
+``r trimws(metrics[['PROJECT_FORKS']], which='both')``</span> Forks</span>
 </div><div class="col-sm-3">
-<span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_STARS']], which='both')``</span> Stars</span>
+<span><span style="font-size:24pt">
+``r trimws(metrics[['PROJECT_STARGAZERS']], which='both')``</span> Stars</span>
 </div><div class="col-sm-3">
 <span><span style="font-size:24pt">``r trimws(metrics[['PROJECT_STARGAZERS']], which='both')``</span> Stargazers</span>
 </div><div class="col-sm-3">

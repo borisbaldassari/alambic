@@ -39,7 +39,7 @@ my %conf = (
 #      "PROJECT_WEB_URL",
       "PROJECT_DL_ENABLED",
       "PROJECT_DL_URL",
-      "PROJECT_LICENCE",
+      "PROJECT_LICENSE",
       "PROJECT_REPO_SSH",
       "PROJECT_REPO_GIT",
       "PROJECT_REPO_HTTP",
@@ -153,7 +153,7 @@ sub run_plugin($$) {
     }
 
     # Write project info to json file.
-    $repofs->write_input($project_id, "github_project.json",
+    $repofs->write_input($project_id, "import_github_project.json",
 			  encode_json($project));
     
     # Get the metrics (mainly numbers, that usually evolve)
@@ -180,6 +180,7 @@ sub run_plugin($$) {
     $ret{'info'}{'PROJECT_WIKI_URL'} = $ret{'info'}{'PROJECT_URL'} . "/wiki";
 
     $ret{'info'}{'PROJECT_LICENSE'} = $project->{'license'}{'spdx_id'} || '';
+    $ret{'info'}{'PROJECT_PRIVATE'} = $project->{'private'};
 
     $ret{'info'}{'PROJECT_REPO_SSH'} = $project->{'ssh_url'} || '';
     $ret{'info'}{'PROJECT_REPO_GIT'} = $project->{'git_url'} || '';
@@ -190,7 +191,7 @@ sub run_plugin($$) {
     my $langs = $gh->repos->languages;
 
     # Write languages to json file.
-    $repofs->write_input($project_id, "github_project_languages.json",
+    $repofs->write_input($project_id, "import_github_project_languages.json",
 			  encode_json($langs));
 
     # Write languages to csv file.
@@ -210,7 +211,7 @@ sub run_plugin($$) {
     my $contribs = $gh->repos->contributors;
 
     # Write contributors to json file on disk.
-    $repofs->write_input($project_id, "github_project_contributors.json",
+    $repofs->write_input($project_id, "import_github_project_contributors.json",
 			  encode_json($contribs));
 
     # Write languages to csv file.
@@ -231,7 +232,7 @@ sub run_plugin($$) {
     my $tags = $gh->repos->tags;
 
     # Write tags to json file.
-    $repofs->write_input($project_id, "github_project_tags.json",
+    $repofs->write_input($project_id, "import_github_project_tags.json",
 			  encode_json($tags));
 
     # Write tags to csv file.
@@ -252,7 +253,7 @@ sub run_plugin($$) {
     my $commits_weekly = $gh->repos->participation();
 
     # Write punch card to json file.
-    $repofs->write_input($project_id, "github_project_commits_weekly.json",
+    $repofs->write_input($project_id, "import_github_project_commits_weekly.json",
 			  encode_json($commits_weekly));
 
     # Write punch card to csv file.
@@ -272,7 +273,7 @@ sub run_plugin($$) {
     my $commits_hourly = $gh->repos->punch_card();
 
     # Write punch card to json file.
-    $repofs->write_input($project_id, "github_project_commits_hourly.json",
+    $repofs->write_input($project_id, "import_github_project_commits_hourly.json",
 			  encode_json($commits_hourly));
 
     # Write punch card to csv file.
@@ -292,7 +293,7 @@ sub run_plugin($$) {
     my @events = $gh->event->repos_events("$gh_user", "$gh_repo");
 
     # Write tags to json file.
-    $repofs->write_input($project_id, "github_project_events.json",
+    $repofs->write_input($project_id, "import_github_project_events.json",
 			  encode_json(\@events));
 
     # Write tags to csv file.
