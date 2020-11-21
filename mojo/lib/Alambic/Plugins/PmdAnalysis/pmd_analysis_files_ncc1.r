@@ -18,12 +18,12 @@ variables <- commandArgs(trailingOnly=TRUE)
 project.id <- variables[1]
 plugin.id <- variables[2]
 
-file.out <- paste( project.id, "_pmd_analysis_files_ncc1.svg", sep="")
+file.out <- paste(project.id, "_pmd_analysis_files_ncc1.svg", sep="")
 
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
 #project.id <- "modeling.sirius"
-file.files = paste("", project.id, "_pmd_analysis_files.csv", sep="")
+file.files = paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_files.csv", sep="")
 pmd.files <- read.csv(file=file.files, header=T)
 
 pmd.files.list <- pmd.files[pmd.files$NCC_1 > 0 | pmd.files$NCC_2 > 0,c("File", "NCC_1", "NCC_2")]

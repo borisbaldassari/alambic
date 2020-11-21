@@ -39,11 +39,11 @@ opts_chunk$set(echo=F, fig.path = 'figures/')
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
 #project.id <- 'modeling.sirius'
-pmd.main <- read.csv(file=paste("", project.id, "_pmd_analysis_main.csv", sep=""), header=T)
-pmd.rules <- read.csv(file=paste("", project.id, "_pmd_analysis_rules.csv", sep=""), header=T)
-pmd.rulesets <- read.csv(file=paste("", project.id, "_pmd_analysis_rulesets2.csv", sep=""), header=T)
-pmd.violations <- read.csv(file=paste("", project.id, "_pmd_analysis_violations.csv", sep=""), header=T)
-pmd.files <- read.csv(file=paste("", project.id, "_pmd_analysis_files.csv", sep=""), header=T)
+pmd.main <- read.csv(file=paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_main.csv", sep=""), header=T)
+pmd.rules <- read.csv(file=paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_rules.csv", sep=""), header=T)
+pmd.rulesets <- read.csv(file=paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_rulesets2.csv", sep=""), header=T)
+pmd.violations <- read.csv(file=paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_violations.csv", sep=""), header=T)
+pmd.files <- read.csv(file=paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_files.csv", sep=""), header=T)
 ```
 
 ## PMD Configuration analysis for `r I(project.id)`

@@ -27,7 +27,7 @@ variables <- commandArgs(trailingOnly=TRUE)
 
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
-pmd.rules <- read.csv(file=paste("", project.id, "_pmd_analysis_rules.csv", sep=""), header=T)
+pmd.rules <- read.csv(file=paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_rules.csv", sep=""), header=T)
 
 pmd.rules.ok <- pmd.rules[,c(1,2)]
 pmd.rules.ok$Priority <- paste("P", pmd.rules$Priority, " OK", sep="")

@@ -23,7 +23,7 @@ file.out <- paste( project.id, "_pmd_configuration_rulesets_repartition.svg", se
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
 #project.id <- 'modeling.sirius'
-pmd.rulesets <- read.csv(file=paste("", project.id, "_pmd_analysis_rulesets2.csv", sep=""), header=T)
+pmd.rulesets <- read.csv(file=paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_rulesets2.csv", sep=""), header=T)
 
 svg(file.out, width=10, height=7)
 ggplot(data=pmd.rulesets, aes(x=ruleset, y=ncc, fill=factor(priority))) +

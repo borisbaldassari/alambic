@@ -22,7 +22,7 @@ file.out <- paste( project.id, "_pmd_configuration_violations_rules.svg", sep=""
 
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
-pmd.violations <- read.csv(file=paste("", project.id, "_pmd_analysis_violations.csv", sep=""), header=T)
+pmd.violations <- read.csv(file=paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_violations.csv", sep=""), header=T)
 
 svg(file.out, width=14, height=8)
 ggplot(data=pmd.violations, aes(x=reorder(Mnemo, vol), y=vol+1, fill=factor(priority))) +
