@@ -380,7 +380,6 @@ sub run_plugin($$) {
   $csv_out
     .= join(',', map { $ret{'metrics'}{$_} || '' } sort keys %{$ret{'metrics'}})
     . "\n";
-  $repofs->write_plugin('JiraIts', $project_id . "_jira.csv", $csv_out);
   $repofs->write_output($project_id, "metrics_jira.csv", $csv_out);
 
   # Write commits history csv file to disk.
@@ -390,7 +389,6 @@ sub run_plugin($$) {
     sort keys %timeline;
   $csv_out = "date,issues_created,authors\n";
   $csv_out .= join("\n", @timeline) . "\n";
-  $repofs->write_plugin('JiraIts', $project_id . "_jira_evol.csv", $csv_out);
   $repofs->write_output($project_id, "jira_evol.csv", $csv_out);
 
   # Now execute the main R script.

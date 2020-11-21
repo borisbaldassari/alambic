@@ -9,7 +9,7 @@ library(ggplot2)
 library(ggthemes)
 
 #project.id <- 'modeling.sirius'
-file.evol = paste("", project.id, "_jira_evol.csv", sep="")
+file.evol = paste("../../../../projects/", project.id, "/output/", project.id, "_jira_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 evol.xts <- xts(x = evol[,c('issues_created', 'authors')], order.by=as.POSIXct(as.character(evol[,c('date')]), format="%Y-%m-%d"))
 

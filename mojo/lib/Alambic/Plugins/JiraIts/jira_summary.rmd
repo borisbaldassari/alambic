@@ -5,7 +5,7 @@ output: html_document
 ```{r init, echo=FALSE, fig.height=3, message=FALSE, warning=FALSE}
 #project.id <- 'alambic'
 plugin.id <- 'JiraIts'
-file.metrics = paste("", project.id, "_jira.csv", sep="")
+file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_jira.csv", sep="")
 
 metrics <- read.csv(file=file.metrics, header=T)
 ```
