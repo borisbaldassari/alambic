@@ -289,3 +289,6 @@ ok(
 
 
 done_testing();
+
+exit;
+

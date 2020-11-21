@@ -173,13 +173,13 @@ ok(grep(m!viz!,     @{$conf->{'ability'}}), "Conf has ability > viz");
 
 # Delete files before creating them, so we don't test a previous run.
 my @files = (
-    "projects/test.github.project/input/test.github.project_github_project.json",
-    "projects/test.github.project/input/test.github.project_github_project_contributors.json",
-    "projects/test.github.project/input/test.github.project_github_project_events.json",
-    "projects/test.github.project/input/test.github.project_github_project_languages.json",
-    "projects/test.github.project/input/test.github.project_github_project_tags.json",
-    "projects/test.github.project/input/test.github.project_github_project_commits_hourly.json",
-    "projects/test.github.project/input/test.github.project_github_project_commits_weekly.json",
+    "projects/test.github.project/input/test.github.project_import_github_project.json",
+    "projects/test.github.project/input/test.github.project_import_github_project_contributors.json",
+    "projects/test.github.project/input/test.github.project_import_github_project_events.json",
+    "projects/test.github.project/input/test.github.project_import_github_project_languages.json",
+    "projects/test.github.project/input/test.github.project_import_github_project_tags.json",
+    "projects/test.github.project/input/test.github.project_import_github_project_commits_hourly.json",
+    "projects/test.github.project/input/test.github.project_import_github_project_commits_weekly.json",
     "projects/test.github.project/output/test.github.project_github_project.inc",
     "projects/test.github.project/output/test.github.project_github_project_contributors.csv",
     "projects/test.github.project/output/test.github.project_github_project_languages.csv",
@@ -289,50 +289,7 @@ ok(grep(m!^\[Tools::R\] Moved main file!, @log),
 #  "Metric PROJECT_COMMITTERS_1Y is a digit " . $ret->{'metrics'}{'PROJECT_COMMITTERS_1Y'} . ".")
 #    or diag explain $ret;
 
-
-#ok($ret->{'metrics'}{'PROJECT_MRS'} =~ /\d+/,
-#  "Metric PROJECT_MRS is a digit " . $ret->{'metrics'}{'PROJECT_MRS'} . ".")
-#    or diag explain $ret;
-#ok($ret->{'metrics'}{'PROJECT_MRS_CLOSED'} =~ /\d+/,
-#  "Metric PROJECT_MRS_CLOSED is a digit " . $ret->{'metrics'}{'PROJECT_MRS_CLOSED'} . ".")
-#    or diag explain $ret;
-#ok($ret->{'metrics'}{'PROJECT_MRS_MERGED'} =~ /\d+/,
-#  "Metric PROJECT_MRS_MERGED is a digit " . $ret->{'metrics'}{'PROJECT_MRS_MERGED'} . ".")
-#  or diag explain $ret;
-#ok($ret->{'metrics'}{'PROJECT_MRS_OPENED'} =~ /\d+/,
-#  "Metric PROJECT_MRS_OPENED is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED'} . ".")
-#  or diag explain $ret;
-#ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_1W'} =~ /\d+/,
-#  "Metric PROJECT_MRS_OPENED_1W is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_1W'} . ".")
-#  or diag explain $ret;
-#ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_1M'} =~ /\d+/,
-#  "Metric PROJECT_MRS_OPENED_1M is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_1M'} . ".")
-#    or diag explain $ret;
-#ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_1Y'} =~ /\d+/,
-#  "Metric PROJECT_MRS_OPENED_1Y is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_1Y'} . ".")
-#  or diag explain $ret;
-#
-#ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1W'} =~ /\d+/,
-#  "Metric PROJECT_MRS_OPENED_STILL_1W is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1W'} . ".")
-#  or diag explain $ret;
-#ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1M'} =~ /\d+/,
-#  "Metric PROJECT_MRS_OPENED_STILL_1M is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1M'} . ".")
-#  or diag explain $ret;
-#ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1Y'} =~ /\d+/,
-#  "Metric PROJECT_MRS_OPENED_STILL_1Y is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_STILL_1Y'} . ".")
-#    or diag explain $ret;
-#
-#ok($ret->{'metrics'}{'PROJECT_MRS_OPENED_STALED_1M'} =~ /\d+/,
-#  "Metric PROJECT_MRS_OPENED_STALED_1M is a digit " . $ret->{'metrics'}{'PROJECT_MRS_OPENED_STALED_1M'} . ".")
-#    or diag explain $ret;
-
 # Test info results
-#ok($ret->{'info'}{'PROJECT_CI_ENABLED'} == 1,
-#  "Info PROJECT_CI_ENABLED is 1.")
-#  or diag explain $ret;
-#ok($ret->{'info'}{'PROJECT_CI_URL'} =~ m!https://www.github.com/bbaldassari/Alambic/pipelines!,
-#  "Info PROJECT_CI_URL is correct.")
-#  or diag explain $ret;
 ok($ret->{'info'}{'PROJECT_ID'} =~ m!313579412!,
   "Info PROJECT_ID is correct.")
   or diag explain $ret;
@@ -360,15 +317,9 @@ ok($ret->{'info'}{'PROJECT_COMMITS_URL'} =~ m!https://github.com/borisbaldassari
 ok($ret->{'info'}{'PROJECT_CREATED_AT'} =~ m!2020-11-17T10:10:40Z!,
   "Info PROJECT_CREATED_AT is correct.")
   or diag explain $ret;
-ok($ret->{'info'}{'PROJECT_LAST_ACTIVITY_AT'} =~ m!2020-11-17T11:50:11Z!,
+ok($ret->{'info'}{'PROJECT_LAST_ACTIVITY_AT'} =~ m!2020-11-19T08:16:30Z!,
   "Info PROJECT_LAST_ACTIVITY_AT is correct.")
   or diag explain $ret;
-#ok($ret->{'info'}{'PROJECT_MRS_ENABLED'} == 1,
-#  "Info PROJECT_MRS_ENABLED is 1.")
-#  or diag explain $ret;
-#ok($ret->{'info'}{'PROJECT_MRS_URL'} =~ m!https://www.github.com/bbaldassari/Alambic/merge_requests!,
-#  "Info PROJECT_MRS_URL is correct.")
-#  or diag explain $ret;
 ok($ret->{'info'}{'PROJECT_OWNER_ID'} =~ m!5849071!,
   "Info PROJECT_OWNER_ID is correct.")
   or diag explain $ret;
