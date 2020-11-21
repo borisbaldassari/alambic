@@ -40,7 +40,7 @@ require('xtable')
 
 opts_chunk$set(echo=F, message=F, warning=F, fig.path = paste(project.id, '_', sep=""))
 
-file.csv = paste(project.id, '_so.csv', sep="")
+file.csv = paste("../../../../projects/", project.id, "/output/", project.id, '_so.csv', sep="")
 
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 binary.colours <- c("#325d88", "#d9534f") # "#325d88" green = #3e9c1a)

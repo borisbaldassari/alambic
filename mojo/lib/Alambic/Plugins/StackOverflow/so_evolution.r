@@ -21,7 +21,7 @@ plugin.id <- variables[2]
 
 file.out <- paste( project.id, "_so_evolution.svg", sep="")
 
-file.csv = paste(project.id, '_so.csv', sep="")
+file.csv = paste("../../../../projects/", project.id, "/output/", project.id, '_so.csv', sep="")
 project <- read.csv(file=file.csv, header=TRUE)
 
 binary.colours <- c("#325d88", "#d9534f") # "#325d88" green = #3e9c1a)
