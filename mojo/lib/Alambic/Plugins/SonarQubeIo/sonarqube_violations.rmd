@@ -13,7 +13,7 @@ plugin.id <- 'SonarQubeIo'
 
 abc <- c('A', 'B', 'C', 'D', 'E', 'F', 'G')
 
-file.metrics = paste("", project.id, "_sq_metrics.csv", sep="")
+file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_sq_metrics.csv", sep="")
 metrics <- read.csv(file=file.metrics, header=T)
 ```
 

@@ -256,8 +256,6 @@ sub run_plugin($$) {
       . $msg . "\n";
   }
   $repofs->write_output($project_id, "sq_issues_blocker.csv", $csv_out);
-  $repofs->write_plugin('SonarQubeIo', $project_id . "_sq_issues_blocker.csv",
-    $csv_out);
 
 
   # Fetch critical issues
@@ -312,8 +310,6 @@ sub run_plugin($$) {
       . $msg . "\n";
   }
   $repofs->write_output($project_id, "sq_issues_critical.csv", $csv_out);
-  $repofs->write_plugin('SonarQubeIo', $project_id . "_sq_issues_critical.csv",
-    $csv_out);
 
   # Fetch major issues
   $url_issues
@@ -354,8 +350,6 @@ sub run_plugin($$) {
     $rules{$i->{'key'}}{'status'} = $i->{'status'};
   }
   $repofs->write_output($project_id, "sq_ref_rules.json", encode_json(\%rules));
-  $repofs->write_plugin('SonarQubeIo', $project_id . "_sq_ref_rules.json",
-    encode_json(\%rules));
 
 
   $ret{'metrics'}{'SQ_RULES'} = scalar @{$content->{'rules'}};
@@ -377,8 +371,6 @@ sub run_plugin($$) {
       . $msg . "\n";
   }
   $repofs->write_output($project_id, "sq_issues_major.csv", $csv_out);
-  $repofs->write_plugin('SonarQubeIo', $project_id . "_sq_issues_major.csv",
-    $csv_out);
 
 
   # Now retrieve all required metrics
@@ -451,7 +443,6 @@ sub run_plugin($$) {
       . $ret{'metrics'}{'SQ_RULES'}
       . ",Unknown,Unknown,Unknown,Unknown,Unknown\n";
   }
-  $repofs->write_plugin('SonarQubeIo', $project_id . "_sq_info.csv", $csv_out);
 
   # Print metrics to file system.
   $csv_out = join(',',
@@ -464,8 +455,6 @@ sub run_plugin($$) {
       keys %{$conf{'provides_metrics'}})
     . "\n";
   $repofs->write_output($project_id, "sq_metrics.csv", $csv_out);
-  $repofs->write_plugin('SonarQubeIo', $project_id . "_sq_metrics.csv",
-    $csv_out);
 
   # Now execute the main R script.
   push(@{$ret{'log'}}, "[Plugins::SonarQubeIo] Executing R main file.");
