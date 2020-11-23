@@ -58,6 +58,7 @@ my %conf = (
   },
   "provides_metrics" => {
     "SC_LICENSES_VOL"      => "SC_LICENSES_VOL",
+    "SC_LIC_CHECK" => "SC_LIC_CHECK",
     "SC_COPYRIGHTS_VOL"      => "SC_COPYRIGHTS_VOL",
     "SC_HOLDERS_VOL"      => "SC_HOLDERS_VOL",
     "SC_AUTHORS_VOL"      => "SC_AUTHORS_VOL",
@@ -67,8 +68,9 @@ my %conf = (
     "SC_GENERATED_VOL"      => "SC_GENERATED_VOL",
     "SC_SPECIAL_FILES"      => "SC_SPECIAL_FILES",
     "SC_HAS_LICENCE"      => "SC_HAS_LICENCE",
-    "SC_README_VOL"      => "SC_README_VOL",
     "SC_HAS_CODEOFCONDUCT"      => "SC_HAS_CODEOFCONDUCT",
+    "SC_HAS_README"      => "SC_HAS_README",
+    "SC_HAS_CONTRIBUTING"      => "SC_HAS_CONTRIBUTING",
   },
   "provides_figs"    => {
     'scancode_licences.html' => "Pie chart of licences detected in the codebase.",
@@ -77,7 +79,7 @@ my %conf = (
     'scancode_holders.html' => "Pie chart of holders detected in the codebase.",
     'scancode_programming_languages.html' => "Pie chart of programming languages detected in the codebase.",
   },
-  "provides_recs" => ["SC_WARNINGS",],
+  "provides_recs" => [],
   "provides_viz"     => {
     'scancode.html' => "Scancode",
   },
@@ -334,7 +336,15 @@ in a codebase with Scancode.
 B<Alambic::Plugins::Scancode> A plugin to scan licences and copyrights 
 in a codebase with Scancode.
 
-Parameters: None
+Parameters: 
+
+=over
+
+=item * dir_bin The full path to the binary, e.g. /opt/scancode/scancode.
+
+=item * licence_regexp A regular expression that describes the correct licence. Every licence that does not match this regexp will be considered wrong. e.g. *epl*
+
+=back
 
 For the complete description of the plugin see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/Scancode.html>.
 
