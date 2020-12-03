@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Hudson - Alambic</title>
+    <title>Scancode Tool - Alambic</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" type="text/css" href="../../styles.css">
 
@@ -44,13 +44,13 @@
 </div><!-- top -->
 <div id="main">
     <ul class="navi" id="subnavi">
-        <li class="active">
+        <li class="">
             <a href="../Pre.html">Pre</a>
         </li>
         <li class="">
             <a href="../Post.html">Post</a>
         </li>
-        <li class="">
+        <li class="active">
             <a href="../Tools.html">Tools</a>
         </li>
         <li class="">
@@ -59,60 +59,45 @@
     </ul>
     <ul class="navi" id="subsubnavi">
         <li class="">
-            <a href="Bugzilla.html">Bugzilla</a>
-        </li>
-        <li class="">
-            <a href="EclipsePmi.html">EclipsePmi</a>
-        </li>
-        <li class="">
             <a href="Git.html">Git</a>
         </li>
         <li class="">
-            <a href="GitLabIts.html">GitLabIts</a>
-        </li>
-        <li class="">
-            <a href="GitLabProject.html">GitLabProject</a>
+            <a href="R.html">R Sessions</a>
         </li>
         <li class="active">
-            <a href="Hudson.html">Hudson</a>
-        </li>
-        <li class="">
-            <a href="Jira.html">Jira</a>
-        </li>
-        <li class="">
-            <a href="PmdAnalysis.html">PmdAnalysis</a>
-        </li>
-        <li class="">
             <a href="Scancode.html">Scancode</a>
-        </li>
-        <li class="">
-            <a href="SonarQube45.html">SonarQube45</a>
-        </li>
-        <li class="">
-            <a href="StackOverflow.html">StackOverflow</a>
         </li>
     </ul>
 
 <div id="content">
-<h1>Hudson CI</h1>
+<h1>Scancode</h1>
 
-<p>This plugin retrieves information from a <a href="http://eclipse.org/hudson">Hudson CI</a> continuous integration engine, displays a summary of its status, and provides recommendations to better use the Continuous Integration system.</p>
+<p>This Tool plugin provides an interface to the <a href="https://github.com/nexB/scancode-toolkit">Scancode</a> finely integrated within Alambic.</p>
 
-<p>Check the <a href="/perldoc/Alambic/Plugins/Hudson.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
+<p>A number of functions are made available for common operations like:</p>
+
+<ul>
+<li>Execute a scancode scan with options: copyright, package, licence, info, summary, classify, generated, with output set to CSV.</li>
+<li>Execute a scancode scan with options: copyright, package, licence, info, summary, classify, generated, with output set to JSON.</li>
+</ul>
+
+<p>Check the <a href="http://alambic.io/perldoc/Alambic/Tools/Scancode.pm.html">plugin Perl documentation</a> in the <a href="http://alambic.io/perldoc/index.html">perldoc</a> section.</p>
+
+<p>The Scancode documentation sits at <a href="https://scancode-toolkit.readthedocs.io">scancode-toolkit.readthedocs.io</a>.</p>
 
 <hr />
 
 <h1>Basic information</h1>
 
 <ul>
-<li><strong>ID</strong>: Hudson</li>
-<li><strong>Abilities</strong>: metrics, figs, recs, viz</li>
-<li><strong>Description</strong>:
-Retrieves information from a Hudson continuous integration engine, displays a summary of its status, and provides recommendations to better use CI.</li>
+<li><strong>ID</strong>: scancode</li>
+<li><strong>Name</strong>: Scancode Tool</li>
+<li><strong>Abilities</strong>: methods.</li>
+<li><strong>Description</strong>: Scancode scans files and fetch information about licences and copyrights..</li>
 <li><strong>Parameters</strong>:
 <ul>
-<li><code>hudson_url</code> The base URL for the Hudson instance. In other words, the URL one would point to to get the main page of the project's Hudson, with the list of jobs.</li>
-<li><code>proxy</code> If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.</li>
+<li><code>path_r</code> The absolute path or command to the <code>scancode</code> executable to use.</li>
+<li><code>path_scancode</code> The path to the directory to be analysed, relative to the root of the repository. Defaults to the root.</li>
 </ul></li>
 </ul>
 
@@ -120,38 +105,12 @@ Retrieves information from a Hudson continuous integration engine, displays a su
 
 <h1>Provides</h1>
 
-<h2>Metrics</h2>
+<h2>Methods</h2>
 
 <ul>
-<li>JOBS,</li>
-<li>JOBS_GREEN,</li>
-<li>JOBS_YELLOW,</li>
-<li>JOBS_RED,</li>
-<li>JOBS_FAILED_1W</li>
+<li><code>scancode_scan_csv</code> Function to execute a Scancode and provide a CSV output file.</li>
+<li><code>scancode_scan_json</code> Function to execute a Scancode and provide a CSV output file.</li>
 </ul>
-
-<h2>Figures</h2>
-
-<ul>
-<li><code>hudson_pie.html</code> A pie chart of the status of jobs.</li>
-<li><code>hudson_hist.html</code> A history of jobs statuses over past days/weeks. The history range is defined by the remaining jobs, i.e. if jobs are deleted after some time history is lost.</li>
-</ul>
-
-<h2>Recommendations</h2>
-
-<ul>
-<li>CI_FAILING_JOBS</li>
-</ul>
-
-<h2>Visualisation</h2>
-
-<p>Hudson CI</p>
-
-<hr />
-
-<h1>Screenshot</h1>
-
-<p><img src="/images/hudson_ci.png" alt="hudson_ci.png" /></p>
 
 
 </div><!-- content -->
