@@ -1,0 +1,380 @@
+{
+  "headers": [
+    {
+      "tool_name": "scancode-toolkit",
+      "tool_version": "3.1.1",
+      "options": {
+        "input": [
+          "t/resources/arch"
+        ],
+        "--copyright": true,
+        "--email": true,
+        "--info": true,
+        "--json-pp": "t/resources/scancode_test_results.json",
+        "--license": true,
+        "--package": true,
+        "--url": true
+      },
+      "notice": "Generated with ScanCode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScanCode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScanCode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
+      "start_timestamp": "2020-11-23T160551.504181",
+      "end_timestamp": "2020-11-23T160559.814820",
+      "message": null,
+      "errors": [],
+      "extra_data": {
+        "files_count": 4
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "arch",
+      "type": "directory",
+      "name": "arch",
+      "base_name": "arch",
+      "extension": "",
+      "size": 0,
+      "date": null,
+      "sha1": null,
+      "md5": null,
+      "mime_type": null,
+      "file_type": null,
+      "programming_language": null,
+      "is_binary": false,
+      "is_text": false,
+      "is_archive": false,
+      "is_media": false,
+      "is_source": false,
+      "is_script": false,
+      "licenses": [],
+      "license_expressions": [],
+      "copyrights": [],
+      "holders": [],
+      "authors": [],
+      "packages": [],
+      "emails": [],
+      "urls": [],
+      "files_count": 4,
+      "dirs_count": 1,
+      "size_count": 99617,
+      "scan_errors": []
+    },
+    {
+      "path": "arch/README.txt",
+      "type": "file",
+      "name": "README.txt",
+      "base_name": "README",
+      "extension": ".txt",
+      "size": 0,
+      "date": "2020-06-06",
+      "sha1": null,
+      "md5": null,
+      "mime_type": "inode/x-empty",
+      "file_type": "empty",
+      "programming_language": null,
+      "is_binary": false,
+      "is_text": true,
+      "is_archive": false,
+      "is_media": false,
+      "is_source": false,
+      "is_script": false,
+      "licenses": [],
+      "license_expressions": [],
+      "copyrights": [],
+      "holders": [],
+      "authors": [],
+      "packages": [],
+      "emails": [],
+      "urls": [],
+      "files_count": 0,
+      "dirs_count": 0,
+      "size_count": 0,
+      "scan_errors": []
+    },
+    {
+      "path": "arch/zlib-1.2.8",
+      "type": "directory",
+      "name": "zlib-1.2.8",
+      "base_name": "zlib-1.2.8",
+      "extension": "",
+      "size": 0,
+      "date": null,
+      "sha1": null,
+      "md5": null,
+      "mime_type": null,
+      "file_type": null,
+      "programming_language": null,
+      "is_binary": false,
+      "is_text": false,
+      "is_archive": false,
+      "is_media": false,
+      "is_source": false,
+      "is_script": false,
+      "licenses": [],
+      "license_expressions": [],
+      "copyrights": [],
+      "holders": [],
+      "authors": [],
+      "packages": [],
+      "emails": [],
+      "urls": [],
+      "files_count": 3,
+      "dirs_count": 0,
+      "size_count": 99617,
+      "scan_errors": []
+    },
+    {
+      "path": "arch/zlib-1.2.8/adler32.c",
+      "type": "file",
+      "name": "adler32.c",
+      "base_name": "adler32",
+      "extension": ".c",
+      "size": 4968,
+      "date": "2011-09-10",
+      "sha1": "0cff4808476ce0b5f6f0ebbc69ee2ab2a0eebe43",
+      "md5": "ae3bbb54820e1d49fb90cbba222e973f",
+      "mime_type": "text/x-c",
+      "file_type": "C source, ASCII text",
+      "programming_language": "C++",
+      "is_binary": false,
+      "is_text": true,
+      "is_archive": false,
+      "is_media": false,
+      "is_source": true,
+      "is_script": false,
+      "licenses": [
+        {
+          "key": "zlib",
+          "score": 100.0,
+          "name": "ZLIB License",
+          "short_name": "ZLIB License",
+          "category": "Permissive",
+          "is_exception": false,
+          "owner": "zlib",
+          "homepage_url": "http://www.zlib.net/",
+          "text_url": "http://www.gzip.org/zlib/zlib_license.html",
+          "reference_url": "https://enterprise.dejacode.com/urn/urn:dje:license:zlib",
+          "spdx_license_key": "Zlib",
+          "spdx_url": "https://spdx.org/licenses/Zlib",
+          "start_line": 3,
+          "end_line": 3,
+          "matched_rule": {
+            "identifier": "zlib_5.RULE",
+            "license_expression": "zlib",
+            "licenses": [
+              "zlib"
+            ],
+            "is_license_text": false,
+            "is_license_notice": false,
+            "is_license_reference": true,
+            "is_license_tag": false,
+            "matcher": "2-aho",
+            "rule_length": 12,
+            "matched_length": 12,
+            "match_coverage": 100.0,
+            "rule_relevance": 100.0
+          }
+        }
+      ],
+      "license_expressions": [
+        "zlib"
+      ],
+      "copyrights": [
+        {
+          "value": "Copyright (c) 1995-2011 Mark Adler",
+          "start_line": 2,
+          "end_line": 3
+        }
+      ],
+      "holders": [
+        {
+          "value": "Mark Adler",
+          "start_line": 2,
+          "end_line": 3
+        }
+      ],
+      "authors": [],
+      "packages": [],
+      "emails": [],
+      "urls": [],
+      "files_count": 0,
+      "dirs_count": 0,
+      "size_count": 0,
+      "scan_errors": []
+    },
+    {
+      "path": "arch/zlib-1.2.8/zlib.h",
+      "type": "file",
+      "name": "zlib.h",
+      "base_name": "zlib",
+      "extension": ".h",
+      "size": 87883,
+      "date": "2013-04-29",
+      "sha1": "400d35465f179a4acacb5fe749e6ce20a0bbdb84",
+      "md5": "64d8a5180bd54ff5452886e4cbb21e14",
+      "mime_type": "text/x-c",
+      "file_type": "C source, ASCII text",
+      "programming_language": "C++",
+      "is_binary": false,
+      "is_text": true,
+      "is_archive": false,
+      "is_media": false,
+      "is_source": true,
+      "is_script": false,
+      "licenses": [
+        {
+          "key": "zlib",
+          "score": 100.0,
+          "name": "ZLIB License",
+          "short_name": "ZLIB License",
+          "category": "Permissive",
+          "is_exception": false,
+          "owner": "zlib",
+          "homepage_url": "http://www.zlib.net/",
+          "text_url": "http://www.gzip.org/zlib/zlib_license.html",
+          "reference_url": "https://enterprise.dejacode.com/urn/urn:dje:license:zlib",
+          "spdx_license_key": "Zlib",
+          "spdx_url": "https://spdx.org/licenses/Zlib",
+          "start_line": 6,
+          "end_line": 23,
+          "matched_rule": {
+            "identifier": "zlib_17.RULE",
+            "license_expression": "zlib",
+            "licenses": [
+              "zlib"
+            ],
+            "is_license_text": true,
+            "is_license_notice": false,
+            "is_license_reference": false,
+            "is_license_tag": false,
+            "matcher": "2-aho",
+            "rule_length": 144,
+            "matched_length": 144,
+            "match_coverage": 100.0,
+            "rule_relevance": 100
+          }
+        }
+      ],
+      "license_expressions": [
+        "zlib"
+      ],
+      "copyrights": [
+        {
+          "value": "Copyright (c) 1995-2013 Jean-loup Gailly and Mark Adler",
+          "start_line": 4,
+          "end_line": 4
+        }
+      ],
+      "holders": [
+        {
+          "value": "Jean-loup Gailly and Mark Adler",
+          "start_line": 4,
+          "end_line": 4
+        }
+      ],
+      "authors": [],
+      "packages": [],
+      "emails": [
+        {
+          "email": "jloup@gzip.org",
+          "start_line": 23,
+          "end_line": 23
+        },
+        {
+          "email": "madler@alumni.caltech.edu",
+          "start_line": 23,
+          "end_line": 23
+        }
+      ],
+      "urls": [
+        {
+          "url": "http://tools.ietf.org/html/rfc1950",
+          "start_line": 27,
+          "end_line": 27
+        }
+      ],
+      "files_count": 0,
+      "dirs_count": 0,
+      "size_count": 0,
+      "scan_errors": []
+    },
+    {
+      "path": "arch/zlib-1.2.8/zutil.h",
+      "type": "file",
+      "name": "zutil.h",
+      "base_name": "zutil",
+      "extension": ".h",
+      "size": 6766,
+      "date": "2013-03-25",
+      "sha1": "b909d27ef9ce51639f76b7ea6b62721e7d1b6bf7",
+      "md5": "04fcfbb961591c9452c4d0fd1525ffdf",
+      "mime_type": "text/x-c",
+      "file_type": "C source, ASCII text",
+      "programming_language": "C++",
+      "is_binary": false,
+      "is_text": true,
+      "is_archive": false,
+      "is_media": false,
+      "is_source": true,
+      "is_script": false,
+      "licenses": [
+        {
+          "key": "zlib",
+          "score": 100.0,
+          "name": "ZLIB License",
+          "short_name": "ZLIB License",
+          "category": "Permissive",
+          "is_exception": false,
+          "owner": "zlib",
+          "homepage_url": "http://www.zlib.net/",
+          "text_url": "http://www.gzip.org/zlib/zlib_license.html",
+          "reference_url": "https://enterprise.dejacode.com/urn/urn:dje:license:zlib",
+          "spdx_license_key": "Zlib",
+          "spdx_url": "https://spdx.org/licenses/Zlib",
+          "start_line": 3,
+          "end_line": 3,
+          "matched_rule": {
+            "identifier": "zlib_5.RULE",
+            "license_expression": "zlib",
+            "licenses": [
+              "zlib"
+            ],
+            "is_license_text": false,
+            "is_license_notice": false,
+            "is_license_reference": true,
+            "is_license_tag": false,
+            "matcher": "2-aho",
+            "rule_length": 12,
+            "matched_length": 12,
+            "match_coverage": 100.0,
+            "rule_relevance": 100.0
+          }
+        }
+      ],
+      "license_expressions": [
+        "zlib"
+      ],
+      "copyrights": [
+        {
+          "value": "Copyright (c) 1995-2013 Jean-loup Gailly",
+          "start_line": 2,
+          "end_line": 3
+        }
+      ],
+      "holders": [
+        {
+          "value": "Jean-loup Gailly",
+          "start_line": 2,
+          "end_line": 3
+        }
+      ],
+      "authors": [],
+      "packages": [],
+      "emails": [],
+      "urls": [],
+      "files_count": 0,
+      "dirs_count": 0,
+      "size_count": 0,
+      "scan_errors": []
+    }
+  ]
+}
