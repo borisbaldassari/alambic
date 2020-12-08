@@ -119,7 +119,7 @@ sub run_wizard($) {
       'proxy' => $proxy_url, 
       'git_url'     => $project_git},
     "ProjectSummary" => { 'proxy' => $proxy_url },
-    "Scancode" => { 'dir_bin' => 'scancode', 'licence_regexp' => "*epl*" },
+    "Scancode" => { 'dir_bin' => 'scancode', 'licence_regexp' => ".*epl.*" },
   };
 
   my $project
@@ -166,6 +166,8 @@ Plugins automatically initialised with this wizard:
 =item * Git - For SCM.
 
 =item * ProjectSummary - For exportable figures and badges.
+
+=item * Scancode - Licence and copyrights analysis by Scancode.
 
 =back
 
