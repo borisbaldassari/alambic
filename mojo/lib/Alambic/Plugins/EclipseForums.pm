@@ -219,7 +219,7 @@ sub _retrieve_data($$$) {
   @topics = @{$ret_topics->{'result'} || []};
   my $results_max = $ret_topics->{'pagination'}{'total_result_size'} || 0; 
 
-  push(@log, "[Plugins::EclipseForums] Got [" . scalar( @topics )
+  push(@log, "[Plugins::EclipseForums] Got topics [" . scalar( @topics )
      . "] id [" . ( $ret_topics->{'pagination'}{'result_end'} || 0 ) 
      . "] out of [$results_max] total.");
 
@@ -237,7 +237,7 @@ sub _retrieve_data($$$) {
     #return undef if (not defined($ret_topics));
 
     my @topics_ = @{$ret_topics->{'result'} || []}; 
-    push(@log, "[Plugins::EclipseForums] Got [" . scalar( @topics_ ) 
+    push(@log, "[Plugins::EclipseForums] Got topics [" . scalar( @topics_ ) 
        . "] id [" . ( $ret_topics->{'pagination'}{'result_end'} || 0 ) 
        . "] out of [$results_max] total."); 
   
@@ -314,7 +314,7 @@ sub _retrieve_data($$$) {
   @posts = @{$ret_posts->{'result'} || []}; 
   $results_max = $ret_posts->{'pagination'}{'total_result_size'} || 0;
 
-  push(@log, "[Plugins::EclipseForums] Got [" . scalar( @posts )
+  push(@log, "[Plugins::EclipseForums] Got posts [" . scalar( @posts )
      . "] id [" . ( $ret_posts->{'pagination'}{'result_end'} || '' )
      . "] out of [$results_max] total.");
   
@@ -331,7 +331,7 @@ sub _retrieve_data($$$) {
 #    return undef if (not defined($ret_posts));
 
     my @posts_ = @{$ret_posts->{'result'} || []};
-    push(@log, "[Plugins::EclipseForums] Got [" . scalar( @posts_ )
+    push(@log, "[Plugins::EclipseForums] Got posts [" . scalar( @posts_ )
        . "] id [" . ( $ret_posts->{'pagination'}{'result_end'} || '' )
        . "] out of [$results_max] total.");
     
