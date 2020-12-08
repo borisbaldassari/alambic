@@ -133,7 +133,7 @@ sub scancode_scan_csv() {
   if ( -d $dir_src ) {
 
     my $dir_out = 'projects/' . $project_id . '/input/';
-    my $file_out_csv = $dir_out . '/' . $project_id . '_scancode.csv';
+    my $file_out_csv = $dir_out . '/' . $project_id . '_import_scancode.csv';
 
     my $cmd = "$bin_path -n2 --copyright --package --license --info ";
     $cmd .= "--summary --classify --generated ";
@@ -167,7 +167,7 @@ sub scancode_scan_json() {
   if ( -d $dir_src ) {
 
     my $dir_out = 'projects/' . $project_id . '/input/';
-    my $file_out_json = $dir_out . '/' . $project_id . '_scancode.json';
+    my $file_out_json = $dir_out . '/' . $project_id . '_import_scancode.json';
 
     my $cmd = "$bin_path -n2 --copyright --package --license --info ";
     $cmd .= "--summary --summary-key-files --classify --generated ";

@@ -37,5 +37,11 @@ note("Executing module self-test.");
 my $log = $tool->test(); 
 ok(grep(!/^ERROR/, @{$log}), "Tool test() returns no ERROR")
   or diag explain $log;
+
+# Check that output json file exists, clean up those files.
+unlink "t/resources/scancode_test_results.json";
+ok(-e 't/resources/scancode_test_results.json',
+  "scancode_test_results.json file is generated.") or diag explain $log;
+unlink "t/resources/scancode_test_results.json";
     
 done_testing();
