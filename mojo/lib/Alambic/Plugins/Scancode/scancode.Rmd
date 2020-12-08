@@ -22,8 +22,8 @@ require(xtable)
 
 opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
 
-project.id <- "modeling.sirius"
-#   project.id <- "modeling.gendoc"
+#project.id <- "modeling.sirius"
+#project.id <- "modeling.gendoc"
 plugin.id <- "Scancode"
 file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_metrics.csv", sep="")
 file.specials <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_special_files.csv", sep="")

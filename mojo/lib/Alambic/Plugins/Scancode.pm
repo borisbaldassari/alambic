@@ -17,15 +17,13 @@ package Alambic::Plugins::Scancode;
 use strict;
 use warnings;
 
-use Text::CSV;
-
 use Alambic::Tools::Scancode;
 use Alambic::Model::RepoFS;
 
+use Text::CSV;
 use Mojo::JSON qw( decode_json encode_json );
-
-#use Mojo::JSON qw( decode_json encode_json );
 use Data::Dumper;
+
 
 # Main configuration hash for the plugin
 my %conf = (
@@ -41,7 +39,7 @@ my %conf = (
     "dir_bin" =>
       'The full path to the binary, e.g. /opt/scancode/scancode.',
     "licence_regexp" =>
-      'A regular expression that describes the correct licence. Every licence that does not match this regexp will be considered wrong.',
+      'A Perl regular expression that describes the correct licence. Every licence that does not match this regexp will be considered wrong.',
   },
   "provides_cdata" => [],
   "provides_info"  => [],
@@ -106,6 +104,15 @@ sub run_plugin($$) {
 
   my @log;
   push(@log, "[Plugins::Scancode] Start Scancode plugin execution for project $project_id.");
+
+  my $regex = eval { qr/$licence_regexp/ };
+  if ($@) {
+    push(@log, "[Plugins::Scancode] ERROR: regexp '" . $licence_regexp . "' is not valid.");
+    return {
+      "metrics" => {}, 
+      "recs" => [], "info" => {}, "log" => \@log,
+    };
+  }
 
   my $params = {};
 
