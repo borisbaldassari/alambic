@@ -3,6 +3,13 @@
     "version": "0.2",
     "children": [
       {
+        "name": "SCM Branches",
+        "mnemo": "SCM_BRANCHES",
+        "desc": [
+            "Number of branches as returned by `git branch --all`."
+        ]
+      },
+      {
         "name": "SCM Commits",
         "mnemo": "SCM_COMMITS",
         "desc": [
