@@ -39,14 +39,16 @@ require(xtable)
 
 knitr::opts_chunk$set(fig.path = 'figures/')
 
-project.id <- 'modeling.sirius'
+#project.id <- 'modeling.sirius'
 plugin.id <- 'Git'
 file.evol = paste("../../../../projects/", project.id, "/output/", project.id, "_git_commits_evol.csv", sep="")
 file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_git.csv", sep="")
+file.info = paste("../../../../projects/", project.id, "/output/", project.id, "_info_git.csv", sep="")
 file.br = paste("../../../../projects/", project.id, "/output/", project.id, "_git_branches.csv", sep="")
 
 evol <- read.csv(file=file.evol, header=T)
 metrics <- read.csv(file=file.metrics, header=T)
+info <- read.csv(file=file.info, header=T)
 br <- read.csv(file=file.br, header=F)
 
 commits_vol <- sum(evol$commits)
@@ -58,6 +60,8 @@ authors_vol <- sum(evol$authors)
 <br />
 
 <div class="row"><div class="col-sm-7">
+
+The repository URL is ``r info[['GIT_URL']]``.
 
 The repository contains a total of ``r commits_vol`` commits made by ``r metrics[['SCM_AUTHORS']]`` authors over . The first commit was made on the ``r evol[1,1]`` and the last analysed commits was made on ``r evol[nrow(evol),1]``.
 

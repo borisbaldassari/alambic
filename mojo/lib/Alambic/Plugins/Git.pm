@@ -55,6 +55,7 @@ my %conf = (
       "Evolution of number of commits and authors by day (CSV).",
     "git_branches.csv" =>
       "List of branches of the Git repository, one by line (CSV).",
+    "info_git.csv" => "All information computed by the Git plugin (CSV).",
   },
   "provides_metrics" => {
     "SCM_BRANCHES"      => "SCM_BRANCHES",
@@ -132,6 +133,13 @@ sub run_plugin($$) {
   $ret{'recs'}            = $tmp_ret->{'recs'};
   $ret{'info'}{'GIT_URL'} = $git_url;
   push(@{$ret{'log'}}, @{$tmp_ret->{'log'}});
+
+  # Write info csv file to disk.
+  my @info_def = sort @{$conf{'provides_info'}};
+  my $csv_out = join(',', @info_def) . "\n";
+  my @info_values = map { $ret{'info'}{$_} || '' } @info_def; 
+  $csv_out .= join(',', @info_values) . "\n";
+  $repofs->write_output($project_id, "info_git.csv", $csv_out);
 
   return \%ret;
 }
@@ -345,7 +353,7 @@ sub _compute_data($$) {
   $csv_out = join(',', sort @metrics) . "\n";
   $csv_out .= join(',', map { $metrics{$_} || '' } sort @metrics) . "\n";
   $repofs->write_output($project_id, "metrics_git.csv", $csv_out);
-
+  
   # Write commits history json file to disk.
   my %timeline = (%timeline_a, %timeline_c);
   my @timeline
