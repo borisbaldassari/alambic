@@ -21,7 +21,7 @@ library(plotly)
 library(reshape2)
 library(xts)
 
-project.id <- 'modeling.epsilon'
+#project.id <- 'modeling.epsilon'
 file.evol = paste("../../../../projects/", project.id, "/output/", project.id, "_git_commits_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 evol[is.na(evol)] <- 0

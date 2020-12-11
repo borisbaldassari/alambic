@@ -39,7 +39,7 @@ require(xtable)
 
 knitr::opts_chunk$set(fig.path = 'figures/')
 
-project.id <- 'modeling.sirius'
+#project.id <- 'modeling.sirius'
 plugin.id <- 'Git'
 file.evol = paste("../../../../projects/", project.id, "/output/", project.id, "_git_commits_evol.csv", sep="")
 file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_git.csv", sep="")
