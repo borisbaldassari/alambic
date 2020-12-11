@@ -199,22 +199,27 @@ sub _compute_data($) {
   my $date_now   = DateTime->now();
   my $date_1w    = DateTime->now()->subtract(days => 7);
   my $date_1w_ms = $date_1w->epoch() * 1000;
-
+  
   foreach my $job (@{$jenkins->{'jobs'}}) {
-    if ( $job->{'color'} =~ m!green! || $job->{'color'} =~ m!blue! ) {
+
+    my $color = defined($job->{'color'}) ? $job->{'color'} : 'UNKNOWN';
+      
+    if ( $color =~ m!green! || $color =~ m!blue! ) {
       $metrics{'CI_JOBS_GREEN'}++;
     }
-    elsif ($job->{'color'} =~ m!yellow!) {
+    elsif ($color =~ m!yellow!) {
       $metrics{'CI_JOBS_YELLOW'}++;
     }
-    elsif ($job->{'color'} =~ m!red!) {
+    elsif ($color =~ m!red!) {
       $metrics{'CI_JOBS_RED'}++;
+    } else {
+	# no color defined. this happends e.g. for workflow multibranch projects
     }
 
     my $job_last_success = $job->{'lastSuccessfulBuild'}{'timestamp'} || 0;
 
     # If last successful build is more than 1W old, count it.
-    if ($job_last_success < $date_1w_ms && $job->{'color'} =~ m!red!) {
+    if ($job_last_success < $date_1w_ms && $color =~ m!red!) {
       $metrics{'CI_JOBS_FAILED_1W'}++;
       my $rec = {
         "rid"      => "CI_FAILING_JOBS",
@@ -296,12 +301,16 @@ sub _compute_data($) {
     my $lsb_time     = $job->{'lastSuccessfulBuild'}->{'timestamp'} || 0;
     my $lsb_duration = $job->{'lastSuccessfulBuild'}->{'duration'} || 0;
     my $hr_score     = $job->{'healthReport'}[0]{'score'} || 0;
+    my $color = defined($job->{'color'}) ? $job->{'color'} : 'UNKNOWN';
+    my $buildable = defined($job->{'buildable'}) ? $job->{'buildable'} : 'UNKNOWN';
+    my $nextBuildNumber = defined($job->{'nextBuildNumber'}) ? $job->{'nextBuildNumber'} : 'UNKNOWN';
+    
     $csv_out
       .= $name
       . $sep
-      . $job->{'buildable'}
+      . $buildable
       . $sep
-      . $job->{'color'}
+      . $color
       . $sep
       . $lb_id
       . $sep
@@ -321,7 +330,7 @@ sub _compute_data($) {
       . $sep
       . $lsb_duration
       . $sep
-      . $job->{'nextBuildNumber'}
+      . $nextBuildNumber
       . $sep
       . $hr_score
       . $sep
