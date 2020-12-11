@@ -264,21 +264,31 @@ The visualisations on this page can be exported and easily reused on an external
 
 Pie chart of licences (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/Scancode/scancode_licences.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Pie chart of copyrights (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/Scancode/scancode_copyrights.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Pie chart of authors (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/Scancode/scancode_authors.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Pie chart of holders (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/Scancode/scancode_holders.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Pie chart of programming languages (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/Scancode/scancode_programming_languages.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 

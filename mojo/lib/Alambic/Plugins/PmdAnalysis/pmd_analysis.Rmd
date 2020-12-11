@@ -219,15 +219,21 @@ The visualisations on this page can be exported and easily reused on an external
 
 Pie chart of checked and broken rules
 
+```
     <iframe src="http://server/projects/`r project.id`/PmdAnalysis/pmd_analysis_pie.html" frameborder="0" style="width: 100%; height: 320px"></iframe>
+```
 
 Files with high priority violations
 
+```
     <img src="http://server/projects/`r project.id`/PmdAnalysis/pmd_analysis_files_ncc1.svg" frameborder="0" style="width: 100%; height: 600px" />
+```
 
 Top 5 high-priority rules
 
+```
     <img src="http://server/projects/`r project.id`/PmdAnalysis/pmd_analysis_top_5_rules.svg" frameborder="0" style="width: 100%; height: 370px" />
+```
 
 The visualisations used in this document rely on a number of flat CSV and JSON data files, that were extracted from the PMD XML results file. You can download and play with them if you want to thereafter:
 

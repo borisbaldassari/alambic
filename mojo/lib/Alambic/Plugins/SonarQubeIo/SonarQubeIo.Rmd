@@ -164,12 +164,18 @@ The visualisations on this page can be exported and easily reused on an external
 
 Summary of main SonarQube metrics (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/SonarQubeIo/sonarqube_summary.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Summary of SonarQube violations (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/SonarQubeIo/sonarqube_violations.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Pie chart of checked and broken rules (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/SonarQubeIo/sonarqube_violations_pie.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
