@@ -49,10 +49,10 @@ knitr::opts_chunk$set(fig.path = "figures/")
 # bz.project <- 'sisu'
 # bz.url <- 'https://bugs.eclipse.org/bugs'
 
-project.id <- 'modeling.epsilon'
+#project.id <- 'modeling.epsilon'
 # project.id <- 'modeling.sirius'
-bz.project <- 'APP4MC'
-bz.url <- 'https://bugs.eclipse.org/bugs'
+#bz.project <- 'APP4MC'
+#bz.url <- 'https://bugs.eclipse.org/bugs'
 
 #bz.urlfull <- paste(bz.url, '/describecomponents.cgi?product=', bz.project, sep="")
 
@@ -125,11 +125,6 @@ The full list of bugs for this project can be reached at `r bz.url`.
 </div></div>
 
 ### <a name="quick-summary"></a>Quick Summary
-
-```{r summary_intro, eval=T, echo=FALSE, message=FALSE}
-
-
-```
 
 <div class="row"><div class="col-sm-3">
 <span style="font-size:18pt"><span class="fa fa-users"></span> </span>
