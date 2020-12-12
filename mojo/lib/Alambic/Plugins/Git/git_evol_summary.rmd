@@ -32,7 +32,18 @@ evola.xts <- xts(evol$authors, order.by = as.Date(evol$date))
 evolc.xts.weekly <- apply.weekly(x=evolc.xts, FUN = sum)
 evola.xts.weekly <- apply.weekly(x=evola.xts, FUN = sum)
 
-evol.i <- data.frame(index(evolc.xts.weekly), evolc.xts.weekly[,1], evola.xts.weekly[,1])
+time.min <- index(evolc.xts.weekly[1,])
+time.max <- index(evolc.xts.weekly[nrow(evolc.xts.weekly)])
+all.dates <- seq(time.min, time.max, by="weeks")
+empty <- xts(order.by = all.dates)
+
+merged.evolc <- merge(empty, evolc.xts.weekly, all=T)
+merged.evolc[is.na(merged.evolc) == T,] <- 0
+
+merged.evola <- merge(empty, evola.xts.weekly, all=T)
+merged.evola[is.na(merged.evola) == T,] <- 0
+
+evol.i <- data.frame(index(merged.evolc), merged.evolc[,1], merged.evola[,1])
 names(evol.i) = c("date", "commits", "authors")
 
 p <- plot_ly(data=evol.i, x=~date, y=~commits, text= ~paste('Date: ', date), 
