@@ -49,6 +49,11 @@ knitr::opts_chunk$set(fig.path = "figures/")
 # bz.project <- 'sisu'
 # bz.url <- 'https://bugs.eclipse.org/bugs'
 
+project.id <- 'modeling.epsilon'
+# project.id <- 'modeling.sirius'
+bz.project <- 'APP4MC'
+bz.url <- 'https://bugs.eclipse.org/bugs'
+
 #bz.urlfull <- paste(bz.url, '/describecomponents.cgi?product=', bz.project, sep="")
 
 plugin.id <- 'Bugzilla'
@@ -184,7 +189,8 @@ The following table lists the 10 oldest issues that are still open and have not 
 <table class="table table-striped">
   <tr><th>ID</th><th>Summary</th><th>Created on</th><th>Assigned to</th><th>Last update on</th></tr>
 ```{r old_open_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
-t <- apply(old.open.issues[seq(1,10),], 1,
+old.open.issues.10 <- head(old.open.issues, 10)
+t <- apply(old.open.issues.10, 1,
 		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td><td>',
 		           x[[12]], '</td><td>', x[[14]], '</td><td>', x[[15]], '</td></tr>', sep=''))
 t <- paste(t, collapse=" ")
