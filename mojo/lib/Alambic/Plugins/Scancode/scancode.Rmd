@@ -25,7 +25,7 @@ opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
 #project.id <- "modeling.sirius"
 #project.id <- "modeling.gendoc"
 plugin.id <- "Scancode"
-file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_metrics.csv", sep="")
+file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_scancode.csv", sep="")
 file.specials <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_special_files.csv", sep="")
 file.authors <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_authors.csv", sep="")
 file.copyrights <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_copyrights.csv", sep="")
