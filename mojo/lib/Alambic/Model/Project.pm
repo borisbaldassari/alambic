@@ -574,7 +574,6 @@ sub _compute_scale($$) {
   if ($is_sorted !~ /\d/) { return $is_sorted }
 
   my $indicator;
-
   # If the value is not defined we want to return undef
   if (defined($value)) {
     if ($is_sorted) {
@@ -728,14 +727,13 @@ sub _compute_inds($) {
 
   my $raw_qm  = $models->get_qm();
   my $metrics = $models->get_metrics();
-
   my $project_indicators = {};
   my $project_attrs      = {};
   my $project_attrs_conf = {};
 
   push(@$log,
     "[Model::Project] Aggregating data from leaves up to attributes.");
-  &_aggregate_inds($raw_qm->[0], \%metrics, $project_indicators,
+  &_aggregate_inds($raw_qm->[0], $metrics, $project_indicators,
     $project_attrs, $project_attrs_conf, $metrics, $log);
 
   $ret{'inds'}       = $project_indicators;
