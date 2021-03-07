@@ -376,7 +376,7 @@ sub run_posts() {
 # Params:
 #   $models a ref to a Models.pm object
 sub run_project($) {
-  my ($self, $models) = @_;
+  my ($self, $models, $job) = @_;
 
   # Initialise current data before new run.
   %info            = ();
@@ -390,12 +390,25 @@ sub run_project($) {
   $ret{'log'} = ['[Model::Project] Start Project run.'];
 
   # Run plugins
-  my $pre_data = $self->run_plugins();
-  foreach my $item (keys %$pre_data) {
-    $ret{$item} = $pre_data->{$item};
+  my $list = $plugins_module->get_list_plugins_pre();
+  my @pre_plugins = sort grep ($plugins{$_}, @$list);
+  foreach my $plugin_id (@pre_plugins) {
+    $job->note( 'status' => "Executing plugin $plugin_id." );
+    my $ret_p = $plugins_module->run_plugin($project_id, $plugin_id,
+      $plugins{$plugin_id});
+
+    foreach my $info (sort keys %{$ret_p->{'info'}}) {
+      $ret{'info'}{$info} = $ret_p->{'info'}{$info};
+    }
+    foreach my $metric (sort keys %{$ret_p->{'metrics'}}) {
+      $ret{'metrics'}{$metric} = $ret_p->{'metrics'}{$metric};
+    }
+    foreach my $rec (@{$ret_p->{'recs'}}) { push( @{$ret{'recs'}}, $rec ); }
+    push( @{$ret{'log'}}, @{$ret_p->{'log'}} );
   }
 
   # Run qm
+  $job->note( 'status' => "Populating QM.");
   my $qm_data = $self->run_qm($models);
   foreach my $item (keys %{$qm_data}) {
 
@@ -417,6 +430,7 @@ sub run_project($) {
   # Create RepoFS object for writing and reading files on FS.
   my $repofs = Alambic::Model::RepoFS->new();
 
+  $job->note( 'status' => "Writing files to disk." );
 
   # Create file with all metric definitions for project
   my $csv     = Text::CSV->new({binary => 1, eol => "\n"});
@@ -490,8 +504,11 @@ sub run_project($) {
 
 
   # Run post plugins
+  $job->note( 'status' => "Running post plugins.");
   my $post_data = $self->run_posts($models) || {};
   @{$ret{'log'}} = (@{$ret{'log'}}, @{$post_data->{'log'} || []});
+
+  $job->note( 'status' => "Analysis completed.");
 
   return \%ret;
 }

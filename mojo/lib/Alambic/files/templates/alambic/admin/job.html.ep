@@ -19,6 +19,7 @@
 
 % my $job_info = shift @{app->minion->backend->list_jobs(0, 1, { ids => [$job_id] })->{'jobs'}};
 % my $log = ""; my $info = ""; my $metrics = ""; my $attrs = ""; my $recs = "";
+% my $notes = $job_info->{notes};
 % if ($job_info->{'state'} =~ m!^failed!) { 
 %   $log = ref($job_info->{'result'}) =~ /ARRAY/ ? $job_info->{'result'}{'log'} : $job_info->{'result'} 
 % } elsif ($job_info->{'state'} =~ m!^finished!) { 
@@ -60,6 +61,10 @@
 
               </div>
             </div>
+
+            <h3>Notes</h3>
+
+            <div class="well"><%== $notes->{'status'} || 'None' %></div>
 
             <h3>Log</h3>
 
