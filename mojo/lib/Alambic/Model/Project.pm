@@ -390,10 +390,11 @@ sub run_project($) {
   $ret{'log'} = ['[Model::Project] Start Project run.'];
 
   # Run plugins
+  $job->note( 'status' => "Running pre plugins.");
   my $list = $plugins_module->get_list_plugins_pre();
   my @pre_plugins = sort grep ($plugins{$_}, @$list);
   foreach my $plugin_id (@pre_plugins) {
-    $job->note( 'status' => "Executing plugin $plugin_id." );
+    $job->note( 'status' => "Executing pre plugin $plugin_id." );
     my $ret_p = $plugins_module->run_plugin($project_id, $plugin_id,
       $plugins{$plugin_id});
 
@@ -505,8 +506,29 @@ sub run_project($) {
 
   # Run post plugins
   $job->note( 'status' => "Running post plugins.");
-  my $post_data = $self->run_posts($models) || {};
-  @{$ret{'log'}} = (@{$ret{'log'}}, @{$post_data->{'log'} || []});
+  my $post_list = $plugins_module->get_list_plugins_post();
+  my @post_plugins = sort grep ($plugins{$_}, @$post_list);
+  my $conf = {'last_run' => $project_last_run, 'project' => $self,
+    'models' => $models,};
+  my $ret;
+  foreach my $plugin_id (@post_plugins) {
+    $job->note( 'status' => "Running post plugin $plugin_id.");
+
+    my $ret_plugin = $plugins_module->run_post($project_id, $plugin_id, $conf);
+
+    # Add retrieved values to the current project.
+    foreach my $info (sort keys %{$ret_plugin->{'info'}}) {
+      $ret{'info'}{$info} = $ret_plugin->{'info'}{$info};
+    }
+    foreach my $metric (sort keys %{$ret_plugin->{'metrics'}}) {
+      $ret{'metrics'}{$metric} = $ret_plugin->{'metrics'}{$metric};
+    }
+    foreach my $rec (@{$ret_plugin->{'recs'}}) { push( @{$ret{'recs'}}, $rec ); }
+    push( @{$ret{'log'}}, @{$ret_plugin->{'log'}} );
+  }
+
+#  my $post_data = $self->run_posts($models) || {};
+#  @{$ret{'log'}} = (@{$ret{'log'}}, @{$post_data->{'log'} || []});
 
   $job->note( 'status' => "Analysis completed.");
 
