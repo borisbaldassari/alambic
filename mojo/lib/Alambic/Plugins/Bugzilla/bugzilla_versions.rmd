@@ -19,7 +19,7 @@ output:
 ---
 
 ```{r init, echo=FALSE, message=FALSE, results='asis'}
-
+#project.id <- 'modeling.sirius'
 suppressPackageStartupMessages(library(googleVis))
 options(gvis.plot.tag='chart')
 

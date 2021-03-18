@@ -400,17 +400,23 @@ sub run_project($) {
 
     foreach my $info (sort keys %{$ret_p->{'info'}}) {
       $ret{'info'}{$info} = $ret_p->{'info'}{$info};
+      $info{$info} = $ret_p->{'info'}{$info};
     }
     foreach my $metric (sort keys %{$ret_p->{'metrics'}}) {
-      $ret{'metrics'}{$metric} = $ret_p->{'metrics'}{$metric};
+	$ret{'metrics'}{$metric} = $ret_p->{'metrics'}{$metric};
+	$metrics{$metric} = $ret_p->{'metrics'}{$metric};
     }
-    foreach my $rec (@{$ret_p->{'recs'}}) { push( @{$ret{'recs'}}, $rec ); }
+    foreach my $rec (@{$ret_p->{'recs'}}) {
+	push( @{$ret{'recs'}}, $rec );
+	push( @recs, $rec );
+    }
     push( @{$ret{'log'}}, @{$ret_p->{'log'}} );
   }
 
   # Run qm
   $job->note( 'status' => "Populating QM.");
   my $qm_data = $self->run_qm($models);
+
   foreach my $item (keys %{$qm_data}) {
 
     # Most children are hashes.
@@ -733,7 +739,7 @@ sub _compute_inds($) {
 
   push(@$log,
     "[Model::Project] Aggregating data from leaves up to attributes.");
-  &_aggregate_inds($raw_qm->[0], $metrics, $project_indicators,
+  &_aggregate_inds($raw_qm->[0], \%metrics, $project_indicators,
     $project_attrs, $project_attrs_conf, $metrics, $log);
 
   $ret{'inds'}       = $project_indicators;
