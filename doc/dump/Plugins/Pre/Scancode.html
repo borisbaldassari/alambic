@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+    <title>Scancode - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="../Pre.html">Pre</a>
+        </li>
+        <li class="">
+            <a href="../Post.html">Post</a>
+        </li>
+        <li class="">
+            <a href="../Tools.html">Tools</a>
+        </li>
+        <li class="">
+            <a href="../Wizards.html">Wizards</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="Bugzilla.html">Bugzilla</a>
+        </li>
+        <li class="">
+            <a href="EclipsePmi.html">EclipsePmi</a>
+        </li>
+        <li class="">
+            <a href="Git.html">Git</a>
+        </li>
+        <li class="">
+            <a href="GitLabIts.html">GitLabIts</a>
+        </li>
+        <li class="">
+            <a href="GitLabProject.html">GitLabProject</a>
+        </li>
+        <li class="">
+            <a href="Hudson.html">Hudson</a>
+        </li>
+        <li class="">
+            <a href="Jira.html">Jira</a>
+        </li>
+        <li class="">
+            <a href="PmdAnalysis.html">PmdAnalysis</a>
+        </li>
+        <li class="active">
+            <a href="Scancode.html">Scancode</a>
+        </li>
+        <li class="">
+            <a href="SonarQube45.html">SonarQube45</a>
+        </li>
+        <li class="">
+            <a href="StackOverflow.html">StackOverflow</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Scancode</h1>
+
+<h1>Purpose</h1>
+
+<p>This plugin runs the <a href="https://github.com/nexB/scancode-toolkit">Scancode</a> software on the git repository defined for the project, and displays results in a user-friendly report</p>
+
+<p>ScanCode detects licenses, copyrights, package manifests and dependencies and more by scanning code to discover and inventory open source and third-party packages used in code.</p>
+
+<p>Check the <a href="/perldoc/Alambic/Plugins/Scancode.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
+
+<hr />
+
+<h1>Basic information</h1>
+
+<ul>
+<li><strong>ID</strong>: Scancode</li>
+<li><strong>Abilities</strong>:   metrics   data    figs   viz</li>
+<li><strong>Description</strong>:
+The Scancode plugin enables users to easily scan their codebase for license issues. See <a href="https://alambic.io/Plugins/Pre/Scancode">the project\'s wiki</a> for more information.</li>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>dir_bin</code> The full path to the binary, e.g. /opt/scancode/scancode.</li>
+<li><code>licence_regexp</code> A regular expression that describes the correct licence. Every licence that does not match this regexp will be considered wrong.</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h1>Provides</h1>
+
+<h2>Metrics</h2>
+
+<ul>
+<li>SC_LICENSES_VOL
+Number of licences detected by Scancode in the code base.</li>
+<li>SC_LIC_CHECK
+Number of non-expected licences, as defined by the regular expression passed as parameter.</li>
+<li>SC_COPYRIGHTS_VOL
+Number of copyrights detected by Scancode in the code base.</li>
+<li>SC_HOLDERS_VOL
+Number of copyright holders detected in the code.</li>
+<li>SC_AUTHORS_VOL
+Number of authors detected in the code.</li>
+<li>SC_PROGS_VOL
+Number of programming languages detected in the code.</li>
+<li>SC_FILES_VOL
+Total number of files analysed (and documented) by Scancode. Metric is the number of files provided in the list of analysed files returned by Scancode.</li>
+<li>SC_FILES_COUNT
+Total number of files as detected by Scancode. Metric comes from the attribute in the returned data.</li>
+<li>SC_GENERATED_VOL
+Number of files tagged as automatically generated, as detected by Scancode.</li>
+<li>SC_SPECIAL_FILES
+Number of legal, license, readmes, manifests, copyright and other files for key, top-level files.
+Key files are top- level codebase files such as COPYING, README and package manifests as reported by the --classify option “is_legal”, “is_readme”, “is_manifest” and “is_top_level” flags.</li>
+<li>SC_HAS_LICENCE
+The number of files considered as legal (i.e. licences), as detected by Scancode.</li>
+<li>SC_HAS_CODEOFCONDUCT
+The number of files considered as code of conduct's, as detected by Scancode.</li>
+<li>SC_HAS_README
+The number of files considered as readme's, as detected by Scancode.</li>
+<li>SC_HAS_CONTRIBUTING
+The number of files considered as contributing guides, as detected by Scancode.</li>
+</ul>
+
+<h2>Figures</h2>
+
+<ul>
+<li>scancode_licences.html
+Pie chart of licences detected in the codebase. (HTML)</li>
+<li>scancode_copyrights.html
+Pie chart of copyrights detected in the codebase. (HTML)</li>
+<li>scancode_authors.html
+Pie chart of authors detected in the codebase. (HTML)</li>
+<li>scancode_holders.html
+Pie chart of holders detected in the codebase. (HTML)</li>
+<li>scancode_programming_languages.html
+Pie chart of programming languages detected in the codebase. (HTML)</li>
+</ul>
+
+<h2>Downloads</h2>
+
+<ul>
+<li>scancode.json: The JSON output of the Scancode execution (JSON).</li>
+<li>scancode_files.csv: The CSV list of all files analysed by Scancode (CSV).</li>
+<li>scancode_special_files.csv: The CSV list of all special files (JSCSVON).</li>
+<li>scancode_licences.csv: The CSV extract of all license expressions found in files (CSV).</li>
+<li>scancode_copyrights.csv: The CSV extract of all copyrights found in files (CSV).</li>
+<li>scancode_copyrights.csv: The CSV extract of all holders found in files (CSV).</li>
+<li>scancode_authors.csv: The CSV extract of all holders authors in files (CSV).</li>
+<li>scancode_programming_languages.csv: The CSV extract of all programming languages found in files (CSV).</li>
+<li>scancode_packages.csv: The CSV extract of all packages identified in sources (CSV).</li>
+</ul>
+
+<h2>Recommendations</h2>
+
+<h2>Visualisation</h2>
+
+<p>Scancode</p>
+
+<hr />
+
+<h1>Screenshot</h1>
+
+<p><img src="/images/sonarqube_45.png" alt="sonarqube.png" /></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2020
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

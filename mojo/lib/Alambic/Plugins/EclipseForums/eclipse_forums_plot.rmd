@@ -23,6 +23,7 @@ require(dygraphs)
 require(magrittr)
 require(xts)
 
+#project.id <- 'modeling.sirius'
 file.csv = paste("../../../../projects/", project.id, "/output/", project.id, '_eclipse_forums_posts.csv', sep="")
 posts <- read.csv(file=file.csv, header=TRUE)
 
@@ -31,7 +32,7 @@ binary.colours <- c("#325d88", "#d9534f") # "#325d88" green = #3e9c1a)
 posts$created.date <- as.POSIXct(posts$created_date, origin="1970-01-01")
 posts.xts <- xts(posts, order.by = posts$created.date)
 
-posts.daily <- apply.daily(x=posts.xts, FUN = nrow)
+posts.weekly <- apply.weekly(x=posts.xts, FUN = nrow)
 
 time.min <- index(posts.xts[1,])
 time.max <- index(posts.xts[nrow(posts.xts)])

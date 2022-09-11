@@ -238,7 +238,7 @@ sub run_plugin($$) {
       my $date_created
           = Time::Piece->strptime(int(str2time($issue->{'creation_time'}) || 0), "%s");
       my $date_updated
-          = Time::Piece->strptime(int(str2time($issue->{'creation_time'}) || 0), "%s");
+          = Time::Piece->strptime(int(str2time($issue->{'last_change_time'}) || 0), "%s");
       my $t_now = time();
 
       my $date_m = $date_created->strftime("%Y-%m-%d"); 

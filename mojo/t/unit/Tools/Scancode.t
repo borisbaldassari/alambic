@@ -28,20 +28,22 @@ BEGIN { use_ok('Alambic::Tools::Scancode'); }
 my $tool = Alambic::Tools::Scancode->new();
 isa_ok($tool, 'Alambic::Tools::Scancode');
 
+# Remove generatd file beforehand
+unlink "t/resources/scancode_test_results.json";
+
+note("Ask for version.");
+my $version = $tool->version(); 
+ok(grep(!/^Scancode version not found/, $version), "Tool version() returns version $version.")
+    or diag explain $version;
+
 note("Executing module self-test.");
-my $log = $tool->test(); print Dumper($log);
+my $log = $tool->test(); 
 ok(grep(!/^ERROR/, @{$log}), "Tool test() returns no ERROR")
   or diag explain $log;
 
-note("Ask for version.");
-my $version = $tool->version(); print Dumper($version);
-ok(grep(!/^Scancode version not found/, $version), "Tool version() returns a version.")
-    or diag explain $version;
-
-note("Executing Scancode on Alambic itself..");
-my $version = $tool->scancode_scan_csv(); print Dumper($version);
-ok(grep(!/^Scancode version not found/, $version), "Tool version() returns a version.")
-  or diag explain $version;
-
+# Check that output json file exists, clean up those files.
+ok(-e 't/resources/scancode_test_results.json',
+  "scancode_test_results.json file is generated.") or diag explain $log;
+unlink "t/resources/scancode_test_results.json";
     
 done_testing();

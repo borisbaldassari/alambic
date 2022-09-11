@@ -18,12 +18,12 @@ variables <- commandArgs(trailingOnly=TRUE)
 project.id <- variables[1]
 plugin.id <- variables[2]
 
-file.out <- paste( project.id, "_pmd_analysis_top_5_rules.svg", sep="")
+file.out <- paste(project.id, "_pmd_analysis_top_5_rules.svg", sep="")
 
 priority.colours <- c("#CC0000", "#DD5500", "#EEAA00", "#FFCC66")
 
 #project.id <- "modeling.sirius"
-file.violations = paste("", project.id, "_pmd_analysis_violations.csv", sep="")
+file.violations = paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_violations.csv", sep="")
 pmd.violations <- read.csv(file=file.violations, header=T)
 
 myrules <- pmd.violations[pmd.violations$priority == 1 | pmd.violations$priority == 2,c(1,2,4)]

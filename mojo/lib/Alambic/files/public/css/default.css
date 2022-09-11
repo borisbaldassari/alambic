@@ -33,7 +33,11 @@ body {
     text-decoration: none;
 }
 
-div#tree {
+.my-metric {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 0px 10px;
 }
 
 .label-scale {
@@ -65,16 +69,16 @@ div#tree {
   stroke-width: 1.5px;
 }
 
-div.progress-bar {
+.progress-bar {
   color: black;
   font-weight: bold;
 }
 
-div.panel-heading {
+.panel-heading {
   font-weight: bold;
 }
 
-div#details-box {
+#details-box {
   width: 600px;
   margin: 10px 40px 10px 40px;
   background-color: white;
@@ -92,7 +96,7 @@ div#details-box {
   right: 5px;
 }
 
-div#details-box-project {
+#details-box-project {
   margin: 10px 40px 10px 40px;
   background-color: white;
   opacity: 0.8;

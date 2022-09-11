@@ -614,13 +614,6 @@ sub run_plugin($$) {
 					       "gitlab.id" => $gl_id}
 					     )} );
     
-    # And execute the figures R scripts.
-    my @figs = grep( /.*\.rmd$/i, keys %{$conf{'provides_figs'}} );
-    foreach my $fig (sort @figs) {
-	push( @{$ret{'log'}}, "[Plugins::GitLabProject] Executing R fig file [$fig]." );
-	@{$ret{'log'}} = ( @{$ret{'log'}}, @{$r->knit_rmarkdown_html( 'GitLabProject', $project_id, $fig )} );
-    }
-    
     
     return \%ret;    
 }

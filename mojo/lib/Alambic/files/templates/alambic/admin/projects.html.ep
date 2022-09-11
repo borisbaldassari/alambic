@@ -40,7 +40,7 @@
                 <th>Name</th>
                 <th>Is active</th>
                 <th>Last update</th>
-                <th colspan="3">Actions</th>
+                <th colspan="4">Actions</th>
               </tr>
 
 % foreach my $project_id ( @projects ) {
@@ -50,6 +50,7 @@
                 <td><a href="/admin/projects/<%= $project_id %>"><%= $projects->{$project_id} %></a></td>
                 <td><%= $project->active() ? "Yes" : "No" %></td>
                 <td><%= $project->last_run() %></td>
+                <td width="1cm"><a href="/projects/<%= $project_id %>"><i class="fa fa-dashboard"></i></a></td>
                 <td width="1cm"><a href="/admin/projects/<%= $project_id %>"><i class="fa fa-eye"></i></a></td>
                 <td width="1cm"><a href="/admin/projects/<%= $project_id %>/run"><i class="fa fa-rocket"></i></a></td>
                 <td width="1cm"><a href="/admin/projects/<%= $project_id %>/del"><i class="fa fa-ban"></i></a></td>

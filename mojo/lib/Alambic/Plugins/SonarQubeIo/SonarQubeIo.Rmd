@@ -24,11 +24,11 @@ opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
 
 #project.id <- "modeling.sirius"
 plugin.id <- "SonarQubeIo"
-file.blocker <- paste("", project.id, "_sq_issues_blocker.csv", sep="")
-file.critical <- paste("", project.id, "_sq_issues_critical.csv", sep="")
-file.major <- paste("", project.id, "_sq_issues_major.csv", sep="")
-file.info <- paste("", project.id, "_sq_info.csv", sep="")
-file.metrics <- paste("", project.id, "_sq_metrics.csv", sep="")
+file.blocker <- paste("../../../../projects/", project.id, "/output/", project.id, "_sq_issues_blocker.csv", sep="")
+file.critical <- paste("../../../../projects/", project.id, "/output/", project.id, "_sq_issues_critical.csv", sep="")
+file.major <- paste("../../../../projects/", project.id, "/output/", project.id, "_sq_issues_major.csv", sep="")
+file.info <- paste("../../../../projects/", project.id, "/output/", project.id, "_sq_info.csv", sep="")
+file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_sq_metrics.csv", sep="")
 
 abc <- c('A', 'B', 'C', 'D', 'E', 'F', 'G')
 
@@ -164,12 +164,18 @@ The visualisations on this page can be exported and easily reused on an external
 
 Summary of main SonarQube metrics (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/SonarQubeIo/sonarqube_summary.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Summary of SonarQube violations (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/SonarQubeIo/sonarqube_violations.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Pie chart of checked and broken rules (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/SonarQubeIo/sonarqube_violations_pie.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```

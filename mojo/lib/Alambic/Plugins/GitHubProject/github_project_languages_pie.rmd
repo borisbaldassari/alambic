@@ -1,0 +1,42 @@
+---
+#########################################################
+#
+# Copyright (c) 2015-2020 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+output:
+  html_document:
+    self_contained: no
+---
+
+```{r init, echo=FALSE, message=FALSE, results='asis'}
+knitr::opts_chunk$set(fig.width=6, fig.height=6, echo=F)
+
+suppressPackageStartupMessages(library(googleVis))
+options(gvis.plot.tag='chart')
+require('reshape2')
+
+#project.id <- 'test.github.project'
+file.langs = paste("../../../../projects/", project.id, "/output/", project.id, "_github_project_languages.csv", sep="")
+langs <- read.csv(file=file.langs, header=T)
+
+langs.df <- data.frame(Language=langs$language, Count=langs$count)
+
+p <- gvisPieChart(langs.df,
+                  options = list(
+                    title=paste("Languages for ", project.id, sep=""),
+                    width=450, height=320,
+                    pieHole= 0.4))
+
+print(p, 'chart')
+```
+

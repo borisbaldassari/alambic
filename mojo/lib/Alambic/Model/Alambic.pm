@@ -587,7 +587,7 @@ sub get_project_all_runs($$) {
 #      "log" => ['log entry'],
 #    }
 sub run_project($) {
-  my ($self, $project_id, $user) = @_;
+  my ($self, $project_id, $user, $job) = @_;
 
   my $time_start       = DateTime->now();
   my $time_start_epoch = $time_start->epoch();
@@ -598,14 +598,17 @@ sub run_project($) {
     'user'  => $user || 'unknown',
   };
 
+  $job->info->{notes}->{'status'} = "Initialising.";
+
   my $project       = &_get_project($project_id);
-  my $values        = $project->run_project($models);
+  my $values        = $project->run_project($models, $job);
 
   my $time_finished = DateTime->now();
   my $delay         = $time_finished - $time_start;
   $run->{'delay'} = $delay->in_units('seconds');
 
   # Anonymise data
+  $job->info->{notes}->{'status'} = "Anonymising data.";
   my $anon = $repodb->anonymise_data();
   unless (defined($anon) && $anon eq 0) {
 

@@ -268,7 +268,6 @@ sub _compute_data() {
   }
 
   # Write that to csv in plugins folder (for R treatment) and output (for download).
-  $repofs->write_plugin('StackOverflow', $project_id . "_so.csv", $csv_out);
   $repofs->write_output($project_id, "so.csv", $csv_out);
 
   # Compute metrics

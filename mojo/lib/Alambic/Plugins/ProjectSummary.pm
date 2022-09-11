@@ -221,7 +221,6 @@ sub _create_psum_attrs() {
   my @ids = grep { $_ =~ /^QM_/ } sort keys %$params;
 
   foreach my $id (@ids) {
-#    print "DBG QM $id.";
     $html_t
       .= '<tr><td><a href="/documentation/attributes.html#'
       . $id . '">'

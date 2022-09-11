@@ -21,7 +21,7 @@ output:
 ```{r summary-pie-gvis, echo=FALSE, message=FALSE, results='asis'}
 
 #project.id <- "modeling.sirius"
-file.rules = paste("", project.id, "_pmd_analysis_rules.csv", sep="")
+file.rules = paste("../../../../projects/", project.id, "/output/", project.id, "_pmd_analysis_rules.csv", sep="")
 pmd.rules <- read.csv(file=file.rules, header=T)
 
 suppressPackageStartupMessages(library(googleVis))

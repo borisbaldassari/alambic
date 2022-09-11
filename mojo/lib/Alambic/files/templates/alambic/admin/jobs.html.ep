@@ -39,11 +39,11 @@
 %   if ($job->{'state'} =~ m!^active!) { $icon = "fa-spinner fa-spin"; }
 %   elsif ($job->{'state'} =~ m!^inactive!) { $icon = "fa-hourglass-o"; }
 %   elsif ($job->{'state'} =~ m!^failed!) { $icon = "fa-frown-o"; }
-%   elsif ($job->{'state'} =~ m!^finished!) { $icon = "fa-smile-o"; }
+%   elsif ($job->{'state'} =~ m!^finished!) { $icon = "fa-check-circle-o"; }
                   <tr>
                     <td><%= $job->{'id'} %></td>
                     <td><%= $job->{'task'} %></td>
-                    <td><i class="fa fa-lg <%= $icon %>"></i> &nbsp; <%= $job->{'state'} %></td>
+                    <td><i class="fa fa-lg <%= $icon %>"></i> &nbsp; <%= $job->{notes}{'status'} || 'None'  %></td>
                     <td><%= localtime( $job->{'created'} ) %></td>
                     <td><%= defined($job->{'finished'}) ? "" . localtime( $job->{'finished'} ) : "" %></td>
                     <td><%== join( '<br />', map {$_} @{$job->{'args'}} ) %></td>

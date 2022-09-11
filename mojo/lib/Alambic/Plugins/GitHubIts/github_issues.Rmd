@@ -1,0 +1,238 @@
+---
+#########################################################
+#
+# Copyright (c) 2015-2020 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+title: "GitHub Issues visualisation"
+author:
+- name: "Boris Baldassari"
+  affiliation: Castalia Solutions
+output:
+  html_fragment:
+    toc: false
+    fig_caption: true
+    fig.width: 800
+    self_contained: false
+    lib_dir: libs
+    echo: false
+    dev: svg
+---
+
+```{r init, echo=FALSE, message=FALSE}
+library(knitr)
+library(xts)
+require('reshape2')
+require(ggplot2)
+require(xtable)
+
+knitr::opts_chunk$set(fig.path = "figures/")
+
+suppressPackageStartupMessages(library(googleVis))
+options(gvis.plot.tag='chart')
+
+# Enable font awesome
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+
+# Plugin needs the following parameters:
+#   * project.id
+#   * github.user
+#   * github.repo
+#   * github.url
+
+# project.id <- 'test.github.its'
+# github.url <- 'https://api.github.com'
+# github.user <- 'borisbaldassari'
+# github.repo <- 'test'
+
+plugin.id <- 'GitHubIts'
+file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_github_issues.csv", sep="")
+file.info = paste("../../../../projects/", project.id, "/output/", project.id, "_info_github_issues.csv", sep="")
+file.issues.all = paste("../../../../projects/", project.id, "/output/", project.id, "_github_issues.csv", sep="")
+file.issues.open = paste("../../../../projects/", project.id, "/output/", project.id, "_github_issues_open.csv", sep="")
+
+metrics <- read.csv(file=file.metrics, header=T)
+info <- read.csv(file=file.info, header=T)
+issues.all <- read.csv(file=file.issues.all, header=T)
+issues.open <- read.csv(file=file.issues.open, header=T)
+
+geticon <- function(value) {
+  if (is.na(value)) { value <- FALSE }
+  if (value == 1) {
+    return('fa-check-square-o') 
+  } else {
+    return('fa-square-o') 
+  }
+}
+
+issue_first <- head(issues.all[order(issues.all$created_at, decreasing = F),c('created_at')], n = 1)
+issue_last <- head(issues.all[order(issues.all$updated_at, decreasing = T),c('updated_at')], n = 1)
+
+```
+
+## GitHub Issues `r github.user`/`r github.repo` 
+
+<br />
+
+<div class="row"><div class="col-sm-7">
+
+github offers generic hosting services for software development. This plugin retrieves information about the project and its statistics, and computes metrics and recommendations. github offers a [complete API](https://docs.github.com/ee/api/README.html) to interact with a github server, and Perl has a ready-to-use [module that cover the API&apos;s features](http://search.cpan.org/~bluefeet/github-API-v3-0.08/lib/github/API/v3.pm).
+
+Data for project is directly available from the project&apos;s dashboard:
+
+* Project ID: `r github.user`/`r github.repo`
+* Project URL: `r info['ITS_URL']` 
+
+</div><div class="col-sm-4">
+  <div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+  <div class="list-group">
+  <a href="#summary" class="list-group-item">Quick Summary</a>
+  <a href="#activity" class="list-group-item">Recent activity</a>
+  <a href="#authors" class="list-group-item">Authors</a>
+  <a href="#milestones" class="list-group-item">Milestones</a>
+  </div>
+  </div>
+</div></div>
+
+### <a name="quick-summary"></a>Quick Summary
+
+The first issue was created on ``r issue_first`` and the last updated was made on ``r issue_last``.
+
+<div class="row"><div class="col-sm-4">
+<span><span style="font-size:24pt">``r trimws(metrics[['ITS_AUTHORS_1M']], which='both')``</span> Authors last month</span>
+</div><div class="col-sm-4">
+<span><span style="font-size:24pt">``r trimws(metrics[['ITS_CREATED_1M']], which='both')``</span> Created last month</span>
+</div><div class="col-sm-4">
+<span><span style="font-size:24pt">``r trimws(metrics[['ITS_UPDATED_1M']], which='both')``</span> Updated last month</span>
+</div></div>
+
+<div class="row"><div class="col-sm-4">
+<span><span style="font-size:24pt">``r trimws(metrics[['ITS_ISSUES_OPEN']], which='both')``</span> Open issues</span>
+</div><div class="col-sm-4">
+<span><span style="font-size:24pt">``r trimws(metrics[['ITS_ISSUES_OPEN_OLD']], which='both')``</span> Old issues (not updated for more than 1 year)</span>
+</div><div class="col-sm-4">
+<span><span style="font-size:24pt">``r trimws(metrics[['ITS_ISSUES_OPEN_UNASSIGNED']], which='both')``</span> Open and Unassigned issues</span>
+</div></div>
+
+There is a total of ``r ncol(metrics)`` metrics retrieved.
+
+```{r metrics_table, echo=FALSE, message=FALSE, results='asis'}
+t <- lapply(names(metrics), function(x) paste(x, ' <span class="badge">', metrics[[x]], '</span>, ', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+
+There is a total of ``r ncol(info)`` information retrieved:
+
+```{r info_table, echo=FALSE, message=FALSE, results='asis'}
+t <- lapply(names(info), function(x) paste('* ', x, ': ', info[[x]], "\n", sep=''))
+t <- paste(t, collapse="")
+cat(t)
+```
+
+-----
+
+### <a name="activity"></a> Recent activity
+
+* Number of issues recently submitted: ``r metrics[['ITS_CREATED_1W']]`` last week, ``r metrics[['ITS_CREATED_1M']]`` last month, ``r metrics[['ITS_CREATED_1Y']]`` last year.
+* Total number of authors: ``r metrics[['ITS_AUTHORS']]`` overall, ``r metrics[['ITS_AUTHORS_1W']]`` last week, ``r metrics[['ITS_AUTHORS_1M']]`` last month, ``r metrics[['ITS_AUTHORS_1Y']]`` last year.
+* Number of issues recently updated: ``r metrics[['ITS_UPDATED_1W']]`` last week, ``r metrics[['ITS_UPDATED_1M']]`` last month, ``r metrics[['ITS_UPDATED_1Y']]`` last year.
+
+-----
+
+<div class="row">
+<div class="col-md-6">
+
+### <a name="authors"></a> Authors
+
+The following authors have been found in the Git repository, sorted by lines count:
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Authors</div>
+
+<table class="table table-striped">
+  <tr><th>Authors</th><th>Lines Count</th></tr>
+```{r authors_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+authors <- table(issues.all$creator)
+authors <- as.data.frame(x = table(issues.all$creator))
+
+t <- apply(authors[order(authors$Freq, decreasing = T),], 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+</div>
+<div class="col-md-6">
+  <iframe src="/projects/`r project.id`/GitHubIts/github_issues_authors_pie.html" frameborder="0" style="width: 500px; height: 340px"></iframe>
+</div>
+</div>
+
+-----
+
+### <a name="milestones"></a> Milestones
+
+The following plots show the number of issues (opened, closed) on all the milestones of the project that have at least one open task.
+
+<div class="row">
+```{r milestones_donuts, echo=FALSE, message=FALSE, results='asis'}
+milestones <- data.frame(Milestone=unique(issues.all$milestone), Open=0, Closed=0, All=0);
+milestones <- milestones[order(milestones$Milestone, decreasing = T),]
+
+for (i in 1:nrow(milestones)) { #[seq(1,8),]
+  issues.m <- issues.all[issues.all$milestone == milestones[i,1],]
+  issues.m.opened <- nrow(issues.m[issues.m$status == 'open',])
+  issues.m.closed <- nrow(issues.m[issues.m$status != 'open',])
+
+  milestones[i,c('Open')] <- issues.m.opened
+  milestones[i,c('Closed')] <- issues.m.closed
+
+  ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(c(issues.m.opened, issues.m.closed)))
+
+  # We want to display only milestones with open tasks.
+  if(issues.m.opened == 0) { next }
+
+  cat('<div class="col-md-3">')
+  p <- gvisPieChart(ms,
+                  options = list(
+                    title=paste("Issues for milestone ", milestones[i,1], sep=""),
+                    colors="['red', 'green']",
+                    width=350, height=280,
+                    pieHole= 0.4))
+
+  print(p, 'chart')
+  cat('</div>')
+}
+```
+</div>
+
+The complete list of milestones is provided below:
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Milestones</div>
+
+<table class="table table-striped">
+  <tr><th>Name</th><th>Issues total</th><th>Issues opened</th><th>Issues closed</th></tr>
+```{r milestones_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+milestones$All <- milestones$Open + milestones$Closed
+milestones <- milestones[order(milestones$Milestone, decreasing = T),]
+t <- apply(milestones[order(milestones$Milestone, decreasing = T),], 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', trimws(x[[4]], which='both'), '</td><td>',
+		           trimws(x[[2]], which='both'), '</td><td>', trimws(x[[3]], which='both'), '</td></tr>', sep=''))
+t <- paste(t, collapse="")
+cat(t)
+```
+</table>
+</div>

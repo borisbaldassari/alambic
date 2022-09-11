@@ -247,8 +247,6 @@ sub _compute_data($$$) {
   }
 
   # Write rules to a csv file
-  $repofs->write_plugin('PmdAnalysis', $project_id . "_pmd_analysis_rules.csv",
-    $csv_out);
   $repofs->write_output($project_id, "pmd_analysis_rules.csv", $csv_out);
   push(@log,
         "[PmdAnalysis] Writing rules to file ["
@@ -293,15 +291,10 @@ sub _compute_data($$$) {
   $json_violations .= "}\n";
 
   # Write violations to JSON.
-  $repofs->write_plugin('PmdAnalysis',
-    $project_id . "_pmd_analysis_violations.json",
-    $json_violations);
   $repofs->write_output($project_id, "pmd_analysis_violations.json",
     $json_violations);
 
   # Write violations to CSV.
-  $repofs->write_plugin('PmdAnalysis',
-    $project_id . "_pmd_analysis_violations.csv", $csv_out);
   $repofs->write_output($project_id, "pmd_analysis_violations.csv", $csv_out);
 
   # Format and write number of violations by file.
@@ -332,8 +325,6 @@ sub _compute_data($$$) {
         "[PmdAnalysis] Writing files to file ["
       . $project_id
       . "_pmd_analysis_files.csv]..");
-  $repofs->write_plugin('PmdAnalysis', $project_id . "_pmd_analysis_files.csv",
-    $csv_files_out);
   $repofs->write_output($project_id, "pmd_analysis_files.csv", $csv_files_out);
 
 # Compute violations by ruleset. Two formats are provided for different purposes.
@@ -362,9 +353,6 @@ sub _compute_data($$$) {
         "[PmdAnalysis] Writing rulesets to file ["
       . $project_id
       . "_conf_rulesets.csv].");
-  $repofs->write_plugin('PmdAnalysis',
-    $project_id . "_pmd_analysis_rulesets.csv",
-    $csv_rulesets_out);
   $repofs->write_output($project_id, "pmd_analysis_rulesets.csv",
     $csv_rulesets_out);
 
@@ -373,9 +361,6 @@ sub _compute_data($$$) {
         "[PmdAnalysis] Writing rulesets2 to file ["
       . $project_id
       . "_conf_rulesets2.csv].");
-  $repofs->write_plugin('PmdAnalysis',
-    $project_id . "_pmd_analysis_rulesets2.csv",
-    $csv_rulesets2_out);
   $repofs->write_output($project_id, "pmd_analysis_rulesets2.csv",
     $csv_rulesets2_out);
 
@@ -391,8 +376,6 @@ sub _compute_data($$$) {
         "[PmdAnalysis] Writing main pmd file ["
       . $project_id
       . "_pmd_analysis_main.csv]..");
-  $repofs->write_plugin('PmdAnalysis', $project_id . "_pmd_analysis_main.csv",
-    $csv_main_out);
   $repofs->write_output($project_id, "pmd_analysis_main.csv", $csv_main_out);
 
   # Now execute the main R script.

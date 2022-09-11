@@ -114,7 +114,7 @@ sub startup {
         }
       }
 
-      my $ret = $self->al->run_project($project_id, $user);
+      my $ret = $self->al->run_project($project_id, $user, $job);
       $job->finish($ret);
     }
   );

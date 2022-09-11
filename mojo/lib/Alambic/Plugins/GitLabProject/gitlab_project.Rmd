@@ -97,7 +97,7 @@ list.mrs.count.merged <- 5
 
 <div class="row"><div class="col-sm-7">
 
-GitLab offers generic hosting services for software development. This plugin retrieves information about the project and its statistics, and computes metrics and recommendations. GitLab offers a [complete API](https://docs.gitlab.com/ee/api/README.html) to interact with a GitLab server, and Perl has a ready-to-use [module that cover the API&apos;s features](http://search.cpan.org/~bluefeet/GitLab-API-v3-0.08/lib/GitLab/API/v3.pm).
+GitHub offers generic hosting services for software development. This plugin retrieves information about the project and its statistics, and computes metrics and recommendations. GitLab offers a [complete API](https://docs.gitlab.com/ee/api/README.html) to interact with a GitLab server, and Perl has a ready-to-use [module that cover the API&apos;s features](http://search.cpan.org/~bluefeet/GitLab-API-v3-0.08/lib/GitLab/API/v3.pm).
 
 Data for project is directly available from the project&apos;s dashboard:
 

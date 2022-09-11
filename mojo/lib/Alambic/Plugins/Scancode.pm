@@ -17,15 +17,13 @@ package Alambic::Plugins::Scancode;
 use strict;
 use warnings;
 
-use Text::CSV;
-
 use Alambic::Tools::Scancode;
 use Alambic::Model::RepoFS;
 
+use Text::CSV;
 use Mojo::JSON qw( decode_json encode_json );
-
-#use Mojo::JSON qw( decode_json encode_json );
 use Data::Dumper;
+
 
 # Main configuration hash for the plugin
 my %conf = (
@@ -41,12 +39,13 @@ my %conf = (
     "dir_bin" =>
       'The full path to the binary, e.g. /opt/scancode/scancode.',
     "licence_regexp" =>
-      'A regular expression that describes the correct licence. Every licence that does not match this regexp will be considered wrong.',
+      'A Perl regular expression that describes the correct licence. Every licence that does not match this regexp will be considered wrong.',
   },
   "provides_cdata" => [],
   "provides_info"  => [],
   "provides_data"  => {
-    "scancode.json" => "The JSON output of the Scancode execution.",
+    "scancode.json" => "The JSON output of the ScanCode execution.",
+    "metrics_scancode.csv" => "The CSV list of metrics computed by the ScanCode plugin.",
     "scancode_files.csv" => "The CSV list of all files analysed by Scancode.",
     "scancode_special_files.csv" => "The CSV list of all special files. See documentation to know what a special file is.",
     "scancode_licences.csv" => "The CSV extract of all license expressions found in files.",
@@ -58,6 +57,7 @@ my %conf = (
   },
   "provides_metrics" => {
     "SC_LICENSES_VOL"      => "SC_LICENSES_VOL",
+    "SC_LIC_CHECK" => "SC_LIC_CHECK",
     "SC_COPYRIGHTS_VOL"      => "SC_COPYRIGHTS_VOL",
     "SC_HOLDERS_VOL"      => "SC_HOLDERS_VOL",
     "SC_AUTHORS_VOL"      => "SC_AUTHORS_VOL",
@@ -67,8 +67,9 @@ my %conf = (
     "SC_GENERATED_VOL"      => "SC_GENERATED_VOL",
     "SC_SPECIAL_FILES"      => "SC_SPECIAL_FILES",
     "SC_HAS_LICENCE"      => "SC_HAS_LICENCE",
-    "SC_README_VOL"      => "SC_README_VOL",
     "SC_HAS_CODEOFCONDUCT"      => "SC_HAS_CODEOFCONDUCT",
+    "SC_HAS_README"      => "SC_HAS_README",
+    "SC_HAS_CONTRIBUTING"      => "SC_HAS_CONTRIBUTING",
   },
   "provides_figs"    => {
     'scancode_licences.html' => "Pie chart of licences detected in the codebase.",
@@ -77,7 +78,7 @@ my %conf = (
     'scancode_holders.html' => "Pie chart of holders detected in the codebase.",
     'scancode_programming_languages.html' => "Pie chart of programming languages detected in the codebase.",
   },
-  "provides_recs" => ["SC_WARNINGS",],
+  "provides_recs" => [],
   "provides_viz"     => {
     'scancode.html' => "Scancode",
   },
@@ -105,6 +106,15 @@ sub run_plugin($$) {
   my @log;
   push(@log, "[Plugins::Scancode] Start Scancode plugin execution for project $project_id.");
 
+  my $regex = eval { qr/$licence_regexp/ };
+  if ($@) {
+    push(@log, "[Plugins::Scancode] ERROR: regexp '" . $licence_regexp . "' is not valid.");
+    return {
+      "metrics" => {}, 
+      "recs" => [], "info" => {}, "log" => \@log,
+    };
+  }
+
   my $params = {};
 
   # Execute the analysis scripts.
@@ -119,7 +129,7 @@ sub run_plugin($$) {
 
   # Create RepoFS object for writing and reading files on FS.
   my $repofs = Alambic::Model::RepoFS->new();
-  my $json = $repofs->read_input($project_id, "scancode.json");
+  my $json = $repofs->read_input($project_id, "import_scancode.json");
 
   my $data = decode_json($json);
   my @licences = @{$data->{'summary'}{'license_expressions'}};
@@ -183,10 +193,19 @@ sub run_plugin($$) {
     @programming_languages;
   $repofs->write_output($project_id, "scancode_programming_languages.csv", $csv_out);
 
+  # Compute SC_LIC_CHECK value: number of non-expected licences.
+  my @nonexpected_licences; 
+  foreach my $l (@licences) {
+    next if ( ! defined($l->{'value'}) );
+    if ( $l->{'value'} !~ m!$licence_regexp! ) {
+      push( @nonexpected_licences, $l->{'value'} );
+    }
+  }
+
   # Write list of files.
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
   my @files_csv;
-  my @keyfiles;
+  my @keyfiles; my @nonexpected_files;
   my $generated = 0; my $readmes = 0; my $has_licence = 0; 
   my $contributing = 0; my $codeofconducts = 0;
   $csv_out = "path,size,date,programming_language,sha1,is_binary,is_text,is_archive,";
@@ -204,6 +223,10 @@ sub run_plugin($$) {
     ));
     $csv_out .= $csv->string();
 
+    # List files with a non-expected licence
+    if ( grep { $_ =~ m!$licence_regexp! } @{$f->{'license_expressions'}} ) {
+    } else { push( @nonexpected_files, { 'p' => $path, 'l' => $f->{'license_expressions'}[0] } ) }
+    
     # Identify key, readmes, manifests, legal files.
     push( @keyfiles, { 'path' => $path, 'type' => 'key' } ) if ( $f->{'is_keyfile'} );
     push( @keyfiles, { 'path' => $path, 'type' => 'readme' } ) if ( $f->{'is_readme'} );
@@ -238,14 +261,15 @@ sub run_plugin($$) {
     @packages;
   $repofs->write_output($project_id, "scancode_packages.csv", $csv_out);
 
-  # Compute SC_LIC_CHECK value: number of non-expected licences.
-  my @nonexpected_licences; 
-  foreach my $l (@licences) {
-    next if ( ! defined($l->{'value'}) );
-    if ( $l->{'value'} !~ m!$licence_regexp! ) {
-      push( @nonexpected_licences, $l->{'value'} );
-    }
+  # Write list of non-expected licences.
+  $csv = Text::CSV->new({binary => 1, eol => "\n"});
+  $csv_out = "name,licence\n";
+  map {
+      $csv->combine(( $_->{'p'}, $_->{'l'} || '' ));
+      $csv_out .= $csv->string();
   }
+  @nonexpected_files;
+  $repofs->write_output($project_id, "scancode_nonexpected_files.csv", $csv_out);
 
   my $metrics = {
       "SC_LICENSES_VOL" => scalar(@licences),
@@ -274,6 +298,16 @@ sub run_plugin($$) {
     @keyfiles;
   $repofs->write_output($project_id, "scancode_special_files.csv", $csv_out);
 
+  # Write list of non-expected licences.
+  $csv = Text::CSV->new({binary => 1, eol => "\n"});
+  $csv_out = "licence_name\n";
+  map { 
+      $csv->combine(( $_ ));
+      $csv_out .= $csv->string();
+  }
+  @nonexpected_licences;
+  $repofs->write_output($project_id, "scancode_nonexpected_licences.csv", $csv_out);
+
   # Write list of metrics.
   $csv = Text::CSV->new({binary => 1, eol => "\n"});
   $csv_out = "metric,value\n";
@@ -282,7 +316,7 @@ sub run_plugin($$) {
       $csv_out .= $csv->string();
     }
     keys %{$metrics};
-  $repofs->write_output($project_id, "scancode_metrics.csv", $csv_out);
+  $repofs->write_output($project_id, "metrics_scancode.csv", $csv_out);
 
   # Now execute the main R script.
   push(@log, "[Plugins::Scancode] Executing R main file.");
@@ -334,7 +368,15 @@ in a codebase with Scancode.
 B<Alambic::Plugins::Scancode> A plugin to scan licences and copyrights 
 in a codebase with Scancode.
 
-Parameters: None
+Parameters: 
+
+=over
+
+=item * dir_bin The full path to the binary, e.g. /opt/scancode/scancode.
+
+=item * licence_regexp A regular expression that describes the correct licence. Every licence that does not match this regexp will be considered wrong. e.g. *epl*
+
+=back
 
 For the complete description of the plugin see the user documentation on the web site: L<https://alambic.io/Plugins/Pre/Scancode.html>.
 

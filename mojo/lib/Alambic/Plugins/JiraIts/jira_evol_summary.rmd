@@ -9,7 +9,7 @@ library(magrittr)
 
 #project.id <- 'modeling.gendoc'
 #project.id <- 'openattic'
-file.evol = paste("", project.id, "_jira_evol.csv", sep="")
+file.evol = paste("../../../../projects/", project.id, "/output/", project.id, "_jira_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
 evol[is.na(evol)] <- 0
 evol <- evol[cumsum(abs(evol$issues_created + evol$authors)) != 0 & complete.cases(evol),]

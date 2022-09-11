@@ -1,12 +1,12 @@
   {
-    "name": "Alambic Metris for Scancode",
+    "name": "Alambic Metrics for Scancode",
     "version": "0.1",
     "children": [
       {
         "name": "Has licence",
         "mnemo": "SC_HAS_LICENCE",
         "desc": [
-            "Is there a licence file at the root of the directory?"
+            "The number of files considered as legal (i.e. licences), as detected by Scancode."
         ],
           "scale": [0,0,0,1]
       },
@@ -14,7 +14,7 @@
         "name": "Has contributing",
         "mnemo": "SC_HAS_CONTRIBUTING",
         "desc": [
-            "Is there a contributing or development guide file at the root of the directory?"
+            "The number of files considered as a contributing or development guide, as detected by Scancode."
         ],
           "scale": [0,0,0,1]
       },
@@ -22,7 +22,7 @@
         "name": "Has Readme",
         "mnemo": "SC_HAS_README",
         "desc": [
-            "Is there a readme file at the root of the directory?"
+            "The number of files considered as a readme, as detected by Scancode."
         ],
           "scale": [0,0,0,1]
       },
@@ -30,7 +30,7 @@
         "name": "Code of Conduct",
         "mnemo": "SC_HAS_CODEOFCONDUCT",
         "desc": [
-            "Is there an initiative and written document to regulate the behaviour of individuals? (e.g. code of conduct)",
+            "The number of files considered as a code of conduct, as detected by Scancode. These can be any initiative and written document to regulate the behaviour of individuals",
             "As an example, the Eclipse Foundation enforces the following code of conduct: https://www.eclipse.org/org/documents/Community_Code_of_Conduct.php ."
         ],
         "scale": [0,0,0,1]
@@ -39,10 +39,67 @@
         "name": "Licences check",
         "mnemo": "SC_LIC_CHECK",
         "desc": [
-            "Licences check on the code, as provided by tools like ScanCode (or Black Duck or..).",
+            "Unwanted licences in the code, as provided by tools like ScanCode (or Black Duck or..).",
             "All licences found in the codebase that do not conform to a custom regexp are considered wrong. One should have as few as possible of them."
         ],
         "scale": [10,5,3,0]
+      },
+      {
+        "name": "Programming languages",
+        "mnemo": "SC_PROGS_VOL",
+        "desc": [
+            "Number of programming languages detected in the code."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Authors",
+        "mnemo": "SC_AUTHORS_VOL",
+        "desc": [
+            "Number of authors detected in the code."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Number of copyright holders",
+        "mnemo": "SC_HOLDERS_VOL",
+        "desc": [
+            "Number of copyright holders detected in the code."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Number of copyrights",
+        "mnemo": "SC_COPYRIGHTS_VOL",
+        "desc": [
+            "Number of copyrights detected by Scancode in the code base."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Total number of files analysed",
+        "mnemo": "SC_FILES_VOL",
+        "desc": [
+            "Total number of files analysed (and documented) by Scancode. Metric is the number of files provided in the list of analysed files returned by Scancode."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Automatically generated files",
+        "mnemo": "SC_GENERATED_VOL",
+        "desc": [
+            "Number of files tagged as automatically generated, as detected by Scancode."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Special files",
+        "mnemo": "SC_SPECIAL_FILES",
+        "desc": [
+            "Number of legal, license, readmes, manifests, copyright and other files for key, top-level files.",
+            "Key files are top- level codebase files such as COPYING, README and package manifests as reported by the --classify option 'is_legal', 'is_readme', 'is_manifest' and 'is_top_level' flags."
+        ],
+          "scale": [0,0,0,1]
       }
     ]
   }

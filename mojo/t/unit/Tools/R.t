@@ -38,62 +38,48 @@ ok(grep(/^OK: Rscript exec found in PATH/, @{$log}), "Rscript bin is in path")
   or diag explain $log;
 
 # Create output dir for test.project
-make_path('projects/test.project/output/');
+make_path('projects/modeling.sirius/output/');
 
-# Knit documents from the Hudson plugin
-note("Executing Hudson Rmd file.");
-copy "t/resources/test.project_hudson_builds.csv", "lib/Alambic/Plugins/Hudson/"
-  or die "Cannot copy project_hudson_builds.csv.";
-copy "t/resources/test.project_hudson_jobs.csv", "lib/Alambic/Plugins/Hudson/"
-  or die "Cannot copy project_hudson_jobs.csv.";
-copy "t/resources/test.project_hudson_main.csv", "lib/Alambic/Plugins/Hudson/"
-  or die "Cannot copy project_hudson_main.csv.";
-copy "t/resources/test.project_hudson_metrics.csv",
-  "lib/Alambic/Plugins/Hudson/"
-  or die "Cannot copy project_hudson_metrics.csv.";
-$log = $tool->knit_rmarkdown_inc('Hudson', 'test.project', 'hudson.Rmd');
+# Knit documents from the Git plugin
+note("Executing Git Rmd file.");
+copy "t/resources/modeling.sirius_metrics.csv", "projects/modeling.sirius/output/"
+  or die "Cannot copy modeling.sirius_metrics.csv.";
+copy "t/resources/modeling.sirius_git_commits.csv", "projects/modeling.sirius/output/"
+  or die "Cannot copy modeling.sirius_git_commits.csv.";
+$log = $tool->knit_rmarkdown_inc('Git', 'modeling.sirius', 'git_scm.Rmd');
 ok(grep(/^\[Tools::R\] Exec \[Rscript/, @{$log}), "Rscript is called in log.")
   or diag explain $log;
-ok(-e 'projects/test.project/output/test.project_hudson.inc',
-  "test.project_hudson.inc file is generated.")
+ok(-e 'projects/modeling.sirius/output/modeling.sirius_git_scm.inc',
+  "modeling.sirius_git_scm.inc file is generated.")
   or diag explain $log;
+unlink "projects/modeling.sirius/output/modeling.sirius_git_scm.inc";
 
-# Knit documents from the Hudson plugin
-note("Executing Hudson Rmd figure file.");
-$log = $tool->knit_rmarkdown_html('Hudson', 'test.project', 'hudson_hist.rmd');
+# Knit documents from the Git plugin
+note("Executing Git Rmd figure files.");
+$log = $tool->knit_rmarkdown_html('Git', 'modeling.sirius', 'git_evol_commits.rmd');
 ok(grep(/^\[Tools::R\] Exec \[Rscript/, @{$log}), "Rscript is called in log.")
   or diag explain $log;
-ok(
-  -e 'projects/test.project/output/test.project_hudson_hist.html',
-  "test.project_hudson_hist.html file is generated."
-) or diag explain $log;
+ok(-e 'projects/modeling.sirius/output/modeling.sirius_git_evol_commits.html',
+  "modeling.sirius_git_evol_commits.html file is generated.") or diag explain $log;
+unlink "projects/modeling.sirius/output/modeling.sirius_git_evol_commits.html";
 
-$log = $tool->knit_rmarkdown_html('Hudson', 'test.project', 'hudson_pie.rmd');
+$log = $tool->knit_rmarkdown_html('Git', 'modeling.sirius', 'git_evol_authors.rmd');
 ok(grep(/^\[Tools::R\] Exec \[Rscript/, @{$log}), "Rscript is called in log.")
   or diag explain $log;
-ok(-e 'projects/test.project/output/test.project_hudson_pie.html',
-  "test.project_hudson_pie.html file is generated.")
+ok(-e 'projects/modeling.sirius/output/modeling.sirius_git_evol_authors.html',
+  "modeling.sirius_git_evol_authors.html file is generated.") or diag explain $log;
+unlink "projects/modeling.sirius/output/modeling.sirius_git_evol_authors.html";
+
+$log = $tool->knit_rmarkdown_html('Git', 'modeling.sirius', 'git_evol_summary.rmd');
+ok(grep(/^\[Tools::R\] Exec \[Rscript/, @{$log}), "Rscript is called in log.")
   or diag explain $log;
+ok(-e 'projects/modeling.sirius/output/modeling.sirius_git_evol_summary.html',
+  "modeling.sirius_git_evol_summary.html file is generated.") or diag explain $log;
+unlink "projects/modeling.sirius/output/modeling.sirius_git_evol_summary.html";
 
 # Remove files that were copied to tests
-unlink "lib/Alambic/Plugins/Hudson/test.project_hudson_builds.csv";
-unlink "lib/Alambic/Plugins/Hudson/test.project_hudson_jobs.csv";
-unlink "lib/Alambic/Plugins/Hudson/test.project_hudson_main.csv";
-unlink "lib/Alambic/Plugins/Hudson/test.project_hudson_metrics.csv";
-
-# Knit documents from the PmdAnalysis plugin
-note("Executing PMD Analysis R figure file.");
-copy "t/resources/test.project_pmd_analysis_files.csv",
-  "lib/Alambic/Plugins/PmdAnalysis/"
-  or die "Cannot copy project_pmd_analysis_files.csv.";
-$log = $tool->knit_rmarkdown_images('PmdAnalysis', 'test.project',
-  'pmd_analysis_files_ncc1.r', ["pmd_analysis_files_ncc1.svg"]);
-ok(grep(/^\[Tools::R\] Exec \[Rscript/, @{$log}), "Rscript is called in log.")
-  or diag explain $log;
-ok(-e 'projects/test.project/output/test.project_pmd_analysis_files_ncc1.svg',
-  "pmd_analysis_files_ncc1.svg file is generated.")
-  or diag explain $log;
-unlink "lib/Alambic/Plugins/PmdAnalysis/test.project_pmd_analysis_files.csv";
+unlink "projects/modeling.sirius/output/modeling.sirius_metrics.csv";
+unlink "projects/modeling.sirius/output/modeling.sirius_git_commits.csv";
 
 
 done_testing();

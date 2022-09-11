@@ -22,10 +22,10 @@ require(xtable)
 
 opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
 
-project.id <- "modeling.sirius"
-#   project.id <- "modeling.gendoc"
+#project.id <- "modeling.sirius"
+#project.id <- "modeling.gendoc"
 plugin.id <- "Scancode"
-file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_metrics.csv", sep="")
+file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_scancode.csv", sep="")
 file.specials <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_special_files.csv", sep="")
 file.authors <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_authors.csv", sep="")
 file.copyrights <- paste("../../../../projects/", project.id, "/output/", project.id, "_scancode_copyrights.csv", sep="")
@@ -264,21 +264,31 @@ The visualisations on this page can be exported and easily reused on an external
 
 Pie chart of licences (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/Scancode/scancode_licences.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Pie chart of copyrights (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/Scancode/scancode_copyrights.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Pie chart of authors (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/Scancode/scancode_authors.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Pie chart of holders (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/Scancode/scancode_holders.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 
 Pie chart of programming languages (HTML)
 
+```
     <iframe src="http://server/projects/`r project.id`/Scancode/scancode_programming_languages.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+```
 

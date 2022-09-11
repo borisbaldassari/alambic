@@ -43,6 +43,8 @@ ok(grep(m!GIT_URL!, @{$conf->{'provides_info'}}),
 
 ok(grep(m!import_git.txt!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > import_git.txt");
+ok(grep(m!git_commits.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > git_commits.txt");
 ok(grep(m!metrics_git.json!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > metrics_git.json");
 ok(grep(m!git_commits_evol.csv!, keys %{$conf->{'provides_data'}}),
@@ -185,6 +187,16 @@ ok(
 ok(
   -e "projects/alambic.test/output/alambic.test_git_summary.html",
   "Check that file alambic.test_git_summary.html exists."
+);
+
+# Checking commits and branches
+ok(
+  -e "projects/alambic.test/output/alambic.test_git_commits.csv",
+  "Check that file alambic.test_git_commits.csv exists."
+);
+ok(
+  -e "projects/alambic.test/output/alambic.test_git_branches.csv",
+  "Check that file alambic.test_git_branches.csv exists."
 );
 
 done_testing();

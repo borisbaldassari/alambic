@@ -20,7 +20,7 @@ output: html_document
 
 #project.id <- 'modeling.sirius'
 plugin.id <- 'Git'
-file.metrics = paste("", project.id, "_git.csv", sep="")
+file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_git.csv", sep="")
 
 metrics <- read.csv(file=file.metrics, header=T)
 ```

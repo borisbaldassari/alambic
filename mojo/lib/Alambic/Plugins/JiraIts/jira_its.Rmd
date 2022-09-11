@@ -178,15 +178,21 @@ The visualisations on this page can be exported and easily reused on an external
 
 Plot of main evolution metrics of the configuration management system
 
+```
     <iframe src="http://server/projects/`r project.id`/JiraIts/jira_evol_summary.html" frameborder="0" style="width: 100%; height: 720px"></iframe>
+```
 
 Evolution of authors and committers
 
+```
     <iframe src="http://server/projects/`r project.id`/JiraIts/jira_evol_authors.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+```
 
 Evolution of commits
 
+```
     <iframe src="http://server/projects/`r project.id`/JiraIts/jira_evol_commits.html" frameborder="0" style="width: 100%; height: 300px"></iframe>
+```
 
 The visualisations used in this document rely on a number of flat CSV and JSON data files. You can download and play with them if you want to thereafter:
 

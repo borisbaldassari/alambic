@@ -29,15 +29,11 @@ my %conf = (
   "name"    => "Git Tool",
   "desc"    => "Provides Git commands and features.",
   "ability" => [
-
-#   "install",
     "methods",
-
-#   "project"
   ],
   "type"   => "tool",
   "params" => {
-    "path_git" => "The absolute path to the git binary.",
+    "path_git" => "The full path to the git binary, or simply 'git' if it is in the path.",
     "proxy"    => "The URL of a proxy, if any.",
   },
   "provides_methods" => {
@@ -220,13 +216,30 @@ sub git_log() {
   return \@log;
 }
 
+# Returns an array of branches. It assumes the repository
+# already exists (fails otherwise).
+sub git_branches() {
+  my ($self) = @_;
+
+  my @log = $git->run('branch', '--all');
+
+  my @branches;
+  for my $line (@log) { 
+    if ($line =~ /^\s+remotes\/origin\/(\S+)\s?.*$/) {
+        push(@branches, $1); 
+    }
+  }
+
+  return \@branches;
+}
+
 # Returns an array of commits. It assumes the repository
 # already exists (fails otherwise).
 sub git_commits() {
   my ($self) = @_;
 
   my @log = $git->run(
-    ('log', '--format=%H %at %s%n author [%aE]%n committer [%cE]', '--stat'));
+    ('log', '--all', '--format=%H %at %s%n author [%aE]%n committer [%cE]%nbranch=%D', '--stat'));
   my $log_ = _parse_git_log(@log);
 
   return $log_;
@@ -240,6 +253,7 @@ sub _parse_git_log {
 
   my @commits;
   my %commit;
+  my $branch;
   my $id;
   for my $line (@lines) {
     if ($line =~ /^(\w+) (\d+) (.*)$/) {
@@ -261,6 +275,12 @@ sub _parse_git_log {
 	} else {
 	    $commit{'cmtr'} = "Unknown";
 	}
+    }
+    elsif ($line =~ /^branch=(.*)$/) {
+	if ($1 !~ m!^$!) {
+        $branch = $1;
+	} 
+    $commit{'br'} = $branch;
     }
     elsif ($line
       =~ /^\s+(\d+) files? changed(, (\d+) insert[^,]+)?(, (\d+) del[^,]+)?.*$/)

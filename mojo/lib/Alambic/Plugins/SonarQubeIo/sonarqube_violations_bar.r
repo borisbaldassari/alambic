@@ -4,7 +4,7 @@ variables <- commandArgs(trailingOnly=TRUE)
 project.id <- variables[1]
 plugin.id <- variables[2]
 
-file.metrics <- paste("", project.id, "_sq_metrics.csv", sep="")
+file.metrics <- paste("../../../../projects/", project.id, "/output/", project.id, "_sq_metrics.csv", sep="")
 sq.metrics <- read.csv(file=file.metrics, header=T)
 
 violations <- as.data.frame(t(sq.metrics[,c('SQ_VIOLATIONS_BLOCKER', 'SQ_VIOLATIONS_CRITICAL', 'SQ_VIOLATIONS_MAJOR', 'SQ_VIOLATIONS_MINOR', 'SQ_VIOLATIONS_INFO')]))

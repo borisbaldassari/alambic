@@ -1,16 +1,15 @@
-title: SonarQube 4.5.x
-navi_name: SonarQube45
+title: SonarQube IO
+navi_name: SonarQubeIo
 
 
-# SonarQube 4.5.x
+# SonarQube IO
 
 # Purpose
 
-This plugin retrieves information from a [SonarQube 4.5.x instance]().
+This plugin retrieves information from the public [SonarQube Cloud instance](https://sonarcloud.io).
 
-Please note that SonarQube changes its API at a unusual high rate. As a consequence different versions of SonarQube may not work with this plugin.
 
-Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/SonarQube.pm.html) in the [perldoc](/perldoc/index.html) section.
+Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/SonarQubeIo.pm.html) in the [perldoc](/perldoc/index.html) section.
 
 -----
 
@@ -19,8 +18,8 @@ Check the [plugin Perl documentation](/perldoc/Alambic/Plugins/SonarQube.pm.html
 * **ID**: SonarQube45
 * **Abilities**:   metrics   info data    figs   viz
 * **Description**:
-  Retrieves information from a SonarQube 4.5.x instance (i.e. metrics and violations), and visualises them.",
-  Check the documentation for this plugin on the project wiki: [http://alambic.io/Plugins/Pre/SonarQube45.html](http://alambic.io/Plugins/Pre/SonarQube45.html).
+  Retrieves information from a SonarQube Cloud instance (i.e. metrics and violations), and visualises them.
+  Check the documentation for this plugin on the project wiki: [http://alambic.io/Plugins/Pre/SonarQubeIo.html](http://alambic.io/Plugins/Pre/SonarQubeIo.html).
 * **Parameters**:
   * `sonar_url` The base URL of the SonarQube 4.5.x instance.
   * `sonar_project` The ID of the project within the SonarQube instance.

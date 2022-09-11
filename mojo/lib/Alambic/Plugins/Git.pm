@@ -26,6 +26,8 @@ use Time::Piece;
 use Time::Seconds;
 use Mojo::JSON qw( decode_json encode_json );
 use Data::Dumper;
+use Text::CSV;
+
 
 # Main configuration hash for the plugin
 my %conf = (
@@ -46,12 +48,17 @@ my %conf = (
   "provides_data"  => {
     "import_git.txt" =>
       "The original git log file as retrieved from git (TXT).",
+    "git_commits.csv"  => "List of all commits, with id, message, time, author, committer, and added, deleted and modifed lines (CSV).",
     "metrics_git.csv"  => "Current metrics for the SCM Git plugin (CSV).",
     "metrics_git.json" => "Current metrics for the SCM Git plugin (JSON).",
     "git_commits_evol.csv" =>
-      "Evolution of number of commits and authors by day (CSV)."
+      "Evolution of number of commits and authors by day (CSV).",
+    "git_branches.csv" =>
+      "List of branches of the Git repository, one by line (CSV).",
+    "info_git.csv" => "All information computed by the Git plugin (CSV).",
   },
   "provides_metrics" => {
+    "SCM_BRANCHES"      => "SCM_BRANCHES",
     "SCM_AUTHORS"       => "SCM_AUTHORS",
     "SCM_AUTHORS_1W"    => "SCM_AUTHORS_1W",
     "SCM_AUTHORS_1M"    => "SCM_AUTHORS_1M",
@@ -127,6 +134,13 @@ sub run_plugin($$) {
   $ret{'info'}{'GIT_URL'} = $git_url;
   push(@{$ret{'log'}}, @{$tmp_ret->{'log'}});
 
+  # Write info csv file to disk.
+  my @info_def = sort @{$conf{'provides_info'}};
+  my $csv_out = join(',', @info_def) . "\n";
+  my @info_values = map { $ret{'info'}{$_} || '' } @info_def; 
+  $csv_out .= join(',', @info_values) . "\n";
+  $repofs->write_output($project_id, "info_git.csv", $csv_out);
+
   return \%ret;
 }
 
@@ -159,7 +173,15 @@ sub _compute_data($$) {
   my @recs;
   my @log;
 
-  # Create a Tools::Git object for all our manipulations
+  # Get branches from the Tools::Git object
+  my @branches = @{$g->git_branches()};
+
+  my $csv_out = join("\n", @branches) . "\n";
+  $metrics{'SCM_BRANCHES'} = scalar(@branches) || 0;
+  $repofs->write_output($project_id, "git_branches.csv", $csv_out);
+  
+  
+  # Get commits from the Tools::Git object
   my @commits = @{$g->git_commits()};
 
   # Time::Piece object. Will be used for the date calculations.
@@ -179,13 +201,25 @@ sub _compute_data($$) {
   push(@log,
     "[Plugins::Git] Parsing git log: " . scalar @commits . " commits.");
 
+  # Prepare the Text::CSV module.
+  my $csv
+    = Text::CSV->new(
+    {sep_char => ',', binary => 1, quote_char => '"', auto_diag => 1}
+    )    # should set binary attribute.
+    or die "Cannot use CSV: " . Text::CSV->error_diag();
+  my @commits_csv_header = ('id', 'branch', 'message', 'time', 'author', 'committer', 'add', 'del', 'mod', );
+  my $commits_csv = join(',', @commits_csv_header) . "\n";
+      
   foreach my $c (@commits) {
     my $date = Time::Piece->strptime($c->{'time'} || 0, "%s");
     my $date_m = $date->strftime("%Y-%m-%d");
     $timeline_c{$date_m}++;
     my $id = $c->{'id'};
+    my %commit_csv;
+    $commit_csv{'id'} = $id;
 
     if (defined($c->{'auth'})) {
+      $commit_csv{'author'} = $c->{'auth'};
       $authors{$c->{'auth'}}++;
       my $event = {
         "type" => "commit",
@@ -198,15 +232,19 @@ sub _compute_data($$) {
     }
     if (defined($c->{'cmtr'})) {
       $committers{$c->{'cmtr'}}++;
+      $commit_csv{'committer'} = $c->{'cmtr'};
     }
     if (defined($c->{'add'})) {
       $mod_lines += $c->{'add'};
+      $commit_csv{'add'} = $c->{'add'};
     }
     if (defined($c->{'del'})) {
       $mod_lines += $c->{'del'};
+      $commit_csv{'del'} = $c->{'del'};
     }
     if (defined($c->{'mod'})) {
       $mod_lines += $c->{'mod'};
+      $commit_csv{'mod'} = $c->{'mod'};
     }
 
     # Is the commit recent (<1W)?
@@ -268,6 +306,15 @@ sub _compute_data($$) {
         $mod_lines_1y += $c->{'mod'};
       }
     }
+
+    $commit_csv{'branch'} = $c->{'br'} || '';
+    $commit_csv{'message'} = $c->{'msg'} || '';
+    $commit_csv{'time'} = $date->cdate() || 0;
+
+    # Build line for commits csv output
+    $csv->combine(map { $commit_csv{$_} || '' } @commits_csv_header);
+    $commits_csv .= $csv->string() . "\n";
+
   }
 
   $metrics{'SCM_AUTHORS'}    = scalar(keys %authors)    || 0;
@@ -297,14 +344,16 @@ sub _compute_data($$) {
   $repofs->write_output($project_id, "metrics_git.json",
     encode_json(\%metrics));
 
+  # Write commits csv file
+  $repofs->write_output($project_id, "git_commits.csv", $commits_csv);
+
   # Write static metrics file
   my @metrics = sort map { $conf{'provides_metrics'}{$_} }
     keys %{$conf{'provides_metrics'}};
-  my $csv_out = join(',', sort @metrics) . "\n";
+  $csv_out = join(',', sort @metrics) . "\n";
   $csv_out .= join(',', map { $metrics{$_} || '' } sort @metrics) . "\n";
-  $repofs->write_plugin('Git', $project_id . "_git.csv", $csv_out);
   $repofs->write_output($project_id, "metrics_git.csv", $csv_out);
-
+  
   # Write commits history json file to disk.
   my %timeline = (%timeline_a, %timeline_c);
   my @timeline
@@ -312,7 +361,6 @@ sub _compute_data($$) {
     sort keys %timeline;
   $csv_out = "date,commits,authors\n";
   $csv_out .= join("\n", @timeline) . "\n";
-  $repofs->write_plugin('Git', $project_id . "_git_commits_evol.csv", $csv_out);
   $repofs->write_output($project_id, "git_commits_evol.csv", $csv_out);
 
   # Now execute the main R script.

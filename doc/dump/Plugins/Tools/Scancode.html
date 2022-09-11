@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+    <title>Scancode Tool - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="../Pre.html">Pre</a>
+        </li>
+        <li class="">
+            <a href="../Post.html">Post</a>
+        </li>
+        <li class="active">
+            <a href="../Tools.html">Tools</a>
+        </li>
+        <li class="">
+            <a href="../Wizards.html">Wizards</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="">
+            <a href="Git.html">Git</a>
+        </li>
+        <li class="">
+            <a href="R.html">R Sessions</a>
+        </li>
+        <li class="active">
+            <a href="Scancode.html">Scancode</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Scancode</h1>
+
+<p>This Tool plugin provides an interface to the <a href="https://github.com/nexB/scancode-toolkit">Scancode</a> finely integrated within Alambic.</p>
+
+<p>A number of functions are made available for common operations like:</p>
+
+<ul>
+<li>Execute a scancode scan with options: copyright, package, licence, info, summary, classify, generated, with output set to CSV.</li>
+<li>Execute a scancode scan with options: copyright, package, licence, info, summary, classify, generated, with output set to JSON.</li>
+</ul>
+
+<p>Check the <a href="http://alambic.io/perldoc/Alambic/Tools/Scancode.pm.html">plugin Perl documentation</a> in the <a href="http://alambic.io/perldoc/index.html">perldoc</a> section.</p>
+
+<p>The Scancode documentation sits at <a href="https://scancode-toolkit.readthedocs.io">scancode-toolkit.readthedocs.io</a>.</p>
+
+<hr />
+
+<h1>Basic information</h1>
+
+<ul>
+<li><strong>ID</strong>: scancode</li>
+<li><strong>Name</strong>: Scancode Tool</li>
+<li><strong>Abilities</strong>: methods.</li>
+<li><strong>Description</strong>: Scancode scans files and fetch information about licences and copyrights..</li>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>path_r</code> The absolute path or command to the <code>scancode</code> executable to use.</li>
+<li><code>path_scancode</code> The path to the directory to be analysed, relative to the root of the repository. Defaults to the root.</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h1>Provides</h1>
+
+<h2>Methods</h2>
+
+<ul>
+<li><code>scancode_scan_csv</code> Function to execute a Scancode and provide a CSV output file.</li>
+<li><code>scancode_scan_json</code> Function to execute a Scancode and provide a CSV output file.</li>
+</ul>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2020
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>
