@@ -168,20 +168,31 @@ SKIP: {
     "Projects list contains Tools CDT.")
     or diag explain $projects_list;
 
-  $alambic->add_project_plugin('tools.cdt', 'EclipsePmi');
+  my $plugin_conf = {
+          'proxy' => '',
+          'project_pmi' => 'tools.cdt'
+        };
+  $alambic->add_project_plugin('tools.cdt', 'EclipsePmi', $plugin_conf);
   note("Run project_plugin from Alambic.");
   $ret = $alambic->run_plugins('tools.cdt');
   ok(scalar(keys %$ret) == 4, "Run plugins.") or diag explain $ret;
 
   note("Run project from Alambic.");
   $ret = $alambic->run_project('tools.cdt');
-
 # 4 is when attributes are not defined (i.e. typically when the script is run by itself)
 # 6 when attributes are defined (i.e. when all tests are run in docker).
   my $k = scalar(keys %$ret);
   ok(($k == 6) || ($k == 4),
     "Adding run_project returns hash with 4 or 6 entries.")
     or diag explain keys %$ret;
+
+  # Test anonymisation
+  open my $fh, "projects/tools.cdt/input/tools.cdt_import_pmi.json";
+  my $content = join '', <$fh>;
+  close $fh;
+  unlike($content, qr'cdt-dev@elipse.org', "Generated file has no clear email address.");
+
+  note("Restore backup with sirius.");
 
   # Restore previous backup and make sure the created project is not there.
   $alambic->restore($sql);

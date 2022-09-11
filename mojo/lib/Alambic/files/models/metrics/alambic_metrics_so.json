@@ -21,6 +21,15 @@
         "scale": [1,2,3,4]
       },
       {
+        "name": "Stack Overflow Answer rate (1Y)",
+        "mnemo": "SO_ANSWER_RATE_1Y",
+        "desc": [
+            "The average number of answers per questions related to the project's tag on Stack Overflow during the last year.",
+            "Having many answers posted about the project indicates a strong interest from the community, and a good support. The list of questions and their answers associated to the tag can be browsed on the <a href=\"https://stackoverflow.com/questions/tagged/java\">Stack Overflow web site</a>."
+        ],
+        "scale": [1,2,4,5]
+      },
+      {
         "name": "Stack Overflow Answer rate (5Y)",
         "mnemo": "SO_ANSWER_RATE_5Y",
         "desc": [

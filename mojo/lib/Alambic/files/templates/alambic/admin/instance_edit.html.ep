@@ -2,8 +2,10 @@
 % my $name = stash( 'name' );
 % my $desc = stash( 'desc' );
 % my $tracking_code = stash( 'gt' );
+% my $v = stash( 'anon' );
+% my $anon = (defined($v) && $v eq 0) ? "No" : "Yes";
 
-            <h1 class="al-h1"><small>Administration</small> Edit instance information</h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Edit instance information</h1>
             <br />
 
 %= include 'alambic/admin/admin_menu', current => '/admin/summary'
@@ -29,6 +31,13 @@
                 <label for="google-tracking" class="control-label col-xs-2">Google tracking code</label>
                 <div class="col-xs-10">
                   <input type="text" class="form-control" name="google-tracking" id="google-tracking" value="<%== $tracking_code || '' %>">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="anon" class="control-label col-xs-2">Anonymise data</label>
+                <div class="col-xs-10">
+                  <input type="text" class="form-control" name="anon" id="anon" value="<%== $anon %>">
                 </div>
               </div>
 

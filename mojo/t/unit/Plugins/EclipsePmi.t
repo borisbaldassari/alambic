@@ -29,56 +29,43 @@ isa_ok($plugin, 'Alambic::Plugins::EclipsePmi');
 note("Checking the plugin parameters. ");
 my $conf = $plugin->get_conf();
 
-ok(grep(m!MLS_DEV_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > MLS_DEV_URL");
-ok(grep(m!MLS_USR_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > MLS_USR_URL");
-ok(grep(m!PMI_MAIN_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_MAIN_URL");
-ok(grep(m!PMI_WIKI_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_WIKI_URL");
-ok(
-  grep(m!PMI_BUGZILLA_CREATE_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_BUGZILLA_CREATE_URL"
-);
-ok(
-  grep(m!PMI_DOWNLOAD_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_DOWNLOAD_URL"
-);
-ok(grep(m!PMI_SCM_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_SCM_URL");
-ok(
-  grep(m!PMI_BUGZILLA_COMPONENT!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_BUGZILLA_COMPONENT"
-);
-ok(grep(m!PMI_CI_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_CI_URL");
-ok(
-  grep(m!PMI_BUGZILLA_PRODUCT!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_BUGZILLA_PRODUCT"
-);
-ok(
-  grep(m!PMI_BUGZILLA_QUERY_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_BUGZILLA_QUERY_URL"
-);
-ok(
-  grep(m!PMI_DOCUMENTATION_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_DOCUMENTATION_URL"
-);
-ok(grep(m!PMI_DESC!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_DESC");
-ok(
-  grep(m!PMI_GETTINGSTARTED_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_GETTINGSTARTED_URL"
-);
-ok(grep(m!PMI_TITLE!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info >PMI_TITLE ");
-ok(grep(m!PMI_ID!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_ID");
-ok(
-  grep(m!PMI_UPDATESITE_URL!, @{$conf->{'provides_info'}}),
-  "Conf has provides_info > PMI_UPDATESITE_URL"
-);
+ok(grep(m!PROJECT_MLS_DEV_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_MLS_DEV_URL");
+ok(grep(m!PROJECT_MLS_USR_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_MLS_USR_URL");
+ok(grep(m!PROJECT_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_URL");
+ok(grep(m!PROJECT_WIKI_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_WIKI_URL");
+ok(grep(m!PROJECT_DOWNLOAD_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_DOWNLOAD_URL");
+ok(grep(m!PROJECT_SCM_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_SCM_URL");
+ok(grep(m!PROJECT_ITS_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_ITS_URL");
+ok(grep(m!PROJECT_CI_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_CI_URL");
+ok(grep(m!PROJECT_DOC_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_DOC_URL");
+ok(grep(m!PROJECT_NAME!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_NAME ");
+ok(grep(m!PROJECT_DESC!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_DESC");
+ok(grep(m!PROJECT_ID!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PROJECT_ID");
+
+ok(grep(m!PMI_BUGZILLA_CREATE_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PMI_BUGZILLA_CREATE_URL");
+ok(grep(m!PMI_BUGZILLA_COMPONENT!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PMI_BUGZILLA_COMPONENT");
+ok(grep(m!PMI_BUGZILLA_PRODUCT!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PMI_BUGZILLA_PRODUCT");
+ok(grep(m!PMI_BUGZILLA_QUERY_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PMI_BUGZILLA_QUERY_URL");
+ok(grep(m!PMI_GETTINGSTARTED_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PMI_GETTINGSTARTED_URL");
+ok(grep(m!PMI_UPDATESITE_URL!, @{$conf->{'provides_info'}}),
+  "Conf has provides_info > PMI_UPDATESITE_URL");
 
 ok(grep(m!pmi.json!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > pmi.json");
@@ -87,10 +74,16 @@ ok(grep(m!pmi_checks.json!, keys %{$conf->{'provides_data'}}),
 ok(grep(m!pmi_checks.csv!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > pmi_checks.csv");
 
-ok(grep(m!PMI_ITS_INFO!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > PMI_ITS_INFO");
-ok(grep(m!PMI_SCM_INFO!, keys %{$conf->{'provides_metrics'}}),
-  "Conf has provides_metrics > PMI_SCM_INFO");
+ok(grep(m!PROJECT_ITS_INFO!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > PROJECT_ITS_INFO");
+ok(grep(m!PROJECT_SCM_INFO!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > PROJECT_SCM_INFO");
+ok(grep(m!PROJECT_CI_INFO!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > PROJECT_CI_INFO");
+ok(grep(m!PROJECT_ACCESS_INFO!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > PROJECT_ACCESS_INFO");
+ok(grep(m!PROJECT_REL_VOL!, keys %{$conf->{'provides_metrics'}}),
+  "Conf has provides_metrics > PROJECT_REL_VOL");
 
 ok(grep(m!metrics!, @{$conf->{'ability'}}), "Conf has ability > metrics");
 ok(grep(m!data!,    @{$conf->{'ability'}}), "Conf has ability > data");
@@ -197,17 +190,26 @@ ok(grep(m!pmi_checks!, keys %{$conf->{'provides_viz'}}),
 
 # Execute the plugin
 note("Execute the plugin with tools.cdt project. ");
-my $ret = $plugin->run_plugin("tools.cdt", {'project_pmi' => 'tools.cdt'});
-ok(
-  $ret->{'info'}->{'PMI_ID'} =~ m!tools.cdt$!,
-  "Project from PMI has correct id."
-) or diag explain $ret;
+my $ret = $plugin->run_plugin("tools.cdt", {'project_pmi' => 'tools.cdt', proxy => ''});
+ok($ret->{'info'}->{'PROJECT_ID'} =~ m!tools.cdt$!,
+  "Project has correct id.") or diag explain $ret;
+ok($ret->{'info'}->{'PROJECT_DESC'} =~ m!\S+!,
+  "Project desc is a string.") or diag explain $ret;
+ok($ret->{'info'}->{'PROJECT_DOC_URL'} =~ m!^http://wiki.eclipse.org/index.php/CDT$!,
+  "Project doc url is correct.") or diag explain $ret;
+ok($ret->{'info'}->{'PROJECT_DOWNLOAD_URL'} =~ m!^http://www.eclipse.org/cdt/downloads.php$!,
+  "Project dl url is correct.") or diag explain $ret;
+ok($ret->{'info'}->{'PROJECT_MAIN_URL'} =~ m!^http://www.eclipse.org/cdt$!,
+ "Project has correct main url.") or diag explain $ret;
+ok($ret->{'info'}->{'PROJECT_WIKI_URL'} =~ m!^http://wiki.eclipse.org/index.php/CDT$!,
+  "Project has correct wiki url.") or diag explain $ret;
+
 is($ret->{'info'}{'PMI_BUGZILLA_PRODUCT'}, 'CDT', "Bugzilla product is CDT.")
   or diag explain $ret;
 is(
-  $ret->{'info'}{'PMI_TITLE'},
+  $ret->{'info'}{'PROJECT_NAME'},
   'Eclipse C/C++ Development Tooling (CDT)',
-  "PMI title is correct."
+  "Project name is correct."
 ) or diag explain $ret;
 is(
   $ret->{'log'}[0],
@@ -219,7 +221,7 @@ is(
   '[Plugins::EclipsePmi] Using Eclipse PMI infra at [https://projects.eclipse.org/json/project/tools.cdt].',
   "Checking first line of log."
 ) or diag explain $ret;
-is($ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.")
+is($ret->{'metrics'}{'PROJECT_ITS_INFO'}, 5, "Metric PROJECT_ITS_INFO is 5.")
   or diag explain $ret;
 
 # Check pmi checks

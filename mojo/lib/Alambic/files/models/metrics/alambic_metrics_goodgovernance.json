@@ -1,0 +1,41 @@
+  {
+    "name": "Alambic Metrics for Good Governance",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Dependency check",
+        "mnemo": "OSS_DEP_CHECK",
+        "desc": [
+            "Analysis of dependencies to identify old, vulnerable dependencies, as provided by tools like dependency-check or JFrog/Nexus.",
+            "As an example, projects hosted at the Eclipse Foundation have a rigorous IP cleanliness procedure that makes sure that all dependencies meet defined requirements."
+        ],
+        "scale": [0,0,0,1]
+      },
+      {
+        "name": "Escalation procedure",
+        "mnemo": "OSS_ESCALATE",
+        "desc": [
+            "Is there an easy and visible way for anybody to report toxic behaviour or unfair practices?",
+            "As an example, people willing to report unfair practices or bad behaviour within an Eclipse project can send an email at codeofconduct@eclipse.org."
+        ],
+        "scale": [0,0,0,1]
+      },
+      {
+        "name": "Inclusion initiative",
+        "mnemo": "OSS_INCLUSION",
+        "desc": [
+            "Is there a formal procedure to help people join and benefit from the community, whoever they are?",
+            "As an example"
+        ],
+        "scale": [0,0,0,1]
+      },
+      {
+        "name": "Board transparency",
+        "mnemo": "GOV_BOARD_PUBLIC",
+        "desc": [
+            "Are the minutes of the board publicly available?"
+        ],
+        "scale": [0,0,0,1]
+      }
+    ]
+  }

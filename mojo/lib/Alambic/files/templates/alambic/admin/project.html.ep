@@ -2,7 +2,7 @@
 % my $project_id = stash( 'project_id' );
 % my $runs = stash( 'project_runs' );
 
-            <h1 class="al-h1"><small>Administration</small> Project <%= $project_id %></h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Project <%= $project_id %></h1>
             <br />
 
 % my $msg = flash( 'msg' );
@@ -103,7 +103,7 @@
 		  <tr>
                     <td><%= $plugin_name %></td><td><%= $plugin %></td>
                     <td>
-%   my @args_full = map { "$_: <code>" . $project_plugins->{$plugin}->{$_} . "</code>"; } keys %{$project_plugins->{$plugin}};
+%   my @args_full = map { "$_: <code>" . ( $project_plugins->{$plugin}->{$_} || "Unknown" ) . "</code>"; } keys %{$project_plugins->{$plugin}};
 %   my $args_str = join( '<br />', sort @args_full );
                   <%== $args_str %>
                     </td>

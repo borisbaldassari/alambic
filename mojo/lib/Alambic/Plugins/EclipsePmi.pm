@@ -45,15 +45,25 @@ my %conf = (
   },
   "provides_cdata" => [],
   "provides_info"  => [
-    "PMI_MLS_DEV_URL",         "PMI_MLS_USR_URL",
-    "PMI_MAIN_URL",            "PMI_WIKI_URL",
-    "PMI_BUGZILLA_CREATE_URL", "PMI_DOWNLOAD_URL",
-    "PMI_SCM_URL",             "PMI_BUGZILLA_COMPONENT",
-    "PMI_CI_URL",              "PMI_BUGZILLA_PRODUCT",
-    "PMI_BUGZILLA_QUERY_URL",  "PMI_DOCUMENTATION_URL",
-    "PMI_DESC",                "PMI_GETTINGSTARTED_URL",
-    "PMI_TITLE",               "PMI_ID",
-    "PMI_UPDATESITE_URL",
+      "PROJECT_MLS_DEV_URL",        
+      "PROJECT_MLS_USR_URL",
+      "PROJECT_URL",                 
+      "PROJECT_WIKI_URL",
+      "PROJECT_DOWNLOAD_URL",
+      "PROJECT_SCM_URL",           
+      "PROJECT_ITS_URL",           
+      "PROJECT_CI_URL",             
+      "PROJECT_DOC_URL",
+      "PROJECT_NAME",         
+      "PROJECT_DESC",               
+      "PROJECT_ID",
+
+      "PMI_BUGZILLA_CREATE_URL", 
+      "PMI_BUGZILLA_COMPONENT",
+      "PMI_BUGZILLA_PRODUCT",
+      "PMI_BUGZILLA_QUERY_URL", 
+      "PMI_GETTINGSTARTED_URL",
+      "PMI_UPDATESITE_URL",
   ],
   "provides_data" => {
     "pmi.json" => "The PMI file as returned by the Eclipse repository (JSON).",
@@ -61,11 +71,26 @@ my %conf = (
     "pmi_checks.csv"  => "The list of PMI checks and their results (CSV).",
   },
   "provides_metrics" => {
-    "PMI_ITS_INFO"    => "PMI_ITS_INFO",
-    "PMI_SCM_INFO"    => "PMI_SCM_INFO",
-    "PMI_REL_VOL"     => "PMI_REL_VOL",
-    "PMI_DOC_INFO"    => "PMI_DOC_INFO",
-    "PMI_ACCESS_INFO" => "PMI_ACCESS_INFO"
+    "PROJECT_ITS_INFO"    => "PROJECT_ITS_INFO",
+    "PROJECT_SCM_INFO"    => "PROJECT_SCM_INFO",
+    "PROJECT_MLS_INFO"    => "PROJECT_MLS_INFO",
+    "PROJECT_CI_INFO"    => "PROJECT_CI_INFO",
+    "PROJECT_DOC_INFO"    => "PROJECT_DOC_INFO",
+    "PROJECT_DL_INFO" => "PROJECT_DL_INFO",
+    "PROJECT_GETTINGSTARTED_INFO" => "PROJECT_GETTINGSTARTED_INFO",
+    "PROJECT_ITS_ACCESS"    => "PROJECT_ITS_ACCESS",
+    "PROJECT_SCM_ACCESS"    => "PROJECT_SCM_ACCESS",
+    "PROJECT_MLS_ACCESS"    => "PROJECT_MLS_ACCESS",
+    "PROJECT_CI_ACCESS"    => "PROJECT_CI_ACCESS",
+    "PROJECT_DOC_ACCESS"    => "PROJECT_DOC_ACCESS",
+    "PROJECT_DL_ACCESS" => "PROJECT_DL_ACCESS",
+    "PROJECT_REL_VOL"     => "PROJECT_REL_VOL",
+
+    "OSS_INCLUSION"     => "OSS_INCLUSION",
+    "OSS_ESCALATE"     => "OSS_ESCALATE",
+    "OSS_DEP_CHECK" => "OSS_DEP_CHECK",
+    "DOC_GOV"     => "DOC_GOV",
+    "GOV_BOARD_PUBLIC"     => "GOV_BOARD_PUBLIC",
   },
   "provides_figs" => {},
   "provides_recs" => [
@@ -221,6 +246,28 @@ sub _compute_data($) {
   my $pub_doc_info    = 0;
   my $pub_access_info = 0;
 
+  # Initialise boolean metrics with zeros..
+  $metrics{"PROJECT_DL_ACCESS"} = 0;
+  $metrics{"PROJECT_DOC_ACCESS"} = 0;
+  $metrics{"PROJECT_CI_ACCESS"} = 0;
+  $metrics{"PROJECT_ITS_ACCESS"} = 0;
+  $metrics{"PROJECT_SCM_ACCESS"} = 0;
+  $metrics{"PROJECT_MLS_ACCESS"} = 0;
+  $metrics{"PROJECT_GETTINGSTARTED_INFO"} = 0;
+  $metrics{"PROJECT_DL_INFO"} = 0;
+  $metrics{"PROJECT_CI_INFO"} = 0;
+  $metrics{"PROJECT_SCM_INFO"} = 0;
+  $metrics{"PROJECT_ITS_INFO"} = 0;
+  $metrics{"PROJECT_MLS_INFO"} = 0;
+
+  # At Eclipse, all projects benefit from the forge's
+  # community guidelines and processes. 
+  $metrics{"OSS_INCLUSION"} = 1;
+  $metrics{"OSS_ESCALATE"} = 1;
+  $metrics{"DOC_GOV"} = 1;
+  $metrics{"GOV_BOARD_PUBLIC"} = 1;
+  $metrics{"OSS_DEP_CHECK"} = 1;
+
   push(@log, "[Plugins::EclipsePmi] Starting compute data for [$project_id].");
 
   my $ua = Mojo::UserAgent->new;
@@ -257,9 +304,9 @@ sub _compute_data($) {
     or push(@log, "ERROR: Could not decode json: \n$json");
 
   # Retrieve basic information about the project
-  $info{"PMI_TITLE"} = $raw_project->{"title"};
-  $info{"PMI_DESC"}  = $raw_project->{"description"}->[0]->{"safe_value"};
-  $info{"PMI_ID"}    = $raw_project->{"id"}->[0]->{"value"};
+  $info{"PROJECT_NAME"} = $raw_project->{"title"};
+  $info{"PROJECT_DESC"}  = $raw_project->{"description"}->[0]->{"safe_value"};
+  $info{"PROJECT_ID"}    = $raw_project->{"id"}->[0]->{"value"};
 
   # Retrieve information about Bugzilla
   my $pub_its_info = 0;
@@ -351,7 +398,7 @@ sub _compute_data($) {
       );
     }
   }
-  $metrics{"PMI_ITS_INFO"} = $pub_its_info;
+  $metrics{"PROJECT_ITS_INFO"} = $pub_its_info;
 
   my $ret_check;
   $ret_check->{'pmi'}         = $raw_project;
@@ -396,9 +443,9 @@ sub _compute_data($) {
     = 'Checks if the URL can be fetched using a simple get query.';
   my $url;
   if (exists($raw_project->{'website_url'}->[0]->{'url'})) {
-    $info{"PMI_MAIN_URL"} = $raw_project->{'website_url'}->[0]->{'url'};
-    $check->{'value'} = $info{"PMI_MAIN_URL"};
-    my $results = &_check_url($ua, $info{"PMI_MAIN_URL"}, 'Website');
+    $info{"PROJECT_MAIN_URL"} = $raw_project->{'website_url'}->[0]->{'url'};
+    $check->{'value'} = $info{"PROJECT_MAIN_URL"};
+    my $results = &_check_url($ua, $info{"PROJECT_MAIN_URL"}, 'Website');
     push(@{$check->{'results'}}, $results);
     if ($results !~ /^OK/) {
       push(
@@ -437,8 +484,8 @@ sub _compute_data($) {
     = "Sends a get request to the project wiki URL and looks at the headers in the response (200, 404..).";
   if (exists($raw_project->{'wiki_url'}->[0]->{'url'})) {
     my $url = $raw_project->{'wiki_url'}->[0]->{'url'};
-    $info{"PMI_WIKI_URL"} = $url;
-    $check->{'value'} = $info{"PMI_WIKI_URL"};
+    $info{"PROJECT_WIKI_URL"} = $url;
+    $check->{'value'} = $info{"PROJECT_WIKI_URL"};
     my $results = &_check_url($ua, $url, 'Wiki');
     push(@{$check->{'results'}}, $results);
     if ($results !~ /^OK/) {
@@ -514,7 +561,8 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the URL can be fetched using a simple get query.';
   if (exists($raw_project->{'download_url'}->[0]->{'url'})) {
-    $info{"PMI_DOWNLOAD_URL"} = $raw_project->{'download_url'}->[0]->{'url'};
+    $metrics{"PROJECT_DL_INFO"} ++;
+    $info{"PROJECT_DOWNLOAD_URL"} = $raw_project->{'download_url'}->[0]->{'url'};
     $url                      = $raw_project->{'download_url'}->[0]->{'url'};
     $check->{'value'}         = $url;
     push(@{$check->{'results'}}, &_check_url($ua, $url, 'Download'));
@@ -528,6 +576,8 @@ sub _compute_data($) {
             "The download URL [$url] cannot be retrieved in the PMI. People need it to download, use, and contribute to the project and should be correctly filled."
         }
       );
+    } else {
+      $metrics{"PROJECT_DL_ACCESS"}++;
     }
   }
   else {
@@ -555,7 +605,7 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the URL can be fetched using a simple get query.';
   if (exists($raw_project->{'gettingstarted_url'}->[0]->{'url'})) {
-    $info{"PMI_GETTINGSTARTED_URL"}
+    $info{"PROJECT_GETTINGSTARTED_URL"}
       = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
     $url = $raw_project->{'gettingstarted_url'}->[0]->{'url'};
     $check->{'value'} = $url;
@@ -571,6 +621,7 @@ sub _compute_data($) {
         }
       );
     }
+    $metrics{"PROJECT_GETTINGSTARTED_INFO"} = 1;
   }
   else {
     push(
@@ -610,7 +661,7 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the URL can be fetched using a simple get query.';
   if (exists($raw_project->{'documentation_url'}->[0]->{'url'})) {
-    $info{"PMI_DOCUMENTATION_URL"}
+    $info{"PROJECT_DOC_URL"}
       = $raw_project->{'documentation_url'}->[0]->{'url'};
     $url = $raw_project->{'documentation_url'}->[0]->{'url'};
     $check->{'value'} = $url;
@@ -625,6 +676,8 @@ sub _compute_data($) {
             "The documentation URL [$url] cannot be retrieved in the PMI. It helps people use, and contribute to, the project and should be correctly filled."
         }
       );
+    } else {
+      $metrics{"PROJECT_DOC_ACCESS"} = 1;
     }
   }
   else {
@@ -650,7 +703,7 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the URL can be fetched using a simple get query.';
   if (exists($raw_project->{'plan_url'}->[0]->{'url'})) {
-    $info{"PMI_PLAN_URL"} = $raw_project->{'plan_url'}->[0]->{'url'};
+    $info{"PROJECT_PLAN_URL"} = $raw_project->{'plan_url'}->[0]->{'url'};
     $url                  = $raw_project->{'plan_url'}->[0]->{'url'};
     $check->{'value'}     = $url;
     push(@{$check->{'results'}}, &_check_url($ua, $url, 'Plan'));
@@ -721,7 +774,7 @@ sub _compute_data($) {
   $check->{'desc'}
     = 'Checks if the Dev ML URL can be fetched using a simple get query.';
   if (ref($raw_project->{'dev_list'}) =~ m!HASH!) {
-    $info{"PMI_MLS_DEV_URL"} = $raw_project->{'dev_list'}->{'url'};
+    $info{"PROJECT_MLS_DEV_URL"} = $raw_project->{'dev_list'}->{'url'};
     $url                     = $raw_project->{'dev_list'}->{'url'};
     $check->{'value'}        = $url;
     my $results = &_check_url($ua, $url, 'Dev ML');
@@ -802,7 +855,8 @@ sub _compute_data($) {
     foreach my $ml (@mls) {
       $url = $ml->{'url'};
       my $name = $ml->{'name'};
-      $info{"PMI_MLS_USR_URL"} = $url;
+      $info{"PROJECT_MLS_USR_URL"} = $url;
+      $metrics{"PROJECT_MLS_INFO"}++;
       $check->{'value'} = $url;
       if ($name =~ m!\S+!) {
         push(@{$check->{'results'}}, "OK. Forum [$name] correctly defined.");
@@ -821,6 +875,8 @@ sub _compute_data($) {
               "The user mailing list / forum URL [$url] in the PMI cannot be retrieved. It helps people know where to ask questions if they want to use the product and should be fixed."
           }
         );
+      } else {
+        $metrics{"PROJECT_MLS_ACCESS"} = 1;
       }
     }
   }
@@ -850,7 +906,7 @@ sub _compute_data($) {
       my $name = $ml->{'name'};
       my $path = $ml->{'path'};
       my $type = $ml->{'type'};
-      $info{"PMI_SCM_URL"} = $url;
+      $info{"PROJECT_SCM_URL"} = $url;
       $check->{'value'} = $url;
       if ($path =~ m!.+$!) {
         push(
@@ -878,6 +934,8 @@ sub _compute_data($) {
               'The source repository URL [$url] in the PMI cannot be retrieved. People need it if they want to contribute to the product, and it should be fixed.'
           }
         );
+      } else {
+        $metrics{"PROJECT_SCM_ACCESS"} = 1;
       }
     }
   }
@@ -907,7 +965,7 @@ sub _compute_data($) {
     }
 
   }
-  $metrics{"PMI_SCM_INFO"} = $pub_scm_info;
+  $metrics{"PROJECT_SCM_INFO"} = $pub_scm_info;
 
   # Check update_sites info
   if (exists($raw_project->{'update_sites'}[0])) {
@@ -979,7 +1037,8 @@ sub _compute_data($) {
   if ($proj_ci =~ m!\S+! && $ua->get($proj_ci)) {
     push(@{$check->{'results'}}, "OK. Fetched CI URL.");
     my $url = $proj_ci . '/api/json?depth=1';
-    $info{"PMI_CI_URL"} = $proj_ci;
+    $info{"PROJECT_CI_URL"} = $proj_ci;
+    $metrics{"PROJECT_CI_INFO"}++;
     my $json_str = $ua->get($url)->res->body;
     if ($json_str =~ m!^\s*{!) {
       my $content_tmp = decode_json($json_str);
@@ -990,6 +1049,7 @@ sub _compute_data($) {
           @{$check->{'results'}},
           "OK. CI URL is a Hudson instance. Title is [$name]"
         );
+        $metrics{"PROJECT_CI_ACCESS"}++;
       }
       else {
         push(
@@ -1030,7 +1090,7 @@ sub _compute_data($) {
   $check->{'desc'}    = 'Checks if the releases have been correctly filled.';
   if (exists($raw_project->{'releases'})) {
     my @rels = @{$raw_project->{'releases'}};
-    $metrics{"PMI_REL_VOL"} = scalar @rels;
+    $metrics{"PROJECT_REL_VOL"} = scalar @rels;
 
     if (scalar @rels > 0) {
       foreach my $rel (@rels) {
@@ -1085,8 +1145,8 @@ sub _compute_data($) {
   $ret_check->{'checks'}->{'releases'} = $check;
 
   # Set metrics related to doc and access info
-  $metrics{"PMI_DOC_INFO"}    = $pub_doc_info;
-  $metrics{"PMI_ACCESS_INFO"} = $pub_access_info;
+  $metrics{"PROJECT_DOC_INFO"}    = $pub_doc_info;
+  $metrics{"PROJECT_ACCESS_INFO"} = $pub_access_info;
 
 
   # Write pmi checks json file to disk.

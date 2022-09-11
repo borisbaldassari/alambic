@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   postgres:
     image: postgres:9.5
@@ -9,8 +9,11 @@ services:
     volumes:
     - alambic_db:/var/lib/postgresql/data
   alambic_test:
-    image: bbaldassari/alambic_test
-    command: su - alambic -c "sh /home/alambic/alambic/docker/image_test/alambic_test.sh"
+    build:
+      dockerfile: docker/image_test/Dockerfile
+      context: ./
+    image: bbaldassari/alambic_test:latest
+    command: [ "sh", "/home/alambic/alambic/docker/image_test/alambic_test.sh" ]
     ports:
     - "3000:3000"
     depends_on:

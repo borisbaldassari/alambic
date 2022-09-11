@@ -53,6 +53,7 @@ my %conf = (
   "provides_metrics" => {
     "SO_QUESTIONS_VOL_5Y" => "SO_QUESTIONS_VOL_5Y",
     "SO_ANSWERS_VOL_5Y"   => "SO_ANSWERS_VOL_5Y",
+    "SO_ANSWER_RATE_1Y"   => "SO_ANSWER_RATE_1Y",
     "SO_ANSWER_RATE_5Y"   => "SO_ANSWER_RATE_5Y",
     "SO_VOTES_VOL_5Y"     => "SO_VOTES_VOL_5Y",
     "SO_VIEWS_VOL_5Y"     => "SO_VIEWS_VOL_5Y",
@@ -127,6 +128,31 @@ sub _retrieve_data() {
   my $continue = 50;
   my $page     = 1;
 
+  # Fetch JSON data from SO
+  my $ua = Mojo::UserAgent->new;
+  $ua->max_redirects(10);
+  $ua->inactivity_timeout(60);
+
+  # Configure Proxy
+  if ($proxy_url =~ m!^default!i) {
+   # If 'default', then use detect
+    $ua->proxy->detect;
+    my $proxy_http  = $ua->proxy->http;
+    my $proxy_https = $ua->proxy->https;
+    push(@log,
+      "[Plugins::StackOverflow] Using default proxy [$proxy_http] and [$proxy_https]."
+    );
+  }
+  elsif ($proxy_url =~ m!\S+!) {
+   # If something, then use it
+    $ua->proxy->http($proxy_url)->https($proxy_url);
+    push(@log, "[Plugins::StackOverflow] Using provided proxy [$proxy_url].");
+  }
+  else {
+    # If blank, then use no proxy
+    push(@log, "[Plugins::StackOverflow] No proxy defined [$proxy_url].");
+  }
+
   # Read pages (100 items per page) from the SO API.
   while ($continue) {
     my $url_question
@@ -139,33 +165,6 @@ sub _retrieve_data() {
       . $page;
 
     push(@log, "[Plugins::StackOverflow] Fetching $url_question.");
-
-    # Fetch JSON data from SO
-    my $ua = Mojo::UserAgent->new;
-    $ua->max_redirects(10);
-    $ua->inactivity_timeout(60);
-
-    # Configure Proxy
-    if ($proxy_url =~ m!^default!i) {
-
-      # If 'default', then use detect
-      $ua->proxy->detect;
-      my $proxy_http  = $ua->proxy->http;
-      my $proxy_https = $ua->proxy->https;
-      push(@log,
-        "[Plugins::EclipsePmi] Using default proxy [$proxy_http] and [$proxy_https]."
-      );
-    }
-    elsif ($proxy_url =~ m!\S+!) {
-
-      # If something, then use it
-      $ua->proxy->http($proxy_url)->https($proxy_url);
-      push(@log, "[Plugins::EclipsePmi] Using provided proxy [$proxy_url].");
-    }
-    else {
-      # If blank, then use no proxy
-      push(@log, "[Plugins::EclipsePmi] No proxy defined [$proxy_url].");
-    }
 
     # Get the resource
     $content_json = $ua->get($url_question)->res->body;
@@ -225,14 +224,15 @@ sub _compute_data() {
 
   # Compute dates to limit time range.
   my $date_now = DateTime->now(time_zone => 'local');
-  my $date_before = DateTime->now(time_zone => 'local')->subtract(years => 5);
-  my $date_before_ok = $date_before->strftime("%Y-%m-%d");
+  my $date_1y = DateTime->now(time_zone => 'local')->subtract(years => 1); 
+  my $date_5y = DateTime->now(time_zone => 'local')->subtract(years => 5);
+  my $date_5y_ok = $date_5y->strftime("%Y-%m-%d");
 
   # Read file retrieved from repo and decode json.
   my $content_json = $repofs->read_input($project_id, "import_so.json");
   my $content = decode_json($content_json);
 
-  my ($questions, $answers, $views, $votes) = (0, 0, 0, 0);
+  my ($questions, $questions_1y, $answers, $answers_1y, $views, $votes) = (0, 0, 0, 0, 0, 0);
   my %people;
 
   # Produce a CSV file with all information. Easier to read in R.
@@ -248,6 +248,13 @@ sub _compute_data() {
     my $last_activity_date = $content->{'items'}->{$id}->{'last_activity_date'};
     my $answer_count       = $content->{'items'}->{$id}->{'answer_count'};
     $answers += $answer_count;
+
+    # Manage *_1Y metrics
+    if ( DateTime->from_epoch( epoch => $creation_date) > $date_1y ) {
+      $answers_1y += $answer_count;
+      $questions_1y++;
+    }
+
     my $is_answered = $content->{'items'}->{$id}->{'is_answered'};
     my $title       = $content->{'items'}->{$id}->{'title'};
     $title =~ s!,!!g;
@@ -260,13 +267,16 @@ sub _compute_data() {
       .= "$id,$views_count,$score,$creation_date,$last_activity_date,$answer_count,$is_answered,$title\n";
   }
 
-# Write that to csv in plugins folder (for R treatment) and output (for download).
+  # Write that to csv in plugins folder (for R treatment) and output (for download).
   $repofs->write_plugin('StackOverflow', $project_id . "_so.csv", $csv_out);
   $repofs->write_output($project_id, "so.csv", $csv_out);
 
   # Compute metrics
   $metrics{'SO_QUESTIONS_VOL_5Y'} = $questions;
   $metrics{'SO_ANSWERS_VOL_5Y'}   = $answers;
+  $questions_1y = $questions_1y == 0 ? 1 : $questions_1y;
+  $metrics{'SO_ANSWER_RATE_1Y'}   = sprintf("%.2f", ($answers_1y / $questions_1y));
+  $questions = $questions == 0 ? 1 : $questions;
   $metrics{'SO_ANSWER_RATE_5Y'}   = sprintf("%.2f", ($answers / $questions));
   $metrics{'SO_VOTES_VOL_5Y'}     = $votes;
   $metrics{'SO_VIEWS_VOL_5Y'}     = $views;
@@ -292,7 +302,7 @@ sub _compute_data() {
   my %params = (
     "project.tag" => $so_keyword,
     "date.now"    => $date_now,
-    "date.before" => $date_before_ok,
+    "date.before" => $date_5y_ok,
   );
 
   # Now execute the main R script.

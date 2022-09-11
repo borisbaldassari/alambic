@@ -15,6 +15,8 @@
 package Alambic::Controller::Admin;
 use Mojo::Base 'Mojolicious::Controller';
 
+use Alambic::Model::RepoDB;
+
 use Mojo::JSON qw( encode_json decode_json );
 use Data::Dumper;
 use File::stat;
@@ -36,6 +38,7 @@ sub edit {
     name => $self->app->al->instance_name(),
     desc => $self->app->al->instance_desc(),
     gt   => $self->app->al->get_repo_db()->conf()->{'google_tracking'},
+    anon => $self->app->al->anonymise_data(),
   );
   $self->render(template => 'alambic/admin/instance_edit');
 }
@@ -49,10 +52,15 @@ sub edit_post {
   my $name = $self->param('name');
   my $desc = $self->param('desc');
   my $gt   = $self->param('google-tracking');
+  my $anon   = $self->param('anon');
+
+  $anon = ( defined($anon) && 
+    ($anon eq 0 || $anon =~ m!^no$!i) ) ? 0 : 1;
 
   $self->app->al->get_repo_db()->name($name);
   $self->app->al->get_repo_db()->desc($desc);
   $self->app->al->get_repo_db()->conf('google-tracking', $gt);
+  $self->app->al->get_repo_db()->anonymise_data($anon);
 
   $self->flash(msg => "Instance details have been saved.");
   $self->redirect_to('/admin/summary');
@@ -113,7 +121,63 @@ sub models {
     models           => $models,
   );
 
-  $self->render(template => 'alambic/admin/models');
+  my $type = $self->param('type') || '';
+
+  if ($type =~ m!^m!i) {
+      $self->render(template => 'alambic/admin/models_metrics');
+  } elsif ($type =~ m!^a!i) {
+      $self->render(template => 'alambic/admin/models_attributes');
+  } else {      
+      $self->render(template => 'alambic/admin/models');
+  }
+}
+
+# Show list of metrics in admin.
+sub models_metrics_show {
+  my $self = shift;
+
+  $self->stash(
+      models           => $self->app->al->get_models(),
+      );
+  
+  $self->render(template => 'alambic/admin/models_metrics');
+
+}
+
+# Delete a metric from model.
+sub models_metrics_del {
+  my $self = shift;
+  my $metric_id = $self->param('id');
+
+  my $repodb = $self->app->al->get_repo_db();
+  $repodb->del_metric($metric_id);
+  
+  $self->redirect_to('/admin/models/metrics');
+
+}
+
+# Show list of attributes in admin.
+sub models_attributes_show {
+  my $self = shift;
+
+  $self->stash(
+      models           => $self->app->al->get_models(),
+      );
+  
+  $self->render(template => 'alambic/admin/models_attributes');
+
+}
+
+# Delete an attribute from model.
+sub models_attributes_del {
+  my $self = shift;
+  my $metric_id = $self->param('id');
+
+  my $repodb = $self->app->al->get_repo_db();
+  $repodb->del_metric($metric_id);
+  
+  $self->redirect_to('/admin/models/attributes');
+
 }
 
 # Display list of users for Alambic admin.
@@ -256,7 +320,7 @@ sub models_import {
   else {
     print "[ERROR] Something went wrong: bad type for model import.\n";
   }
-
+  
   $self->app->al->get_models()->init_models(
     $repodb->get_metrics(),
     $repodb->get_attributes(),
@@ -266,6 +330,30 @@ sub models_import {
   my $msg = "File $file has been imported in the $type table.";
   $self->flash(msg => $msg);
   $self->redirect_to('/admin/models');
+}
+
+
+# Models download for Alambic admin.  
+sub models_download {
+  my $self = shift;
+    
+  my $file = $self->param('file');
+  my $type = $self->param('type');
+
+  if ($type =~ m!^metrics$!) {
+      $self->reply->static('../models/metrics/' . $file);
+  }
+  elsif ($type =~ m!^attributes$!) {
+      $self->reply->static('../models/attributes/' . $file);
+  }
+  elsif ($type =~ m!^qm$!) {
+      $self->reply->static('../models/qm/' . $file);
+  }
+  else {
+      print "[ERROR] Something went wrong: bad type for model download.\n";
+      $self->reply->not_found;
+  }
+
 }
 
 # Models display screen for Alambic admin.

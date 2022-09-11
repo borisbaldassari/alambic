@@ -39,6 +39,7 @@ our @EXPORT_OK = qw(
   get_metric
   get_metrics
   set_metric
+  del_metric
   get_attribute
   get_attributes
   set_attribute
@@ -213,7 +214,7 @@ sub name($) {
 }
 
 
-# Get or set the Alambic instance description.
+# Get or set the Alambic instance name.
 sub desc($) {
   my ($self, $desc) = @_;
 
@@ -224,6 +225,24 @@ sub desc($) {
   }
   else {
     my $test = $pg->db->query("SELECT val FROM conf WHERE param='desc';")->hash;
+    $ret = $test->{'val'};
+  }
+
+  return $ret;
+}
+
+
+# Get or set the Alambic instance anonymise_data flag.
+sub anonymise_data($) {
+  my ($self, $anon) = @_;
+
+  my $ret;
+  if (scalar @_ > 1) {
+    $pg->db->query("UPDATE conf SET val=? WHERE param='anon';", ($anon));
+    $ret = $anon;
+  }
+  else {
+    my $test = $pg->db->query("SELECT val FROM conf WHERE param='anon';")->hash;
     $ret = $test->{'val'};
   }
 
@@ -301,7 +320,7 @@ sub get_metric($) {
       = $pg->db->query("SELECT * FROM models_metrics WHERE mnemo=?;", ($mnemo));
   };
 
-  if ($@) {    #print "# In RepoDB::get_metric Exception.\n" . Dumper($@);
+  if ($@) {
   }
 
   # Process one row at a time
@@ -331,6 +350,22 @@ sub set_metric($) {
   my $ret = $pg->db->query($query,
     ($mnemo, $name, $desc, $scale, $mnemo, $name, $desc, $scale));
 
+  return $ret;
+}
+
+
+# Delete a metric definition in the db.
+sub del_metric($) {
+  my $self  = shift;
+  my $mnemo = shift;
+
+  my $query = 'DELETE FROM models_metrics WHERE mnemo = ? ';
+  my $ret = $pg->db->query($query, ($mnemo));
+
+  # Send signal to reload server.
+#  my $ppid = getpid(); print "Reloading $ppid.\n";
+  kill USR2  => $$; #$ppid;
+  
   return $ret;
 }
 
@@ -384,6 +419,22 @@ sub set_attribute($) {
   my $ret
     = $pg->db->query($query, ($mnemo, $name, $desc, $mnemo, $name, $desc));
 
+  return $ret;
+}
+
+
+# Delete a attribute definition in the db.
+sub del_attribute($) {
+  my $self  = shift;
+  my $mnemo = shift;
+
+  my $query = 'DELETE FROM models_attributes WHERE mnemo = ? ';
+  my $ret = $pg->db->query($query, ($mnemo));
+
+  # Send signal to reload server.
+#  my $ppid = getpid(); print "Reloading $ppid.\n";
+  kill USR2  => $$; #$ppid;
+  
   return $ret;
 }
 
@@ -670,8 +721,6 @@ sub add_project_run($$$$$$$) {
 
   if ($@) {
 
-    #print "# In RepoDB::add_project_run projects_info Exception "
-    #. Dumper($@) . "\n";
   }
 
   # Execute insert in db.
@@ -694,8 +743,6 @@ sub add_project_run($$$$$$$) {
 
   if ($@) {
 
-    #print "# In RepoDB::add_project_run projects_runs Exception "
-    #  . Dumper($@) . "\n";
   }
 
   return $id;
@@ -880,6 +927,7 @@ sub _db_init() {
 " . &_db_query_create() . "
 INSERT INTO conf VALUES ('name', 'MyDBNameInit');
 INSERT INTO conf VALUES ('desc', 'MyDBDescInit');
+INSERT INTO conf VALUES ('anon', '1');
 -- 1 down
 TRUNCATE conf, users, projects_conf, projects_runs, 
   projects_info, projects_cdata, models_metrics, 

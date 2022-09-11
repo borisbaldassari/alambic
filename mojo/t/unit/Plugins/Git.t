@@ -45,8 +45,8 @@ ok(grep(m!import_git.txt!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > import_git.txt");
 ok(grep(m!metrics_git.json!, keys %{$conf->{'provides_data'}}),
   "Conf has provides_data > metrics_git.json");
-ok(grep(m!git_commits.csv!, keys %{$conf->{'provides_data'}}),
-  "Conf has provides_data > git_commits.csv");
+ok(grep(m!git_commits_evol.csv!, keys %{$conf->{'provides_data'}}),
+  "Conf has provides_data > git_commits_evol.csv");
 
 ok(grep(m!SCM_AUTHORS!, keys %{$conf->{'provides_metrics'}}),
   "Conf has provides_metrics > SCM_AUTHORS");
@@ -133,8 +133,8 @@ note("Check that files have been created. ");
 ok(-e "projects/alambic.test/input/alambic.test_import_git.txt",
   "Check that file import_git.txt exists.");
 ok(
-  -e "projects/alambic.test/output/alambic.test_git_commits.csv",
-  "Check that file alambic.test_git_commits.csv exists."
+  -e "projects/alambic.test/output/alambic.test_git_commits_evol.csv",
+  "Check that file alambic.test_git_commits_evol.csv exists."
 );
 ok(
   -e "projects/alambic.test/output/alambic.test_git_scm.inc",
@@ -165,8 +165,8 @@ ok(
 
 # Checking *_commits files
 ok(
-  -e "projects/alambic.test/output/alambic.test_git_evol_commits.svg",
-  "Check that file alambic.test_git_evol_commits.svg exists."
+  -e "projects/alambic.test/output/alambic.test_git_evol_commits.png",
+  "Check that file alambic.test_git_evol_commits.png exists."
 );
 ok(
   -e "projects/alambic.test/output/alambic.test_git_evol_commits.svg",

@@ -1,0 +1,326 @@
+---
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+title: "Bugzilla ITS visualisation"
+author:
+- name: "Boris Baldassari"
+  affiliation: Castalia Solutions
+output:
+  html_fragment:
+    toc: false
+    fig_caption: true
+    fig.width: 800
+    self_contained: false
+    lib_dir: libs
+    echo: false
+    dev: svg
+---
+
+```{r init, echo=FALSE, message=FALSE}
+library(knitr)
+library(xts)
+library(reshape2)
+require(xtable)
+
+suppressPackageStartupMessages(library(googleVis))
+options(gvis.plot.tag='chart')
+
+knitr::opts_chunk$set(fig.path = "figures/")
+
+# Plugin needs the following parameters:
+#   * project.id
+#   * bz.project
+#   * bz.url
+
+#project.id <- 'test'
+# project.id <- 'modeling.sirius'
+# bz.project <- 'sisu'
+# bz.url <- 'https://bugs.eclipse.org/bugs'
+
+#bz.urlfull <- paste(bz.url, '/describecomponents.cgi?product=', bz.project, sep="")
+
+plugin.id <- 'Bugzilla'
+file.metrics = paste(
+    "../../../../projects/", project.id, "/output/", 
+    project.id, "_metrics_bugzilla.csv", sep="")
+file.evol = paste(
+  "../../../../projects/", project.id, "/output/", 
+  project.id, "_bugzilla_evol.csv", sep="")
+file.issues = paste(
+  "../../../../projects/", project.id, "/output/", 
+  project.id, "_bugzilla_issues.csv", sep="")
+file.issues.open = paste(
+  "../../../../projects/", project.id, "/output/", 
+  project.id, "_bugzilla_issues_open.csv", sep="")
+file.issues.unassigned.open = paste(
+  "../../../../projects/", project.id, 
+  "/output/", project.id, "_bugzilla_issues_open_unassigned.csv", sep="")
+file.milestones = paste(
+  "../../../../projects/", project.id, "/output/", 
+  project.id, "_bugzilla_milestones.csv", sep="")
+file.components = paste(
+  "../../../../projects/", project.id, "/output/", 
+  project.id, "_bugzilla_components.csv", sep="")
+file.versions = paste("../../../../projects/", project.id, "/output/",
+                      project.id, "_bugzilla_versions.csv", sep="")
+
+metrics <- read.csv(file=file.metrics, header=T)
+evol <- read.csv(file=file.evol, header=T)
+
+issues <- read.csv(file=file.issues, header=T)
+issues.open <- read.csv(file=file.issues.open, header=T)
+issues.unassigned.open <- read.csv(file=file.issues.unassigned.open, header=T)
+issues.xts <- xts(x = issues, order.by = as.POSIXct(issues$last_change_time))
+
+evol <- read.csv(file=file.evol, header=T)
+evol.xts <- xts(x = evol, order.by = as.POSIXct(evol$date))
+evol.monthly <- apply.monthly(x=evol.xts, FUN = nrow)
+
+milestones <- read.csv(file=file.milestones, header=T)
+components <- read.csv(file=file.components, header=T)
+versions <- read.csv(file=file.versions, header=T)
+
+```
+
+## Bugzilla ITS
+
+<br />
+
+<div class="row"><div class="col-sm-7">
+
+This plugin retrieves data about Issues from a [Bugzilla v5+](https://www.bugzilla.org) instance using its [REST API](https://wiki.mozilla.org/Bugzilla:REST_API). Bugzilla provides a complete issues tracking system for software development, used by thousands of OSS and private projects around the world. 
+
+The full list of bugs for this project can be reached at `r bz.url`.
+
+</div><div class="col-sm-4">
+  <div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+  <div class="list-group">
+  <a href="#summary" class="list-group-item">Quick Summary</a>
+  <a href="#evolution_issues" class="list-group-item">Evolution of issues creation</a>
+  <a href="#old_issues" class="list-group-item">Open old issues</a>
+  <a href="#milestones" class="list-group-item">Milestones</a>
+  <a href="#unassigned_issues" class="list-group-item">Open unassigned issues</a>
+  <a href="#components" class="list-group-item">Components</a>
+  <a href="#versions" class="list-group-item">Versions</a>
+  </div>
+  </div>
+</div></div>
+
+### <a name="quick-summary"></a>Quick Summary
+
+```{r summary_intro, eval=T, echo=FALSE, message=FALSE}
+
+
+```
+
+<div class="row"><div class="col-sm-3">
+<span style="font-size:18pt"><span class="fa fa-users"></span> </span>
+</div><div class="col-sm-3">
+<span style="font-size:24pt">``r metrics[['ITS_AUTHORS']]``</span> issue authors
+</div><div class="col-sm-3">From ``r first(issues.xts$creation_time)``
+</div><div class="col-sm-3">To ``r last(issues.xts$last_change_time)``
+</div></div>
+
+<div class="row"><div class="col-sm-3">
+<span style="font-size:18pt"><span class="fa fa-bug"></span> </span>
+</div><div class="col-sm-3">
+<span style="font-size:24pt">``r metrics[['ITS_ISSUES_ALL']]``</span> issues total
+</div><div class="col-sm-3">
+<span style="font-size:24pt">``r metrics[['ITS_OPEN']]``</span> issues open
+</div><div class="col-sm-3">
+<span style="font-size:24pt">``r metrics[['ITS_OPEN_UNASSIGNED']]``</span> issues open unassigned
+</div></div>
+
+There is a total of `r ncol(metrics)` metrics retrieved.
+
+* Number of issues recently submitted: ``r metrics[['ITS_CREATED_1W']]`` last week, ``r metrics[['ITS_CREATED_1M']]`` last month, ``r metrics[['ITS_CREATED_1Y']]`` last year.
+* Total number of authors: ``r metrics[['ITS_AUTHORS']]`` overall, ``r metrics[['ITS_AUTHORS_1W']]`` last week, ``r metrics[['ITS_AUTHORS_1M']]`` last month, ``r metrics[['ITS_AUTHORS_1Y']]`` last year.
+* Number of issues recently updated: ``r metrics[['ITS_UPDATED_1W']]`` last week, ``r metrics[['ITS_UPDATED_1M']]`` last month, ``r metrics[['ITS_UPDATED_1Y']]`` last year.
+
+```{r metrics_table, eval=F, echo=FALSE, message=FALSE, results='asis'}
+t <- lapply(names(metrics), function(x) paste(x, ' <span class="badge">', metrics[[x]], '</span>, ', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+
+-----
+
+
+### <a name="evolution_issues"></a>Evolution of issues creation 
+
+<br />
+<iframe src="/projects/`r project.id`/Bugzilla/bugzilla_evol_summary.html" frameborder="0" style="width: 100%; height: 270px"></iframe>
+
+-----
+
+### <a name="old_issues"></a>Old open issues
+
+```{r open_old_issues, echo=F, message=F}
+date.1y <- Sys.Date() - 365
+old.open.issues <- issues.xts[issues.xts$status == "NEW" & issues.xts$last_change_time < as.character(date.1y),]
+
+```
+
+There are ``r nrow(old.open.issues)`` open issues (with a status NEW) that have not been updated for more than one year. You probably should review them to make sure they're still relevant or if they need some more details or information. A high number of open, dormant issues clutters the lists and general tracking of issues, and decreases the confidence in the tracker and process.
+
+The following table lists the 10 oldest issues that are still open and have not been updated during the last year.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Old issues</div>
+
+<table class="table table-striped">
+  <tr><th>ID</th><th>Summary</th><th>Created on</th><th>Assigned to</th><th>Last update on</th></tr>
+```{r old_open_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(old.open.issues[seq(1,10),], 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', x[[2]], '</td><td>',
+		           x[[12]], '</td><td>', x[[14]], '</td><td>', x[[15]], '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+-----
+
+### <a name="milestones"></a> Milestones
+
+The following plots show the number of issues (opened, closed) on all the milestones of the project that have at least one open task.
+
+<div class="row">
+```{r milestones_donuts, echo=FALSE, message=FALSE, results='asis'}
+#milestones <- milestones[order(milestones$Milestone, decreasing = T),]
+
+for (i in 1:nrow(milestones)) { #[seq(1,8),]
+  issues.m <- issues[issues$target_milestone == milestones[i,1],]
+  issues.m.opened <- nrow(issues.m[issues.m$status == 'NEW',])
+  issues.m.closed <- nrow(issues.m[issues.m$status != 'NEW',])
+
+  milestones[i,c('issues.opened')] <- issues.m.opened
+  milestones[i,c('issues.closed')] <- issues.m.closed
+
+  ms <- data.frame(unlist(c('issues_opened', 'issues_closed')), unlist(c(issues.m.opened, issues.m.closed)))
+
+  # We want to display only milestones with open tasks.
+  if(issues.m.opened == 0) { next }
+
+  cat('<div class="col-md-3">')
+  p <- gvisPieChart(ms,
+                  options = list(
+                    title=paste("Issues for milestone ", milestones[i,1], sep=""),
+                    colors="['red', 'green']",
+                    width=350, height=280,
+                    pieHole= 0.4))
+
+  print(p, 'chart')
+  cat('</div>')
+}
+```
+</div>
+
+The complete list of milestones is provided below:
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Milestones</div>
+
+<table class="table table-striped">
+  <tr><th>Name</th><th>Issues total</th><th>Issues opened</th><th>Issues closed</th></tr>
+```{r milestones_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(milestones, 1,
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', trimws(x[[2]], which='both'), '</td><td>',
+		           trimws(x[[3]], which='both'), '</td><td>', trimws(x[[4]], which='both'), '</td></tr>', sep=''))
+t <- paste(t, collapse="")
+cat(t)
+```
+</table>
+</div>
+
+-----
+
+### <a name="unassigned_issues"></a>Open, unassigned issues
+
+``r nrow(issues.unassigned.open)`` issues have an open status and are not yet assigned. Although it heavily depends on the issues workflow and local customs, it is generally considered good practice to assign issues when they are in an open state so as to know who is responsible for the action. Display is limited to 10 issues for readability.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Open, unassigned issues</div>
+
+<table class="table table-striped">
+  <tr><th>ID</th><th>State</th><th>Title</th><th>Due</th><th>Created</th><th>Updated</th><th>Votes (up/down)</th><th>Comments</th></tr>
+```{r pipelines_table, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(head(issues.unassigned.open, 10), 1, 
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', trimws(x[[2]], which='both'), 
+		      '</td><td><a href="', trimws(x[[4]], which='both'), '">', 
+		      trimws(x[[3]], which='both'), '</a></td><td>', trimws(x[[7]], which='both'), 
+		      '</td><td>', trimws(x[[5]], which='both'), '</td><td>', 
+		      trimws(x[[6]], which='both'), '</td><td>', trimws(x[[8]], which='both'), 
+		      ' / ', trimws(x[[9]], which='both'), '</td><td>', 
+			    trimws(x[[10]], which='both'), '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+-----
+
+### <a name="components"></a>Components
+
+This Bugzilla instance defines a list of ``r nrow(components)`` components attached to this product. 
+
+<div class="row"><div class="col-sm-6">
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Components</div>
+<table class="table table-striped">
+  <tr><th>Component</th><th>Bugs</th></tr>
+```{r components_table, echo=FALSE, message=FALSE, results='asis'}
+components.sorted <- components[order(components$Bugs, decreasing = T),]
+t <- apply(components.sorted, 1, 
+		   function(x) paste(' <tr><td>', trimws(x[[1]], which='both'), '</td><td>', trimws(x[[2]], which='both'), '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table></div>
+</div><div class="col-sm-6">
+
+<iframe src="/projects/`r project.id`/Bugzilla/bugzilla_components.html" frameborder="0" style="width: 100%; height: 320px"></iframe>
+
+</div></div>
+
+-----
+
+### <a name="versions"></a>Versions
+
+This Bugzilla instance defines a list of ``r nrow(versions)`` versions attached to this product. 
+
+<div class="row"><div class="col-sm-6">
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> Versions</div>
+<table class="table table-striped">
+  <tr><th>Component</th><th>Bugs</th></tr>
+```{r versions_table, echo=FALSE, message=FALSE, results='asis'}
+versions.sorted <- versions[order(versions$Bugs, decreasing = T),]
+t <- apply(versions.sorted, 1, 
+		   function(x) paste(' <tr><td>', x[[1]], '</td><td>', trimws(x[[2]], which='both'), '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table></div>
+</div><div class="col-sm-6">
+
+<iframe src="/projects/`r project.id`/Bugzilla/bugzilla_versions.html" frameborder="0" style="width: 100%; height: 320px"></iframe>
+
+</div></div>
+
+

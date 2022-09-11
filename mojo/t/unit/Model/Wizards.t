@@ -43,8 +43,9 @@ ok(
   "Get conf all returns EclipsePmi id."
 ) or diag explain $ret;
 is_deeply($ret->{'EclipsePmi'}{'params'},
-  {}, "Get conf all returns EclipsePmi empty params.")
-  or diag explain $ret;
+	  {'proxy_url' => 'The proxy to be used to access remote data, if any.'}, 
+	  "Get conf all returns EclipsePmi params.")
+    or diag explain $ret;
 
 my $wiz = $wizards->get_wizard('EclipsePmi');
 isa_ok($wiz, 'Alambic::Wizards::EclipsePmi');
@@ -56,7 +57,9 @@ ok(
 ) or diag explain $ret;
 ok($ret->{'id'} =~ m!^EclipsePmi!, "Get conf all returns EclipsePmi id.")
   or diag explain $ret;
-is_deeply($ret->{'params'}, {}, "Get conf all returns EclipsePmi empty params.")
+is_deeply($ret->{'params'},
+	  {'proxy_url' => 'The proxy to be used to access remote data, if any.'}, 
+	  "Get conf all returns EclipsePmi params.")
   or diag explain $ret;
 
 $ret = $wiz->run_wizard('modeling.sirius');

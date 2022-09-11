@@ -23,12 +23,12 @@ file.out <- paste( project.id, "_so_plot.svg", sep="")
 file.csv = paste(project.id, '_so.csv', sep="")
 project <- read.csv(file=file.csv, header=TRUE)
 
-binary.colours <- c("#325d88", "#d9534f") # "#325d88" green = #3e9c1a)
+binary.colours <- c("#d9534f", "#325d88") # "#325d88" green = #3e9c1a)
 
 project$c.date <- as.POSIXct(project$creation_date, origin="1970-01-01")
 
 svg(file.out, width=18, height=7)
-ggplot(project, aes(x=c.date, y=answer_count, fill=factor(!is_answered))) +
+ggplot(project, aes(x=c.date, y=answer_count, fill=factor(is_answered))) +
   geom_point(aes(size=score), shape=21, colour='black', alpha=0.5) +
   scale_size(range=c(1,30)) +
   theme(

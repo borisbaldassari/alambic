@@ -27,6 +27,7 @@
                 <blockquote><%== app->al->instance_desc() %></blockquote>
 		<hr />
 		<p>This web site is an instance of <a href="http://alambic.io">Alambic</a>, an <a href="http://www.bitbucket.org/BorisBaldassari/alambic">open-source</a> framework and service for software development data analysis and management. Learn more about the software in the <a href="/about.html">About section</a>.</p>
+		<p>All generated files are by default anonymised using the <a href="https://github.com/borisbaldassari/data-anonymiser">Anonymise</a> utility, so as to keep a fair balance between research usability and privacy protection.</p>
               </div>
             </div>
 
@@ -60,7 +61,7 @@
                 <div class="panel panel-default">
                   <div class="panel-heading"><a href="documentation/main.html"><i class="fa fa-life-ring fa-fw"></i> Documentation</a></div>
 		  <div class="panel-body">
-		    <p>The complete retrieval and analysis process is fully documented on this very web site. More detailed information on Alambic itself and the plugins can be found on the <a href="http://www.bitbucket.org/BorisBaldassari/alambic">project&apos;s wiki</a>.</p>
+		    <p>The complete retrieval and analysis process is fully documented on this very web site. More detailed information on Alambic itself and the plugins can be found on the <a href="https://alambic.io">project&apos;s website</a>.</p>
 		  </div>
                   <div class="list-group">
                     <a href="documentation/data.html" class="list-group-item">Data resources</a>

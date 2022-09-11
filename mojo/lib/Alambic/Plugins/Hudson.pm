@@ -37,7 +37,7 @@ my %conf = (
     "Check the documentation for this plugin on the project web site: <a href=\"http://alambic.io/Plugins/Pre/Hudson.html\">http://alambic.io/Plugins/Pre/Hudson.html</a>."
   ],
   "type"    => "pre",
-  "ability" => ['metrics', 'viz', 'figs', 'recs'],
+  "ability" => ['data', 'metrics', 'viz', 'figs', 'recs'],
   "params"  => {
     "hudson_url" =>
       "The base URL for the Hudson instance. In other words, the URL one would point to to get the main page of the project's Hudson, with the list of jobs.",
@@ -54,10 +54,13 @@ my %conf = (
       "CI_JOBS_FAILED_1W",    # last build is failed for more than 1W
     "CI_JOBS_GREEN_RATIO" => "CI_JOBS_GREEN_RATIO",
   },
-  "provides_data" => {},
+  "provides_data" => {
+    "jenkins_builds.csv" => "The list of CI builds, in CSV format.",
+    "jenkins_jobs.csv" => "The list of CI jobs, in CSV format.",
+  },
   "provides_figs" => {
     'hudson_hist.html' => "History of Hudson builds (HTML)",
-    'hudson_pie.html'  => "Pie of jobs statuses (HTML)",
+    'hudson_pie.html'  => "Pie chart of jobs statuses (HTML)",
   },
   "provides_recs" => ["CI_FAILING_JOBS",],
   "provides_viz"  => {"hudson.html" => "Hudson CI",},

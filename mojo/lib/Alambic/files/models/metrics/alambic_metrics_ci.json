@@ -1,0 +1,57 @@
+  {
+    "name": "Alambic Metrics CI",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Number of jobs",
+        "mnemo": "CI_JOBS",
+        "desc": [
+            "The total number of jobs defined on the CI engine."
+        ]
+      },
+      {
+        "name": "Number of failed jobs one week",
+        "mnemo": "CI_JOBS_FAILED_1W",
+        "desc": [
+            "The number of jobs that failed during last week on the CI engine."
+        ],
+          "scale": [10,5,3,0]
+      },
+      {
+        "name": "Number of green jobs",
+        "mnemo": "CI_JOBS_GREEN",
+        "desc": [
+            "The number of green (successful) jobs on the CI engine.",
+	    "Green (or blue) jobs in CI define successful builds."
+        ],
+        "scale": [0,3,5,10]
+      },
+      {
+        "name": "Number of yellow jobs",
+        "mnemo": "CI_JOBS_YELLOW",
+        "desc": [
+            "The number of yellow (unstable) jobs on the CI engine.",
+	    "Yellow jobs in CI define unstable builds. According to CI's documentation, a build is unstable if it was built successfully and one or more publishers report it unstable. For example if the JUnit publisher is configured and a test fails then the build will be marked unstable."
+        ],
+        "scale": [10,5,3,0]
+      },
+      {
+        "name": "Number of red jobs",
+        "mnemo": "CI_JOBS_RED",
+        "desc": [
+            "The number of red (failed) jobs on the CI engine.",
+	    "Red jobs in CI define failed builds."
+        ],
+        "scale": [10,5,3,0]
+      },
+      {
+        "name": "Ratio of green jobs",
+        "mnemo": "CI_JOBS_GREEN_RATIO",
+        "desc": [
+            "The number of green (successful) jobs on the CI engine, divided by the total number of jobs.",
+	    "Green (or blue) jobs in CI define successful builds."
+        ],
+        "scale": [25,50,75,95]
+      }
+    ]
+  }

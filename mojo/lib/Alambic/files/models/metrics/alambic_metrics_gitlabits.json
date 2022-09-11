@@ -1,0 +1,53 @@
+  {
+    "name": "Alambic Metrics GitLab ITS",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Authors",
+        "mnemo": "ITS_AUTHORS",
+        "desc": [
+            "The total number of people who submitted issues."
+        ]
+      },
+      {
+        "name": "Created issues 1 week",
+        "mnemo": "ITS_CREATED_1W",
+        "desc": [
+            "The number of issues on the project created during last week."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Created issues 1 month",
+        "mnemo": "ITS_CREATED_1M",
+        "desc": [
+            "The number of issues on the project created during last month."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Created issues 1 year",
+        "mnemo": "ITS_CREATED_1Y",
+        "desc": [
+            "The number of issues on the project created during last year."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Total number of issues",
+        "mnemo": "ITS_ISSUES_ALL",
+        "desc": [
+            "The total number of issues submitted on the project."
+        ],
+        "scale": [1,2,3,4]
+      },
+      {
+        "name": "Total number of Actors",
+        "mnemo": "ITS_PEOPLE",
+        "desc": [
+            "The total number of people involved in issues tracking, includes authors (submitters), closers and updaters XXX."
+        ],
+        "scale": [1,2,3,4]
+      }
+    ]
+  }

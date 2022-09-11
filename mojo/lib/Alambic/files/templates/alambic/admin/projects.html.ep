@@ -1,7 +1,7 @@
 % my $projects = app->al->get_projects_list();
 % my @projects = sort { $projects->{$a} cmp $projects->{$b} } keys %$projects;
 
-            <h1 class="al-h1"><small>Administration</small> Projects</h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Projects</h1>
             <br />
 
 % my $msg = flash( 'msg' );
@@ -24,7 +24,7 @@
               </div>
               <div class="col-sm-6">
                 <div class="list-group">
-                  <a class="list-group-item" href="/admin/projects/new" role="button"><i class="fa fa-fw fa-bars"></i> &nbsp; Create empty project</a>
+                  <a class="list-group-item" href="/admin/projects/new" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Create empty project</a>
 % my $wizards = app->al->get_wizards()->get_names_all();
 % foreach my $wiz_id ( sort keys %{$wizards} ) {
                   <a class="list-group-item" href="/admin/projects/new/<%= $wiz_id %>" role="button"><i class="fa fa-fw fa-edit"></i> &nbsp; Create project from <%= $wizards->{$wiz_id} %></a>

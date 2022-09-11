@@ -1,12 +1,12 @@
   {
-    "name": "Alambic Attributes",
+    "name": "Eclipse Quality Attributes",
     "version": "0.1",
     "children": [
       {
         "name": "Eclipse Maturity",
         "mnemo": "QM_QUALITY",
         "desc": [
-            "The overall Maturity of the project.", 
+            "The overall Maturity of the project.",
             "In the context of embedded software, Maturity is usually associated with some kind of reliability (most bugs have been already found) and functionality of code, sustainability of the project (will it still deliver fixes and improvements in a few years), and process predictability. Maturity in the PolarSys context has been further described <a href=\"https://polarsys.org/wiki/MaturityDefinition\">on the wiki</a>, and is actually precisely defined by the decomposition of this quality model."
         ]
       },
@@ -29,6 +29,23 @@
         ]
       },
       {
+        "name": "Product",
+        "mnemo": "QM_PRODUCT",
+        "desc" : [
+            "The maturity of the product itself, from the code perspective.",
+            "Considering the vast amount and diversity of the projects under the Eclipse umbrella, there must be no single definition of quality to fit them all. However, Eclipse has some recommended practices and concerns about product quality. Projects are then expected to extend this foundation. Major concerns identified for Eclipse products quality are linked to the development context of the foundation (open source, very large code base and thousands of contributor worldwide), and its architecture (modular stacks of components). It must be highlighted that product quality is <a href=\"http://wiki.eclipse.org/Eclipse_Quality\">not clearly defined on the public wiki</a>, neither for its definition nor for how it may be assessed. Furthermore, almost all product-related rules (with a few exceptions, like for packages naming) are optional guidelines. .",
+            "Ecosystem requirements have been discussed on the mailing list and during meetings, and have been further described on the <a href=\"https://wiki.polarsys.org/EclipseQualityRequirements#Identified_Requirements_for_Product\">Polarsys wiki</a>."
+        ]
+      },
+      {
+        "name": "Documentation",
+        "mnemo": "QM_DOC",
+        "desc" : [
+            "The maturity of code.",
+            "Good code is vital for maintenance and evolution. It will encourage people to contribute, lower the number of bugs, and make a better product for the end-user as well as for the maintainers."
+        ]
+      },
+      {
         "name": "Activity",
         "mnemo": "QM_ACTIVITY",
         "desc" : [
@@ -40,7 +57,7 @@
         "name": "Diversity",
         "mnemo": "QM_DIVERSITY",
         "desc" : [
-            "The diversity of the project's ecosystem, as measured on the mailing lists and configuration management system.", 
+            "The diversity of the project's ecosystem, as measured on the mailing lists and configuration management system.",
             "If many different actors from different companies are involved in the project, then it improves its sustainability (by eliminating a single point of failure) and adaptability to different situations. Having developers and users with different contexts and perspectives on the project helps widening its scope and provide a more generic support."
         ]
       },
@@ -65,6 +82,20 @@
         "mnemo": "QM_REL_ENG",
         "desc" : [
             "Does the project apply best practices regarding Build and Release management?"
+        ]
+      },
+      {
+        "name": "Maintainability",
+        "mnemo": "QM_MAINTAINABILITY",
+        "desc" : [
+            "The Maintainability of the codebase, as defined in ISO-9126."
+        ]
+      },
+      {
+        "name": "Reliability",
+        "mnemo": "QM_RELIABILITY",
+        "desc" : [
+            "The Reliability of code, as defined in ISO-9126."
         ]
       }
     ]

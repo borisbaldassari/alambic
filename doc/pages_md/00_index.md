@@ -11,7 +11,7 @@ navi_name: Alambic
 
     <br />
 
-    <p>It basically <b>retrieves data from various repositories</b> (code metrics, scm metadata, stack overflow questions, etc.) and <b>makes them available for custom plugins to produce analysis, numbers, graphics, and data sets</b>.</p>
+    <p>It basically <b>retrieves data from various repositories</b> (code metrics, scm metadata, stack overflow questions, etc.) and <b>makes them available for custom plugins to produce analysis, numbers, graphics, and data sets</b>. All generated files are by default anonymised using the <a href="https://github.com/borisbaldassari/data-anonymiser">Anonymise</a> utility, so as to keep a fair balance between research usability and privacy protection.</p>
 
     <p>A <b>flexible plugin system</b> allows to easily add new data sources (e.g. git or svn logs, bugzilla queries), analysis tools (including R scripts), visualisation and reporting (e.g. knitr or plotly graphs). Examples of plugins ready to use include <a href="/Plugins/Pre/PmdAnalysis.html">PMD Results Analysis</a>, <a href="/Plugins/Pre/StackOverflow.html">StackOverflow questions</a> and <a href="/Plugins/Pre/EclipsePmi.html">PMI Checks for Eclipse projects</a>. <b></p>
 
@@ -19,10 +19,12 @@ navi_name: Alambic
 
     <p>Measures are aggregated in a tree-like <b>quality model</b> structure to better organise and understand the information. The <a href="/Documentation/Users/QualityModel.html">Quality Model</a> can be entirely customised, and almost any type of data source can be added through plugins. </p>
     <br />
-    <p><a href="https://g.codefresh.io/repositories/BorisBaldassari/alambic/builds?filter=trigger:build;branch:master;service:589ee0d5a567350100749f20~alambic_test">
-  	  <img alt="Codefresh CI build status" src="https://g.codefresh.io/api/badges/build?repoOwner=BorisBaldassari&repoName=alambic&branch=master&pipelineName=alambic_test&accountName=borisbaldassari&type=cf-1">
+    <p>Alambic Tests status: <a href="http://art.castalia.camp:8080/job/alambic-test">
+  	  <img alt="Jenkins CI build status" src="http://art.castalia.camp:8080/job/alambic-test/job/master/lastBuild/badge/icon?job=alambic-test&build=last">
     </a></p>
-    <p><a href="https://app.codeship.com/projects/189806"><img src="https://app.codeship.com/projects/8f5ae970-a10d-0134-6d00-664a346b6816/status?branch=master" alt="Codeship CI build status" /></a></p>
+    <p>Alambic Docker image status: <a href="http://art.castalia.camp:8080/job/alambic-ci">
+  	  <img alt="Jenkins CI build status" src="http://art.castalia.camp:8080/job/alambic-ci/job/master/lastBuild/badge/icon?job=alambic-ci&build=last">
+    </a></p>
   </div>
   <div class="col-lg-6" style="font-size: 100%">
       <img src="/images/alambic.jpg" align="left" width="100%" style="margin:10px; max-width:600px" alt="alambic" />

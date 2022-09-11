@@ -14,7 +14,7 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
 </head>
 <body>
 <div id="top">
@@ -98,6 +98,21 @@ postgres=# CREATE DATABASE minion_db OWNER alambic;
 CREATE DATABASE
 </code></pre>
 
+<p>Note that on Debian the default PostgreSQL setup (usually in <code>/etc/postgresql/9.6/main/pg_hba.conf</code>) should be modified in order to include an entry for either alambic or all users:</p>
+
+<pre><code># Database administrative login by Unix domain socket
+local   all             postgres                                peer
+local   all             alambic                                 md5
+
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            md5
+</code></pre>
+
+<p>Then restart the PostgreSQL instance: <code>/etc/init.d/postgresql restart</code>.</p>
+
 <hr />
 
 <h1>Initialise the application</h1>
@@ -153,7 +168,7 @@ boris@castalia mojo $ bin/alambic minion worker
 <div id="footer">
     <p id="copyright">
         &copy;
-        2018
+        2020
         Boris Baldassari
     </p>
     <p id="built_with">

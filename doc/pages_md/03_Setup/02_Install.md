@@ -36,6 +36,19 @@ You have to create a Postgresql database for Alambic. Database name is `alambic_
     postgres=# CREATE DATABASE minion_db OWNER alambic;
     CREATE DATABASE
 
+Note that on Debian the default PostgreSQL setup (usually in `/etc/postgresql/9.6/main/pg_hba.conf`) should be modified in order to include an entry for either alambic or all users:
+
+    # Database administrative login by Unix domain socket
+    local   all             postgres                                peer
+    local   all             alambic                                 md5
+
+    # TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+    # "local" is for Unix domain socket connections only
+    # IPv4 local connections:
+    host    all             all             127.0.0.1/32            md5
+
+Then restart the PostgreSQL instance: `/etc/init.d/postgresql restart`.
 
 -----
 

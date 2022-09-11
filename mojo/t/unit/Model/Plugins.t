@@ -27,10 +27,10 @@ my $plugins = Alambic::Model::Plugins->new();
 isa_ok($plugins, 'Alambic::Model::Plugins');
 
 my $list = $plugins->get_names_all();
-my $pv   = 10;
+my $pv   = 15;
 ok(scalar(keys %{$list}) == $pv,
   "get_names_all there is a total of $pv plugins detected.")
-  or explain %$list;
+  or print Dumper(%$list);
 
 $list = $plugins->get_conf_all();
 ok(scalar(keys %{$list}) == $pv, "get_conf_all has $pv entries.")
@@ -38,7 +38,7 @@ ok(scalar(keys %{$list}) == $pv, "get_conf_all has $pv entries.")
 
 # Check plugins types
 $list = $plugins->get_list_plugins_pre();
-$pv   = 8;
+$pv   = 13;
 ok(scalar(@{$list}) == $pv, "get_list_plugins_pre List pre has $pv entries.")
   or explain Dumper @$list;
 
@@ -107,9 +107,9 @@ is($ret->{'info'}{'PMI_BUGZILLA_PRODUCT'}, 'CDT', "Bugzilla product is CDT.")
   or Dumper explain $ret;
 
 is(
-  $ret->{'info'}{'PMI_TITLE'},
+  $ret->{'info'}{'PROJECT_NAME'},
   'Eclipse C/C++ Development Tooling (CDT)',
-  "PMI title is correct."
+  "PMI name is correct."
 ) or Dumper explain $ret;
 
 is(
@@ -124,7 +124,7 @@ is(
   "Checking second line of log: using eclipse pmi infra at..."
 ) or Dumper explain $ret;
 
-is($ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.")
+is($ret->{'metrics'}{'PROJECT_ITS_INFO'}, 5, "Metric PROJECT_ITS_INFO is 5.")
   or Dumper explain $ret;
 
 note("Executing EclipsePmi run_plugin with project_pmi.");
@@ -133,9 +133,9 @@ is($ret->{'info'}{'PMI_BUGZILLA_PRODUCT'}, 'CDT', "Bugzilla product is CDT.")
   or Dumper explain $ret;
 
 is(
-  $ret->{'info'}{'PMI_TITLE'},
+  $ret->{'info'}{'PROJECT_NAME'},
   'Eclipse C/C++ Development Tooling (CDT)',
-  "PMI title is correct."
+  "PMI name is correct."
 ) or Dumper explain $ret;
 
 is(
@@ -150,7 +150,7 @@ is(
   "Checking first line of log."
 ) or Dumper explain $ret;
 
-is($ret->{'metrics'}{'PMI_ITS_INFO'}, 5, "Metric PMI_ITS_INFO is 5.")
+is($ret->{'metrics'}{'PROJECT_ITS_INFO'}, 5, "Metric PROJECT_ITS_INFO is 5.")
   or Dumper explain $ret;
 
 

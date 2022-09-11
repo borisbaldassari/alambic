@@ -75,6 +75,8 @@ sub new {
     $conf->{'env'}{'HTTP_PROXY'}  = $conf->{'params'}{'proxy'};
     $conf->{'env'}{'HTTPS_PROXY'} = $conf->{'params'}{'proxy'};
   }
+  
+  $conf->{'env'}{'LANG'} = "en_GB";
 
   # Create projects input dir if it does not exist
   if (not &_is_a_git_directory($dir)) {
@@ -99,20 +101,6 @@ sub _get_src_path($) {
 
   return "projects/" . $project . "/src";
 }
-
-# sub _url() {
-#   my ($self, $url) = @_;
-#
-#   my $ret;
-#   if (scalar @_ > 1) {
-#     $git_url = $url;
-#   }
-#   else {
-#     $url = $git_url;
-#   }
-#
-#   return $url;
-# }
 
 # Automated setup procedure for the tool.
 sub install() {
@@ -260,11 +248,19 @@ sub _parse_git_log {
       $commit{'time'} = $2;
       $commit{'msg'}  = $3;
     }
-    elsif ($line =~ /^\s+author\s\[([^]]+)\]/) {
-      $commit{'auth'} = $1;
+    elsif ($line =~ /^\s+author\s\[([^]]*)\]/) {
+	if ($1 !~ m!^$!) {
+	    $commit{'auth'} = $1;
+	} else {
+	    $commit{'auth'} = "Unknown";
+	}
     }
-    elsif ($line =~ /^\s+committer \[([^]]+)\]/) {
-      $commit{'cmtr'} = $1;
+    elsif ($line =~ /^\s+committer \[([^]]*)\]/) {
+	if ($1 !~ m!^$!) {
+	    $commit{'cmtr'} = $1;
+	} else {
+	    $commit{'cmtr'} = "Unknown";
+	}
     }
     elsif ($line
       =~ /^\s+(\d+) files? changed(, (\d+) insert[^,]+)?(, (\d+) del[^,]+)?.*$/)
@@ -302,7 +298,7 @@ sub git_pull() {
   }
   else {
     push(@log,
-      "[Tools::Git] Pulling from origin. Pull output: " . @output . ".");
+      "[Tools::Git] Pulling from origin. Pull output: " . $output[0] . ".");
   }
 
   return \@log;

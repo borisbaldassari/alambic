@@ -37,6 +37,9 @@ Check the [plugin Perl documentation](http://alambic.io/perldoc/Alambic/Wizards/
 # Information retrieved
 
 The following information is automatically retrieved from the PMI and used in the project's initialisation:
+
 * Project name and description
 * Git repository URL
 * Hudson repository URL
+
+

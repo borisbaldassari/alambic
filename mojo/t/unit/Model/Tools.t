@@ -26,23 +26,23 @@ my $tools = Alambic::Model::Tools->new();
 isa_ok($tools, 'Alambic::Model::Tools');
 
 my $list = $tools->get_list_all();
-print Dumper($list);
-my $pv = 2;
+my $pv = 3;
 ok(scalar @{$list} == $pv, "Tools list has $pv entries.") or diag explain $list;
 
 ok(grep(/^r_sessions/, @{$list}), "List of tools contains r_sessions.")
   or diag explain $list;
 ok(grep(/^git/, @{$list}), "List of tools contains git.") or diag explain $list;
+ok(grep(/^scancode/, @{$list}), "List of tools contains scancode.") or diag explain $list;
 
 # Test one tool (say, R)
 my $r      = $tools->get_tool('r_sessions');
 my $r_conf = $r->get_conf();
 
 #print Dumper($r_conf);
-ok(grep(/^methods/, @{$r_conf->{'ability'}})) or diag explain $r_conf;
-ok($r_conf->{'name'} =~ m!^R sessions!) or diag explain $r_conf;
-ok($r_conf->{'type'} =~ m!^tool!)       or diag explain $r_conf;
-ok(exists($r_conf->{'provides_methods'}{'knit_rmarkdown_pdf'}))
-  or diag explain $r_conf;
+ok(grep(/^methods/, @{$r_conf->{'ability'}}), "Conf has ability: methods.") or diag explain $r_conf;
+ok($r_conf->{'name'} =~ m!^R sessions!, "Conf has name.") or diag explain $r_conf;
+ok($r_conf->{'type'} =~ m!^tool!, "Conf has type.") or diag explain $r_conf;
+ok(exists($r_conf->{'provides_methods'}{'knit_rmarkdown_pdf'}), 
+	"Conf has provides_methods: rmarkdown_pdf.") or diag explain $r_conf;
 
 done_testing();

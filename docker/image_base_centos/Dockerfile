@@ -12,7 +12,7 @@ RUN yum -y install patch openssh-server passwd wget libcurl-devel passwd perl-CP
 RUN mkdir /var/run/sshd && ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 
 # Install postgresql 9.5 client
-RUN rpm -Uvh https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86_64/pgdg-centos95-9.5-3.noarch.rpm \
+RUN rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
     && yum install -y postgresql95 postgresql95-devel
 
 # Create user alambic, password passpass
@@ -20,8 +20,8 @@ RUN adduser alambic \
     && echo passpass | passwd alambic --stdin
 
 # Install R and all dependencies
-RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm; \
-    yum install -y R;
+RUN yum install -y epel-release \
+    && yum install -y R;
 COPY docker/image_base_centos/alambic_install_r_deps.sh /home/alambic/alambic_install_r_deps.sh
 RUN /bin/bash /home/alambic/alambic_install_r_deps.sh
 

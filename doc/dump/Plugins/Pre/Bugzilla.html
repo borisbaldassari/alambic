@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+<head>
+    <title>Bugzilla - Alambic</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="../..">
+            Alambic
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="../../About.html">About</a>
+        </li>
+        <li class="active">
+            <a href="../../Plugins.html">Plugins</a>
+        </li>
+        <li class="">
+            <a href="../../Setup.html">Setup</a>
+        </li>
+        <li class="">
+            <a href="../../Documentation.html">Documentation</a>
+        </li>
+        <li class="">
+            <a href="../../Development.html">Development</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="../Pre.html">Pre</a>
+        </li>
+        <li class="">
+            <a href="../Post.html">Post</a>
+        </li>
+        <li class="">
+            <a href="../Tools.html">Tools</a>
+        </li>
+        <li class="">
+            <a href="../Wizards.html">Wizards</a>
+        </li>
+    </ul>
+    <ul class="navi" id="subsubnavi">
+        <li class="active">
+            <a href="Bugzilla.html">Bugzilla</a>
+        </li>
+        <li class="">
+            <a href="EclipsePmi.html">EclipsePmi</a>
+        </li>
+        <li class="">
+            <a href="Git.html">Git</a>
+        </li>
+        <li class="">
+            <a href="GitLabIts.html">GitLabIts</a>
+        </li>
+        <li class="">
+            <a href="GitLabProject.html">GitLabProject</a>
+        </li>
+        <li class="">
+            <a href="Hudson.html">Hudson</a>
+        </li>
+        <li class="">
+            <a href="Jira.html">Jira</a>
+        </li>
+        <li class="">
+            <a href="PmdAnalysis.html">PmdAnalysis</a>
+        </li>
+        <li class="">
+            <a href="SonarQube45.html">SonarQube45</a>
+        </li>
+        <li class="">
+            <a href="StackOverflow.html">StackOverflow</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Bugzilla ITS</h1>
+
+<p>This plugin retrieves information from a <a href="https://www.atlassian.com/software/jira">JIRA</a> instance repository and runs a basic analysis on its log. It notably displays graphics about commits and authors.</p>
+
+<p>The list of attributes that can be retrieved from a Bugzilla instance is described in the <a href="http://bugzilla.readthedocs.io/en/latest/api/core/v1/bug.html#search-bugs">Bugzilla REST API documentation</a>.</p>
+
+<p>Check the <a href="/perldoc/Alambic/Plugins/Jira.pm.html">plugin Perl documentation</a> in the <a href="/perldoc/index.html">perldoc</a> section.</p>
+
+<hr />
+
+<h1>Basic information</h1>
+
+<ul>
+<li><strong>ID</strong>: JiraIts</li>
+<li><strong>Abilities</strong>: metrics, info, data, recs, viz, users</li>
+<li><strong>Description</strong>:
+The Jira plugin retrieves issue information from an Atlassian Jira server, using the <a href="https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis">Jira REST API</a>.</li>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code>jira_url</code> The URL of the Jira server, e.g. http://myserver.</li>
+<li><code>jira_user</code> The user for authentication on the Jira server.</li>
+<li><code>jira_passwd</code> The password for authentication on the Jira server.</li>
+<li><code>jira_project</code> The project ID to be requested on the Jira server.</li>
+<li><code>jira_open_states</code> The states names considered to be open, as a coma-separated list.</li>
+<li><code>proxy</code> If a proxy is required to access the remote resource of this plugin, please provide its URL here. A blank field means no proxy, and the <code>default</code> keyword uses the proxy from environment variables, see <a href="https://alambic.io/Documentation/Admin/Projects.html">the online documentation about proxies</a> for more details. Example: <code>https://user:pass@proxy.mycorp:3777</code>.</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h1>Provides</h1>
+
+<h2>Downloads</h2>
+
+<ul>
+<li><code>import_jira.json</code>: The original file of current information, downloaded from the Jira server (JSON).</li>
+<li><code>jira_evol.csv</code>: The evolution of issues created and authors by day (CSV).</li>
+<li><code>jira_issues.csv</code>: The list of issues, with fields 'id, summary, status, assignee, reporter, due_date, created_at, updated_at' (CSV).</li>
+<li><code>jira_issues_late.csv</code>: The list of late issues (i.e. their due_date has past), with fields <code>id,summary,type,status,priority,assignee,reporter,due_date,created_at,updated_at,votes,watches</code> (CSV).</li>
+<li><code>jira_issues_open.csv</code>: The list of open issues, with fields <code>id,summary,type,status,priority,assignee,reporter,due_date,created_at,updated_at,votes,watches</code> (CSV).</li>
+<li><code>jira_issues_open_unassigned.csv</code>: The list of open and unassigned issues, with fields <code>id,summary,type,status,priority,assignee,reporter,due_date,created_at,updated_at,votes,watches</code> (CSV).</li>
+<li><code>metrics_jira.json</code>: The list of metrics computed by the plugin (JSON).</li>
+</ul>
+
+<h2>Figures</h2>
+
+<ul>
+<li><code>jira_summary.html</code>
+HTML summary of Jira issues main metrics (HTML)</li>
+<li><code>jira_evol_summary.html</code>
+Evolution of Jira main metrics (HTML)</li>
+<li><code>jira_evol_authors.html</code>
+Evolution of Jira issues authors (HTML)</li>
+<li><code>jira_evol_created.html</code>
+Evolution of Jira issues creation (HTML)</li>
+</ul>
+
+<h2>Information</h2>
+
+<ul>
+<li>JIRA_URL
+The URL of the project on the Jira server.</li>
+</ul>
+
+<h2>Metrics</h2>
+
+<ul>
+<li>JIRA_VOL,
+Total number of issues for project in Jira.</li>
+<li>JIRA_AUTHORS,
+Total number of identities found as creators of issues.</li>
+<li>JIRA_AUTHORS_1W
+Total number of identities found as creators of issues created during the last week.</li>
+<li>JIRA_AUTHORS_1M
+Total number of identities found as creators of issues created during the last month.</li>
+<li><p>JIRA_AUTHORS_1Y
+Total number of identities found as creators of issues created during the last year.</p></li>
+<li><p>JIRA_CREATED_1W
+Total number of issues created during the last week.</p></li>
+<li>JIRA_CREATED_1M
+Total number of issues created during the last month.</li>
+<li><p>JIRA_CREATED_1Y
+Total number of issues created during the last year.</p></li>
+<li><p>JIRA_UPDATED_1W
+Total number of issues updated during the last week.</p></li>
+<li>JIRA_UPDATED_1M
+Total number of issues updated during the last month.</li>
+<li><p>JIRA_UPDATED_1Y
+Total number of issues updated during the last year.</p></li>
+<li><p>JIRA_OPEN
+Total number of issues currently in an open state (as defined by the list of open states in the plugin parameters).</p></li>
+<li>JIRA_OPEN_PERCENT
+Percentage of issues currently in an open state (as defined by the list of open states in the plugin parameters), compared to the total volume of issues.</li>
+<li>JIRA_LATE
+Number of issues with a due date past the current time.</li>
+<li>JIRA_OPEN_UNASSIGNED
+Number of issues 1. not assigned and 2. in an open state (as defined by the list of open states in the plugin parameters).</li>
+</ul>
+
+<h2>Recommendations</h2>
+
+<ul>
+<li>JIRA_LATE_ISSUES
+Emit a recommendation if there are issues with a due date past the current date.</li>
+</ul>
+
+<h2>Visualisation</h2>
+
+<ul>
+<li>Jira ITS</li>
+</ul>
+
+<hr />
+
+<h1>Screenshot</h1>
+
+<p><img src="/images/jira_its.png" alt="eclipse_git.png" /></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2020
+        Boris Baldassari
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

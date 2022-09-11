@@ -1,7 +1,7 @@
 % my $tools = app->al->get_tools();
 % my $tools_list = $tools->get_list_all();
 
-            <h1 class="al-h1"><small>Administration</small> Tools</h1>
+            <h1 class="al-h1"><small>Administration &gt;</small> Tools</h1>
 	    <br />
 
 % my $msg = flash( 'msg' );

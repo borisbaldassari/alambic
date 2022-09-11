@@ -35,8 +35,8 @@ require('xtable')
 
 # project.id <- 'tools.cdt'
 # project.tag <- 'tools.cdt'
-# date.now <- '2016-03-17T15:38:55'
-#date.before <- '2011-03-17T15:38:55'
+# date.now <- '2020-03-17T15:38:55'
+# date.before <- '2015-03-17T15:38:55'
 
 opts_chunk$set(echo=F, message=F, warning=F, fig.path = paste(project.id, '_', sep=""))
 
@@ -71,9 +71,10 @@ question.last.update <- format(index(last(project.xts.updates)), format="%Y-%m-%
 rm(project.xts.updates)
 ```
 
-<div class="row"><div class="col-lg-6">
-
 ## StackOverflow Questions
+
+<div class="row">
+ <div class="col-lg-6">
 
   <p>This section shows information about SO posts concerning the tag ``r project.tag`` during the last 5 years (i.e.&nbsp;from <code>`r date.before`</code> to <code>`r date.before`</code>). The list of questions for this tag can be browsed on the [Stack Overflow web site](https://stackoverflow.com/questions/tagged/`r project.tag`).</p>
 
@@ -91,11 +92,13 @@ rm(project.xts.updates)
 
   <p>The wordcloud on the right details frequent words used in the question titles. The size and colour of the words depend on their number of appearances in questions. It shows what are the concerns and issues of people when dealing with the project.</p>
 
- </div><div class="col-lg-5">
+ </div>
+ <div class="col-lg-5">
 
- <img src="/projects/`r project.id`/StackOverflow/so_tm.svg" frameborder="0" style="width: 100%; height: 370px" />
+  <img src="/projects/`r project.id`/StackOverflow/so_tm.svg" frameborder="0" style="width: 100%; height: 370px" />
 
-</div></div>
+ </div>
+</div>
 
 <h3>Recent questions waiting for an answer</h3>
 
@@ -109,6 +112,8 @@ questions.recent <- questions.recent[paste("/", as.character(time.2days.ago), se
 questions.recent$link <- paste('<a href="', questions.recent$url, '">', questions.recent$title, '</a>', sep="")
 questions.recent.table <- questions.recent[,c("link", "c.date", "score", "views")]
 names(questions.recent.table) <- c("Question", "Created on", "Score", "Views")
+questions.recent.table$Score <- as.integer(questions.recent.table$Score)
+questions.recent.table$Views <- as.integer(questions.recent.table$Views)
 
 print(
     xtable(as.table(questions.recent.table),

@@ -18,7 +18,7 @@ use strict;
 use warnings;
 
 use Alambic::Model::RepoFS;
-use File::chdir;
+use File::chdir; # Used for $CWD
 use File::Copy;
 
 use Data::Dumper;
@@ -48,7 +48,7 @@ sub new {
 }
 
 
-# Get configuration for this Git plugin instance.
+# Get configuration for this R plugin instance.
 sub get_conf() {
   return \%conf;
 }
@@ -67,7 +67,7 @@ sub version() {
 
   for my $l (@out) {
     if ($l =~ m/^(R version .*)$/) {
-      return $1;
+      return $l;
     }
     else {
       return "R version not found.";
@@ -149,8 +149,6 @@ sub knit_rmarkdown_inc($$$$) {
     $r_cmd .= "project.id <- '${project_id}'; plugin.id <- '$plugin_id'; ";
     foreach my $key (keys %{$params}) {
       $r_cmd .= $key . " <- '" . ($params->{$key} || '') . "'; ";
-
-#      $r_cmd .= $key . " <- '" . $params->{$key} . "'; ";
     }
     $r_cmd
       .= "rmarkdown::render('${r_in}', output_format='html_fragment', output_file='$r_md_out')\"";
@@ -235,7 +233,7 @@ sub knit_rmarkdown_pdf($$$$) {
     foreach my $key (keys %{$params}) {
       $r_cmd .= $key . " <- '" . ($params->{$key} || '') . "'; ";
     }
-    $r_cmd .= "rmarkdown::render('${r_md}', output_file='$r_md_out')\"";
+    $r_cmd .= "rmarkdown::render('${r_md}', output_file='$r_md_out', output_format='pdf_document')\"";
 
     push(@log, "[Tools::R] Exec [$r_cmd].");
     my @out = `$r_cmd 2>&1`;
@@ -432,7 +430,7 @@ Build a new R tool object.
 
     my $conf = $r->get_conf();
 
-Get configuration for this Git plugin instance.
+Get configuration for this R plugin instance.
 
 =head2 C<version()>
 

@@ -1,0 +1,188 @@
+---
+#########################################################
+#
+# Copyright (c) 2015-2017 Castalia Solutions and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#   Boris Baldassari - Castalia Solutions
+#
+#########################################################
+
+title: "Jenkins visualisation"
+author:
+- name: "Boris Baldassari"
+  affiliation: Castalia Solutions
+output:
+  html_fragment:
+    toc: false
+    fig_caption: true
+    self_contained: false
+    lib_dir: libs
+    echo: false
+    dev: svg
+---
+
+```{r init, echo=FALSE, message=FALSE}
+
+#project.id <- 'modeling.sirius'
+plugin.id <- 'Jenkins'
+file.main = paste("../../../../projects/", project.id, "/output/", project.id, "_jenkins_main.csv", sep="")
+file.metrics = paste("../../../../projects/", project.id, "/output/", project.id, "_metrics_jenkins.csv", sep="")
+file.jobs = paste("../../../../projects/", project.id, "/output/", project.id, "_jenkins_jobs.csv", sep="")
+file.builds = paste("../../../../projects/", project.id, "/output/", project.id, "_jenkins_builds.csv", sep="")
+
+library(knitr)
+library(xts)
+library(reshape2)
+
+knitr::opts_chunk$set(fig.path = paste( 'figures/', plugin.id, '/', project.id, '/', sep=""))
+#opts_knit$set(progress = TRUE, verbose = TRUE, self.contained=T)
+
+require(ggplot2)
+require(xtable)
+
+main <- read.csv(file=file.main, header=T)
+metrics <- read.csv(file=file.metrics, header=T)
+jobs <- read.csv(file=file.jobs, header=T)
+builds <- read.csv(file=file.builds, header=T)
+jobs$last_build_duration <- round(jobs$last_build_duration / 1000)
+jobs$last_successful_build_duration <- round(jobs$last_successful_build_duration / 1000)
+jobs$last_failed_build_duration <- round(jobs$last_failed_build_duration / 1000)
+jobs$last_build_date <- as.POSIXct(jobs$last_build_time / 1000, origin="1970-01-01")
+jobs$last_successful_build_date <- as.POSIXct(jobs$last_successful_build_time / 1000, origin="1970-01-01")
+jobs$last_failed_build_date <- as.POSIXct(jobs$last_failed_build_time / 1000, origin="1970-01-01")
+jobs.ok <- jobs[jobs$color == 'green' | jobs$color == 'blue',]
+jobs.unstable <- jobs[jobs$color == 'yellow',]
+jobs.nok <- jobs[jobs$color == 'red',]
+```
+
+<div class="row">
+<div class="col-md-6">
+
+<h2>Jenkins Continuous Integration Engine</h2>
+
+Jenkins instance [``r main$name``] is located at ``r main$url``.
+
+There are ``r metrics$CI_JOBS`` jobs defined on this instance. ``r metrics$CI_JOBS_GREEN`` are green (stable), ``r metrics$CI_JOBS_YELLOW`` are yellow (unstable), ``r metrics$CI_JOBS_RED`` are red (failing).
+
+<h2>Metrics</h2>
+
+The following metrics are available:
+
+<ul>
+  <li>Number of jobs defined on the host (CI_JOBS): ``r metrics[['CI_JOBS']]``.</li>
+  <li>Number of jobs in status failed for more than one week (CI_JOBS_FAILED_1W): ``r metrics[['CI_JOBS_FAILED_1W']]``.</li>
+  <li>Number of jobs in status green (CI_JOBS_GREEN): ``r metrics[['CI_JOBS_GREEN']]``.</li>
+  <li>Number of jobs in status yellow (CI_JOBS_YELLOW): ``r metrics[['CI_JOBS_YELLOW']]``.</li>
+  <li>Number of jobs in status red (CI_JOBS_RED): ``r metrics[['CI_JOBS_RED']]``.</li>
+</ul>
+
+</div>
+<div class="col-md-6">
+  <iframe src="/projects/`r project.id`/Jenkins/jenkins_pie.html" frameborder="0" style="width: 500px; height: 340px"></iframe>
+</div>
+</div>
+
+## Failing Jobs
+
+There are ``r metrics[['CI_JOBS_RED']]`` failing jobs on the instance.
+
+These jobs have not been failing for a long time (less than a week). It should be quite easy to make them succeed again. <b>Fix them</b> as soon as possible.
+
+<ul>
+```{r jobs_failed_young, echo=FALSE, message=FALSE, results='asis'}
+jobs.nok$since <- round(abs(jobs.nok$last_successful_build_date - Sys.time()))
+jobs.nok.long <- jobs.nok[jobs.nok$since < 7 & jobs.nok$last_successful_build_time > 10,c('name', 'since')]
+#print(jobs.nok.long[,c('name', 'since')])
+t <- apply(jobs.nok.long, 1, function(x) paste('<li><code>', x[[1]], '</code> has been failing for <code>', x[[2]], '</code>. </li>', sep=''))
+t <- paste(t, collapse=" ")
+if (nchar(t) < 2) { t <- "<li>No job failing for less than a week!</li>" }
+cat(t)
+```
+</ul>
+
+These jobs have been failing for quite a long time (more than a month). Constantly failing builds are not good for build confidence. <b>They should be disabled</b> if they are not relevant anymore, or if you think they still have some value then fix them.
+
+<ul>
+```{r jobs_failed_old, echo=FALSE, message=FALSE, results='asis'}
+jobs.nok$since <- round(abs(jobs.nok$last_successful_build_date - Sys.time()))
+jobs.nok.long <- jobs.nok[jobs.nok$since > 30,c('name', 'since')]
+#print(jobs.nok.long[,c('name', 'since')])
+t <- apply(jobs.nok.long, 1, function(x) paste('<li><code>', x[[1]], '</code> has been failing for <code>', x[[2]], '</code>. </li>', sep=''))
+t <- paste(t, collapse=" ")
+if (nchar(t) < 2) { t <- "<li>No job failing for more than a week!</li>" }
+cat(t)
+```
+</ul>
+
+List of failing jobs, sorted by last successful build.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Failing jobs</div>
+<table class="table table-striped">
+  <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
+```{r failing_jobs, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(jobs.nok, 1,
+           function(x) paste('<tr><td>',
+                             x[[1]], '</td><td><small>', x[[16]],
+                             '</small></td><td><small>', x[[6]],
+                             ' sec.</small></td><td>', ' ',
+                             x[[14]], ' &#37;</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+## Unstable Jobs
+
+A build is considered unstable if it was built successfully and one or more publishers report it unstable. For example if the JUnit publisher is configured and a test fails then the build will be marked unstable.
+
+One of the purpose of continuous integration is to provide confidence in builds and deliveries, so unstability is not an option. <b>Fix them, or disable the failing publishers</b> if they are not relevant anymore. This list should be generally empty, or at least a temporary, time-limited stage for builds.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  Unstable jobs</div>
+<table class="table table-striped">
+  <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
+```{r jobs_unstable, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(jobs.unstable, 1,
+           function(x) paste('<tr><td>',
+                             x[[1]], '</td><td><small>', x[[16]],
+                             '</small></td><td><small>', x[[6]],
+                             ' sec.</small></td><td>', ' ',
+                             x[[14]], ' &#37;</td></tr>', sep=''))
+#<span class="label" style="background-color: #cc6686"></span>
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+
+## Successful Jobs
+
+These jobs run well, congrats!
+
+Maybe you could check from time to time if this criterion is still relevant: are the builds succeeding because they measure the wrong thing, because the build is outdated and doesn't evolve anymore, or because things are plainly right?
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span>  OK jobs</div>
+<table class="table table-striped">
+  <tr><th>Name</th><th>Last Build</th><th>Last Duration</th><th>Stability</th></tr>
+```{r ok_jobs, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(jobs.ok, 1,
+           function(x) paste('<tr><td>',
+                             x[[1]], '</td><td><small>', x[[16]],
+                             '</small></td><td><small>', x[[6]],
+                             ' sec.</small></td><td>', ' ',
+                             x[[14]], ' &#37;</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div>
+</div>

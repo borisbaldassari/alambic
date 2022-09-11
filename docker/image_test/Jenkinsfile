@@ -1,0 +1,48 @@
+pipeline {  
+
+  agent any
+
+  environment {
+    registry = "bbaldassari/alambic_test"
+    registryCredential = 'bbaldassari-dockerhub'
+    def dockerTag = sh( script: "echo \$(date +%Y%m%d).${BUILD_NUMBER}", returnStdout: true).trim()
+  }
+
+  stages {
+
+    stage('Build image') {
+      steps {
+        script {
+          sh 'docker rmi $registry || echo "No $registry found."'
+          sh 'docker rmi $registry:latest || echo "No $registry:latest found."'
+          dockerImage = docker.build( "$registry:latest", "-f docker/image_test/Dockerfile ." )
+        }
+      }
+    }
+
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push("latest")
+          }
+        }
+      }
+    }
+
+    stage('Run tests') {
+      steps {
+        sh 'docker-compose -f docker-compose.test.yml run alambic_test'
+      }
+    }
+
+    stage('Stop composition') {
+      steps {
+        sh 'docker-compose -f docker-compose.test.yml stop'
+      }
+    }
+
+
+  }
+
+}

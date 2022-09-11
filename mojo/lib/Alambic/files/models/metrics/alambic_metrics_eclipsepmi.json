@@ -1,0 +1,158 @@
+  {
+    "name": "Alambic Metrics PMI",
+    "version": "0.1",
+    "children": [
+      {
+        "name": "Number of releases",
+        "mnemo": "PROJECT_REL_VOL",
+        "desc": [
+            "The number of releases recorded in the PMI.",
+            "Milestones are retrieved from the PMI file and are counted whatever their target release is. Milestones are useful to assess the maturity of the release and improves predictability of the project's output, in terms of quality and time."
+        ],
+          "scale": [1,3,5,10]
+      },
+      {
+        "name": "SCM information",
+        "mnemo": "PROJECT_SCM_INFO",
+        "desc": [
+            "Is the source_repo info correctly filled in the PMI records? ",
+            "The project management infrastructure file holds information about one or more source repositories. This test checks that at least one source repository is defined, and accessible."
+        ],
+          "scale": [0,0,1,2]
+      },
+      {
+        "name": "ITS information",
+        "mnemo": "PROJECT_ITS_INFO",
+        "desc": [
+            "Is the bugzilla info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about one or more bugzilla instances. This test checks that at least one bugzilla instance is defined, with a product identifier, a create_url to enter a new issue, and a query_url to fetch all the issues for the project."
+        ],
+        "scale": [0,0,1,2]
+      },
+      {
+        "name": "MLS information",
+        "mnemo": "PROJECT_MLS_INFO",
+        "desc": [
+            "Is the communication channel for the team info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about the various communication means used by the project. This test checks the number of MLS-related entries defined in the PMI: mailing lists, forums, etc."
+        ],
+          "scale": [0,0,1,2]
+      },
+      {
+        "name": "Docs information",
+        "mnemo": "PROJECT_DOC_INFO",
+        "desc": [
+            "Is the documentation info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "CI information",
+        "mnemo": "PROJECT_CI_INFO",
+        "desc": [
+            "Is the continuous integration info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about the location of CI services. This test checks the number of ci-related entries defined in the PMI."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "DL information",
+        "mnemo": "PROJECT_DL_INFO",
+        "desc": [
+            "Is the access info (downloads, update sites..) correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about how to access binaries of the project. This test checks the number of access-related entries defined in the PMI: download_url, downloads, update_sites."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "SCM access",
+        "mnemo": "PROJECT_SCM_ACCESS",
+        "desc": [
+            "Is the source_repo info correctly filled in the PMI records? ",
+            "The project management infrastructure file holds information about one or more source repositories. This test checks that at least one source repository is defined, and accessible."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "ITS access",
+        "mnemo": "PROJECT_ITS_ACCESS",
+        "desc": [
+            "Is the bugzilla info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about one or more bugzilla instances. This test checks that at least one bugzilla instance is defined, with a product identifier, a create_url to enter a new issue, and a query_url to fetch all the issues for the project."
+        ],
+        "scale": [0,0,0,1]
+      },
+      {
+        "name": "MLS access",
+        "mnemo": "PROJECT_MLS_ACCESS",
+        "desc": [
+            "Is the communication channel for the team info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about the various communication means used by the project. This test checks the number of MLS-related entries defined in the PMI: mailing lists, forums, etc."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Doc access",
+        "mnemo": "PROJECT_DOC_ACCESS",
+        "desc": [
+            "Is the documentation info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "CI access",
+        "mnemo": "PROJECT_CI_ACCESS",
+        "desc": [
+            "Is the continuous integration info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about the location of CI services. This test checks the number of ci-related entries defined in the PMI."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "DL access",
+        "mnemo": "PROJECT_DL_ACCESS",
+        "desc": [
+            "Is the access info (downloads, update sites..) correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about how to access binaries of the project. This test checks the number of access-related entries defined in the PMI: download_url, downloads, update_sites."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Governance documentation",
+        "mnemo": "DOC_GOV",
+        "desc": [
+            "Is there a documentation explaining how decisions are made?"
+        ],
+        "scale": [0,0,0,1]
+      },
+      {
+        "name": "Contributing",
+        "mnemo": "DOC_CONTRIBUTING",
+        "desc": [
+            "Is the documentation info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Getting started",
+        "mnemo": "PROJECT_GETTINGSTARTED_INFO",
+        "desc": [
+            "Is the documentation info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."
+        ],
+          "scale": [0,0,0,1]
+      },
+      {
+        "name": "Readme",
+        "mnemo": "DOC_README",
+        "desc": [
+            "Is the documentation info correctly filled in the PMI records?",
+            "The project management infrastructure file holds information about various documentation and manuals. This test checks the number of doc-related entries defined in the PMI: build_doc, documentation, documentation_url, forums, gettingstarted_url, mailing_lists, website_url, wiki_url."
+        ],
+          "scale": [0,0,0,1]
+      }
+    ]
+  }

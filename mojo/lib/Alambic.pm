@@ -63,7 +63,7 @@ sub startup {
   };
   $self->plugin('mail' => $conf_mail);
 
-  # Load pluginf or Minion admin UI
+  # Load plugin for Minion admin UI
   $self->plugin(
     'Minion::Admin' => {
       return_to => '/admin/summary',
@@ -73,7 +73,6 @@ sub startup {
 
   # Set layout for pages.
   $self->defaults(layout => 'default');
-
 
   # Used to make alambic installable and Build::Module compatible
   $self->plugin('InstallablePaths');
@@ -256,7 +255,13 @@ sub startup {
   $r_admin->get('/users/#uid/del')->to(action => 'users_del');
 
   $r_admin->get('/models')->to(action => 'models');
+#  $r_admin->get('/models')->to(action => 'models');
   $r_admin->get('/models/import')->to(action => 'models_import');
+  $r_admin->get('/models/download')->to(action => 'models_download');
+  $r_admin->get('/models/metrics')->to(action => 'models_metrics_show');
+  $r_admin->get('/models/metrics/del/#id')->to(action => 'models_metrics_del');
+  $r_admin->get('/models/attributes')->to(action => 'models_attributes_show');
+  $r_admin->get('/models/attributes/del/#id')->to(action => 'models_attributes_del');
 
   # TODO remove init? still useful?
   $r_admin->get('/models/init')->to(action => 'models_init');

@@ -18,8 +18,8 @@
 #  * 1 if dependencies not met
 
 
-PB_V=5.26.1
-VERSION=3.2-dev
+PB_V=5.30.3
+VERSION=3.3.4-dev
 LOG=alambic_install.log
 
 IS_MOJO=$(basename `pwd`)
@@ -50,14 +50,14 @@ _check_prerequisite() {
 echo "# Checking system prerequisites."
 echo "# Checking system prerequisites." >> $LOG
 # Not debian: libcurl-devel perl-CPAN libxml2-devel openssl-devel
-CMDS="wget passwd gcc make bzip2 git openssl pandoc"
+CMDS="wget passwd gcc make bzip2 git openssl pandoc" # libexpat1-dev"
 for c in `echo $CMDS | tr ' ' '\n'`; do
     _check_prerequisite $c;
 done
 
 PERL_VERSION=`perl -e "print $^V"`
-echo "# Found Perl $PERL_VERSION"
-echo "# Found Perl $PERL_VERSION" >> $LOG
+echo "  * Checking perl version.. Found Perl $PERL_VERSION"
+echo "  * Checking perl version.. Found Perl $PERL_VERSION" >> $LOG
 
 # Download perlbrew and install it.
 printf "  * Checking if perlbrew is installed..."
@@ -71,7 +71,7 @@ if [ $PB_IS_OK -ne 0 ]; then
     echo "  * Adding perlbrew init procedure to ~/.bashrc and sourcing it."
     echo "  * Adding perlbrew init procedure to ~/.bashrc and sourcing it." >> $LOG
     echo 'source ~/perl5/perlbrew/etc/bashrc' >> ~/.bashrc
-    source ~alambic/.bashrc
+    source ~/.bashrc
 else
     echo " OK."
     echo " OK." >> $LOG
@@ -122,7 +122,8 @@ perlbrew switch perl-$PB_V
 echo "# Installing perl modules.."
 echo "# Installing perl modules.." >> $LOG
 POSTGRES_HOME=/usr/pgsql-9.5
-cpanm Sub::Identify DBI DBD::Pg inc::Module::Install Digest::MD5 Crypt::PBKDF2 Date::Parse DateTime File::chdir File::Basename File::Copy File::Path File::stat List::Util List::MoreUtils Minion Mojolicious Mojo::JSON Mojo::UserAgent Mojo::Pg XML::LibXML Text::CSV Time::localtime Mojolicious::Plugin::Mail Test::More Test::Perl::Critic Net::IDN::Encode IO::Socket::SSL Git::Repository JIRA::REST Mojolicious::Plugin::InstallablePaths Pod::ProjectDocs GitLab::API::v3 Moose HTML::Entities Template >> $LOG
+cpanm Sub::Identify DBI DBD::Pg inc::Module::Install Digest::MD5 Crypt::PBKDF2 Date::Parse DateTime File::chdir File::Basename File::Copy File::Path File::stat List::Util List::MoreUtils Minion Mojolicious Mojo::JSON Mojo::UserAgent Mojo::Pg XML::LibXML Text::CSV Time::localtime Mojolicious::Plugin::Mail Test::More Clone Test::Perl::Critic Net::IDN::Encode IO::Socket::SSL Git::Repository JIRA::REST Mojolicious::Plugin::InstallablePaths Pod::ProjectDocs GitLab::API::v4 Moose HTML::Entities Template Mojolicious::Plugin::Minion::Admin URI::Escape::XS Crypt::PK::RSA >> $LOG
+
 if [ $? -eq 0 ]; then
     echo "# Perl modules installed"
     echo "# Perl modules installed" >> $LOG

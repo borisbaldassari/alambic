@@ -56,6 +56,7 @@ sub new {
   my $in_qm         = shift || [];
   my $in_plugins    = shift || {};
 
+  # We need some processing to compute is_active and plugins.
   &_init_metrics($in_metrics, $in_qm, $in_plugins);
   %attributes = %$in_attributes;
   $model      = $in_qm;
@@ -128,7 +129,7 @@ sub _init_metrics($) {
       my $metric_map = $pi_conf->{'provides_metrics'}{$metric};
       if (exists($metrics{$metric_map})) {
         $metrics_ds{$pi_conf->{'id'}}++;
-        $metrics{$metric_map}{'ds'} = $pi_conf->{'id'};
+        push( @{$metrics{$metric_map}{'ds'}}, $pi_conf->{'id'} );
       }
     }
   }
@@ -226,7 +227,7 @@ sub _populate_qm($$$$$) {
 #     'active' => 'false',
 #     'desc' => [ 'Desc' ],
 # 	'mnemo' => 'METRIC1',
-# 	'ds' => 'EclipseIts',
+# 	'ds' => [ 'EclipseIts' ],
 #       'scale' => [1, 2, 3, 4],
 # 	    'name' => 'Metric 1',
 # 	    'parents' => {
@@ -247,7 +248,7 @@ sub get_metric($) {
 # 	'active' => 'false',
 # 	'desc' => [ 'Desc' ],
 # 	    'mnemo' => 'METRIC1',
-# 	    'ds' => 'EclipseIts',
+# 	    'ds' => [ 'EclipseIts' ],
 # 	    'scale' => [1, 2, 3, 4],
 # 		'name' => 'Metric 1',
 # 		'parents' => {
@@ -393,7 +394,7 @@ Returns information about a single metric. Returns a hash reference:
       'active' => 'false',
       'desc' => [ 'Desc' ],
         'mnemo' => 'METRIC1',
-        'ds' => 'EclipseIts',
+        'ds' => [ 'EclipseIts' ],
         'scale' => [1, 2, 3, 4],
      	'name' => 'Metric 1',
      	'parents' => {
@@ -412,7 +413,7 @@ Returns information about all metrics. Returns a hash reference:
         'active' => 'false',
         'desc' => [ 'Desc' ],
           'mnemo' => 'METRIC1',
-          'ds' => 'EclipseIts',
+          'ds' => [ 'EclipseIts' ],
           'scale' => [1, 2, 3, 4],
        	'name' => 'Metric 1',
        	'parents' => {

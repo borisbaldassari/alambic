@@ -25,20 +25,29 @@ library(ggthemes)
 library(plotly)
 
 #project.id <- 'modeling.sirius'
-file.evol = paste("", project.id, "_git_commits.csv", sep="")
+file.evol = paste("", project.id, "_git_commits_evol.csv", sep="")
 evol <- read.csv(file=file.evol, header=T)
-evol$commits_sum <- cumsum(evol$commits)
-#evol$date_ext <- paste(evol$date, "-01", sep="")
-evol.xts <- xts(x = evol[,c('commits_sum', 'commits', 'authors')], order.by=as.POSIXct(as.character(evol[,c('date')]), format="%Y-%m-%d"))
+evol.xts <- xts(x = evol[,c('commits')], order.by=as.POSIXct(as.character(evol[,c('date')]), format="%Y-%m-%d"))
 
-gg <- ggplot(data=evol.xts, aes( x = index(evol.xts), y = commits)) + geom_line()+
+time.min <- index(evol.xts[1,])
+time.max <- index(evol.xts[nrow(evol.xts)])
+all.dates <- seq(time.min, time.max, by="days")
+empty <- xts(order.by = all.dates)
+
+merged.data <- merge(empty, evol.xts, all=T)
+merged.data[is.na(merged.data) == T,] <- 0
+
+evol.weekly <- apply.weekly(x=merged.data, FUN = sum)
+names(evol.weekly) <- c('commits')
+
+gg <- ggplot(data=evol.weekly, aes( x = index(evol.weekly), y = commits)) + geom_line()+
   theme_minimal()
 
 # Save image to png and svg
 ggsave(file=paste(project.id, "_git_evol_commits.svg", sep=''), plot=gg, width=10, height=8)
 ggsave(file=paste(project.id, "_git_evol_commits.png", sep=''), plot=gg, width=10, height=8)
 
-p <-dygraph(evol.xts[,c('commits')],
+p <-dygraph(evol.weekly[,c('commits')],
         main = paste('Commits for ', project.id, sep=''),
         width = 800, height = 250 ) %>%
       dyRangeSelector()

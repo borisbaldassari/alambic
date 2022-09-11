@@ -48,7 +48,7 @@ my %conf = (
       "The original git log file as retrieved from git (TXT).",
     "metrics_git.csv"  => "Current metrics for the SCM Git plugin (CSV).",
     "metrics_git.json" => "Current metrics for the SCM Git plugin (JSON).",
-    "git_commits.csv" =>
+    "git_commits_evol.csv" =>
       "Evolution of number of commits and authors by day (CSV)."
   },
   "provides_metrics" => {
@@ -68,6 +68,7 @@ my %conf = (
     "SCM_MOD_LINES_1W"  => "SCM_MOD_LINES_1W",
     "SCM_MOD_LINES_1M"  => "SCM_MOD_LINES_1M",
     "SCM_MOD_LINES_1Y"  => "SCM_MOD_LINES_1Y",
+    "SCM_DIVERSITY_RATIO"  => "SCM_DIVERSITY_RATIO",
   },
   "provides_figs" => {
     'git_summary.html'      => "HTML export of Git main metrics.",
@@ -281,6 +282,8 @@ sub _compute_data($$) {
   $metrics{'SCM_COMMITTERS_1W'} = scalar(keys %committers_1w) || 0;
   $metrics{'SCM_COMMITTERS_1M'} = scalar(keys %committers_1m) || 0;
   $metrics{'SCM_COMMITTERS_1Y'} = scalar(keys %committers_1y) || 0;
+  my $committers_1y = $metrics{'SCM_COMMITTERS_1Y'} == 0 ? 1 : $metrics{'SCM_COMMITTERS_1Y'};
+  $metrics{'SCM_DIVERSITY_RATIO_1Y'} = int( $metrics{'SCM_COMMITS_1Y'} / $committers_1y );
 
   # Set user information for profile
   push(@log, "[Plugins::Git] Writing user events file.");
@@ -309,8 +312,8 @@ sub _compute_data($$) {
     sort keys %timeline;
   $csv_out = "date,commits,authors\n";
   $csv_out .= join("\n", @timeline) . "\n";
-  $repofs->write_plugin('Git', $project_id . "_git_commits.csv", $csv_out);
-  $repofs->write_output($project_id, "git_commits.csv", $csv_out);
+  $repofs->write_plugin('Git', $project_id . "_git_commits_evol.csv", $csv_out);
+  $repofs->write_output($project_id, "git_commits_evol.csv", $csv_out);
 
   # Now execute the main R script.
   push(@log, "[Plugins::Git] Executing R main file.");

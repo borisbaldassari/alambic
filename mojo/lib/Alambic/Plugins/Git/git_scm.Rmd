@@ -41,7 +41,7 @@ knitr::opts_chunk$set(fig.path = 'figures/')
 
 #project.id <- 'modeling.sirius'
 plugin.id <- 'Git'
-file.evol = paste("", project.id, "_git_commits.csv", sep="")
+file.evol = paste("", project.id, "_git_commits_evol.csv", sep="")
 file.metrics = paste("", project.id, "_git.csv", sep="")
 
 evol <- read.csv(file=file.evol, header=T)
@@ -130,7 +130,7 @@ The visualisations used in this document rely on a number of flat CSV and JSON d
 
 * Raw text of git log [ <a href="import_git.txt">Download TXT</a> ]
 * Current metrics for the SCM Git plugin [ <a href="metrics_git.json">Download JSON</a> | <a href="metrics_git.csv">Download CSV</a> ]
-* Evolution of number of commits and authors by day [ <a href="git_commits.csv">Download CSV</a> ]
+* Evolution of number of commits and authors by day [ <a href="git_commits_evol.csv">Download CSV</a> ]
 
 
 

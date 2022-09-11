@@ -1,0 +1,175 @@
+---
+title: "SonarQube Cloud"
+author:
+- name: "Boris Baldassari"
+  affiliation: Castalia Solutions
+output:
+  html_fragment:
+    toc: false
+    fig_caption: true
+    fig.width: 800
+    self_contained: false
+    lib_dir: libs
+    echo: false
+    dev: svg
+---
+
+```{r init, echo=FALSE, message=FALSE}
+
+library(knitr)
+require(ggplot2)
+require(xtable)
+
+opts_chunk$set(fig.width=5, fig.height=5, echo=F, fig.path = 'figures/')
+
+#project.id <- "modeling.sirius"
+plugin.id <- "SonarQubeIo"
+file.blocker <- paste("", project.id, "_sq_issues_blocker.csv", sep="")
+file.critical <- paste("", project.id, "_sq_issues_critical.csv", sep="")
+file.major <- paste("", project.id, "_sq_issues_major.csv", sep="")
+file.info <- paste("", project.id, "_sq_info.csv", sep="")
+file.metrics <- paste("", project.id, "_sq_metrics.csv", sep="")
+
+abc <- c('A', 'B', 'C', 'D', 'E', 'F', 'G')
+
+issues.blocker <- read.csv(file=file.blocker, header=T)
+issues.critical <- read.csv(file=file.critical, header=T)
+issues.major <- read.csv(file=file.major, header=T)
+sq.info <- read.csv(file=file.info, header=T)
+sq.metrics <- read.csv(file=file.metrics, header=T)
+
+issues <- merge(issues.blocker, issues.critical, all=TRUE)
+issues <- merge(issues, issues.major, all=TRUE)
+
+violations <- as.data.frame(t(sq.metrics[,c('SQ_VIOLATIONS_BLOCKER', 'SQ_VIOLATIONS_CRITICAL', 'SQ_VIOLATIONS_MAJOR', 'SQ_VIOLATIONS_MINOR', 'SQ_VIOLATIONS_INFO')]))
+violations$names <- rownames(violations)
+names(violations) <- c('Values', 'Severity')
+```
+
+## SonarQube Cloud results analysis for `r I(project.id)`
+
+<br />
+
+<div class="row"><div class="col-sm-7">
+
+[SonarQube](http://www.sonarqube.org/) is a widely-used source code analyzer. This plugin targets the cloud platform located at https://sonarcloud.io/ .
+
+You can learn more about this module on its [documentation page](http://alambic.io/Plugins/Pre/SonarQubeIo.html) on the project wiki.
+
+</div><div class="col-sm-4">
+  <div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title">Contents</h3></div>
+  <div class="list-group">
+  <a href="#metrics" class="list-group-item">Metrics</a>
+  <a href="#issues" class="list-group-item">Violations</a>
+  <a href="#list_issues" class="list-group-item">Violations</a>
+  <a href="#downloads" class="list-group-item">Downloads</a>
+  </div>
+  </div>
+</div></div>
+
+-----
+
+### <a name="metrics"></a>Metrics
+
+<div class="row"><div class="col-sm-6">
+
+#### Size metrics
+
+SonarQube identified:
+
+* ``r sq.metrics$SQ_NCLOC`` lines of code and ``r sq.metrics$SQ_STATEMENTS`` statements,
+* ``r sq.metrics$SQ_FILES`` files and ``r sq.metrics$SQ_FUNCS`` functions.
+
+The overall complexity (cyclomatic number) is ``r sq.metrics$SQ_CPX`` ; average complexity for files is ``r sq.metrics$SQ_CPX_FILE_IDX``.
+
+#### Documentation
+
+There are ``r sq.metrics$SQ_COMMENT_LINES`` lines of comments, which makes a comment rate of ``r sq.metrics$SQ_COMR`%`.
+
+There are ``r sq.metrics$SQ_PUBLIC_API`` public API artefacts (public classes, interfaces, methods, constructors, annotations and attributes), including ``r sq.metrics$SQ_PUBLIC_UNDOC_API`` artefacts undocumented. The ratio of public API documentation is ``r sq.metrics$SQ_PUBLIC_API_DOC_DENSITY`%`.
+
+#### Duplication
+
+There are ``r sq.metrics$SQ_DUPLICATED_LINES`` duplicated lines, ``r sq.metrics$SQ_DUPLICATED_BLOCKS`` duplicated blocks and ``r sq.metrics$SQ_DUPLICATED_FILES`` duplicated files. The overall density of duplicate lines is ``r sq.metrics$SQ_DUPLICATED_LINES_DENSITY``.
+
+#### Sqale technical debt
+
+Sqale rating for the whole application is ``r abc[[sq.metrics$SQ_SQALE_RATING]]`` (`r sq.metrics$SQ_SQALE_RATING`), for a technical debt ratio of ``r sq.metrics$SQ_SQALE_DEBT_RATIO``. The Sqale index (overall Sqale technical debt) is ``r sq.metrics$SQ_SQALE_INDEX``.
+
+</div><div class="col-sm-6">
+
+### Test
+
+Test coverage for the full application is ``r sq.metrics$SQ_COVERAGE`%`. There are ``r sq.metrics$SQ_TESTS`` unit tests identified. Line test coverage is ``r sq.metrics$SQ_COVERAGE_LINE`%` and branch test coverage is ``r sq.metrics$SQ_COVERAGE_BRANCH`%`.
+
+</div></div>
+
+-----
+
+### <a name="issues"></a>Violations (issues)
+
+<div class="row"><div class="col-sm-6">
+
+```{r }
+sq.metrics_v <- sq.metrics[c('SQ_VIOLATIONS_BLOCKER', 'SQ_VIOLATIONS_CRITICAL', 'SQ_VIOLATIONS_MAJOR', 'SQ_VIOLATIONS_MINOR', 'SQ_VIOLATIONS_INFO')]
+sq.metrics_v[,is.na(sq.metrics_v)] <- 0
+```
+
+SonarQube returned a total of ``r sq.metrics$SQ_VIOLATIONS`` violations to checked rules, excluding Minor and Info severities. The severity repartition is as follows:
+
+* ``r sq.metrics_v$SQ_VIOLATIONS_BLOCKER`` issues with <span style="color: #CC0000">priority BLOCKER</span>,
+* ``r sq.metrics_v$SQ_VIOLATIONS_CRITICAL`` issues with <span style="color: #DD5500">priority CRITICAL</span>,
+* ``r sq.metrics_v$SQ_VIOLATIONS_MAJOR`` issues with <span style="color: #EEAA00">priority MAJOR</span>
+* ``r sq.metrics_v$SQ_VIOLATIONS_MINOR`` issues with <span style="color: #EEAA00">priority MINOR</span>
+* ``r sq.metrics_v$SQ_VIOLATIONS_INFO`` issues with <span style="color: #EEAA00">priority INFO</span>.
+
+Note that the SonarQube API returns only 10 000 issues at most in each category to prevent memory overflows.
+
+``r sq.metrics$SQ_ISSUES_OPEN`` issues are in an open state.
+
+</div><div class="col-sm-6">
+
+This plot shows the repartition of violations according to their severity, from <span class="label" style="background-color: #CC0000">Blocker</span> to <span class="label" style="background-color: #ADBECF">Info</span>.
+
+<iframe src="/projects/`r project.id`/SonarQubeIo/sonarqube_violations_pie.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+
+</div></div>
+
+
+### <a name="list_issues"></a>List of issues
+
+The following table shows the top 10 issues for the project, sorted from blocker to critical and major. Issues of lesser importance are not included.
+
+<div class="panel panel-default">
+<div class="panel-heading" style="background-color: #3E3F3A; color: white"><span class="fa fa-indent"></span> SonarQube Issues</div>
+
+<table class="table table-striped">
+  <tr><th>Rule</th><th>Message</th><th>Severity</th><th>Last update</th></tr>
+```{r issues_table, eval=T, echo=FALSE, message=FALSE, results='asis'}
+t <- apply(issues[seq(1,10),], 1,
+		   function(x) paste(' <tr><td>', trimws(x[[2]]), '</td><td>', trimws(x[[5]]), '</td><td>', 
+		                     trimws(x[[3]]), '</td><td>', trimws(x[[4]]), '</td></tr>', sep=''))
+t <- paste(t, collapse=" ")
+cat(t)
+```
+</table>
+</div> 
+
+-----
+
+### <a name="downloads"></a>Downloads
+
+The visualisations on this page can be exported and easily reused on an external web site. You can find more information on iframes and pictures reuse in [the project&apos;s wiki](https://alambic.io/Documentation/Basics/Exports.html). Remember to change the server name in the code samples provided.
+
+Summary of main SonarQube metrics (HTML)
+
+    <iframe src="http://server/projects/`r project.id`/SonarQubeIo/sonarqube_summary.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+
+Summary of SonarQube violations (HTML)
+
+    <iframe src="http://server/projects/`r project.id`/SonarQubeIo/sonarqube_violations.html" frameborder="0" style="width: 100%; height: 350px"></iframe>
+
+Pie chart of checked and broken rules (HTML)
+
+    <iframe src="http://server/projects/`r project.id`/SonarQubeIo/sonarqube_violations_pie.html" frameborder="0" style="width: 100%; height: 350px"></iframe>

@@ -15,6 +15,7 @@
 package Alambic::Commands::init;
 use Mojo::Base 'Mojolicious::Command';
 
+use Data::Dumper;
 use Alambic::Model::RepoDB;
 
 has description => 'Command line initialisation for Alambic';
@@ -22,8 +23,9 @@ has usage       => "Usage: alambic init\n";
 
 sub run {
   my ($self, @args) = @_;
+  my $force = shift(@args) || 'none'; 
 
-  if (scalar(@args) != 0) {
+  if (scalar(@args) != 0 and ($force ne 'force')) {
     my $usage = "
 Welcome to the Alambic application. 
 
@@ -55,9 +57,13 @@ Other Mojolicious commands:
 
   # We don't want to empty the database if it already contains data
   if ($repodb->is_db_ok() and not $repodb->is_db_empty()) {
-    print
-      "Database is initialised and is not empty. Cowardly refusing to clear it.\n\n";
-    exit;
+    print "Database is initialised and is not empty.\n";
+    if ($force eq 'force') { 
+      print "But you asked to force init anyway, ok.\n";
+    } else { 
+      print "Cowardly refusing to clear it.\n\n";
+      exit;
+    }
   }
   else {
     print "Database is nok or is empty.\nInitialising database.\n";
@@ -68,6 +74,7 @@ Other Mojolicious commands:
   print "Initialising instance parameters.\n";
   $self->app->al->get_repo_db()->name('Default CLI init');
   $self->app->al->get_repo_db()->desc('Default CLI Init description');
+  $self->app->al->get_repo_db()->anonymise_data('1');
 
   # Set administrator parameters.
   print "Creating administrator account.\n";

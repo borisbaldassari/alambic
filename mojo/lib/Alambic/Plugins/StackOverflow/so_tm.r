@@ -22,10 +22,12 @@ require(SnowballC)
 
 file.out <- paste( project.id, "_so_tm.svg", sep="")
 
-file.csv = paste(project.id, '_so.csv', sep="")
+file.csv = paste("../../../../projects/", project.id, "/output/", project.id, '_so.csv', sep="")
 project <- read.csv(file=file.csv, header=TRUE)
 
-mysrc <- DataframeSource(as.data.frame(project$title))
+test <- as.vector(project$title)
+Encoding(test)  <- "UTF-8"
+mysrc <- VectorSource(test)
 corpus <- VCorpus(mysrc)
 #mydict <- corpus
 
@@ -42,3 +44,4 @@ a <- tm_map(corpus, stemDocument)
 svg(file.out, width=10, height=6)
 wordcloud(a, scale=c(12,1), max.words=50, random.order=FALSE, rot.per=0.15, use.r.layout=FALSE, colors=brewer.pal(8, "Dark2"))
 dev.off()
+

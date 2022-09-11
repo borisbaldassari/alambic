@@ -1,5 +1,5 @@
 {
-    "name": "Alambic Quality Model for Eclipse",
+    "name": "Eclipse Quality Model",
     "version": "0.1",
     "children": [
         {
@@ -22,18 +22,28 @@
                                     "type": "metric",
                                     "active": "true"
                                 },
-				{
-				    "mnemo": "SCM_COMMITS_1M",
-				    "type": "metric",
-				    "active": "true"
-				},
-				{
-				    "mnemo": "SCM_MOD_LINES_1M",
-				    "type": "metric",
-				    "active": "true"
-				}
-			    ]
-			},
+                                {
+                        				    "mnemo": "SCM_COMMITS_1M",
+                        				    "type": "metric",
+                        				    "active": "true"
+                        				},
+                        				{
+                        				    "mnemo": "SCM_MOD_LINES_1M",
+                        				    "type": "metric",
+                        				    "active": "true"
+                        				},
+                                {
+                                    "mnemo": "ITS_UPDATED_1M",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "MLS_USR_POSTS_1M",
+                                    "type": "metric",
+                                    "active": "true"
+                                }
+                   			    ]
+                  			},
                         {
                             "mnemo": "QM_DIVERSITY",
                             "type": "attribute",
@@ -41,6 +51,16 @@
                             "children": [
                                 {
                                     "mnemo": "SCM_AUTHORS_1M",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "ITS_AUTHORS_1M",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "MLS_USR_AUTHORS_1M",
                                     "type": "metric",
                                     "active": "true"
                                 }
@@ -52,22 +72,17 @@
                             "active": "true",
                             "children": [
                                 {
-                                    "mnemo": "PMI_DOC_INFO",
+                                    "mnemo": "MLS_USR_THREADS_1M",
                                     "type": "metric",
                                     "active": "true"
                                 },
                                 {
-                                    "mnemo": "PMI_SCM_INFO",
+                                    "mnemo": "MLS_USR_AUTHORS_1M",
                                     "type": "metric",
                                     "active": "true"
                                 },
                                 {
-                                    "mnemo": "PMI_ITS_INFO",
-                                    "type": "metric",
-                                    "active": "true"
-                                },
-                                {
-                                    "mnemo": "PMI_ACCESS_INFO",
+                                    "mnemo": "ITS_UPDATED_1M",
                                     "type": "metric",
                                     "active": "true"
                                 }
@@ -86,7 +101,7 @@
                             "active": "true",
                             "children": [
                                 {
-                                    "mnemo": "PMI_SCM_INFO",
+                                    "mnemo": "PROJECT_SCM_INFO",
                                     "type": "metric",
                                     "active": "true"
                                 },
@@ -103,17 +118,105 @@
                             ]
                         },
                         {
+                            "mnemo": "QM_DOC",
+                            "type": "attribute",
+                            "active": "true",
+                            "children": [
+                              {
+                                  "mnemo": "PROJECT_DOC_INFO",
+                                  "type": "metric",
+                                  "active": "true"
+                              },
+                              {
+                                  "mnemo": "PROJECT_SCM_INFO",
+                                  "type": "metric",
+                                  "active": "true"
+                              },
+                              {
+                                  "mnemo": "PROJECT_ITS_INFO",
+                                  "type": "metric",
+                                  "active": "true"
+                              },
+                              {
+                                  "mnemo": "PROJECT_ACCESS_INFO",
+                                  "type": "metric",
+                                  "active": "true"
+                              }
+                            ]
+                        },
+                        {
                             "mnemo": "QM_REL_ENG",
                             "type": "attribute",
                             "active": "true",
                             "children": [
                                 {
-                                    "mnemo": "PMI_REL_VOL",
+                                    "mnemo": "PROJECT_REL_VOL",
                                     "type": "metric",
                                     "active": "true"
                                 },
                                 {
                                     "mnemo": "CI_JOBS_GREEN_RATIO",
+                                    "type": "metric",
+                                    "active": "true"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mnemo": "QM_PRODUCT",
+                    "type": "attribute",
+                    "active": "true",
+                    "children": [
+                        {
+                            "mnemo": "QM_MAINTAINABILITY",
+                            "type": "attribute",
+                            "active": "true",
+                            "children": [
+                                {
+                                    "mnemo": "SQ_DUPLICATED_LINES_DENSITY",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "SQ_SQALE_DEBT_RATIO",
+                                    "type": "metric",
+                                    "active": "true"
+                                  },
+                                  {
+                                      "mnemo": "SQ_COVERAGE",
+                                      "type": "metric",
+                                      "active": "true"
+                                },
+                                {
+                                    "mnemo": "SQ_PACKAGES_TANGLE_IDX",
+                                    "type": "metric",
+                                    "active": "true"
+                                }
+                            ]
+                        },
+                        {
+                            "mnemo": "QM_RELIABILITY",
+                            "type": "attribute",
+                            "active": "true",
+                            "children": [
+                                {
+                                    "mnemo": "SQ_CPX_FILE_IDX",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "SQ_COVERAGE",
+                                    "type": "metric",
+                                    "active": "true"
+                              },
+                                {
+                                    "mnemo": "SQ_VIOLATIONS_BLOCKER",
+                                    "type": "metric",
+                                    "active": "true"
+                                },
+                                {
+                                    "mnemo": "ITS_OPEN",
                                     "type": "metric",
                                     "active": "true"
                                 }
