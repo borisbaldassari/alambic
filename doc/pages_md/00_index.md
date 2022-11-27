@@ -7,7 +7,12 @@ navi_name: Alambic
 
   <h1>Welcome to the Alambic project</h1>
 
-  <p class="lead"><b>Alambic</b> is an <b>open-source platform and service</b> for the management and visualisation of software engineering data. </p>
+  <p class="lead"><b>Alambic is considered obsolete, and is not maintained anymore.</b> <br />
+  If you would like to revive it, please get in touch.</p>
+
+    <br />
+
+  <p><b>Alambic</b> is an <b>open-source platform and service</b> for the management and visualisation of software engineering data. </p>
 
     <br />
 
